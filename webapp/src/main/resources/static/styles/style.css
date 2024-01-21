@@ -1,0 +1,235 @@
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+/* Allgemeine Style */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: white;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+main div.container div:last-child{
+  padding-bottom: 100px;
+}
+
+.rtl {
+	unicode-bidi: bidi-override;
+	direction: rtl;
+}
+
+/* ---------------- Start Header-Style --------------------------- */
+header {
+  background-color: #ff9800;
+  padding: 20px 0px 20px 0px;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.logo img {
+  max-width: 100px;
+}
+
+.menu ul {
+  /* list-style: none; */
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.menu li {
+  margin-right: 10px;
+}
+
+.menu li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 10px 15px;
+  text-decoration: none;
+}
+
+.navbar-toggler {
+  display: none;
+  cursor: pointer;
+}
+
+.navbar-toggler span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background-color: #333;
+  margin-bottom: 4px;
+}
+/* ---------------- Ende Header-Style --------------------------- */
+
+/* ---------------- Start Main-Style --------------------------- */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.video {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+/* ---------------- Ende Main-Style --------------------------- */
+
+/* ---------------- Start Footer ---------------- */
+footer {
+    background-color: #6efdfd;
+    color: black;
+    padding: 10px 0;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+/* ---------------- Ende Footer ---------------- */
+
+/* Media Queries für Handy- oder Tablet-Modus */
+@media screen and (max-width: 768px) {
+    header {
+        width:100%;
+    }
+    .container {
+        padding: 0 10px;
+    }
+
+	main div.container div:last-child{
+  		padding-bottom: 100px;
+	}
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+  .logo img {
+    max-width: 85px;
+  }
+
+  .menu ul {
+    display: none;
+  }
+  .menu ul li {
+    margin-right: 0px;
+  }
+
+  .menu li a {
+        padding: 5px 15px;
+  }
+
+  .navbar-toggler {
+    display: block;
+  }
+
+  .navbar-toggler span {
+    width: 20px;
+    height: 2px;
+    margin-bottom: 4px;
+    background-color: #333;
+  }
+
+  .menu.open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .menu.open ul {
+    margin-top: 10px;
+    display:block;
+  }
+}
+
+/** Download-Tabelle **/
+.downloadTable tr:nth-child(even) {
+    background:#f4f4f4;
+}
+
+.downloadTable th,td {
+    padding:0.1em 0.5em;
+}
+
+.downloadTable th {
+    text-align:left;
+    font-weight:bold;
+    background:#eee;
+    border-bottom:1px solid #aaa;
+}
+
+.downloadTable {
+    border:1px solid #aaa;
+    width:100%;
+}
+
+.downloadTable a {
+    color:#a33;
+}
+
+.downloadTable a:hover {
+    color:#e33;
+}
+
+/* Siehe: https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/ */
+.dont-break-out {
+
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+
+}

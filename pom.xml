@@ -1,0 +1,182 @@
+<!--
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.schliweb.bluesharpbendingapp</groupId>
+    <artifactId>all</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <revision>1.6.3</revision>
+    </properties>
+
+    <scm>
+        <developerConnection>
+            scm:git:ssh://egdels@192.168.2.6/volume1/schlinas-repository/repository/git/bluesharpbendingapp.git
+        </developerConnection>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>be.0110.repo-releases</id>
+            <name>0110.be repository</name>
+            <url>https://mvn.0110.be/releases</url>
+        </repository>
+        <repository>
+            <id>jetbrains.releases</id>
+            <url>https://www.jetbrains.com/intellij-repository/releases</url>
+        </repository>
+        <repository>
+            <id>jetbrains.3rdparty</id>
+            <url>https://cache-redirector.jetbrains.com/intellij-dependencies</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <name>Project Repository - Releases</name>
+            <url>http://192.168.2.6:8081/nexus/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus</id>
+            <name>Project Repository - Snapshots</name>
+            <url>http://192.168.2.6:8081/nexus/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.9.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>be.tarsos.dsp</groupId>
+                <artifactId>core</artifactId>
+                <version>2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>be.tarsos.dsp</groupId>
+                <artifactId>jvm</artifactId>
+                <version>2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>de.schliweb.bluesharpbendingapp</groupId>
+                <artifactId>base</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.schliweb.bluesharpbendingapp</groupId>
+                <artifactId>desktop</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jetbrains.intellij.java</groupId>
+                <artifactId>java-gui-forms-rt</artifactId>
+                <version>233.13135.103</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>base</module>
+        <module>desktop</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>debian</id>
+            <modules>
+                <module>base</module>
+                <module>desktop</module>
+                <module>debian-build</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>macos</id>
+            <modules>
+                <module>base</module>
+                <module>desktop</module>
+                <module>macos-build</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>win</id>
+            <modules>
+                <module>base</module>
+                <module>desktop</module>
+                <module>win-build</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

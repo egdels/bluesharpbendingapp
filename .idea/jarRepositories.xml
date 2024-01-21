@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="be.0110.repo-releases" />
+      <option name="name" value="0110.be repository" />
+      <option name="url" value="http://192.168.2.6:8081/nexus/repository/be.0110.repo-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://192.168.2.6:8081/nexus/proxy" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jetbrains.releases" />
+      <option name="name" value="jetbrains.releases" />
+      <option name="url" value="http://192.168.2.6:8081/nexus/proxy" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="be.0110.repo-releases" />
+      <option name="name" value="0110.be repository" />
+      <option name="url" value="http://192.168.2.6:8081/nexus/proxy" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jetbrains.3rdparty" />
+      <option name="name" value="jetbrains.3rdparty" />
+      <option name="url" value="http://192.168.2.6:8081/nexus/proxy" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jetbrains.3rdparty" />
+      <option name="name" value="jetbrains.3rdparty" />
+      <option name="url" value="https://cache-redirector.jetbrains.com/intellij-dependencies" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://192.168.2.6:8081/nexus/repository/maven-central/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jetbrains.releases" />
+      <option name="name" value="jetbrains.releases" />
+      <option name="url" value="https://www.jetbrains.com/intellij-repository/releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jetbrains.releases" />
+      <option name="name" value="jetbrains.releases" />
+      <option name="url" value="http://192.168.2.6:8081/nexus/repository/jetbrains.releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jetbrains.3rdparty" />
+      <option name="name" value="jetbrains.3rdparty" />
+      <option name="url" value="http://192.168.2.6:8081/nexus/repository/jetbrains.3rdparty/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="MavenRepo" />
+      <option name="name" value="MavenRepo" />
+      <option name="url" value="https://repo.maven.apache.org/maven2/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="be.0110.repo-releases" />
+      <option name="name" value="0110.be repository" />
+      <option name="url" value="https://mvn.0110.be/releases" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+  </component>
+</project>

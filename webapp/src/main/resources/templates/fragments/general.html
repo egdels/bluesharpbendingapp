@@ -1,0 +1,83 @@
+<!--
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:lang="#{language}" th:xmllang="#{language}">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Let's Bend - Blues Harp Bending App for all devices" name="description"/>
+    <meta content="Blues Harp Bending App, Blues Harp Bending App for Android, Blues Harp Bending App for Linux, Blues Harp Bending App for Windows, Blues Harp Bending App for macOS"
+          name="keywords"/>
+    <title data-th-text="#{index.title}"></title>
+    <link href="/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
+    <link href="/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
+    <link href="/images/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
+    <link href="/site.webmanifest" rel="manifest">
+    <link href="/styles/style.css" rel="stylesheet">
+    <script src="/scripts/script.js"></script>
+</head>
+<body>
+
+<header th:fragment="header">
+    <div class="container">
+
+        <nav class="navbar">
+            <div class="logo">
+                <a href="/index.html">
+                    <img alt="Logo" src="/images/logo.png">
+                </a>
+            </div>
+            <div class="menu">
+                <ul>
+                    <li><a href="/index.html" data-th-text="#{menu.Home}"></a></li>
+                    <li><a href="/datenschutz.html" data-th-text="#{menu.PrivacyPolicy}"></a></li>
+                    <li><a href="/impressum.html" data-th-text="#{menu.Imprint}"></a></li>
+                </ul>
+            </div>
+            <div class="navbar-toggler">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div data-th-utext="#{index.content}"></div>
+        <div></div>
+    </div>
+</main>
+
+<footer th:fragment="footer">
+    <div class="container">
+        <p data-th-utext="#{footer.rights}"></p>
+    </div>
+</footer>
+</body>
+</html>
