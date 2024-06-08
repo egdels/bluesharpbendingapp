@@ -49,7 +49,6 @@ is required. The path to jpackage is configured in the Maven parameter env.JPACK
 
 ### Build under Debian
 
-    cd all
     mvn clean install -Pdebian -DprofileIdEnabled=true
 
 The created package can then be found under debian-build/target/jpackage
@@ -59,7 +58,6 @@ The created package can then be found under debian-build/target/jpackage
 In addition to jpackage, wixtoolset version 3 is required to build the MSI package. This can be
 downloaded [here](https://github.com/wixtoolset/wix3/releases).
 
-    cd all
     mvn clean install -Pwin -DprofileIdEnabled=true
 
 The MSI package created can then be found under win-build/target/jpackage
@@ -70,7 +68,6 @@ Under macOS, package creation using OpenJDK results in a missing dependency to h
 [https://github.com/JetBrains/compose-multiplatform/issues/3107](https://github.com/JetBrains/compose-multiplatform/issues/3107)
 As a work-around, an alternative JDK can be used in the Maven parameter env.JPACKAGE_HOME.
 
-    cd all
     mvn clean install -Pmacos -DprofileIdEnabled=true
 
 The created package can then be found under win-build/target/jpackage

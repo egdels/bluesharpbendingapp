@@ -23,6 +23,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
+import com.intellij.uiDesigner.core.GridConstraints;
 import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
@@ -57,8 +58,12 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
     public void clear() {
         LOGGER.info("Enter");
         for (Component child : notePanel.getComponents()) {
-            if (child instanceof Label && notePanel.getComponentZOrder(child) > 0) {
-                notePanel.remove(child);
+            if (child instanceof NotePane) {
+                NotePane oldPane = ((NotePane) child);
+                NotePane newPane = new NotePane(oldPane.getNoteName(), oldPane.getColor());
+                notePanel.remove(oldPane);
+                notePanel.add(newPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+                notePanel.revalidate();
             }
         }
         LOGGER.info("Leave");
@@ -67,22 +72,14 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
     @Override
     public void update(double cents) {
         LOGGER.info("Enter with parameter " + cents);
-        // Vor dem Update bestehende Labels entfernen
         for (Component child : notePanel.getComponents()) {
-            if (child instanceof Label && notePanel.getComponentZOrder(child) > 0) {
-                notePanel.remove(child);
+            if (child instanceof NotePane) {
+                NotePane oldPane = ((NotePane) child);
+                NotePane newPane = new NotePane(oldPane.getNoteName(), oldPane.getColor(), cents);
+                notePanel.remove(oldPane);
+                notePanel.add(newPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+                notePanel.revalidate();
             }
-        }
-
-        Label noteLabel = new Label();
-        int lineHeight = (notePanel.getBounds().height / 10);
-        double position = 0.5 * (notePanel.getBounds().height) * (1.0 - (cents / 50.0));
-        if ((int) position >= 0 && (int) position <= notePanel.getBounds().height - lineHeight) {
-            noteLabel.setBounds(0, (int) position, notePanel.getBounds().width, lineHeight);
-            Color color = new Color((int) (250.0 * Math.abs(cents / 50.0)),
-                    (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0);
-            noteLabel.setBackground(color);
-            notePanel.add(noteLabel);
         }
         LOGGER.info("Leave");
     }

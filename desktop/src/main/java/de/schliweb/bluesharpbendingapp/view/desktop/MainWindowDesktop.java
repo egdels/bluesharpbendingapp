@@ -35,6 +35,7 @@ import de.schliweb.bluesharpbendingapp.view.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 
 /**
@@ -123,7 +124,13 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
         setDefaultLookAndFeelDecorated(true);
 
         setTitle("Let's Bend - BluesHarpBendingApp");
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ic_launcher.png")));
+
+        ArrayList<Image> imageList = new ArrayList<Image>();
+        imageList.add(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ic_launcher_32.png")));
+        imageList.add(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ic_launcher_64.png")));
+        imageList.add(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ic_launcher_128.png")));
+
+        setIconImages(imageList);
 
         // fixed toolbar
         toolBar.setFloatable(false);
@@ -312,21 +319,25 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
         toolBar = new JToolBar();
         toolBar.setBorderPainted(false);
         innerContentPane.add(toolBar, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 20), null, 0, false));
+        final JToolBar toolBar1 = new JToolBar();
+        toolBar.add(toolBar1);
         labelLetsBend = new JLabel();
         labelLetsBend.setText("Let's Bend");
-        toolBar.add(labelLetsBend);
-        final Spacer spacer1 = new Spacer();
-        toolBar.add(spacer1);
+        toolBar1.add(labelLetsBend);
+        final JToolBar.Separator toolBar$Separator1 = new JToolBar.Separator();
+        toolBar1.add(toolBar$Separator1);
         labelSettings = new JLabel();
         labelSettings.setHorizontalAlignment(10);
         labelSettings.setHorizontalTextPosition(11);
         labelSettings.setText("Settings");
-        toolBar.add(labelSettings);
-        final Spacer spacer2 = new Spacer();
-        toolBar.add(spacer2);
+        toolBar1.add(labelSettings);
+        final JToolBar.Separator toolBar$Separator2 = new JToolBar.Separator();
+        toolBar1.add(toolBar$Separator2);
         labelAbout = new JLabel();
+        labelAbout.setHorizontalAlignment(10);
+        labelAbout.setHorizontalTextPosition(11);
         labelAbout.setText("About");
-        toolBar.add(labelAbout);
+        toolBar1.add(labelAbout);
         innerContentHarpPane = new JPanel();
         innerContentHarpPane.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         innerContentPane.add(innerContentHarpPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -343,9 +354,7 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
     }
 
     /**
-     * $$$ get root component $$$ j component.
-     *
-     * @return the j component
+     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPane;

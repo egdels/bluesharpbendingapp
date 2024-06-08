@@ -35,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentAboutBinding;
 import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.AboutView;
@@ -86,11 +87,10 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
             assert context != null;
             String versionName = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0).versionName;
-
             long versionCode = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0).getLongVersionCode();
             TextView textView = binding.aboutVersion;
-            textView.setText(versionName + " (" + versionCode + ")");
+            textView.setText(getString(R.string.about_version, versionName,versionCode));
         } catch (PackageManager.NameNotFoundException e) {
             LOGGER.error(e.getMessage());
         }

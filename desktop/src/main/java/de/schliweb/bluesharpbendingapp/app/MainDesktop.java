@@ -23,6 +23,8 @@ package de.schliweb.bluesharpbendingapp.app;
  *
  */
 
+import com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme;
+import com.formdev.flatlaf.util.SystemInfo;
 import de.schliweb.bluesharpbendingapp.controller.MainController;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
@@ -31,6 +33,7 @@ import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktop;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -51,7 +54,7 @@ public class MainDesktop {
     /**
      * The constant TEMP_DIR.
      */
-    private static final String TEMP_DIR = System.getProperty("java.io.tmpdir")
+    private static final String TEMP_DIR = System.getProperty("user.home")
             + FileSystems.getDefault().getSeparator() + "BluesHarpBendingApp.tmp"
             + FileSystems.getDefault().getSeparator();
 
@@ -75,6 +78,17 @@ public class MainDesktop {
         LOGGER.info("Enter with parameter " + Arrays.toString(args));
         Logger.setDebug(false);
 
+
+        System.setProperty( "flatlaf.menuBarEmbedded", "true" );
+        System.setProperty( "flatlaf.useWindowDecorations", "true" );
+        FlatArcDarkOrangeIJTheme.setup();
+
+        if( SystemInfo.isLinux ) {
+            // enable custom window decorations
+            JFrame.setDefaultLookAndFeelDecorated( true );
+            JDialog.setDefaultLookAndFeelDecorated( true );
+        }
+
         checkVersionFromHost();
         Logger.setInfo(false);
         boolean isDonationWare = false;
@@ -94,6 +108,13 @@ public class MainDesktop {
         microphone.setName(0);
 
         MainWindow mainWindow = new MainWindowDesktop(isDonationWare);
+        // FIX: Timing issue
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            LOGGER.error(e.getMessage());
+        }
+
         MainModel mainModel = readModel();
         mainModel.setMicrophone(microphone);
         microphone.setAlgorithm(mainModel.getStoredAlgorithmIndex());
@@ -152,7 +173,8 @@ public class MainDesktop {
                 FileInputStream fos = new FileInputStream(file);
                 BufferedReader bw = new BufferedReader(new InputStreamReader(fos));
                 String line = bw.readLine();
-                model = MainModel.createFromString(line);
+                if(line!=null)
+                    model = MainModel.createFromString(line);
                 bw.close();
             } catch (IOException e) {
                 LOGGER.error(e.getMessage());

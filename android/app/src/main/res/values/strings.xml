@@ -30,7 +30,7 @@
     <string name="action_about">About</string>
     <string name="action_harp">Let\'s Bend</string>
     <string name="about_description">Android version of BluesHarpBendingApp</string>
-    <string name="about_version">Version</string>
+    <string name="about_version">%1$s (%2$d)</string>
     <string name="settings_key_label">Key of your harp</string>
     <string name="settings_tune_label">Tuning of your harp</string>
     <string name="settings_pitches_label">Concert Pitch (Hz)</string>

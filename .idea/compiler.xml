@@ -2,16 +2,33 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="desktop" />
-        <module name="macos-build" />
         <module name="win-build" />
         <module name="debian-build" />
+        <module name="win-build (1)" />
+        <module name="macos-build" />
         <module name="base" />
       </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.30/f195ee86e6c896ea47a1d39defbe20eb59cd149d/lombok-1.18.30.jar" />
+        </processorPath>
+        <module name="webapp.main" />
+      </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="tuning" target="17" />
+      <module name="tuning.main" target="17" />
+      <module name="tuning.test" target="17" />
+      <module name="tuningapp" target="22" />
+      <module name="tuningapp-debian-build" target="22" />
+      <module name="tuningapp-win-build" target="22" />
+    </bytecodeTargetLevel>
   </component>
 </project>

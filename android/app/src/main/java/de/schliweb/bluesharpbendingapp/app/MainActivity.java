@@ -39,6 +39,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -180,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         try {
             BufferedReader bw = new BufferedReader(new FileReader(file));
             String line = bw.readLine();
-
-            model = MainModel.createFromString(line);
+            if(line!=null)
+                model = MainModel.createFromString(line);
 
             bw.close();
         } catch (IOException e) {
@@ -252,7 +253,10 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
 
         setSupportActionBar(binding.toolbar);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        // NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavHostFragment navhostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+        assert navhostFragment != null;
+        NavController navController = navhostFragment.getNavController();
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 

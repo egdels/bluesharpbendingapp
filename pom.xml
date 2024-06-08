@@ -36,9 +36,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <revision>1.6.3</revision>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
+        <revision>1.6.7</revision>
     </properties>
 
     <scm>
@@ -106,9 +106,24 @@
                 <version>${revision}</version>
             </dependency>
             <dependency>
+                <groupId>de.schliweb.bluesharpbendingapp</groupId>
+                <artifactId>tuningapp</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.jetbrains.intellij.java</groupId>
                 <artifactId>java-gui-forms-rt</artifactId>
-                <version>233.13135.103</version>
+                <version>241.15989.150</version>
+            </dependency>
+            <dependency>
+                <groupId>com.formdev</groupId>
+                <artifactId>flatlaf-intellij-themes</artifactId>
+                <version>3.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.formdev</groupId>
+                <artifactId>flatlaf</artifactId>
+                <version>3.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

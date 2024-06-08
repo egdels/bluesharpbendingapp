@@ -13,11 +13,20 @@
         <option value="$PROJECT_DIR$/debian-build/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/win-build/pom.xml" />
+        <option value="$PROJECT_DIR$/tuningapp/pom.xml" />
+        <option value="$PROJECT_DIR$/tuningapp-debian-build/pom.xml" />
+        <option value="$PROJECT_DIR$/tuningapp-win-build/pom.xml" />
       </list>
     </option>
-    <option name="workspaceImportForciblyTurnedOn" value="true" />
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/tuningapp-debian-build/pom.xml" />
+        <option value="$PROJECT_DIR$/tuningapp-win-build/pom.xml" />
+        <option value="$PROJECT_DIR$/tuningapp/pom.xml" />
+      </set>
+    </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="17" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" project-jdk-name="openjdk-22" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
