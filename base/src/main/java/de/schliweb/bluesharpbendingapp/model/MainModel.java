@@ -80,6 +80,10 @@ public class MainModel implements Serializable {
      */
     private int storedConcertPitchIndex = 9;
 
+    /**
+     * The Stored lock screen index.
+     */
+    private int storedLockScreenIndex = 0;
 
     /**
      * Instantiates a new Main model.
@@ -114,6 +118,24 @@ public class MainModel implements Serializable {
             }
         }
         return model;
+    }
+
+    /**
+     * Gets stored lock screen index.
+     *
+     * @return the stored lock screen index
+     */
+    public int getStoredLockScreenIndex() {
+        return storedLockScreenIndex;
+    }
+
+    /**
+     * Sets stored lock screen index.
+     *
+     * @param storedlockScreenIndex the storedlock screen index
+     */
+    public void setStoredLockScreenIndex(int storedlockScreenIndex) {
+        this.storedLockScreenIndex = storedlockScreenIndex;
     }
 
     /**

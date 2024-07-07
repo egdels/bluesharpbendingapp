@@ -76,6 +76,11 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
     private NoteSettingsViewHandler noteSettingsViewHandler;
 
     /**
+     * The Android settings view handler.
+     */
+    private AndroidSettingsHandler androidSettingsViewHandler;
+
+    /**
      * Gets harp settings view handler.
      *
      * @return the harp settings view handler
@@ -147,7 +152,10 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
             setSelectedConcertPitch(model.getStoredConcertPitchIndex());
             setSelectedKey(model.getStoredKeyIndex());
             setSelectedTune(model.getStoredTuneIndex());
+            initScreenLock(model.getStoredLockScreenIndex());
         });
+
+        binding.settingsScreenlock.setOnClickListener(v-> androidSettingsViewHandler.handleLookScreen(binding.settingsScreenlock.isChecked()));
     }
 
     /**
@@ -389,5 +397,26 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     public void setNoteSettingsViewHandler(NoteSettingsViewHandler noteSettingsViewHandler) {
         this.noteSettingsViewHandler = noteSettingsViewHandler;
+    }
+
+    /**
+     * Sets android settings handler.
+     *
+     * @param androidSettingsHandler the android settings handler
+     */
+    public void setAndroidSettingsHandler(AndroidSettingsHandler androidSettingsHandler) {
+        this.androidSettingsViewHandler = androidSettingsHandler;
+    }
+
+    /**
+     * Init screen lock.
+     *
+     * @param storedLockScreenIndex the stored lock screen index
+     */
+    public void initScreenLock(int storedLockScreenIndex) {
+        binding.settingsScreenlock.setChecked(false);
+        if(storedLockScreenIndex>0){
+            binding.settingsScreenlock.setChecked(true);
+        }
     }
 }

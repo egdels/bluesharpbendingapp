@@ -231,27 +231,24 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
+        LOGGER.info("handlePitch");
+        float pitch = 0;
+        float probability = 0;
+        double rms = 0;
         if (pitchDetectionResult.getPitch() != -1) {
-            LOGGER.info("handlePitch");
             double timeStamp = audioEvent.getTimeStamp();
-            float pitch = pitchDetectionResult.getPitch();
-            float probability = pitchDetectionResult.getProbability();
-            double rms = audioEvent.getRMS() * 100;
+            pitch = pitchDetectionResult.getPitch();
+            probability = pitchDetectionResult.getProbability();
+            rms = audioEvent.getRMS() * 100;
             @SuppressLint("DefaultLocale") String message = String.format("Pitch detected at %.2fs: %.2fHz ( %.2f probability, RMS: %.5f )\n",
                     timeStamp, pitch, probability, rms);
             LOGGER.debug(message);
-            MicrophoneHandler microphoneHandler = getMicrophoneHandler();
-            if (microphoneHandler != null) {
-                microphoneHandler.handle(pitch, rms, probability);
-            }
-            LOGGER.info("Pitch handled");
-        } else {
-            MicrophoneHandler microphoneHandler = getMicrophoneHandler();
-            if (microphoneHandler != null) {
-                microphoneHandler.handle(0, 0, 0);
-            }
         }
-
+        MicrophoneHandler microphoneHandler = getMicrophoneHandler();
+        if (microphoneHandler != null) {
+            microphoneHandler.handle(pitch, rms, probability);
+        }
+        LOGGER.info("Pitch handled");
     }
 }
 

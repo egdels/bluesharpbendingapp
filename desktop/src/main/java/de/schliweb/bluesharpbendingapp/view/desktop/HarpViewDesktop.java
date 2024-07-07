@@ -503,8 +503,7 @@ public class HarpViewDesktop implements HarpView {
 
             // clear panel
             for (Component child : panel.getComponents()) {
-                if (child instanceof NotePane) {
-                    NotePane oldPane = ((NotePane) child);
+                if (child instanceof NotePane oldPane) {
                     panel.remove(oldPane);
                 }
             }

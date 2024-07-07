@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -25,103 +24,133 @@
  */
 -->
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:stretchColumns="*"
-             tools:context=".view.android.SettingsFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="*"
+    tools:context=".view.android.SettingsFragment">
 
     <TableRow
-            android:layout_width="0dp"
-            android:layout_weight="1">
+        android:layout_width="0dp"
+        android:layout_weight="1">
 
         <TextView
-                android:id="@+id/settings_key_label"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="@string/settings_key_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:id="@+id/settings_key_label"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/settings_key_label"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Spinner
-                android:id="@+id/settings_key_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"/>
+            android:id="@+id/settings_key_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginEnd="50dp"
+            android:spinnerMode="dropdown" />
 
     </TableRow>
 
     <TableRow
-            android:layout_width="0dp"
-            android:layout_weight="1">
+        android:layout_width="0dp"
+        android:layout_weight="1">
 
         <TextView
-                android:id="@+id/settings_tune_label"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="@string/settings_tune_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:id="@+id/settings_tune_label"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/settings_tune_label"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Spinner
-                android:id="@+id/settings_tune_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"/>
+            android:id="@+id/settings_tune_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginEnd="50dp"
+            android:spinnerMode="dropdown" />
 
     </TableRow>
 
     <TableRow
-            android:layout_width="0dp"
-            android:layout_weight="1">
+        android:layout_width="0dp"
+        android:layout_weight="1">
 
         <TextView
-                android:id="@+id/settings_pitches_label"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="@string/settings_pitches_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:id="@+id/settings_pitches_label"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/settings_pitches_label"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Spinner
-                android:id="@+id/settings_pitches_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"/>
+            android:id="@+id/settings_pitches_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginEnd="50dp"
+            android:spinnerMode="dropdown" />
 
     </TableRow>
 
     <TableRow
-            android:layout_width="0dp"
-            android:layout_weight="1">
+        android:layout_width="0dp"
+        android:layout_weight="1">
 
         <TextView
-                android:id="@+id/settings_reset_label"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="@string/settings_reset_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:id="@+id/settings_screenlock_label"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/settings_screenlock_label"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/settings_screenlock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:showText="true"
+            android:layout_marginEnd="50dp"
+            android:minHeight="48dp"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/settings_reset_label"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/settings_reset_label"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
         <Button
-                android:id="@+id/settings_reset_button"
-                style="?attr/materialButtonOutlinedStyle"
-                app:strokeColor="?attr/buttonStrokeColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_reset_button"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+            android:id="@+id/settings_reset_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_reset_button"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_marginEnd="50dp"
+            app:strokeColor="?attr/buttonStrokeColor" />
     </TableRow>
 
 </TableLayout>

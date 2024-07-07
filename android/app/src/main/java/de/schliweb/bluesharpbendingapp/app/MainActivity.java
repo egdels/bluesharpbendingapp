@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -64,6 +65,7 @@ import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
 import de.schliweb.bluesharpbendingapp.view.android.AboutFragment;
+import de.schliweb.bluesharpbendingapp.view.android.AndroidSettingsHandler;
 import de.schliweb.bluesharpbendingapp.view.android.FragmentView;
 import de.schliweb.bluesharpbendingapp.view.android.FragmentViewModel;
 import de.schliweb.bluesharpbendingapp.view.android.HarpFragment;
@@ -75,7 +77,7 @@ import java.io.*;
 /**
  * The type Main activity.
  */
-public class MainActivity extends AppCompatActivity implements MainWindow {
+public class MainActivity extends AppCompatActivity implements MainWindow, AndroidSettingsHandler {
 
     /**
      * The constant REQUEST_CODE.
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         stringList.add("getStoredKeyIndex" + ":" + model.getStoredKeyIndex());
         stringList.add("getStoredTuneIndex" + ":" + model.getStoredTuneIndex());
         stringList.add("getStoredConcertPitchIndex" + ":" + model.getStoredConcertPitchIndex());
+        stringList.add("getStoredLockScreenIndex" +  ":" + model.getStoredLockScreenIndex());
 
         File directory = this.getApplicationContext().getCacheDir();
         File file = new File(directory, TEMP_FILE);
@@ -224,12 +227,14 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
                 settingsFragment.setHarpSettingsViewHandler(getHarpSettingsViewHandler());
                 settingsFragment.setMicrophoneSettingsViewHandler(getMicrophoneSettingsViewHandler());
                 settingsFragment.setNoteSettingsViewHandler(getNoteSettingsViewHandler());
+                settingsFragment.setAndroidSettingsHandler (this);
 
                 settingsFragment.getHarpSettingsViewHandler().initTuneList();
                 settingsFragment.getHarpSettingsViewHandler().initKeyList();
                 settingsFragment.getMicrophoneSettingsViewHandler().initAlgorithmList();
                 settingsFragment.getMicrophoneSettingsViewHandler().initMicrophoneList();
                 settingsFragment.getNoteSettingsViewHandler().initConcertPitchList();
+                settingsFragment.initScreenLock(mainModel.getStoredLockScreenIndex());
 
                 mainModel.getMicrophone().setMicrophoneHandler(mainController);
 
@@ -262,6 +267,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
 
         hideAppBar();
         hideNavigationBar();
+
+        handleLookScreen(mainModel.getStoredLockScreenIndex() > 0);
 
         if (permissionGranted) {
             microphone.open();
@@ -603,4 +610,18 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         }
     }
 
+    /**
+     * Handle look screen.
+     *
+     * @param isLookScreen the is look screen
+     */
+    @Override
+    public void handleLookScreen(boolean isLookScreen) {
+        mainModel.setStoredLockScreenIndex(isLookScreen?1:0);
+        if(isLookScreen) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
 }

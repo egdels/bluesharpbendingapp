@@ -36,4 +36,5 @@
     <string name="settings_pitches_label">Concert Pitch (Hz)</string>
     <string name="settings_reset_label">Reset Settings</string>
     <string name="settings_reset_button">Reset</string>
+    <string name="settings_screenlock_label">Keep screen on</string>
 </resources>

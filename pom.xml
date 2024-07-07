@@ -38,7 +38,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
-        <revision>1.6.7</revision>
+        <revision>1.6.8</revision>
     </properties>
 
     <scm>
@@ -113,7 +113,7 @@
             <dependency>
                 <groupId>com.jetbrains.intellij.java</groupId>
                 <artifactId>java-gui-forms-rt</artifactId>
-                <version>241.15989.150</version>
+                <version>241.18034.62</version>
             </dependency>
             <dependency>
                 <groupId>com.formdev</groupId>

@@ -9,9 +9,9 @@
         <outputRelativeToContentRoot value="true" />
         <module name="desktop" />
         <module name="win-build" />
+        <module name="macos-build" />
         <module name="debian-build" />
         <module name="win-build (1)" />
-        <module name="macos-build" />
         <module name="base" />
       </profile>
       <profile name="Gradle Imported" enabled="true">
@@ -22,13 +22,5 @@
         <module name="webapp.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="tuning" target="17" />
-      <module name="tuning.main" target="17" />
-      <module name="tuning.test" target="17" />
-      <module name="tuningapp" target="22" />
-      <module name="tuningapp-debian-build" target="22" />
-      <module name="tuningapp-win-build" target="22" />
-    </bytecodeTargetLevel>
   </component>
 </project>

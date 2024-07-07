@@ -58,8 +58,7 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
     public void clear() {
         LOGGER.info("Enter");
         for (Component child : notePanel.getComponents()) {
-            if (child instanceof NotePane) {
-                NotePane oldPane = ((NotePane) child);
+            if (child instanceof NotePane oldPane) {
                 NotePane newPane = new NotePane(oldPane.getNoteName(), oldPane.getColor());
                 notePanel.remove(oldPane);
                 notePanel.add(newPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -73,8 +72,7 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
     public void update(double cents) {
         LOGGER.info("Enter with parameter " + cents);
         for (Component child : notePanel.getComponents()) {
-            if (child instanceof NotePane) {
-                NotePane oldPane = ((NotePane) child);
+            if (child instanceof NotePane oldPane) {
                 NotePane newPane = new NotePane(oldPane.getNoteName(), oldPane.getColor(), cents);
                 notePanel.remove(oldPane);
                 notePanel.add(newPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
