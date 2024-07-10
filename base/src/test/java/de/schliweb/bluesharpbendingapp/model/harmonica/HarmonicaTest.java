@@ -261,7 +261,7 @@ class HarmonicaTest {
         assertEquals(0, harmonica.getBlowBendingTonesCount(4));
         assertEquals(0, harmonica.getBlowBendingTonesCount(5));
         assertEquals(0, harmonica.getBlowBendingTonesCount(6));
-        assertEquals(0, harmonica.getBlowBendingTonesCount(7)); // TODO: Wikipedia hier falsch?
+        assertEquals(0, harmonica.getBlowBendingTonesCount(7));
         assertEquals(0, harmonica.getBlowBendingTonesCount(8));
         assertEquals(1, harmonica.getBlowBendingTonesCount(9));
         assertEquals(3, harmonica.getBlowBendingTonesCount(10));

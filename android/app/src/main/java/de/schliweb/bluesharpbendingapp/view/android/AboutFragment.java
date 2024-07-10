@@ -79,6 +79,7 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
      * @param view               the view
      * @param savedInstanceState the saved instance state
      */
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -90,7 +91,7 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
             long versionCode = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0).getLongVersionCode();
             TextView textView = binding.aboutVersion;
-            textView.setText(getString(R.string.about_version, versionName,versionCode));
+            textView.setText(getString(R.string.about_version, versionName, versionCode));
         } catch (PackageManager.NameNotFoundException e) {
             LOGGER.error(e.getMessage());
         }

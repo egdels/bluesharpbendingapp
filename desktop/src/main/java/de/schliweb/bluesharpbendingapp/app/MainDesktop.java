@@ -38,7 +38,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.FileSystems;
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -54,9 +53,7 @@ public class MainDesktop {
     /**
      * The constant TEMP_DIR.
      */
-    private static final String TEMP_DIR = System.getProperty("user.home")
-            + FileSystems.getDefault().getSeparator() + "BluesHarpBendingApp.tmp"
-            + FileSystems.getDefault().getSeparator();
+    private static final String TEMP_DIR = System.getProperty("user.home") + FileSystems.getDefault().getSeparator() + "BluesHarpBendingApp.tmp" + FileSystems.getDefault().getSeparator();
 
     /**
      * The constant TEMP_FILE.
@@ -75,18 +72,18 @@ public class MainDesktop {
      */
     public static void main(String[] args) {
         Logger.setInfo(true);
-        LOGGER.info("Enter with parameter " + Arrays.toString(args));
+
         Logger.setDebug(false);
 
 
-        System.setProperty( "flatlaf.menuBarEmbedded", "true" );
-        System.setProperty( "flatlaf.useWindowDecorations", "true" );
+        System.setProperty("flatlaf.menuBarEmbedded", "true");
+        System.setProperty("flatlaf.useWindowDecorations", "true");
         FlatArcDarkOrangeIJTheme.setup();
 
-        if( SystemInfo.isLinux ) {
+        if (SystemInfo.isLinux) {
             // enable custom window decorations
-            JFrame.setDefaultLookAndFeelDecorated( true );
-            JDialog.setDefaultLookAndFeelDecorated( true );
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            JDialog.setDefaultLookAndFeelDecorated(true);
         }
 
         checkVersionFromHost();
@@ -104,16 +101,11 @@ public class MainDesktop {
                 isDonationWare = true;
             }
         }
-        Microphone microphone = new MicrophoneDesktop(); // TODO
+        Microphone microphone = new MicrophoneDesktop();
         microphone.setName(0);
 
         MainWindow mainWindow = new MainWindowDesktop(isDonationWare);
-        // FIX: Timing issue
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage());
-        }
+
 
         MainModel mainModel = readModel();
         mainModel.setMicrophone(microphone);
@@ -132,26 +124,23 @@ public class MainDesktop {
      * @param model the model
      */
     private static void storeModel(MainModel model) {
-        LOGGER.info("Enter with parameter " + model.toString());
+
         File directory = new File(TEMP_DIR);
         if (!directory.exists()) {
             boolean isCreated = directory.mkdirs();
             if (isCreated) LOGGER.debug("Directory created");
         }
         File file = new File(TEMP_DIR + FileSystems.getDefault().getSeparator() + TEMP_FILE);
-        try {
+        try (FileOutputStream fos = new FileOutputStream(file); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
             boolean isCreated = file.createNewFile();
             if (isCreated) LOGGER.debug("Filed created");
-            FileOutputStream fos = new FileOutputStream(file);
 
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-            bw.write(model.toString());
+            bw.write(model.getString());
 
-            bw.close();
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
-        LOGGER.info("Leave");
+
     }
 
     /**
@@ -160,7 +149,7 @@ public class MainDesktop {
      * @return the main model
      */
     private static MainModel readModel() {
-        LOGGER.info("Enter");
+
         MainModel model = new MainModel();
         File directory = new File(TEMP_DIR);
         if (!directory.exists()) {
@@ -169,13 +158,11 @@ public class MainDesktop {
         }
         File file = new File(TEMP_DIR + FileSystems.getDefault().getSeparator() + TEMP_FILE);
         if (file.exists()) {
-            try {
-                FileInputStream fos = new FileInputStream(file);
-                BufferedReader bw = new BufferedReader(new InputStreamReader(fos));
+            try (FileInputStream fos = new FileInputStream(file); BufferedReader bw = new BufferedReader(new InputStreamReader(fos))) {
+
                 String line = bw.readLine();
-                if(line!=null)
-                    model = MainModel.createFromString(line);
-                bw.close();
+                if (line != null) model = MainModel.createFromString(line);
+
             } catch (IOException e) {
                 LOGGER.error(e.getMessage());
             }

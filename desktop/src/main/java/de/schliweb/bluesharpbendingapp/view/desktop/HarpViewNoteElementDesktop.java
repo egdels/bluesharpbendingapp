@@ -23,62 +23,98 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 /**
  * The type Harp view note element desktop.
  */
 public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
 
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(HarpViewNoteElementDesktop.class);
 
+    /**
+     * The constant instances.
+     */
+    private static final HashMap<JPanel, HarpViewNoteElementDesktop> instances = new HashMap<>();
     /**
      * The Note panel.
      */
     private final JPanel notePanel;
+    /**
+     * The Note pane.
+     */
+    private NotePane notePane;
+
+    /**
+     * The Color.
+     */
+    private Color color = Color.black;
+    /**
+     * The Note name.
+     */
+    private String noteName = "";
 
     /**
      * Instantiates a new Harp view note element desktop.
      *
      * @param notePanel the note panel
      */
-    public HarpViewNoteElementDesktop(JPanel notePanel) {
+    private HarpViewNoteElementDesktop(JPanel notePanel) {
         this.notePanel = notePanel;
+        this.notePane = new NotePane(noteName, color);
+        this.notePanel.setLayout(new BorderLayout());
+        this.notePanel.add(notePane, BorderLayout.CENTER);
+    }
+
+    /**
+     * Gets instance.
+     *
+     * @param notePanel the note panel
+     * @return the instance
+     */
+    public static HarpViewNoteElementDesktop getInstance(JPanel notePanel) {
+        if (!instances.containsKey(notePanel)) {
+            instances.put(notePanel, new HarpViewNoteElementDesktop(notePanel));
+        }
+        return instances.get(notePanel);
+    }
+
+    /**
+     * Sets color.
+     *
+     * @param color the color
+     */
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    /**
+     * Sets note name.
+     *
+     * @param noteName the note name
+     */
+    public void setNoteName(String noteName) {
+        this.noteName = noteName;
     }
 
     @Override
     public void clear() {
-        LOGGER.info("Enter");
-        for (Component child : notePanel.getComponents()) {
-            if (child instanceof NotePane oldPane) {
-                NotePane newPane = new NotePane(oldPane.getNoteName(), oldPane.getColor());
-                notePanel.remove(oldPane);
-                notePanel.add(newPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-                notePanel.revalidate();
-            }
-        }
-        LOGGER.info("Leave");
+        notePanel.remove(notePane);
+        notePane = new NotePane(noteName, color);
+        notePanel.setLayout(new BorderLayout());
+        notePanel.add(notePane, BorderLayout.CENTER);
+        notePanel.revalidate();
     }
 
     @Override
     public void update(double cents) {
-        LOGGER.info("Enter with parameter " + cents);
-        for (Component child : notePanel.getComponents()) {
-            if (child instanceof NotePane oldPane) {
-                NotePane newPane = new NotePane(oldPane.getNoteName(), oldPane.getColor(), cents);
-                notePanel.remove(oldPane);
-                notePanel.add(newPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-                notePanel.revalidate();
-            }
-        }
-        LOGGER.info("Leave");
+        notePanel.remove(notePane);
+        notePane = new NotePane(noteName, color, cents);
+        notePanel.setLayout(new BorderLayout());
+        notePanel.add(notePane, BorderLayout.CENTER);
+        notePanel.revalidate();
     }
 }

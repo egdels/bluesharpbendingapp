@@ -24,7 +24,6 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
@@ -32,11 +31,6 @@ import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
  * The type Note.
  */
 public class Note implements Runnable {
-
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(Note.class);
 
     /**
      * The Channel.
@@ -86,7 +80,6 @@ public class Note implements Runnable {
         this.channel = channel;
         this.note = note;
         this.noteName = noteName;
-        LOGGER.info("Created");
     }
 
     /**
@@ -128,8 +121,6 @@ public class Note implements Runnable {
      * @return the channel
      */
     public int getChannel() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + channel);
         return channel;
     }
 
@@ -139,8 +130,6 @@ public class Note implements Runnable {
      * @return the note
      */
     public int getNote() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + note);
         return note;
     }
 
@@ -150,8 +139,6 @@ public class Note implements Runnable {
      * @return the note name
      */
     public String getNoteName() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + noteName);
         return noteName;
     }
 

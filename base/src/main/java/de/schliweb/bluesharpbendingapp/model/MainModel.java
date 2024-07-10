@@ -29,16 +29,14 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.utils.Logger;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * The type Main model.
  */
-public class MainModel implements Serializable {
+public class MainModel {
 
     /**
      * The constant LOGGER.
@@ -86,12 +84,6 @@ public class MainModel implements Serializable {
     private int storedLockScreenIndex = 0;
 
     /**
-     * Instantiates a new Main model.
-     */
-    public MainModel() {
-    }
-
-    /**
      * Create from string main model.
      *
      * @param string the string
@@ -104,15 +96,17 @@ public class MainModel implements Serializable {
 
         for (String entry : strings) {
             entry = entry.replaceFirst("get", "set");
-            String m = entry.split(":")[0];
-            String p = entry.split(":")[1];
-            for (Method method : methods) {
-                if (method.getName().equals(m)) {
-                    try {
-                        method.invoke(model, Integer.parseInt(p));
-                    } catch (IllegalAccessException | IllegalArgumentException |
-                             InvocationTargetException e) {
-                        LOGGER.error(e.getMessage());
+            if (entry.contains(":")) {
+                String m = entry.split(":")[0];
+                String p = entry.split(":")[1];
+                for (Method method : methods) {
+                    if (method.getName().equals(m)) {
+                        try {
+                            method.invoke(model, Integer.parseInt(p));
+                        } catch (IllegalAccessException | IllegalArgumentException |
+                                 InvocationTargetException e) {
+                            LOGGER.error(e.getMessage());
+                        }
                     }
                 }
             }
@@ -144,10 +138,7 @@ public class MainModel implements Serializable {
      * @return the string [ ]
      */
     public String[] getAlgorithms() {
-        LOGGER.info("Enter");
-        String[] algorithms = microphone.getSupportedAlgorithms();
-        LOGGER.info("Return " + Arrays.toString(algorithms));
-        return algorithms;
+        return microphone.getSupportedAlgorithms();
     }
 
     /**
@@ -156,8 +147,6 @@ public class MainModel implements Serializable {
      * @return the harmonica
      */
     public Harmonica getHarmonica() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + this.harmonica.getClass().getName());
         return this.harmonica;
     }
 
@@ -167,9 +156,7 @@ public class MainModel implements Serializable {
      * @param harmonica the harmonica
      */
     public void setHarmonica(Harmonica harmonica) {
-        LOGGER.info("Enter with parameter " + harmonica.getClass().getName());
         this.harmonica = harmonica;
-        LOGGER.info("Leave");
     }
 
     /**
@@ -178,10 +165,7 @@ public class MainModel implements Serializable {
      * @return the string [ ]
      */
     public String[] getKeys() {
-        LOGGER.info("Enter");
-        String[] keys = AbstractHarmonica.getSupporterKeys();
-        LOGGER.info("Return " + Arrays.toString(keys));
-        return keys;
+        return AbstractHarmonica.getSupporterKeys();
     }
 
     /**
@@ -190,8 +174,6 @@ public class MainModel implements Serializable {
      * @return the microphone
      */
     public Microphone getMicrophone() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + microphone.getName());
         return microphone;
     }
 
@@ -201,9 +183,7 @@ public class MainModel implements Serializable {
      * @param microphone the microphone
      */
     public void setMicrophone(Microphone microphone) {
-        LOGGER.info("Enter with parameter " + microphone.getName());
         this.microphone = microphone;
-        LOGGER.info("Leave");
     }
 
     /**
@@ -212,10 +192,7 @@ public class MainModel implements Serializable {
      * @return the string [ ]
      */
     public String[] getMicrophones() {
-        LOGGER.info("Enter");
-        String[] microphones = microphone.getSupportedMicrophones();
-        LOGGER.info("Return " + Arrays.toString(microphones));
-        return microphones;
+        return microphone.getSupportedMicrophones();
     }
 
     /**
@@ -224,10 +201,7 @@ public class MainModel implements Serializable {
      * @return the string [ ]
      */
     public String[] getConcertPitches() {
-        LOGGER.info("Enter");
-        String[] pitches = NoteLookup.getSupportedConcertPitches();
-        LOGGER.info("Return " + Arrays.toString(pitches));
-        return pitches;
+        return NoteLookup.getSupportedConcertPitches();
     }
 
     /**
@@ -236,7 +210,6 @@ public class MainModel implements Serializable {
      * @return the selected algorithm index
      */
     public int getSelectedAlgorithmIndex() {
-        LOGGER.info("Enter");
         String[] algorithms = getAlgorithms();
         int index = 0;
         for (int i = 0; i < algorithms.length; i++) {
@@ -245,7 +218,6 @@ public class MainModel implements Serializable {
                 break;
             }
         }
-        LOGGER.info("Return " + index);
         return index;
     }
 
@@ -255,7 +227,6 @@ public class MainModel implements Serializable {
      * @return the selected key index
      */
     public int getSelectedKeyIndex() {
-        LOGGER.info("Enter");
         String[] keys = getKeys();
         int index = 0;
         for (int i = 0; i < keys.length; i++) {
@@ -264,7 +235,6 @@ public class MainModel implements Serializable {
                 break;
             }
         }
-        LOGGER.info("Return " + index);
         return index;
     }
 
@@ -274,7 +244,6 @@ public class MainModel implements Serializable {
      * @return the selected microphone index
      */
     public int getSelectedMicrophoneIndex() {
-        LOGGER.info("Enter");
         String[] microphones = getMicrophones();
         int index = 0;
         for (int i = 0; i < microphones.length; i++) {
@@ -283,7 +252,6 @@ public class MainModel implements Serializable {
                 break;
             }
         }
-        LOGGER.info("Return " + index);
         return index;
     }
 
@@ -293,7 +261,6 @@ public class MainModel implements Serializable {
      * @return the selected tune index
      */
     public int getSelectedTuneIndex() {
-        LOGGER.info("Enter");
         String[] tunes = getTunes();
         int index = 0;
         for (int i = 0; i < tunes.length; i++) {
@@ -302,7 +269,6 @@ public class MainModel implements Serializable {
                 break;
             }
         }
-        LOGGER.info("Return " + index);
         return index;
     }
 
@@ -312,7 +278,6 @@ public class MainModel implements Serializable {
      * @return the selected concert pitch index
      */
     public int getSelectedConcertPitchIndex() {
-        LOGGER.info("Enter");
         String[] pitches = getConcertPitches();
         int index = 0;
         for (int i = 0; i < pitches.length; i++) {
@@ -321,7 +286,6 @@ public class MainModel implements Serializable {
                 break;
             }
         }
-        LOGGER.info("Return " + index);
         return index;
     }
 
@@ -331,8 +295,6 @@ public class MainModel implements Serializable {
      * @return the stored algorithm index
      */
     public int getStoredAlgorithmIndex() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + storedAlgorithmIndex);
         return storedAlgorithmIndex;
     }
 
@@ -342,9 +304,7 @@ public class MainModel implements Serializable {
      * @param algorithmIndex the algorithm index
      */
     public void setStoredAlgorithmIndex(int algorithmIndex) {
-        LOGGER.info("Enter with parameter " + algorithmIndex);
         this.storedAlgorithmIndex = algorithmIndex;
-        LOGGER.info("Leave");
     }
 
     /**
@@ -353,8 +313,6 @@ public class MainModel implements Serializable {
      * @return the stored key index
      */
     public int getStoredKeyIndex() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + storedKeyIndex);
         return storedKeyIndex;
     }
 
@@ -364,9 +322,7 @@ public class MainModel implements Serializable {
      * @param keyIndex the key index
      */
     public void setStoredKeyIndex(int keyIndex) {
-        LOGGER.info("Enter with parameter " + keyIndex);
         this.storedKeyIndex = keyIndex;
-        LOGGER.info("Leave");
     }
 
     /**
@@ -375,8 +331,6 @@ public class MainModel implements Serializable {
      * @return the stored microphone index
      */
     public int getStoredMicrophoneIndex() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + storedMicrophoneIndex);
         return storedMicrophoneIndex;
     }
 
@@ -386,9 +340,7 @@ public class MainModel implements Serializable {
      * @param microphoneIndex the microphone index
      */
     public void setStoredMicrophoneIndex(int microphoneIndex) {
-        LOGGER.info("Enter with parameter " + microphoneIndex);
         this.storedMicrophoneIndex = microphoneIndex;
-        LOGGER.info("Leave");
     }
 
     /**
@@ -397,8 +349,6 @@ public class MainModel implements Serializable {
      * @return the stored tune index
      */
     public int getStoredTuneIndex() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + storedTuneIndex);
         return storedTuneIndex;
     }
 
@@ -408,9 +358,7 @@ public class MainModel implements Serializable {
      * @param storedTuneIndex the stored tune index
      */
     public void setStoredTuneIndex(int storedTuneIndex) {
-        LOGGER.info("Enter with parameter " + storedTuneIndex);
         this.storedTuneIndex = storedTuneIndex;
-        LOGGER.info("Leave");
     }
 
     /**
@@ -428,9 +376,7 @@ public class MainModel implements Serializable {
      * @param storedConcertPitchIndex the stored concert pitch index
      */
     public void setStoredConcertPitchIndex(int storedConcertPitchIndex) {
-        LOGGER.info("Enter with parameter " + storedConcertPitchIndex);
         this.storedConcertPitchIndex = storedConcertPitchIndex;
-        LOGGER.info("Leave");
     }
 
     /**
@@ -439,24 +385,18 @@ public class MainModel implements Serializable {
      * @return the string [ ]
      */
     public String[] getTunes() {
-        LOGGER.info("Enter");
-        String[] tunes = AbstractHarmonica.getSupportedTunes();
-        LOGGER.info("Return " + Arrays.toString(tunes));
-        return tunes;
+        return AbstractHarmonica.getSupportedTunes();
     }
 
-    @Override
-    public String toString() {
+    public String getString() {
         Method[] methods = this.getClass().getMethods();
         ArrayList<String> stringList = new ArrayList<>();
         for (Method m : methods) {
-            if (m.getName().indexOf("getStored") == 0) {
-                if (m.getReturnType().getName().equals("int")) {
-                    try {
-                        stringList.add(m.getName() + ":" + m.invoke(this));
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    }
+            if (m.getName().indexOf("getStored") == 0 && int.class == m.getReturnType()) {
+                try {
+                    stringList.add(m.getName() + ":" + m.invoke(this));
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    LOGGER.error(e.getMessage());
                 }
             }
         }

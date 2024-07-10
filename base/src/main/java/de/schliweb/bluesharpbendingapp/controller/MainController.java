@@ -29,7 +29,6 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.*;
 
 import java.util.ArrayList;
@@ -52,11 +51,6 @@ public class MainController
      * The constant CHANNEL_MIN.
      */
     private static final int CHANNEL_MIN = 1;
-
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(MainController.class);
 
     /**
      * The Model.
@@ -95,46 +89,38 @@ public class MainController
         this.window.setHarpViewHandler(this);
         this.window.setNoteSettingsViewHandler(this);
         this.model.getMicrophone().setMicrophoneHandler(this);
-        LOGGER.info("Created");
+
     }
 
     @Override
     public void handleAlgorithmSelection(int algorithmIndex) {
-        LOGGER.info("Enter parameter " + algorithmIndex);
         this.model.setStoredAlgorithmIndex(algorithmIndex);
         Microphone microphone = model.getMicrophone();
         microphone.close();
         microphone.setAlgorithm(algorithmIndex);
         microphone.open();
-        LOGGER.info("Leave");
+
     }
 
     @Override
     public void handleKeySelection(int keyIndex) {
-        LOGGER.info("Enter with parameter " + keyIndex);
         this.model.setStoredKeyIndex(keyIndex);
         model.setHarmonica(AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex()));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void handleMicrophoneSelection(int microphoneIndex) {
-        LOGGER.info("Enter with parameter " + microphoneIndex);
         this.model.setStoredMicrophoneIndex(microphoneIndex);
         Microphone microphone = model.getMicrophone();
         microphone.close();
         microphone.setName(microphoneIndex);
         microphone.open();
-        LOGGER.info("Leave");
-
     }
 
     @Override
     public void handleTuneSelection(int tuneIndex) {
-        LOGGER.info("Enter parameter " + tuneIndex);
         this.model.setStoredTuneIndex(tuneIndex);
         model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex));
-        LOGGER.info("Leave");
     }
 
 
@@ -143,7 +129,7 @@ public class MainController
         updateMicrophoneSettingsViewVolume(volume);
         updateMicrophoneSettingsViewFrequency(frequency);
         updateMicrophoneSettingsViewProbability(probability);
-        updateHarpView(frequency, volume, probability);
+        updateHarpView(frequency);
     }
 
 
@@ -153,51 +139,41 @@ public class MainController
      * @param probability the probability
      */
     private void updateMicrophoneSettingsViewProbability(double probability) {
-        LOGGER.info("Enter with parameter " + probability);
         if (window.isMicrophoneSettingsViewActive()) {
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
             microphoneSettingsView.setProbability(probability);
         }
-        LOGGER.info("Leave");
     }
 
     @Override
     public void initAlgorithmList() {
-        LOGGER.info("Enter");
         if (window.isMicrophoneSettingsViewActive()) {
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
             microphoneSettingsView.setAlgorithms(model.getAlgorithms());
             microphoneSettingsView.setSelectedAlgorithm(model.getSelectedAlgorithmIndex());
         }
-        LOGGER.info("Leave");
     }
-
 
     @Override
     public void initKeyList() {
-        LOGGER.info("Enter");
         if (window.isHarpSettingsViewActive()) {
             HarpSettingsView harpSettingsView = window.getHarpSettingsView();
             harpSettingsView.setKeys(model.getKeys());
             harpSettingsView.setSelectedKey(model.getSelectedKeyIndex());
         }
-        LOGGER.info("Leave");
     }
 
     @Override
     public void initMicrophoneList() {
-        LOGGER.info("Enter");
         if (window.isMicrophoneSettingsViewActive()) {
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
             microphoneSettingsView.setMicrophones(model.getMicrophones());
             microphoneSettingsView.setSelectedMicrophone(model.getSelectedMicrophoneIndex());
         }
-        LOGGER.info("Leave");
     }
 
     @Override
     public void initNotes() {
-        LOGGER.info("Enter");
         if (window.isHarpViewActive()) {
             ArrayList<Note> notesList = new ArrayList<>();
             Harmonica harmonica = model.getHarmonica();
@@ -248,29 +224,24 @@ public class MainController
             this.notes = Arrays.copyOf(notesList.toArray(), notesList.toArray().length, Note[].class);
             harpView.initNotes(Arrays.copyOf(notesList.toArray(), notesList.toArray().length, Note[].class));
         }
-        LOGGER.info("Leave");
     }
 
     @Override
     public void initTuneList() {
-        LOGGER.info("Enter");
         if (window.isHarpSettingsViewActive()) {
             HarpSettingsView harpSettingsView = window.getHarpSettingsView();
             harpSettingsView.setTunes(model.getTunes());
             harpSettingsView.setSelectedTune(model.getSelectedTuneIndex());
         }
-        LOGGER.info("Leave");
     }
 
     /**
      * Start.
      */
     public void start() {
-        LOGGER.info("Enter");
         this.model.getMicrophone().open();
         this.window.open();
         this.model.getMicrophone().close();
-        LOGGER.info("Leave");
     }
 
     /**
@@ -279,32 +250,12 @@ public class MainController
      * @param frequency the frequency
      */
     private void updateHarpView(double frequency) {
-        LOGGER.info("Enter with parameter " + frequency);
         if (window.isHarpViewActive() && this.notes != null) {
             for (Note note : notes) {
                 note.setFrequencyToHandle(frequency);
                 (new Thread(note)).start();
             }
         }
-        LOGGER.info("Leave");
-    }
-
-    /**
-     * Update harp view.
-     *
-     * @param frequency   the frequency
-     * @param volume      the volume
-     * @param probability the probability
-     */
-    private void updateHarpView(double frequency, double volume, double probability) {
-        LOGGER.info("Enter with parameter " + frequency + " " + volume + " " + probability);
-        if (window.isHarpViewActive() && this.notes != null) {
-            for (Note note : notes) {
-                note.setFrequencyToHandle(frequency);
-                (new Thread(note)).start();
-            }
-        }
-        LOGGER.info("Leave");
     }
 
     /**
@@ -313,12 +264,10 @@ public class MainController
      * @param frequency the frequency
      */
     private void updateMicrophoneSettingsViewFrequency(double frequency) {
-        LOGGER.info("Enter with parameter " + frequency);
         if (window.isMicrophoneSettingsViewActive()) {
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
             microphoneSettingsView.setFrequency(frequency);
         }
-        LOGGER.info("Leave");
     }
 
     /**
@@ -327,31 +276,25 @@ public class MainController
      * @param volume the volume
      */
     private void updateMicrophoneSettingsViewVolume(double volume) {
-        LOGGER.info("Enter with parameter " + volume);
         if (window.isMicrophoneSettingsViewActive()) {
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
             microphoneSettingsView.setVolume(volume);
         }
-        LOGGER.info("Leave");
     }
 
     @Override
     public void handleConcertPitchSelection(int pitchIndex) {
-        LOGGER.info("Enter parameter " + pitchIndex);
         this.model.setStoredConcertPitchIndex(pitchIndex);
         NoteLookup.setConcertPitchByIndex(pitchIndex);
         model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void initConcertPitchList() {
-        LOGGER.info("Enter");
         if (window.isNoteSettingsViewActive()) {
             NoteSettingsView noteSettingsView = window.getNoteSettingsView();
             noteSettingsView.setConcertPitches(model.getConcertPitches());
             noteSettingsView.setSelectedConcertPitch(model.getSelectedConcertPitchIndex());
         }
-        LOGGER.info("Leave");
     }
 }

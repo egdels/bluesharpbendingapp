@@ -23,10 +23,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.utils.Logger;
-
-import java.util.Arrays;
-
 /**
  * The type Melody maker harmonica.
  */
@@ -42,10 +38,6 @@ public class MelodyMakerHarmonica extends AbstractHarmonica {
      * <p>C E A C E G C E G C</p>
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 4, 9, 12, 16, 19, 24, 28, 31, 36};
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(MelodyMakerHarmonica.class);
 
     /**
      * Instantiates a new Melody maker harmonica.
@@ -54,27 +46,20 @@ public class MelodyMakerHarmonica extends AbstractHarmonica {
      */
     public MelodyMakerHarmonica(double keyFrequency) {
         super(keyFrequency);
-        LOGGER.info("Created");
     }
 
     @Override
     int[] getHalfTonesIn() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + Arrays.toString(HALF_TONES_IN));
         return HALF_TONES_IN;
     }
 
     @Override
     int[] getHalfTonesOut() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + Arrays.toString(HALF_TONES_OUT));
         return HALF_TONES_OUT;
     }
 
     @Override
     public String getTuneName() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + TUNE.MELODYMAKER.name());
         return TUNE.MELODYMAKER.name();
     }
 }

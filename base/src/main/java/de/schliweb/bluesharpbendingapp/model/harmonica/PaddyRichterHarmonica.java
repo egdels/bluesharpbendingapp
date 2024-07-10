@@ -23,10 +23,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.utils.Logger;
-
-import java.util.Arrays;
-
 /**
  * The type Paddy richter harmonica.
  */
@@ -44,38 +40,26 @@ public class PaddyRichterHarmonica extends AbstractHarmonica {
     private static final int[] HALF_TONES_OUT = {0, 0, 4, 9, 12, 16, 19, 24, 28, 31, 36};
 
     /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(PaddyRichterHarmonica.class);
-
-    /**
      * Instantiates a new Paddy richter harmonica.
      *
      * @param keyFrequency the key frequency
      */
     public PaddyRichterHarmonica(double keyFrequency) {
         super(keyFrequency);
-        LOGGER.info("Created");
     }
 
     @Override
     int[] getHalfTonesIn() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + Arrays.toString(HALF_TONES_IN));
         return HALF_TONES_IN;
     }
 
     @Override
     int[] getHalfTonesOut() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + Arrays.toString(HALF_TONES_OUT));
         return HALF_TONES_OUT;
     }
 
     @Override
     public String getTuneName() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + TUNE.PADDYRICHTER.name());
         return TUNE.PADDYRICHTER.name();
     }
 }

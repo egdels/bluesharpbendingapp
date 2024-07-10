@@ -83,6 +83,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * @param view               the view
      * @param savedInstanceState the saved instance state
      */
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -151,288 +152,98 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * @return the note
      */
     private TextView getNote(int channel, int note) {
-        TextView textView = null;
-        if (channel == 1) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel1NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel1NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel1NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel1Note0;
-                    break;
-                case 1:
-                    textView = binding.channel1Note1;
-                    break;
-                case 2:
-                    textView = binding.channel1Note2;
-                    break;
-                case 3:
-                    textView = binding.channel1Note3;
-                    break;
-                case 4:
-                    textView = binding.channel1Note4;
-                    break;
-            }
-        }
-        if (channel == 2) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel2NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel2NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel2NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel2Note0;
-                    break;
-                case 1:
-                    textView = binding.channel2Note1;
-                    break;
-                case 2:
-                    textView = binding.channel2Note2;
-                    break;
-                case 3:
-                    textView = binding.channel2Note3;
-                    break;
-                case 4:
-                    textView = binding.channel2Note4;
-                    break;
-            }
-        }
-        if (channel == 3) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel3NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel3NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel3NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel3Note0;
-                    break;
-                case 1:
-                    textView = binding.channel3Note1;
-                    break;
-                case 2:
-                    textView = binding.channel3Note2;
-                    break;
-                case 3:
-                    textView = binding.channel3Note3;
-                    break;
-                case 4:
-                    textView = binding.channel3Note4;
-                    break;
-            }
-        }
-        if (channel == 4) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel4NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel4NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel4NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel4Note0;
-                    break;
-                case 1:
-                    textView = binding.channel4Note1;
-                    break;
-                case 2:
-                    textView = binding.channel4Note2;
-                    break;
-                case 3:
-                    textView = binding.channel4Note3;
-                    break;
-                case 4:
-                    textView = binding.channel4Note4;
-                    break;
-            }
-        }
-        if (channel == 5) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel5NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel5NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel5NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel5Note0;
-                    break;
-                case 1:
-                    textView = binding.channel5Note1;
-                    break;
-                case 2:
-                    textView = binding.channel5Note2;
-                    break;
-                case 3:
-                    textView = binding.channel5Note3;
-                    break;
-                case 4:
-                    textView = binding.channel5Note4;
-                    break;
-            }
-        }
-        if (channel == 6) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel6NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel6NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel6NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel6Note0;
-                    break;
-                case 1:
-                    textView = binding.channel6Note1;
-                    break;
-                case 2:
-                    textView = binding.channel6Note2;
-                    break;
-                case 3:
-                    textView = binding.channel6Note3;
-                    break;
-                case 4:
-                    textView = binding.channel6Note4;
-                    break;
-            }
-        }
-        if (channel == 7) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel7NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel7NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel7NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel7Note0;
-                    break;
-                case 1:
-                    textView = binding.channel7Note1;
-                    break;
-                case 2:
-                    textView = binding.channel7Note2;
-                    break;
-                case 3:
-                    textView = binding.channel7Note3;
-                    break;
-                case 4:
-                    textView = binding.channel7Note4;
-                    break;
-            }
-        }
-        if (channel == 8) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel8NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel8NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel8NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel8Note0;
-                    break;
-                case 1:
-                    textView = binding.channel8Note1;
-                    break;
-                case 2:
-                    textView = binding.channel8Note2;
-                    break;
-                case 3:
-                    textView = binding.channel8Note3;
-                    break;
-                case 4:
-                    textView = binding.channel8Note4;
-                    break;
-            }
-        }
-        if (channel == 9) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel9NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel9NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel9NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel9Note0;
-                    break;
-                case 1:
-                    textView = binding.channel9Note1;
-                    break;
-                case 2:
-                    textView = binding.channel9Note2;
-                    break;
-                case 3:
-                    textView = binding.channel9Note3;
-                    break;
-                case 4:
-                    textView = binding.channel9Note4;
-                    break;
-            }
-        }
-        if (channel == 10) {
-            switch (note) {
-                case -3:
-                    textView = binding.channel10NoteM3;
-                    break;
-                case -2:
-                    textView = binding.channel10NoteM2;
-                    break;
-                case -1:
-                    textView = binding.channel10NoteM1;
-                    break;
-                case 0:
-                    textView = binding.channel10Note0;
-                    break;
-                case 1:
-                    textView = binding.channel10Note1;
-                    break;
-                case 2:
-                    textView = binding.channel10Note2;
-                    break;
-                case 3:
-                    textView = binding.channel10Note3;
-                    break;
-                case 4:
-                    textView = binding.channel10Note4;
-                    break;
-            }
-        }
-        return textView;
+        TextView[][] textViews = new TextView[10][8];
+        textViews[0][0] = binding.channel1NoteM3;
+        textViews[0][1] = binding.channel1NoteM2;
+        textViews[0][2] = binding.channel1NoteM1;
+        textViews[0][3] = binding.channel1Note0;
+        textViews[0][4] = binding.channel1Note1;
+        textViews[0][5] = binding.channel1Note2;
+        textViews[0][6] = binding.channel1Note3;
+        textViews[0][7] = binding.channel1Note4;
+
+        textViews[1][0] = binding.channel2NoteM3;
+        textViews[1][1] = binding.channel2NoteM2;
+        textViews[1][2] = binding.channel2NoteM1;
+        textViews[1][3] = binding.channel2Note0;
+        textViews[1][4] = binding.channel2Note1;
+        textViews[1][5] = binding.channel2Note2;
+        textViews[1][6] = binding.channel2Note3;
+        textViews[1][7] = binding.channel2Note4;
+
+        textViews[2][0] = binding.channel3NoteM3;
+        textViews[2][1] = binding.channel3NoteM2;
+        textViews[2][2] = binding.channel3NoteM1;
+        textViews[2][3] = binding.channel3Note0;
+        textViews[2][4] = binding.channel3Note1;
+        textViews[2][5] = binding.channel3Note2;
+        textViews[2][6] = binding.channel3Note3;
+        textViews[2][7] = binding.channel3Note4;
+
+        textViews[3][0] = binding.channel4NoteM3;
+        textViews[3][1] = binding.channel4NoteM2;
+        textViews[3][2] = binding.channel4NoteM1;
+        textViews[3][3] = binding.channel4Note0;
+        textViews[3][4] = binding.channel4Note1;
+        textViews[3][5] = binding.channel4Note2;
+        textViews[3][6] = binding.channel4Note3;
+        textViews[3][7] = binding.channel4Note4;
+
+        textViews[4][0] = binding.channel5NoteM3;
+        textViews[4][1] = binding.channel5NoteM2;
+        textViews[4][2] = binding.channel5NoteM1;
+        textViews[4][3] = binding.channel5Note0;
+        textViews[4][4] = binding.channel5Note1;
+        textViews[4][5] = binding.channel5Note2;
+        textViews[4][6] = binding.channel5Note3;
+        textViews[4][7] = binding.channel5Note4;
+
+        textViews[5][0] = binding.channel6NoteM3;
+        textViews[5][1] = binding.channel6NoteM2;
+        textViews[5][2] = binding.channel6NoteM1;
+        textViews[5][3] = binding.channel6Note0;
+        textViews[5][4] = binding.channel6Note1;
+        textViews[5][5] = binding.channel6Note2;
+        textViews[5][6] = binding.channel6Note3;
+        textViews[5][7] = binding.channel6Note4;
+
+        textViews[6][0] = binding.channel7NoteM3;
+        textViews[6][1] = binding.channel7NoteM2;
+        textViews[6][2] = binding.channel7NoteM1;
+        textViews[6][3] = binding.channel7Note0;
+        textViews[6][4] = binding.channel7Note1;
+        textViews[6][5] = binding.channel7Note2;
+        textViews[6][6] = binding.channel7Note3;
+        textViews[6][7] = binding.channel7Note4;
+
+        textViews[7][0] = binding.channel8NoteM3;
+        textViews[7][1] = binding.channel8NoteM2;
+        textViews[7][2] = binding.channel8NoteM1;
+        textViews[7][3] = binding.channel8Note0;
+        textViews[7][4] = binding.channel8Note1;
+        textViews[7][5] = binding.channel8Note2;
+        textViews[7][6] = binding.channel8Note3;
+        textViews[7][7] = binding.channel8Note4;
+
+        textViews[8][0] = binding.channel9NoteM3;
+        textViews[8][1] = binding.channel9NoteM2;
+        textViews[8][2] = binding.channel9NoteM1;
+        textViews[8][3] = binding.channel9Note0;
+        textViews[8][4] = binding.channel9Note1;
+        textViews[8][5] = binding.channel9Note2;
+        textViews[8][6] = binding.channel9Note3;
+        textViews[8][7] = binding.channel9Note4;
+
+        textViews[9][0] = binding.channel10NoteM3;
+        textViews[9][1] = binding.channel10NoteM2;
+        textViews[9][2] = binding.channel10NoteM1;
+        textViews[9][3] = binding.channel10Note0;
+        textViews[9][4] = binding.channel10Note1;
+        textViews[9][5] = binding.channel10Note2;
+        textViews[9][6] = binding.channel10Note3;
+        textViews[9][7] = binding.channel10Note4;
+
+        return textViews[channel - 1][note + 3];
     }
 
 

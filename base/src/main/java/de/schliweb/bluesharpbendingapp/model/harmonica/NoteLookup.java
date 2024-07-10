@@ -23,7 +23,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 
 import java.util.HashMap;
@@ -35,28 +34,23 @@ import java.util.Map.Entry;
 public class NoteLookup {
 
     /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(NoteLookup.class);
-
-    /**
      * The constant CENTS_MAX.
      */
-    private final static double CENTS_MAX = 50.0;
+    private static final double CENTS_MAX = 50.0;
     /**
      * The constant CENTS_MIN.
      */
-    private final static double CENTS_MIN = -50.0;
+    private static final double CENTS_MIN = -50.0;
 
     /**
      * The constant DEFAULT_CONCERT_PITCH_FREQUENCY.
      */
-    private final static double DEFAULT_CONCERT_PITCH_FREQUENCY = 440.0;
+    private static final double DEFAULT_CONCERT_PITCH_FREQUENCY = 440.0;
 
     /**
      * The constant notes.
      */
-    private final static HashMap<String, Double> notes = new HashMap<>();
+    private static final HashMap<String, Double> notes = new HashMap<>();
     /**
      * The constant concertPitch.
      */
@@ -64,6 +58,9 @@ public class NoteLookup {
 
     static {
         initLookup();
+    }
+
+    private NoteLookup() {
     }
 
     /**
@@ -76,7 +73,7 @@ public class NoteLookup {
         for (Entry<String, Double> note : notes.entrySet()) {
             Double noteFrequency = note.getValue();
             double cents = NoteUtils.getCents(noteFrequency, frequency);
-            if (cents >= CENTS_MIN & cents <= CENTS_MAX) {
+            if (cents >= CENTS_MIN && cents <= CENTS_MAX) {
                 return note;
             }
         }
@@ -240,7 +237,6 @@ public class NoteLookup {
         for (Entry<String, Double> note : notes.entrySet()) {
             double noteFrequency = note.getValue();
             double newNoteFrequency = NoteUtils.round(Math.pow(2.0, cents / 1200.0) * noteFrequency);
-            LOGGER.debug(noteFrequency + " : " + newNoteFrequency);
             note.setValue(newNoteFrequency);
         }
     }

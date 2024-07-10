@@ -120,14 +120,16 @@ public class AboutViewDesktop implements AboutView {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 Desktop desktop;
-                if (Desktop.isDesktopSupported()
-                        && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.BROWSE)) {
-                    URI url;
-                    try {
-                        url = new URI(PAYPAL);
-                        desktop.browse(url);
-                    } catch (URISyntaxException | IOException exception) {
-                        LOGGER.error(exception.getMessage());
+                if (Desktop.isDesktopSupported()) {
+                    desktop = Desktop.getDesktop();
+                    if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                        URI url;
+                        try {
+                            url = new URI(PAYPAL);
+                            desktop.browse(url);
+                        } catch (URISyntaxException | IOException exception) {
+                            LOGGER.error(exception.getMessage());
+                        }
                     }
                 } else {
                     LOGGER.error("desktop doesn't support browse");
@@ -169,8 +171,7 @@ public class AboutViewDesktop implements AboutView {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 Desktop desktop;
-                if (Desktop.isDesktopSupported()
-                        && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.BROWSE)) {
+                if (Desktop.isDesktopSupported() && (desktop = Desktop.getDesktop()).isSupported(Desktop.Action.BROWSE)) {
                     URI download;
                     try {
                         download = new URI(DOWNLOAD);
@@ -194,7 +195,6 @@ public class AboutViewDesktop implements AboutView {
             labelAboutDownload.setVisible(false);
         }
 
-        LOGGER.info("Created");
     }
 
     {

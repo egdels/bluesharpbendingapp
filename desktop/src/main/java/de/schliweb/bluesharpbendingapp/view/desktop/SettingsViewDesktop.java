@@ -29,7 +29,7 @@ import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
+
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
@@ -39,7 +39,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.util.Arrays;
 import java.util.TimerTask;
 
 
@@ -48,10 +47,7 @@ import java.util.TimerTask;
  */
 public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettingsView, NoteSettingsView {
 
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(SettingsViewDesktop.class);
+
     /**
      * The constant DEFAULT_CALIBRATE_TEXT.
      */
@@ -159,42 +155,31 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
 
     @Override
     public void setKeys(String[] keys) {
-        LOGGER.info("Enter with parameter " + Arrays.toString(keys));
         comboKeys.setModel(new DefaultComboBoxModel<>(keys));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setSelectedKey(int index) {
-        LOGGER.info("Enter with parameter " + index);
         comboKeys.getModel().setSelectedItem(comboKeys.getModel().getElementAt(index));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setSelectedTune(int index) {
-        LOGGER.info("Enter with parameter " + index);
         comboTunes.getModel().setSelectedItem(comboTunes.getModel().getElementAt(index));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setTunes(String[] tunes) {
-        LOGGER.info("Enter with parameter " + Arrays.toString(tunes));
         comboTunes.setModel(new DefaultComboBoxModel<>(tunes));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setAlgorithms(String[] algorithms) {
-        LOGGER.info("Enter with parameter " + Arrays.toString(algorithms));
         comboAlgorithms.setModel(new DefaultComboBoxModel<>(algorithms));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setFrequency(double frequency) {
-        LOGGER.info("Enter with parameter " + frequency);
         valueFrequency.setText(String.valueOf(frequency));
         if (isCalibrating) {
             String textFrequency = String.valueOf((int) frequency);
@@ -206,56 +191,41 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
                 }
             }
         }
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setProbability(double probability) {
-        LOGGER.info("Enter with parameter " + probability);
         valueProbability.setText(String.valueOf(probability));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setMicrophones(String[] microphones) {
-        LOGGER.info("Enter with parameter " + Arrays.toString(microphones));
         comboMicrophones.setModel(new DefaultComboBoxModel<>(microphones));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setSelectedAlgorithm(int index) {
-        LOGGER.info("Enter with parameter " + index);
         comboAlgorithms.getModel().setSelectedItem(comboAlgorithms.getModel().getElementAt(index));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setSelectedMicrophone(int index) {
-        LOGGER.info("Enter with parameter " + index);
         comboMicrophones.getModel().setSelectedItem(comboMicrophones.getModel().getElementAt(index));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setVolume(double volume) {
-        LOGGER.info("Enter with parameter " + volume);
         valueVolume.setText(String.valueOf(volume));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setConcertPitches(String[] pitches) {
-        LOGGER.info("Enter with parameter " + Arrays.toString(pitches));
         comboConcertPitches.setModel(new DefaultComboBoxModel<>(pitches));
-        LOGGER.info("Leave");
     }
 
     @Override
     public void setSelectedConcertPitch(int index) {
-        LOGGER.info("Enter with parameter " + index);
         comboConcertPitches.getModel().setSelectedItem(comboConcertPitches.getModel().getElementAt(index));
-        LOGGER.info("Leave");
     }
 
     /**
@@ -264,7 +234,6 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
      * @param harpSettingsViewHandler the harp settings view handler
      */
     public void addHarpSettingsViewHandler(HarpSettingsViewHandler harpSettingsViewHandler) {
-        LOGGER.info("Enter with parameter " + harpSettingsViewHandler);
         comboKeys.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 harpSettingsViewHandler.handleKeySelection(comboKeys.getSelectedIndex());
@@ -276,7 +245,6 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
                 harpSettingsViewHandler.handleTuneSelection(comboTunes.getSelectedIndex());
             }
         });
-        LOGGER.info("Leave");
     }
 
     /**
@@ -285,7 +253,6 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
      * @param microphoneSettingsViewHandler the microphone settings view handler
      */
     public void addMicrophoneSettingsViewHandler(MicrophoneSettingsViewHandler microphoneSettingsViewHandler) {
-        LOGGER.info("Enter with parameter " + microphoneSettingsViewHandler);
         comboAlgorithms.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 microphoneSettingsViewHandler.handleAlgorithmSelection(comboAlgorithms.getSelectedIndex());
@@ -297,7 +264,6 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
                 microphoneSettingsViewHandler.handleMicrophoneSelection(comboMicrophones.getSelectedIndex());
             }
         });
-        LOGGER.info("Leave");
     }
 
     /**
@@ -306,13 +272,11 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
      * @param noteSettingsViewHandler the note settings view handler
      */
     public void addNoteSettingsViewHandler(NoteSettingsViewHandler noteSettingsViewHandler) {
-        LOGGER.info("Enter with parameter " + noteSettingsViewHandler);
         comboConcertPitches.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
                 noteSettingsViewHandler.handleConcertPitchSelection(comboConcertPitches.getSelectedIndex());
             }
         });
-        LOGGER.info("Leave");
     }
 
     {

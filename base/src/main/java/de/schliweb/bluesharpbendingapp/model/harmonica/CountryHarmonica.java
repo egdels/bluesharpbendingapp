@@ -23,10 +23,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.utils.Logger;
-
-import java.util.Arrays;
-
 /**
  * The type Country harmonica.
  */
@@ -44,11 +40,6 @@ public class CountryHarmonica extends AbstractHarmonica {
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 12, 16, 19, 24, 28, 31, 36};
 
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(CountryHarmonica.class);
-
 
     /**
      * Instantiates a new Country harmonica.
@@ -57,27 +48,20 @@ public class CountryHarmonica extends AbstractHarmonica {
      */
     public CountryHarmonica(double keyFrequency) {
         super(keyFrequency);
-        LOGGER.info("Created");
     }
 
     @Override
     int[] getHalfTonesIn() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + Arrays.toString(HALF_TONES_IN));
         return HALF_TONES_IN;
     }
 
     @Override
     int[] getHalfTonesOut() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + Arrays.toString(HALF_TONES_OUT));
         return HALF_TONES_OUT;
     }
 
     @Override
     public String getTuneName() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + TUNE.COUNTRY.name());
         return TUNE.COUNTRY.name();
     }
 }

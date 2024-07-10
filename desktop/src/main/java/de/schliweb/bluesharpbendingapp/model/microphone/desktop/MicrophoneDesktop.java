@@ -37,7 +37,7 @@ import de.schliweb.bluesharpbendingapp.utils.Logger;
 import javax.sound.sampled.*;
 import javax.sound.sampled.Mixer.Info;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 /**
  * The type Microphone desktop.
@@ -88,46 +88,29 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
     private TargetDataLine targetDataLine;
 
     /**
-     * Instantiates a new Microphone desktop.
-     */
-    public MicrophoneDesktop() {
-        LOGGER.info("Created");
-    }
-
-    /**
      * Gets audio format.
      *
      * @return the audio format
      */
     public static AudioFormat getAudioFormat() {
-        LOGGER.info("Enter");
-        AudioFormat format = new AudioFormat(SAMPLE_RATE, 16, 1, true, true);
-        LOGGER.info("Return " + format);
-        return format;
+        return new AudioFormat(SAMPLE_RATE, 16, 1, true, true);
     }
 
     @Override
     public void close() {
-        LOGGER.info("Enter");
         getTargetDataLine().stop();
         getTargetDataLine().close();
         setTargetDataLine(null);
-        LOGGER.info("Leave");
     }
 
     @Override
     public String getAlgorithm() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return" + algo.name());
         return algo.name();
     }
 
     @Override
     public void setAlgorithm(int index) {
-        LOGGER.info("Enter with parameter " + index);
         algo = PitchEstimationAlgorithm.values()[index];
-        LOGGER.debug("has algorithm " + algo);
-        LOGGER.info("Leave");
     }
 
     /**
@@ -136,39 +119,30 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
      * @return the microphone handler
      */
     public MicrophoneHandler getMicrophoneHandler() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return" + microphoneHandler.toString());
         return microphoneHandler;
     }
 
     @Override
     public void setMicrophoneHandler(MicrophoneHandler microphoneHandler) {
-        LOGGER.info("Enter with parameter " + microphoneHandler.toString());
         this.microphoneHandler = microphoneHandler;
-        LOGGER.info("Leave");
     }
 
     @Override
     public String getName() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return" + name);
         return name;
     }
 
     @Override
     public void setName(int microphoneIndex) {
-        LOGGER.info("Enter with parameter " + microphoneIndex);
         try {
             name = getSupportedMicrophones()[microphoneIndex];
         } catch (ArrayIndexOutOfBoundsException exception) {
             LOGGER.error(exception.getMessage());
         }
-        LOGGER.info("Leave");
     }
 
     @Override
     public String[] getSupportedAlgorithms() {
-        LOGGER.info("Enter");
         PitchEstimationAlgorithm[] values = PitchEstimationAlgorithm.values();
         String[] algorithms = new String[values.length];
         int index = 0;
@@ -176,13 +150,11 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
             algorithms[index] = value.name();
             index++;
         }
-        LOGGER.info("Return " + Arrays.toString(algorithms));
         return algorithms;
     }
 
     @Override
     public String[] getSupportedMicrophones() {
-        LOGGER.info("Enter");
         Info[] mixerInfos = AudioSystem.getMixerInfo();
         ArrayList<String> microphones = new ArrayList<>();
         for (Info mixerInfo : mixerInfos) {
@@ -194,7 +166,6 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
                 LOGGER.debug("Kein unterstütztes Microphone: " + mixer.getLineInfo().toString());
             }
         }
-        LOGGER.info("Return " + microphones);
         return microphones.toArray(String[]::new);
     }
 
@@ -204,12 +175,10 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
      * @return the target data line
      */
     public TargetDataLine getTargetDataLine() {
-        LOGGER.info("Enter");
         if (targetDataLine == null) {
             LOGGER.debug("has name " + name);
             initTargetDataLine(name);
         }
-        LOGGER.info("Return " + targetDataLine.toString());
         return targetDataLine;
     }
 
@@ -220,33 +189,24 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
      */
     public void setTargetDataLine(TargetDataLine targetDataLine) {
         if (null != targetDataLine)
-            LOGGER.info("Enter with parameter " + targetDataLine);
-        this.targetDataLine = targetDataLine;
-        LOGGER.info("Leave");
+            this.targetDataLine = targetDataLine;
     }
 
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
-        LOGGER.debug("Enter");
+        float pitch = 0;
+        float probability = 0;
+        double rms = 0;
         if (pitchDetectionResult.getPitch() != -1) {
-            double timeStamp = audioEvent.getTimeStamp();
-            float pitch = pitchDetectionResult.getPitch();
-            float probability = pitchDetectionResult.getProbability();
-            double rms = audioEvent.getRMS() * 100;
-            String message = String.format("Pitch detected at %.2fs: %.2fHz ( %.2f probability, RMS: %.5f )\n",
-                    timeStamp, pitch, probability, rms);
-            LOGGER.debug(message);
-            MicrophoneHandler microphoneHandler = getMicrophoneHandler();
-            if (microphoneHandler != null) {
-                microphoneHandler.handle(pitch, rms, probability);
-            }
-        } else {
-            MicrophoneHandler microphoneHandler = getMicrophoneHandler();
-            if (microphoneHandler != null) {
-                microphoneHandler.handle(0.0, 0.0, 0.0);
-            }
+            pitch = pitchDetectionResult.getPitch();
+            probability = pitchDetectionResult.getProbability();
+            rms = audioEvent.getRMS() * 100;
+
         }
-        LOGGER.debug("Leave");
+        MicrophoneHandler handler = getMicrophoneHandler();
+        if (handler != null) {
+            handler.handle(pitch, rms, probability);
+        }
     }
 
     /**
@@ -255,7 +215,6 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
      * @param name the name
      */
     private void initTargetDataLine(String name) {
-        LOGGER.info("Enter with parameter: " + name);
         Info[] mixerInfos = AudioSystem.getMixerInfo();
         DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, getAudioFormat());
         for (Info mixerInfo : mixerInfos) {
@@ -269,12 +228,10 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
                 }
             }
         }
-        LOGGER.info("Leave");
     }
 
     @Override
     public void open() {
-        LOGGER.info("Enter");
         if (dispatcher != null) {
             dispatcher.stop();
         }
@@ -291,7 +248,6 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
         } catch (LineUnavailableException e) {
             LOGGER.error(e.getMessage());
         }
-        LOGGER.info("Leave");
     }
 
 }

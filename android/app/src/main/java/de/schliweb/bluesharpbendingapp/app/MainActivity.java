@@ -34,8 +34,11 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -43,9 +46,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
@@ -79,15 +79,6 @@ import java.io.*;
  */
 public class MainActivity extends AppCompatActivity implements MainWindow, AndroidSettingsHandler {
 
-    /**
-     * The constant REQUEST_CODE.
-     */
-    private static final int REQUEST_CODE = 200;
-
-    /**
-     * The constant PERMISSIONS.
-     */
-    private static final String[] PERMISSIONS = {android.Manifest.permission.RECORD_AUDIO};
     /**
      * The constant LOGGER.
      */
@@ -147,27 +138,20 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * @param model the model
      */
     private void storeModel(MainModel model) {
-        LOGGER.info("Enter with parameter " + model.toString());
-
-        ArrayList<String> stringList = new ArrayList<>();
-
-        stringList.add("getStoredKeyIndex" + ":" + model.getStoredKeyIndex());
-        stringList.add("getStoredTuneIndex" + ":" + model.getStoredTuneIndex());
-        stringList.add("getStoredConcertPitchIndex" + ":" + model.getStoredConcertPitchIndex());
-        stringList.add("getStoredLockScreenIndex" +  ":" + model.getStoredLockScreenIndex());
-
+        
         File directory = this.getApplicationContext().getCacheDir();
         File file = new File(directory, TEMP_FILE);
 
-        try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(stringList.toString());
+
+        try (
+                FileWriter writer = new FileWriter(file)
+        ) {
+            writer.write(model.getString());
             writer.flush();
-            writer.close();
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
-        LOGGER.info("Leave");
+
     }
 
     /**
@@ -176,18 +160,20 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * @return the main model
      */
     private MainModel readModel() {
-        LOGGER.info("Enter");
+
         MainModel model = new MainModel();
         File directory = this.getApplicationContext().getCacheDir();
         File file = new File(directory, TEMP_FILE);
 
-        try {
-            BufferedReader bw = new BufferedReader(new FileReader(file));
+        try (
+                BufferedReader bw = new BufferedReader(new FileReader(file))
+        ) {
+
             String line = bw.readLine();
-            if(line!=null)
+            if (line != null)
                 model = MainModel.createFromString(line);
 
-            bw.close();
+
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         }
@@ -202,8 +188,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        LOGGER.info("Enter");
         super.onCreate(savedInstanceState);
+        Logger.setDebug(false);
+        Logger.setInfo(false);
 
         mainModel = readModel();
 
@@ -215,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         permissionGranted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
 
         if (!permissionGranted) {
-            requestPermissions(PERMISSIONS, REQUEST_CODE);
+            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
         }
 
         FragmentViewModel viewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
@@ -227,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
                 settingsFragment.setHarpSettingsViewHandler(getHarpSettingsViewHandler());
                 settingsFragment.setMicrophoneSettingsViewHandler(getMicrophoneSettingsViewHandler());
                 settingsFragment.setNoteSettingsViewHandler(getNoteSettingsViewHandler());
-                settingsFragment.setAndroidSettingsHandler (this);
+                settingsFragment.setAndroidSettingsHandler(this);
 
                 settingsFragment.getHarpSettingsViewHandler().initTuneList();
                 settingsFragment.getHarpSettingsViewHandler().initKeyList();
@@ -258,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
 
         setSupportActionBar(binding.toolbar);
 
-        // NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavHostFragment navhostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
         assert navhostFragment != null;
         NavController navController = navhostFragment.getNavController();
@@ -324,8 +310,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        if (!isHarpViewActive()) return true;
-        if (e.getAction() == MotionEvent.ACTION_UP) {
+        if (isHarpViewActive() && (e.getAction() == MotionEvent.ACTION_UP)) {
             if (isAppBarHidden) {
                 unHideAppBar();
             } else {
@@ -341,9 +326,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     private void hideNavigationBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().setDecorFitsSystemWindows(false);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (getWindow().getInsetsController() != null) {
                 getWindow().getInsetsController().hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
                 getWindow().getInsetsController().setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
@@ -352,24 +334,35 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     }
 
     /**
-     * On request permissions result.
-     *
-     * @param code        the code
-     * @param permissions the permissions
-     * @param results     the results
+     * The Request permission launcher.
      */
-    @Override
-    public void onRequestPermissionsResult(int code, @NonNull String[] permissions, @NonNull int[] results) {
-        LOGGER.info("Enter with parameters" + code + " " + Arrays.toString(permissions) + " " + Arrays.toString(results));
-        super.onRequestPermissionsResult(code, permissions, results);
-        if (code == REQUEST_CODE) {
-            permissionGranted = PackageManager.PERMISSION_GRANTED == results[0];
-        }
-        Microphone microphone = mainModel.getMicrophone();
-        if (permissionGranted && microphone != null) {
-            mainModel.getMicrophone().open();
-        }
-        LOGGER.info("Leave");
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                permissionGranted = isGranted;
+                if(!permissionGranted) {
+                    showPermissionInformation();
+                }
+                Microphone microphone = mainModel.getMicrophone();
+                if (permissionGranted && microphone != null) {
+                    mainModel.getMicrophone().open();
+                }
+            });
+
+    /**
+     * Show permission information.
+     */
+    private void showPermissionInformation () {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setMessage(R.string.permission_information_message);
+
+        builder.setTitle(R.string.permission_information_title);
+
+        builder.setCancelable(false);
+
+        builder.setNegativeButton(R.string.permission_information_button_label, (dialog, which) -> dialog.cancel());
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     /**
@@ -501,7 +494,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     @Override
     public void onDestroy() {
-        LOGGER.info("Enter on Destroy");
         super.onDestroy();
         storeModel(mainModel);
     }
@@ -596,7 +588,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         isPaused = false;
     }
 
-
     /**
      * On pause.
      */
@@ -617,8 +608,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     @Override
     public void handleLookScreen(boolean isLookScreen) {
-        mainModel.setStoredLockScreenIndex(isLookScreen?1:0);
-        if(isLookScreen) {
+        mainModel.setStoredLockScreenIndex(isLookScreen ? 1 : 0);
+        if (isLookScreen) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

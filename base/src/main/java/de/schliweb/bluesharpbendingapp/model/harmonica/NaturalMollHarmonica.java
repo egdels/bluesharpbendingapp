@@ -23,10 +23,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.utils.Logger;
-
-import java.util.Arrays;
-
 /**
  * The type Natural moll harmonica.
  */
@@ -42,10 +38,6 @@ public class NaturalMollHarmonica extends AbstractHarmonica {
      * <p>C Eb G C Eb G C Eb G C</p>
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 3, 7, 12, 15, 19, 24, 27, 31, 36};
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(NaturalMollHarmonica.class);
 
     /**
      * Instantiates a new Natural moll harmonica.
@@ -54,27 +46,20 @@ public class NaturalMollHarmonica extends AbstractHarmonica {
      */
     public NaturalMollHarmonica(double keyFrequency) {
         super(keyFrequency);
-        LOGGER.info("Created");
     }
 
     @Override
     int[] getHalfTonesIn() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + Arrays.toString(HALF_TONES_IN));
         return HALF_TONES_IN;
     }
 
     @Override
     int[] getHalfTonesOut() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + Arrays.toString(HALF_TONES_OUT));
         return HALF_TONES_OUT;
     }
 
     @Override
     public String getTuneName() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + TUNE.NATURALMOLL.name());
         return TUNE.NATURALMOLL.name();
     }
 }

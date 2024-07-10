@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * The type Main model test.
  */
-public class MainModelTest {
+class MainModelTest {
     /**
      * The constant mainModel.
      */
@@ -54,8 +54,8 @@ public class MainModelTest {
      * Test to string.
      */
     @Test
-    public void testToString() {
-        MainModel newMainModel = MainModel.createFromString(mainModel.toString());
+    void testGetString() {
+        MainModel newMainModel = MainModel.createFromString(mainModel.getString());
         assertEquals(1, newMainModel.getStoredMicrophoneIndex());
         assertEquals(2, newMainModel.getStoredAlgorithmIndex());
         assertEquals(3, newMainModel.getStoredKeyIndex());

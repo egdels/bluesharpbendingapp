@@ -25,7 +25,6 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
@@ -125,7 +124,7 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
 
         setTitle("Let's Bend - BluesHarpBendingApp");
 
-        ArrayList<Image> imageList = new ArrayList<Image>();
+        ArrayList<Image> imageList = new ArrayList<>();
         imageList.add(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ic_launcher_32.png")));
         imageList.add(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ic_launcher_64.png")));
         imageList.add(Toolkit.getDefaultToolkit().getImage(getClass().getResource("ic_launcher_128.png")));
@@ -135,9 +134,21 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
         // fixed toolbar
         toolBar.setFloatable(false);
 
-
+        innerContentHarpPane.setVisible(false);
         innerContentSettingsPane.setVisible(false);
         innerContentAboutPane.setVisible(false);
+
+
+        this.addComponentListener(
+                new ComponentAdapter() {
+                    @Override
+                    public void componentShown(ComponentEvent e) {
+                        super.componentShown(e);
+                        setSize(500, 500);
+                        innerContentHarpPane.setVisible(true);
+                    }
+                }
+        );
 
         innerContentHarpPane.addComponentListener(new ComponentAdapter() {
             @Override
@@ -200,7 +211,6 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
                 onCancel();
             }
         });
-
     }
 
     /**
@@ -254,7 +264,6 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
 
     @Override
     public void open() {
-        harpViewHandler.initNotes();
         settingsView.addHarpSettingsViewHandler(harpSettingsViewHandler);
         settingsView.addMicrophoneSettingsViewHandler(microphoneSettingsViewHandler);
         settingsView.addNoteSettingsViewHandler(noteSettingsViewHandler);

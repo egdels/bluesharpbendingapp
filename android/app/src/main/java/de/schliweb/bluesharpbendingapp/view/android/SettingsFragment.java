@@ -35,15 +35,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.Arrays;
-
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentSettingsBinding;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
+
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
@@ -53,10 +51,6 @@ import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
  */
 public class SettingsFragment extends Fragment implements HarpSettingsView, MicrophoneSettingsView, FragmentView, NoteSettingsView {
 
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(SettingsFragment.class);
     /**
      * The Binding.
      */
@@ -141,6 +135,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      * @param view               the view
      * @param savedInstanceState the saved instance state
      */
+	@Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -174,7 +169,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setKeys(String[] keys) {
-        LOGGER.info("Enter with parameter " + Arrays.toString(keys));
+
         Spinner spinner = binding.settingsKeyList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, keys);
         adapter.setDropDownViewResource(R.layout.spinner_list);
@@ -182,21 +177,15 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        LOGGER.info("Enter");
-                        String text = parent.getItemAtPosition(position).toString();
-                        LOGGER.debug("onItemSelected text:" + text);
-                        LOGGER.debug("onItemSelected id:" + id);
                         harpSettingsViewHandler.handleKeySelection((int) id);
-                        LOGGER.info("Leave");
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
-                        LOGGER.info("Enter");
-                        LOGGER.info("Leave");
-                    }
+						// no need 
+					}
                 }
         );
-        LOGGER.info("Leave");
+
     }
 
     /**
@@ -228,7 +217,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setTunes(String[] tunes) {
-        LOGGER.info("Enter");
+
         Spinner spinner = binding.settingsTuneList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, tunes);
         adapter.setDropDownViewResource(R.layout.spinner_list);
@@ -236,22 +225,15 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        LOGGER.info("Enter");
-                        String text = parent.getItemAtPosition(position).toString();
-                        LOGGER.debug("onItemSelected text:" + text);
-                        LOGGER.debug("onItemSelected id:" + id);
-                        // MainModel mainModel = MainModel.getInstance();
                         harpSettingsViewHandler.handleTuneSelection((int) id);
-                        LOGGER.info("Leave");
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
-                        LOGGER.info("Enter");
-                        LOGGER.info("Leave");
-                    }
+						// no need 
+					}
                 }
         );
-        LOGGER.info("Leave");
+
     }
 
     /**
@@ -261,9 +243,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setAlgorithms(String[] algorithms) {
-        LOGGER.info("Enter");
         // on android do nothing
-        LOGGER.info("Leave");
     }
 
     /**
@@ -283,9 +263,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setMicrophones(String[] microphones) {
-        LOGGER.info("Enter");
         // no need on android
-        LOGGER.info("Leave");
     }
 
     /**
@@ -345,7 +323,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setConcertPitches(String[] pitches) {
-        LOGGER.info("Enter with parameter " + Arrays.toString(pitches));
+
         Spinner spinner = binding.settingsPitchesList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, pitches);
         adapter.setDropDownViewResource(R.layout.spinner_list);
@@ -353,21 +331,15 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        LOGGER.info("Enter");
-                        String text = parent.getItemAtPosition(position).toString();
-                        LOGGER.debug("onItemSelected text:" + text);
-                        LOGGER.debug("onItemSelected id:" + id);
                         noteSettingsViewHandler.handleConcertPitchSelection(((int) id));
-                        LOGGER.info("Leave");
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
-                        LOGGER.info("Enter");
-                        LOGGER.info("Leave");
-                    }
+						// no need 
+					}
                 }
         );
-        LOGGER.info("Leave");
+
     }
 
     /**

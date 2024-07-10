@@ -26,24 +26,17 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.schliweb.bluesharpbendingapp.controller.Note;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.util.Arrays;
 
 /**
  * The type Harp view desktop.
  */
 public class HarpViewDesktop implements HarpView {
-
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(HarpViewDesktop.class);
     /**
      * The constant OVERBLOW_COLOR.
      */
@@ -57,323 +50,323 @@ public class HarpViewDesktop implements HarpView {
     /**
      * The Channel 1 note 0.
      */
-    private JPanel channel_1_note_0;
+    private JPanel channel1Note0;
     /**
      * The Channel 2 note 0.
      */
-    private JPanel channel_2_note_0;
+    private JPanel channel2Note0;
     /**
      * The Channel 3 note 0.
      */
-    private JPanel channel_3_note_0;
+    private JPanel channel3Note0;
     /**
      * The Channel 4 note 0.
      */
-    private JPanel channel_4_note_0;
+    private JPanel channel4Note0;
     /**
      * The Channel 5 note 0.
      */
-    private JPanel channel_5_note_0;
+    private JPanel channel5Note0;
     /**
      * The Channel 6 note 0.
      */
-    private JPanel channel_6_note_0;
+    private JPanel channel6Note0;
     /**
      * The Channel 7 note 0.
      */
-    private JPanel channel_7_note_0;
+    private JPanel channel7Note0;
     /**
      * The Channel 8 note 0.
      */
-    private JPanel channel_8_note_0;
+    private JPanel channel8Note0;
     /**
      * The Channel 9 note 0.
      */
-    private JPanel channel_9_note_0;
+    private JPanel channel9Note0;
     /**
      * The Channel 10 note 0.
      */
-    private JPanel channel_10_note_0;
+    private JPanel channel10Note0;
     /**
      * The Channel 1 note m 1.
      */
-    private JPanel channel_1_note_m1;
+    private JPanel channel1NoteM1;
     /**
      * The Channel 1 note m 2.
      */
-    private JPanel channel_1_note_m2;
+    private JPanel channel1NoteM2;
     /**
      * The Channel 1 note m 3.
      */
-    private JPanel channel_1_note_m3;
+    private JPanel channel1NoteM3;
     /**
      * The Channel 1 note 1.
      */
-    private JPanel channel_1_note_1;
+    private JPanel channel1Note1;
     /**
      * The Channel 1 note 2.
      */
-    private JPanel channel_1_note_2;
+    private JPanel channel1Note2;
     /**
      * The Channel 1 note 3.
      */
-    private JPanel channel_1_note_3;
+    private JPanel channel1Note3;
     /**
      * The Channel 1 note 4.
      */
-    private JPanel channel_1_note_4;
+    private JPanel channel1Note4;
     /**
      * The Channel 2 note 1.
      */
-    private JPanel channel_2_note_1;
+    private JPanel channel2Note1;
     /**
      * The Channel 2 note m 1.
      */
-    private JPanel channel_2_note_m1;
+    private JPanel channel2NoteM1;
     /**
      * The Channel 2 note m 2.
      */
-    private JPanel channel_2_note_m2;
+    private JPanel channel2NoteM2;
     /**
      * The Channel 2 note m 3.
      */
-    private JPanel channel_2_note_m3;
+    private JPanel channel2NoteM3;
     /**
      * The Channel 2 note 2.
      */
-    private JPanel channel_2_note_2;
+    private JPanel channel2Note2;
     /**
      * The Channel 2 note 3.
      */
-    private JPanel channel_2_note_3;
+    private JPanel channel2Note3;
     /**
      * The Channel 2 note 4.
      */
-    private JPanel channel_2_note_4;
+    private JPanel channel2Note4;
     /**
      * The Channel 3 note 1.
      */
-    private JPanel channel_3_note_1;
+    private JPanel channel3Note1;
     /**
      * The Channel 3 note 2.
      */
-    private JPanel channel_3_note_2;
+    private JPanel channel3Note2;
     /**
      * The Channel 3 note 3.
      */
-    private JPanel channel_3_note_3;
+    private JPanel channel3Note3;
     /**
      * The Channel 3 note 4.
      */
-    private JPanel channel_3_note_4;
+    private JPanel channel3Note4;
     /**
      * The Channel 3 note m 1.
      */
-    private JPanel channel_3_note_m1;
+    private JPanel channel3NoteM1;
     /**
      * The Channel 3 note m 2.
      */
-    private JPanel channel_3_note_m2;
+    private JPanel channel3NoteM2;
     /**
      * The Channel 3 note m 3.
      */
-    private JPanel channel_3_note_m3;
+    private JPanel channel3NoteM3;
     /**
      * The Channel 4 note m 1.
      */
-    private JPanel channel_4_note_m1;
+    private JPanel channel4NoteM1;
     /**
      * The Channel 4 note m 2.
      */
-    private JPanel channel_4_note_m2;
+    private JPanel channel4NoteM2;
     /**
      * The Channel 4 note m 3.
      */
-    private JPanel channel_4_note_m3;
+    private JPanel channel4NoteM3;
     /**
      * The Channel 4 note 1.
      */
-    private JPanel channel_4_note_1;
+    private JPanel channel4Note1;
     /**
      * The Channel 4 note 2.
      */
-    private JPanel channel_4_note_2;
+    private JPanel channel4Note2;
     /**
      * The Channel 4 note 3.
      */
-    private JPanel channel_4_note_3;
+    private JPanel channel4Note3;
     /**
      * The Channel 4 note 4.
      */
-    private JPanel channel_4_note_4;
+    private JPanel channel4Note4;
     /**
      * The Channel 5 note 1.
      */
-    private JPanel channel_5_note_1;
+    private JPanel channel5Note1;
     /**
      * The Channel 5 note 2.
      */
-    private JPanel channel_5_note_2;
+    private JPanel channel5Note2;
     /**
      * The Channel 5 note 3.
      */
-    private JPanel channel_5_note_3;
+    private JPanel channel5Note3;
     /**
      * The Channel 5 note 4.
      */
-    private JPanel channel_5_note_4;
+    private JPanel channel5Note4;
     /**
      * The Channel 6 note 1.
      */
-    private JPanel channel_6_note_1;
+    private JPanel channel6Note1;
     /**
      * The Channel 6 note 2.
      */
-    private JPanel channel_6_note_2;
+    private JPanel channel6Note2;
     /**
      * The Channel 6 note 3.
      */
-    private JPanel channel_6_note_3;
+    private JPanel channel6Note3;
     /**
      * The Channel 6 note 4.
      */
-    private JPanel channel_6_note_4;
+    private JPanel channel6Note4;
     /**
      * The Channel 6 note m 1.
      */
-    private JPanel channel_6_note_m1;
+    private JPanel channel6NoteM1;
     /**
      * The Channel 6 note m 2.
      */
-    private JPanel channel_6_note_m2;
+    private JPanel channel6NoteM2;
     /**
      * The Channel 6 note m 3.
      */
-    private JPanel channel_6_note_m3;
+    private JPanel channel6NoteM3;
     /**
      * The Channel 5 note m 3.
      */
-    private JPanel channel_5_note_m3;
+    private JPanel channel5NoteM3;
     /**
      * The Channel 7 note 1.
      */
-    private JPanel channel_7_note_1;
+    private JPanel channel7Note1;
     /**
      * The Channel 7 note 2.
      */
-    private JPanel channel_7_note_2;
+    private JPanel channel7Note2;
     /**
      * The Channel 7 note 3.
      */
-    private JPanel channel_7_note_3;
+    private JPanel channel7Note3;
     /**
      * The Channel 7 note 4.
      */
-    private JPanel channel_7_note_4;
+    private JPanel channel7Note4;
     /**
      * The Channel 7 note m 1.
      */
-    private JPanel channel_7_note_m1;
+    private JPanel channel7NoteM1;
     /**
      * The Channel 7 note m 2.
      */
-    private JPanel channel_7_note_m2;
+    private JPanel channel7NoteM2;
     /**
      * The Channel 7 note m 3.
      */
-    private JPanel channel_7_note_m3;
+    private JPanel channel7NoteM3;
     /**
      * The Channel 8 note m 1.
      */
-    private JPanel channel_8_note_m1;
+    private JPanel channel8NoteM1;
     /**
      * The Channel 8 note m 2.
      */
-    private JPanel channel_8_note_m2;
+    private JPanel channel8NoteM2;
     /**
      * The Channel 8 note m 3.
      */
-    private JPanel channel_8_note_m3;
+    private JPanel channel8NoteM3;
     /**
      * The Channel 8 note 1.
      */
-    private JPanel channel_8_note_1;
+    private JPanel channel8Note1;
     /**
      * The Channel 8 note 2.
      */
-    private JPanel channel_8_note_2;
+    private JPanel channel8Note2;
     /**
      * The Channel 8 note 3.
      */
-    private JPanel channel_8_note_3;
+    private JPanel channel8Note3;
     /**
      * The Channel 8 note 4.
      */
-    private JPanel channel_8_note_4;
+    private JPanel channel8Note4;
     /**
      * The Channel 9 note 1.
      */
-    private JPanel channel_9_note_1;
+    private JPanel channel9Note1;
     /**
      * The Channel 9 note 2.
      */
-    private JPanel channel_9_note_2;
+    private JPanel channel9Note2;
     /**
      * The Channel 9 note 3.
      */
-    private JPanel channel_9_note_3;
+    private JPanel channel9Note3;
     /**
      * The Channel 9 note 4.
      */
-    private JPanel channel_9_note_4;
+    private JPanel channel9Note4;
     /**
      * The Channel 10 note 1.
      */
-    private JPanel channel_10_note_1;
+    private JPanel channel10Note1;
     /**
      * The Channel 10 note 2.
      */
-    private JPanel channel_10_note_2;
+    private JPanel channel10Note2;
     /**
      * The Channel 10 note 3.
      */
-    private JPanel channel_10_note_3;
+    private JPanel channel10Note3;
     /**
      * The Channel 10 note 4.
      */
-    private JPanel channel_10_note_4;
+    private JPanel channel10Note4;
     /**
      * The Channel 10 note m 1.
      */
-    private JPanel channel_10_note_m1;
+    private JPanel channel10NoteM1;
     /**
      * The Channel 10 note m 2.
      */
-    private JPanel channel_10_note_m2;
+    private JPanel channel10NoteM2;
     /**
      * The Channel 10 note m 3.
      */
-    private JPanel channel_10_note_m3;
+    private JPanel channel10NoteM3;
     /**
      * The Channel 9 note m 3.
      */
-    private JPanel channel_9_note_m3;
+    private JPanel channel9NoteM3;
     /**
      * The Channel 5 note m 2.
      */
-    private JPanel channel_5_note_m2;
+    private JPanel channel5NoteM2;
     /**
      * The Channel 9 note m 2.
      */
-    private JPanel channel_9_note_m2;
+    private JPanel channel9NoteM2;
     /**
      * The Channel 5 note m 1.
      */
-    private JPanel channel_5_note_m1;
+    private JPanel channel5NoteM1;
     /**
      * The Channel 9 note m 1.
      */
-    private JPanel channel_9_note_m1;
+    private JPanel channel9NoteM1;
 
     /**
      * The Content pane.
@@ -385,129 +378,122 @@ public class HarpViewDesktop implements HarpView {
      */
     public HarpViewDesktop() {
         hideNotes();
-        LOGGER.info("Created");
+
     }
 
     /**
      * Hide notes.
      */
     private void hideNotes() {
-        LOGGER.info("Enter");
-
-        channel_1_note_m3.setVisible(false);
-        channel_2_note_m3.setVisible(false);
-        channel_3_note_m3.setVisible(false);
-        channel_4_note_m3.setVisible(false);
-        channel_5_note_m3.setVisible(false);
-        channel_6_note_m3.setVisible(false);
-        channel_7_note_m3.setVisible(false);
-        channel_8_note_m3.setVisible(false);
-        channel_9_note_m3.setVisible(false);
-        channel_10_note_m3.setVisible(false);
-
-        channel_1_note_m2.setVisible(false);
-        channel_2_note_m2.setVisible(false);
-        channel_3_note_m2.setVisible(false);
-        channel_4_note_m2.setVisible(false);
-        channel_5_note_m2.setVisible(false);
-        channel_6_note_m2.setVisible(false);
-        channel_7_note_m2.setVisible(false);
-        channel_8_note_m2.setVisible(false);
-        channel_9_note_m2.setVisible(false);
-        channel_10_note_m2.setVisible(false);
 
 
-        channel_1_note_m1.setVisible(false);
-        channel_2_note_m1.setVisible(false);
-        channel_3_note_m1.setVisible(false);
-        channel_4_note_m1.setVisible(false);
-        channel_5_note_m1.setVisible(false);
-        channel_6_note_m1.setVisible(false);
-        channel_7_note_m1.setVisible(false);
-        channel_8_note_m1.setVisible(false);
-        channel_9_note_m1.setVisible(false);
-        channel_10_note_m1.setVisible(false);
+        channel1NoteM3.setVisible(false);
+        channel2NoteM3.setVisible(false);
+        channel3NoteM3.setVisible(false);
+        channel4NoteM3.setVisible(false);
+        channel5NoteM3.setVisible(false);
+        channel6NoteM3.setVisible(false);
+        channel7NoteM3.setVisible(false);
+        channel8NoteM3.setVisible(false);
+        channel9NoteM3.setVisible(false);
+        channel10NoteM3.setVisible(false);
 
-        channel_1_note_0.setVisible(false);
-        channel_2_note_0.setVisible(false);
-        channel_3_note_0.setVisible(false);
-        channel_4_note_0.setVisible(false);
-        channel_5_note_0.setVisible(false);
-        channel_6_note_0.setVisible(false);
-        channel_7_note_0.setVisible(false);
-        channel_8_note_0.setVisible(false);
-        channel_9_note_0.setVisible(false);
-        channel_10_note_0.setVisible(false);
+        channel1NoteM2.setVisible(false);
+        channel2NoteM2.setVisible(false);
+        channel3NoteM2.setVisible(false);
+        channel4NoteM2.setVisible(false);
+        channel5NoteM2.setVisible(false);
+        channel6NoteM2.setVisible(false);
+        channel7NoteM2.setVisible(false);
+        channel8NoteM2.setVisible(false);
+        channel9NoteM2.setVisible(false);
+        channel10NoteM2.setVisible(false);
 
-        channel_1_note_1.setVisible(false);
-        channel_2_note_1.setVisible(false);
-        channel_3_note_1.setVisible(false);
-        channel_4_note_1.setVisible(false);
-        channel_5_note_1.setVisible(false);
-        channel_6_note_1.setVisible(false);
-        channel_7_note_1.setVisible(false);
-        channel_8_note_1.setVisible(false);
-        channel_9_note_1.setVisible(false);
-        channel_10_note_1.setVisible(false);
 
-        channel_1_note_2.setVisible(false);
-        channel_2_note_2.setVisible(false);
-        channel_3_note_2.setVisible(false);
-        channel_4_note_2.setVisible(false);
-        channel_5_note_2.setVisible(false);
-        channel_6_note_2.setVisible(false);
-        channel_7_note_2.setVisible(false);
-        channel_8_note_2.setVisible(false);
-        channel_9_note_2.setVisible(false);
-        channel_10_note_2.setVisible(false);
+        channel1NoteM1.setVisible(false);
+        channel2NoteM1.setVisible(false);
+        channel3NoteM1.setVisible(false);
+        channel4NoteM1.setVisible(false);
+        channel5NoteM1.setVisible(false);
+        channel6NoteM1.setVisible(false);
+        channel7NoteM1.setVisible(false);
+        channel8NoteM1.setVisible(false);
+        channel9NoteM1.setVisible(false);
+        channel10NoteM1.setVisible(false);
 
-        channel_1_note_3.setVisible(false);
-        channel_2_note_3.setVisible(false);
-        channel_3_note_3.setVisible(false);
-        channel_4_note_3.setVisible(false);
-        channel_5_note_3.setVisible(false);
-        channel_6_note_3.setVisible(false);
-        channel_7_note_3.setVisible(false);
-        channel_8_note_3.setVisible(false);
-        channel_9_note_3.setVisible(false);
-        channel_10_note_3.setVisible(false);
+        channel1Note0.setVisible(false);
+        channel2Note0.setVisible(false);
+        channel3Note0.setVisible(false);
+        channel4Note0.setVisible(false);
+        channel5Note0.setVisible(false);
+        channel6Note0.setVisible(false);
+        channel7Note0.setVisible(false);
+        channel8Note0.setVisible(false);
+        channel9Note0.setVisible(false);
+        channel10Note0.setVisible(false);
 
-        channel_1_note_4.setVisible(false);
-        channel_2_note_4.setVisible(false);
-        channel_3_note_4.setVisible(false);
-        channel_4_note_4.setVisible(false);
-        channel_5_note_4.setVisible(false);
-        channel_6_note_4.setVisible(false);
-        channel_7_note_4.setVisible(false);
-        channel_8_note_4.setVisible(false);
-        channel_9_note_4.setVisible(false);
-        channel_10_note_4.setVisible(false);
+        channel1Note1.setVisible(false);
+        channel2Note1.setVisible(false);
+        channel3Note1.setVisible(false);
+        channel4Note1.setVisible(false);
+        channel5Note1.setVisible(false);
+        channel6Note1.setVisible(false);
+        channel7Note1.setVisible(false);
+        channel8Note1.setVisible(false);
+        channel9Note1.setVisible(false);
+        channel10Note1.setVisible(false);
 
-        LOGGER.info("Leave");
+        channel1Note2.setVisible(false);
+        channel2Note2.setVisible(false);
+        channel3Note2.setVisible(false);
+        channel4Note2.setVisible(false);
+        channel5Note2.setVisible(false);
+        channel6Note2.setVisible(false);
+        channel7Note2.setVisible(false);
+        channel8Note2.setVisible(false);
+        channel9Note2.setVisible(false);
+        channel10Note2.setVisible(false);
+
+        channel1Note3.setVisible(false);
+        channel2Note3.setVisible(false);
+        channel3Note3.setVisible(false);
+        channel4Note3.setVisible(false);
+        channel5Note3.setVisible(false);
+        channel6Note3.setVisible(false);
+        channel7Note3.setVisible(false);
+        channel8Note3.setVisible(false);
+        channel9Note3.setVisible(false);
+        channel10Note3.setVisible(false);
+
+        channel1Note4.setVisible(false);
+        channel2Note4.setVisible(false);
+        channel3Note4.setVisible(false);
+        channel4Note4.setVisible(false);
+        channel5Note4.setVisible(false);
+        channel6Note4.setVisible(false);
+        channel7Note4.setVisible(false);
+        channel8Note4.setVisible(false);
+        channel9Note4.setVisible(false);
+        channel10Note4.setVisible(false);
+
+
     }
 
     @Override
     public HarpViewNoteElement getHarpViewElement(int channel, int note) {
-        LOGGER.info("Enter with parameters " + channel + " " + note);
-        HarpViewNoteElementDesktop harpViewNoteElementDesktop = new HarpViewNoteElementDesktop(getNotePanel(channel, note));
-        LOGGER.info("Return " + harpViewNoteElementDesktop);
-        return new HarpViewNoteElementDesktop(getNotePanel(channel, note));
+        return HarpViewNoteElementDesktop.getInstance(getNotePanel(channel, note));
     }
 
     @Override
     public void initNotes(Note[] notes) {
-        LOGGER.info("Enter with parameter " + Arrays.toString(notes));
+
         hideNotes();
         for (Note note : notes) {
-            JPanel panel = getNotePanel(note.getChannel(), note.getNote());
 
-            // clear panel
-            for (Component child : panel.getComponents()) {
-                if (child instanceof NotePane oldPane) {
-                    panel.remove(oldPane);
-                }
-            }
+            JPanel panel = getNotePanel(note.getChannel(), note.getNote());
             panel.setVisible(true);
+            HarpViewNoteElementDesktop harpViewNoteElementDesktop = HarpViewNoteElementDesktop.getInstance(panel);
+
             Color color = panel.getBackground();
             if (note.isOverblow()) {
                 color = OVERBLOW_COLOR;
@@ -517,12 +503,9 @@ public class HarpViewDesktop implements HarpView {
                 color = OVERDRAW_COLOR;
                 panel.setBackground(color);
             }
-
-            NotePane notePane = new NotePane(note.getNoteName(), color);
-            panel.add(notePane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-            panel.revalidate();
+            harpViewNoteElementDesktop.setColor(color);
+            harpViewNoteElementDesktop.setNoteName(note.getNoteName());
         }
-        LOGGER.info("Leave");
     }
 
     /**
@@ -533,139 +516,99 @@ public class HarpViewDesktop implements HarpView {
      * @return the note panel
      */
     private JPanel getNotePanel(int channel, int note) {
-        LOGGER.info("Enter with parameters " + channel + " " + note);
-        JPanel jPanel = null;
-        if (channel == 1) {
-            switch (note) {
-                case -3 -> jPanel = channel_1_note_m3;
-                case -2 -> jPanel = channel_1_note_m2;
-                case -1 -> jPanel = channel_1_note_m1;
-                case 0 -> jPanel = channel_1_note_0;
-                case 1 -> jPanel = channel_1_note_1;
-                case 2 -> jPanel = channel_1_note_2;
-                case 3 -> jPanel = channel_1_note_3;
-                case 4 -> jPanel = channel_1_note_4;
-            }
-        }
-        if (channel == 2) {
-            jPanel = switch (note) {
-                case -3 -> channel_2_note_m3;
-                case -2 -> channel_2_note_m2;
-                case -1 -> channel_2_note_m1;
-                case 0 -> channel_2_note_0;
-                case 1 -> channel_2_note_1;
-                case 2 -> channel_2_note_2;
-                case 3 -> channel_2_note_3;
-                case 4 -> channel_2_note_4;
-                default -> null;
-            };
-        }
-        if (channel == 3) {
-            jPanel = switch (note) {
-                case -3 -> channel_3_note_m3;
-                case -2 -> channel_3_note_m2;
-                case -1 -> channel_3_note_m1;
-                case 0 -> channel_3_note_0;
-                case 1 -> channel_3_note_1;
-                case 2 -> channel_3_note_2;
-                case 3 -> channel_3_note_3;
-                case 4 -> channel_3_note_4;
-                default -> null;
-            };
-        }
-        if (channel == 4) {
-            jPanel = switch (note) {
-                case -3 -> channel_4_note_m3;
-                case -2 -> channel_4_note_m2;
-                case -1 -> channel_4_note_m1;
-                case 0 -> channel_4_note_0;
-                case 1 -> channel_4_note_1;
-                case 2 -> channel_4_note_2;
-                case 3 -> channel_4_note_3;
-                case 4 -> channel_4_note_4;
-                default -> null;
-            };
-        }
-        if (channel == 5) {
-            jPanel = switch (note) {
-                case -3 -> channel_5_note_m3;
-                case -2 -> channel_5_note_m2;
-                case -1 -> channel_5_note_m1;
-                case 0 -> channel_5_note_0;
-                case 1 -> channel_5_note_1;
-                case 2 -> channel_5_note_2;
-                case 3 -> channel_5_note_3;
-                case 4 -> channel_5_note_4;
-                default -> null;
-            };
-        }
-        if (channel == 6) {
-            jPanel = switch (note) {
-                case -3 -> channel_6_note_m3;
-                case -2 -> channel_6_note_m2;
-                case -1 -> channel_6_note_m1;
-                case 0 -> channel_6_note_0;
-                case 1 -> channel_6_note_1;
-                case 2 -> channel_6_note_2;
-                case 3 -> channel_6_note_3;
-                case 4 -> channel_6_note_4;
-                default -> null;
-            };
-        }
-        if (channel == 7) {
-            jPanel = switch (note) {
-                case -3 -> channel_7_note_m3;
-                case -2 -> channel_7_note_m2;
-                case -1 -> channel_7_note_m1;
-                case 0 -> channel_7_note_0;
-                case 1 -> channel_7_note_1;
-                case 2 -> channel_7_note_2;
-                case 3 -> channel_7_note_3;
-                case 4 -> channel_7_note_4;
-                default -> null;
-            };
-        }
-        if (channel == 8) {
-            jPanel = switch (note) {
-                case -3 -> channel_8_note_m3;
-                case -2 -> channel_8_note_m2;
-                case -1 -> channel_8_note_m1;
-                case 0 -> channel_8_note_0;
-                case 1 -> channel_8_note_1;
-                case 2 -> channel_8_note_2;
-                case 3 -> channel_8_note_3;
-                case 4 -> channel_8_note_4;
-                default -> null;
-            };
-        }
-        if (channel == 9) {
-            jPanel = switch (note) {
-                case -3 -> channel_9_note_m3;
-                case -2 -> channel_9_note_m2;
-                case -1 -> channel_9_note_m1;
-                case 0 -> channel_9_note_0;
-                case 1 -> channel_9_note_1;
-                case 2 -> channel_9_note_2;
-                case 3 -> channel_9_note_3;
-                case 4 -> channel_9_note_4;
-                default -> null;
-            };
-        }
-        if (channel == 10) {
-            jPanel = switch (note) {
-                case -3 -> channel_10_note_m3;
-                case -2 -> channel_10_note_m2;
-                case -1 -> channel_10_note_m1;
-                case 0 -> channel_10_note_0;
-                case 1 -> channel_10_note_1;
-                case 2 -> channel_10_note_2;
-                case 3 -> channel_10_note_3;
-                case 4 -> channel_10_note_4;
-                default -> null;
-            };
-        }
-        LOGGER.info("Return " + jPanel);
-        return jPanel;
+        JPanel[][] jPanels = new JPanel[10][8];
+
+        jPanels[0][0] = channel1NoteM3;
+        jPanels[0][1] = channel1NoteM2;
+        jPanels[0][2] = channel1NoteM1;
+        jPanels[0][3] = channel1Note0;
+        jPanels[0][4] = channel1Note1;
+        jPanels[0][5] = channel1Note2;
+        jPanels[0][6] = channel1Note3;
+        jPanels[0][7] = channel1Note4;
+
+        jPanels[1][0] = channel2NoteM3;
+        jPanels[1][1] = channel2NoteM2;
+        jPanels[1][2] = channel2NoteM1;
+        jPanels[1][3] = channel2Note0;
+        jPanels[1][4] = channel2Note1;
+        jPanels[1][5] = channel2Note2;
+        jPanels[1][6] = channel2Note3;
+        jPanels[1][7] = channel2Note4;
+
+        jPanels[2][0] = channel3NoteM3;
+        jPanels[2][1] = channel3NoteM2;
+        jPanels[2][2] = channel3NoteM1;
+        jPanels[2][3] = channel3Note0;
+        jPanels[2][4] = channel3Note1;
+        jPanels[2][5] = channel3Note2;
+        jPanels[2][6] = channel3Note3;
+        jPanels[2][7] = channel3Note4;
+
+        jPanels[3][0] = channel4NoteM3;
+        jPanels[3][1] = channel4NoteM2;
+        jPanels[3][2] = channel4NoteM1;
+        jPanels[3][3] = channel4Note0;
+        jPanels[3][4] = channel4Note1;
+        jPanels[3][5] = channel4Note2;
+        jPanels[3][6] = channel4Note3;
+        jPanels[3][7] = channel4Note4;
+
+        jPanels[4][0] = channel5NoteM3;
+        jPanels[4][1] = channel5NoteM2;
+        jPanels[4][2] = channel5NoteM1;
+        jPanels[4][3] = channel5Note0;
+        jPanels[4][4] = channel5Note1;
+        jPanels[4][5] = channel5Note2;
+        jPanels[4][6] = channel5Note3;
+        jPanels[4][7] = channel5Note4;
+
+        jPanels[5][0] = channel6NoteM3;
+        jPanels[5][1] = channel6NoteM2;
+        jPanels[5][2] = channel6NoteM1;
+        jPanels[5][3] = channel6Note0;
+        jPanels[5][4] = channel6Note1;
+        jPanels[5][5] = channel6Note2;
+        jPanels[5][6] = channel6Note3;
+        jPanels[5][7] = channel6Note4;
+
+        jPanels[6][0] = channel7NoteM3;
+        jPanels[6][1] = channel7NoteM2;
+        jPanels[6][2] = channel7NoteM1;
+        jPanels[6][3] = channel7Note0;
+        jPanels[6][4] = channel7Note1;
+        jPanels[6][5] = channel7Note2;
+        jPanels[6][6] = channel7Note3;
+        jPanels[6][7] = channel7Note4;
+
+        jPanels[7][0] = channel8NoteM3;
+        jPanels[7][1] = channel8NoteM2;
+        jPanels[7][2] = channel8NoteM1;
+        jPanels[7][3] = channel8Note0;
+        jPanels[7][4] = channel8Note1;
+        jPanels[7][5] = channel8Note2;
+        jPanels[7][6] = channel8Note3;
+        jPanels[7][7] = channel8Note4;
+
+        jPanels[8][0] = channel9NoteM3;
+        jPanels[8][1] = channel9NoteM2;
+        jPanels[8][2] = channel9NoteM1;
+        jPanels[8][3] = channel9Note0;
+        jPanels[8][4] = channel9Note1;
+        jPanels[8][5] = channel9Note2;
+        jPanels[8][6] = channel9Note3;
+        jPanels[8][7] = channel9Note4;
+
+        jPanels[9][0] = channel10NoteM3;
+        jPanels[9][1] = channel10NoteM2;
+        jPanels[9][2] = channel10NoteM1;
+        jPanels[9][3] = channel10Note0;
+        jPanels[9][4] = channel10Note1;
+        jPanels[9][5] = channel10Note2;
+        jPanels[9][6] = channel10Note3;
+        jPanels[9][7] = channel10Note4;
+
+        return jPanels[channel - 1][note + 3];
     }
 
     {
@@ -688,206 +631,206 @@ public class HarpViewDesktop implements HarpView {
         contentPane.setMaximumSize(new Dimension(-1, -1));
         contentPane.setMinimumSize(new Dimension(-1, -1));
         contentPane.setPreferredSize(new Dimension(500, 500));
-        channel_1_note_m3 = new JPanel();
-        channel_1_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_1_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_1_note_m3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_1_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_10_note_m3 = new JPanel();
-        channel_10_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_10_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_10_note_m3, new GridConstraints(0, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_10_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_9_note_m3 = new JPanel();
-        channel_9_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_9_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_9_note_m3, new GridConstraints(0, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_9_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_8_note_m3 = new JPanel();
-        channel_8_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_8_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_8_note_m3, new GridConstraints(0, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_8_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_7_note_m3 = new JPanel();
-        channel_7_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_7_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_7_note_m3, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_7_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_6_note_m3 = new JPanel();
-        channel_6_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_6_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_6_note_m3, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_6_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_5_note_m3 = new JPanel();
-        channel_5_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_5_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_5_note_m3, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_5_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_4_note_m3 = new JPanel();
-        channel_4_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_4_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_4_note_m3, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_4_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_3_note_m3 = new JPanel();
-        channel_3_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_3_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_3_note_m3, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_3_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_2_note_m3 = new JPanel();
-        channel_2_note_m3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_2_note_m3.setBackground(new Color(-26624));
-        contentPane.add(channel_2_note_m3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_2_note_m3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_1_note_m2 = new JPanel();
-        channel_1_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_1_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_1_note_m2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_1_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_2_note_m2 = new JPanel();
-        channel_2_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_2_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_2_note_m2, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_2_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_3_note_m2 = new JPanel();
-        channel_3_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_3_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_3_note_m2, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_3_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_4_note_m2 = new JPanel();
-        channel_4_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_4_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_4_note_m2, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_4_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_5_note_m2 = new JPanel();
-        channel_5_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_5_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_5_note_m2, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_5_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_6_note_m2 = new JPanel();
-        channel_6_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_6_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_6_note_m2, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_6_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_7_note_m2 = new JPanel();
-        channel_7_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_7_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_7_note_m2, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_7_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_8_note_m2 = new JPanel();
-        channel_8_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_8_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_8_note_m2, new GridConstraints(1, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_8_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_9_note_m2 = new JPanel();
-        channel_9_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_9_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_9_note_m2, new GridConstraints(1, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_9_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_10_note_m2 = new JPanel();
-        channel_10_note_m2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_10_note_m2.setBackground(new Color(-26624));
-        contentPane.add(channel_10_note_m2, new GridConstraints(1, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_10_note_m2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_1_note_m1 = new JPanel();
-        channel_1_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_1_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_1_note_m1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_1_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_2_note_m1 = new JPanel();
-        channel_2_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_2_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_2_note_m1, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_2_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_3_note_m1 = new JPanel();
-        channel_3_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_3_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_3_note_m1, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_3_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_4_note_m1 = new JPanel();
-        channel_4_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_4_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_4_note_m1, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_4_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_5_note_m1 = new JPanel();
-        channel_5_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_5_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_5_note_m1, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_5_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_6_note_m1 = new JPanel();
-        channel_6_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_6_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_6_note_m1, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_6_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_7_note_m1 = new JPanel();
-        channel_7_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_7_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_7_note_m1, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_7_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_8_note_m1 = new JPanel();
-        channel_8_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_8_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_8_note_m1, new GridConstraints(2, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_8_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_9_note_m1 = new JPanel();
-        channel_9_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_9_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_9_note_m1, new GridConstraints(2, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_9_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_10_note_m1 = new JPanel();
-        channel_10_note_m1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_10_note_m1.setBackground(new Color(-26624));
-        contentPane.add(channel_10_note_m1, new GridConstraints(2, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_10_note_m1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_1_note_0 = new JPanel();
-        channel_1_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_1_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_1_note_0, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_1_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_2_note_0 = new JPanel();
-        channel_2_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_2_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_2_note_0, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_2_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_3_note_0 = new JPanel();
-        channel_3_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_3_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_3_note_0, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_3_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_4_note_0 = new JPanel();
-        channel_4_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_4_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_4_note_0, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_4_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_5_note_0 = new JPanel();
-        channel_5_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_5_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_5_note_0, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_5_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_6_note_0 = new JPanel();
-        channel_6_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_6_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_6_note_0, new GridConstraints(3, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_6_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_7_note_0 = new JPanel();
-        channel_7_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_7_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_7_note_0, new GridConstraints(3, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_7_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_8_note_0 = new JPanel();
-        channel_8_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_8_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_8_note_0, new GridConstraints(3, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_8_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_9_note_0 = new JPanel();
-        channel_9_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_9_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_9_note_0, new GridConstraints(3, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_9_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_10_note_0 = new JPanel();
-        channel_10_note_0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_10_note_0.setBackground(new Color(-6513759));
-        contentPane.add(channel_10_note_0, new GridConstraints(3, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_10_note_0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel1NoteM3 = new JPanel();
+        channel1NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel1NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel1NoteM3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel1NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel10NoteM3 = new JPanel();
+        channel10NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel10NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel10NoteM3, new GridConstraints(0, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel10NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel9NoteM3 = new JPanel();
+        channel9NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel9NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel9NoteM3, new GridConstraints(0, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel9NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel8NoteM3 = new JPanel();
+        channel8NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel8NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel8NoteM3, new GridConstraints(0, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel8NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel7NoteM3 = new JPanel();
+        channel7NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel7NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel7NoteM3, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel7NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel6NoteM3 = new JPanel();
+        channel6NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel6NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel6NoteM3, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel6NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel5NoteM3 = new JPanel();
+        channel5NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel5NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel5NoteM3, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel5NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel4NoteM3 = new JPanel();
+        channel4NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel4NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel4NoteM3, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel4NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel3NoteM3 = new JPanel();
+        channel3NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel3NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel3NoteM3, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel3NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel2NoteM3 = new JPanel();
+        channel2NoteM3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel2NoteM3.setBackground(new Color(-26624));
+        contentPane.add(channel2NoteM3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel2NoteM3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel1NoteM2 = new JPanel();
+        channel1NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel1NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel1NoteM2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel1NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel2NoteM2 = new JPanel();
+        channel2NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel2NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel2NoteM2, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel2NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel3NoteM2 = new JPanel();
+        channel3NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel3NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel3NoteM2, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel3NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel4NoteM2 = new JPanel();
+        channel4NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel4NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel4NoteM2, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel4NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel5NoteM2 = new JPanel();
+        channel5NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel5NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel5NoteM2, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel5NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel6NoteM2 = new JPanel();
+        channel6NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel6NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel6NoteM2, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel6NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel7NoteM2 = new JPanel();
+        channel7NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel7NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel7NoteM2, new GridConstraints(1, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel7NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel8NoteM2 = new JPanel();
+        channel8NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel8NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel8NoteM2, new GridConstraints(1, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel8NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel9NoteM2 = new JPanel();
+        channel9NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel9NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel9NoteM2, new GridConstraints(1, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel9NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel10NoteM2 = new JPanel();
+        channel10NoteM2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel10NoteM2.setBackground(new Color(-26624));
+        contentPane.add(channel10NoteM2, new GridConstraints(1, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel10NoteM2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel1NoteM1 = new JPanel();
+        channel1NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel1NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel1NoteM1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel1NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel2NoteM1 = new JPanel();
+        channel2NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel2NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel2NoteM1, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel2NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel3NoteM1 = new JPanel();
+        channel3NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel3NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel3NoteM1, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel3NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel4NoteM1 = new JPanel();
+        channel4NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel4NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel4NoteM1, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel4NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel5NoteM1 = new JPanel();
+        channel5NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel5NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel5NoteM1, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel5NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel6NoteM1 = new JPanel();
+        channel6NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel6NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel6NoteM1, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel6NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel7NoteM1 = new JPanel();
+        channel7NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel7NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel7NoteM1, new GridConstraints(2, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel7NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel8NoteM1 = new JPanel();
+        channel8NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel8NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel8NoteM1, new GridConstraints(2, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel8NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel9NoteM1 = new JPanel();
+        channel9NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel9NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel9NoteM1, new GridConstraints(2, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel9NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel10NoteM1 = new JPanel();
+        channel10NoteM1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel10NoteM1.setBackground(new Color(-26624));
+        contentPane.add(channel10NoteM1, new GridConstraints(2, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel10NoteM1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel1Note0 = new JPanel();
+        channel1Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel1Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel1Note0, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel1Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel2Note0 = new JPanel();
+        channel2Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel2Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel2Note0, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel2Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel3Note0 = new JPanel();
+        channel3Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel3Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel3Note0, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel3Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel4Note0 = new JPanel();
+        channel4Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel4Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel4Note0, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel4Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel5Note0 = new JPanel();
+        channel5Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel5Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel5Note0, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel5Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel6Note0 = new JPanel();
+        channel6Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel6Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel6Note0, new GridConstraints(3, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel6Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel7Note0 = new JPanel();
+        channel7Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel7Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel7Note0, new GridConstraints(3, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel7Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel8Note0 = new JPanel();
+        channel8Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel8Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel8Note0, new GridConstraints(3, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel8Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel9Note0 = new JPanel();
+        channel9Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel9Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel9Note0, new GridConstraints(3, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel9Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel10Note0 = new JPanel();
+        channel10Note0.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel10Note0.setBackground(new Color(-6513759));
+        contentPane.add(channel10Note0, new GridConstraints(3, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel10Note0.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -948,206 +891,206 @@ public class HarpViewDesktop implements HarpView {
         final JLabel label10 = new JLabel();
         label10.setText("10");
         panel10.add(label10, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        channel_1_note_1 = new JPanel();
-        channel_1_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_1_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_1_note_1, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_1_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_2_note_1 = new JPanel();
-        channel_2_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_2_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_2_note_1, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_2_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_3_note_1 = new JPanel();
-        channel_3_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_3_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_3_note_1, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_3_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_4_note_1 = new JPanel();
-        channel_4_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_4_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_4_note_1, new GridConstraints(5, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_4_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_5_note_1 = new JPanel();
-        channel_5_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_5_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_5_note_1, new GridConstraints(5, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_5_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_6_note_1 = new JPanel();
-        channel_6_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_6_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_6_note_1, new GridConstraints(5, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_6_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_7_note_1 = new JPanel();
-        channel_7_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_7_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_7_note_1, new GridConstraints(5, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_7_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_8_note_1 = new JPanel();
-        channel_8_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_8_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_8_note_1, new GridConstraints(5, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_8_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_9_note_1 = new JPanel();
-        channel_9_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_9_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_9_note_1, new GridConstraints(5, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_9_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_10_note_1 = new JPanel();
-        channel_10_note_1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_10_note_1.setBackground(new Color(-6513759));
-        contentPane.add(channel_10_note_1, new GridConstraints(5, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_10_note_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_1_note_2 = new JPanel();
-        channel_1_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_1_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_1_note_2, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_1_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_2_note_2 = new JPanel();
-        channel_2_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_2_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_2_note_2, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_2_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_3_note_2 = new JPanel();
-        channel_3_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_3_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_3_note_2, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_3_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_4_note_2 = new JPanel();
-        channel_4_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_4_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_4_note_2, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_4_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_5_note_2 = new JPanel();
-        channel_5_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_5_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_5_note_2, new GridConstraints(6, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_5_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_6_note_2 = new JPanel();
-        channel_6_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_6_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_6_note_2, new GridConstraints(6, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_6_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_7_note_2 = new JPanel();
-        channel_7_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_7_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_7_note_2, new GridConstraints(6, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_7_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_8_note_2 = new JPanel();
-        channel_8_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_8_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_8_note_2, new GridConstraints(6, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_8_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_9_note_2 = new JPanel();
-        channel_9_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_9_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_9_note_2, new GridConstraints(6, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_9_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_10_note_2 = new JPanel();
-        channel_10_note_2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_10_note_2.setBackground(new Color(-9503235));
-        contentPane.add(channel_10_note_2, new GridConstraints(6, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_10_note_2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_1_note_3 = new JPanel();
-        channel_1_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_1_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_1_note_3, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_1_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_2_note_3 = new JPanel();
-        channel_2_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_2_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_2_note_3, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_2_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_3_note_3 = new JPanel();
-        channel_3_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_3_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_3_note_3, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_3_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_4_note_3 = new JPanel();
-        channel_4_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_4_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_4_note_3, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_4_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_5_note_3 = new JPanel();
-        channel_5_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_5_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_5_note_3, new GridConstraints(7, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_5_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_6_note_3 = new JPanel();
-        channel_6_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_6_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_6_note_3, new GridConstraints(7, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_6_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_7_note_3 = new JPanel();
-        channel_7_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_7_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_7_note_3, new GridConstraints(7, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_7_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_8_note_3 = new JPanel();
-        channel_8_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_8_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_8_note_3, new GridConstraints(7, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_8_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_9_note_3 = new JPanel();
-        channel_9_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_9_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_9_note_3, new GridConstraints(7, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_9_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_10_note_3 = new JPanel();
-        channel_10_note_3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_10_note_3.setBackground(new Color(-9503235));
-        contentPane.add(channel_10_note_3, new GridConstraints(7, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_10_note_3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_1_note_4 = new JPanel();
-        channel_1_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_1_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_1_note_4, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_1_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_2_note_4 = new JPanel();
-        channel_2_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_2_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_2_note_4, new GridConstraints(8, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_2_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_3_note_4 = new JPanel();
-        channel_3_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_3_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_3_note_4, new GridConstraints(8, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_3_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_4_note_4 = new JPanel();
-        channel_4_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_4_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_4_note_4, new GridConstraints(8, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_4_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_5_note_4 = new JPanel();
-        channel_5_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_5_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_5_note_4, new GridConstraints(8, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_5_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_6_note_4 = new JPanel();
-        channel_6_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_6_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_6_note_4, new GridConstraints(8, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_6_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_7_note_4 = new JPanel();
-        channel_7_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_7_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_7_note_4, new GridConstraints(8, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_7_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_8_note_4 = new JPanel();
-        channel_8_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_8_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_8_note_4, new GridConstraints(8, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_8_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_9_note_4 = new JPanel();
-        channel_9_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_9_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_9_note_4, new GridConstraints(8, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_9_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        channel_10_note_4 = new JPanel();
-        channel_10_note_4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        channel_10_note_4.setBackground(new Color(-9503235));
-        contentPane.add(channel_10_note_4, new GridConstraints(8, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        channel_10_note_4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel1Note1 = new JPanel();
+        channel1Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel1Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel1Note1, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel1Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel2Note1 = new JPanel();
+        channel2Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel2Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel2Note1, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel2Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel3Note1 = new JPanel();
+        channel3Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel3Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel3Note1, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel3Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel4Note1 = new JPanel();
+        channel4Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel4Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel4Note1, new GridConstraints(5, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel4Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel5Note1 = new JPanel();
+        channel5Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel5Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel5Note1, new GridConstraints(5, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel5Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel6Note1 = new JPanel();
+        channel6Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel6Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel6Note1, new GridConstraints(5, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel6Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel7Note1 = new JPanel();
+        channel7Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel7Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel7Note1, new GridConstraints(5, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel7Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel8Note1 = new JPanel();
+        channel8Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel8Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel8Note1, new GridConstraints(5, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel8Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel9Note1 = new JPanel();
+        channel9Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel9Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel9Note1, new GridConstraints(5, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel9Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel10Note1 = new JPanel();
+        channel10Note1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel10Note1.setBackground(new Color(-6513759));
+        contentPane.add(channel10Note1, new GridConstraints(5, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel10Note1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel1Note2 = new JPanel();
+        channel1Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel1Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel1Note2, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel1Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel2Note2 = new JPanel();
+        channel2Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel2Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel2Note2, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel2Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel3Note2 = new JPanel();
+        channel3Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel3Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel3Note2, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel3Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel4Note2 = new JPanel();
+        channel4Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel4Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel4Note2, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel4Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel5Note2 = new JPanel();
+        channel5Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel5Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel5Note2, new GridConstraints(6, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel5Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel6Note2 = new JPanel();
+        channel6Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel6Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel6Note2, new GridConstraints(6, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel6Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel7Note2 = new JPanel();
+        channel7Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel7Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel7Note2, new GridConstraints(6, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel7Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel8Note2 = new JPanel();
+        channel8Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel8Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel8Note2, new GridConstraints(6, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel8Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel9Note2 = new JPanel();
+        channel9Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel9Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel9Note2, new GridConstraints(6, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel9Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel10Note2 = new JPanel();
+        channel10Note2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel10Note2.setBackground(new Color(-9503235));
+        contentPane.add(channel10Note2, new GridConstraints(6, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel10Note2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel1Note3 = new JPanel();
+        channel1Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel1Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel1Note3, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel1Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel2Note3 = new JPanel();
+        channel2Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel2Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel2Note3, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel2Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel3Note3 = new JPanel();
+        channel3Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel3Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel3Note3, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel3Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel4Note3 = new JPanel();
+        channel4Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel4Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel4Note3, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel4Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel5Note3 = new JPanel();
+        channel5Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel5Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel5Note3, new GridConstraints(7, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel5Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel6Note3 = new JPanel();
+        channel6Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel6Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel6Note3, new GridConstraints(7, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel6Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel7Note3 = new JPanel();
+        channel7Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel7Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel7Note3, new GridConstraints(7, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel7Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel8Note3 = new JPanel();
+        channel8Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel8Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel8Note3, new GridConstraints(7, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel8Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel9Note3 = new JPanel();
+        channel9Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel9Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel9Note3, new GridConstraints(7, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel9Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel10Note3 = new JPanel();
+        channel10Note3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel10Note3.setBackground(new Color(-9503235));
+        contentPane.add(channel10Note3, new GridConstraints(7, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel10Note3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel1Note4 = new JPanel();
+        channel1Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel1Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel1Note4, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel1Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel2Note4 = new JPanel();
+        channel2Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel2Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel2Note4, new GridConstraints(8, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel2Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel3Note4 = new JPanel();
+        channel3Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel3Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel3Note4, new GridConstraints(8, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel3Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel4Note4 = new JPanel();
+        channel4Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel4Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel4Note4, new GridConstraints(8, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel4Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel5Note4 = new JPanel();
+        channel5Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel5Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel5Note4, new GridConstraints(8, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel5Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel6Note4 = new JPanel();
+        channel6Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel6Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel6Note4, new GridConstraints(8, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel6Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel7Note4 = new JPanel();
+        channel7Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel7Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel7Note4, new GridConstraints(8, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel7Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel8Note4 = new JPanel();
+        channel8Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel8Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel8Note4, new GridConstraints(8, 7, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel8Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel9Note4 = new JPanel();
+        channel9Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel9Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel9Note4, new GridConstraints(8, 8, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel9Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        channel10Note4 = new JPanel();
+        channel10Note4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        channel10Note4.setBackground(new Color(-9503235));
+        contentPane.add(channel10Note4, new GridConstraints(8, 9, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        channel10Note4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
     }
 
     /**

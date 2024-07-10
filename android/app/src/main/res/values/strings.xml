@@ -37,4 +37,7 @@
     <string name="settings_reset_label">Reset Settings</string>
     <string name="settings_reset_button">Reset</string>
     <string name="settings_screenlock_label">Keep screen on</string>
+    <string name="permission_information_message">To utilize the application properly, access to the microphone is necessary. If you have any doubts, check the privacy policy for this application.</string>
+    <string name="permission_information_title">Information</string>
+    <string name="permission_information_button_label">Proceed anyway</string>
 </resources>

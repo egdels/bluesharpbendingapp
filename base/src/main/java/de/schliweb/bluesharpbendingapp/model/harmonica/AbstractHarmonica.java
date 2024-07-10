@@ -26,7 +26,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
 import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -107,9 +106,8 @@ public abstract class AbstractHarmonica implements Harmonica {
      *
      * @param keyFrequency the key frequency
      */
-    public AbstractHarmonica(double keyFrequency) {
+    protected AbstractHarmonica(double keyFrequency) {
         this.keyFrequency = keyFrequency;
-        LOGGER.info("Created");
     }
 
     /**
@@ -120,7 +118,6 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the harmonica
      */
     public static Harmonica create(int keyIndex, int tuneIndex) {
-        LOGGER.info("Enter with parameter " + keyIndex + " " + tuneIndex);
         return create(KEY.values()[keyIndex], TUNE.values()[tuneIndex]);
     }
 
@@ -132,7 +129,6 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the harmonica
      */
     public static Harmonica create(KEY key, TUNE tune) {
-        LOGGER.info("Enter with parameter " + key.getFrequency());
         Harmonica harmonica = new RichterHarmonica(key.getFrequency());
         if (TUNE.COUNTRY.equals(tune)) {
             harmonica = new CountryHarmonica(key.getFrequency());
@@ -152,7 +148,6 @@ public abstract class AbstractHarmonica implements Harmonica {
         if (TUNE.NATURALMOLL.equals(tune)) {
             harmonica = new NaturalMollHarmonica(key.getFrequency());
         }
-        LOGGER.info("Return " + harmonica);
         return harmonica;
     }
 
@@ -164,7 +159,6 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the cents
      */
     protected static double getCents(double f1, double f2) {
-        LOGGER.info("Enter with parameters " + f1 + " " + f2);
         return NoteUtils.getCents(f1, f2);
     }
 
@@ -174,7 +168,6 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the string [ ]
      */
     public static String[] getSupportedTunes() {
-        LOGGER.info("Enter");
         TUNE[] values = TUNE.values();
         String[] keys = new String[TUNE.values().length];
         int index = 0;
@@ -182,7 +175,6 @@ public abstract class AbstractHarmonica implements Harmonica {
             keys[index] = value.name();
             index++;
         }
-        LOGGER.info("Return " + Arrays.toString(keys));
         return keys;
     }
 
@@ -192,7 +184,6 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the string [ ]
      */
     public static String[] getSupporterKeys() {
-        LOGGER.info("Enter");
         KEY[] values = KEY.values();
         String[] keys = new String[KEY.values().length];
         int index = 0;
@@ -200,7 +191,6 @@ public abstract class AbstractHarmonica implements Harmonica {
             keys[index] = value.name();
             index++;
         }
-        LOGGER.info("Return " + Arrays.toString(keys));
         return keys;
     }
 
@@ -211,27 +201,21 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the double
      */
     protected static double round(double value) {
-        LOGGER.info("Enter with parameter " + value);
         return NoteUtils.round(value);
     }
 
     @Override
     public int getBlowBendingTonesCount(int channel) {
-        LOGGER.info("Enter with parameter " + channel);
         int count = getHalfTonesOut()[channel] - getHalfTonesIn()[channel] - 1;
         if (count < 0) {
             count = 0;
         }
-        LOGGER.info("Return " + count);
         return count;
     }
 
     @Override
     public double getCentsNote(int channel, int note, double frequency) {
-        LOGGER.info("Enter with parameters " + channel + " " + note + " " + frequency);
-        double cents = getCents(frequency, getNoteFrequency(channel, note));
-        LOGGER.info("Return " + cents);
-        return cents;
+        return getCents(frequency, getNoteFrequency(channel, note));
     }
 
     /**
@@ -241,10 +225,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the channel in frequency
      */
     public double getChannelInFrequency(int channel) {
-        LOGGER.info("Enter with parameter " + channel);
-        double frequency = Math.pow(2.0, getHalfTonesIn()[channel] * 100.0 / 1200.0) * getKeyFrequency();
-        LOGGER.info("Return " + frequency);
-        return frequency;
+        return Math.pow(2.0, getHalfTonesIn()[channel] * 100.0 / 1200.0) * getKeyFrequency();
     }
 
     /**
@@ -254,20 +235,15 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the channel out frequency
      */
     public double getChannelOutFrequency(int channel) {
-        LOGGER.info("Enter with parameter " + channel);
-        double frequency = Math.pow(2.0, getHalfTonesOut()[channel] * 100.0 / 1200.0) * getKeyFrequency();
-        LOGGER.info("Return " + frequency);
-        return frequency;
+        return Math.pow(2.0, getHalfTonesOut()[channel] * 100.0 / 1200.0) * getKeyFrequency();
     }
 
     @Override
     public int getDrawBendingTonesCount(int channel) {
-        LOGGER.info("Enter with parameter " + channel);
         int count = getHalfTonesIn()[channel] - getHalfTonesOut()[channel] - 1;
         if (count < 0.0) {
             count = 0;
         }
-        LOGGER.info("Return " + count);
         return count;
     }
 
@@ -291,14 +267,11 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the key frequency
      */
     public double getKeyFrequency() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return " + keyFrequency);
         return keyFrequency;
     }
 
     @Override
     public String getKeyName() {
-        LOGGER.info("Enter");
         KEY[] values = KEY.values();
         String name = null;
         for (KEY value : values) {
@@ -307,13 +280,11 @@ public abstract class AbstractHarmonica implements Harmonica {
                 break;
             }
         }
-        LOGGER.info("Return " + name);
         return name;
     }
 
     @Override
     public double getNoteFrequency(int channel, int note) {
-        LOGGER.info("Enter with parameters " + channel + " " + note);
         double frequency = 0.0;
         if (isOverblow(channel, note) || isOverdraw(channel, note)) {
             frequency = getOverblowOverdrawFrequency(channel);
@@ -342,7 +313,6 @@ public abstract class AbstractHarmonica implements Harmonica {
         LOGGER.debug("frequency before round " + frequency);
         frequency = round(frequency);
         LOGGER.debug("frequency after round " + frequency);
-        LOGGER.info("Return " + frequency);
         return frequency;
     }
 
@@ -366,15 +336,12 @@ public abstract class AbstractHarmonica implements Harmonica {
 
     @Override
     public boolean isNoteActive(int channel, int note, double frequency) {
-        LOGGER.info("Enter with parameters " + channel + " " + note + " " + frequency);
         double harpFrequency = getNoteFrequency(channel, note);
         LOGGER.debug(channel + " " + note + " " + harpFrequency);
         double lowerBound = (Math.pow(2.0, -50.0 / 1200.0) * harpFrequency);
         double upperBound = (Math.pow(2.0, 50.0 / 1200.0) * harpFrequency);
         LOGGER.debug(channel + " " + note + " " + frequency + " " + lowerBound + " " + upperBound);
-        boolean isActive = frequency <= upperBound && frequency >= lowerBound;
-        LOGGER.info("Return " + isActive);
-        return isActive;
+        return frequency <= upperBound && frequency >= lowerBound;
     }
 
     /**
@@ -384,7 +351,6 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the overblow overdraw frequency
      */
     private double getOverblowOverdrawFrequency(int channel) {
-        LOGGER.info("Enter with parameter " + channel);
         double frequency = 0.0;
         if (!hasInverseCentsHandling(channel)) {
             frequency = Math.pow(2.0, 100.0 / 1200.0) * getChannelInFrequency(channel);
@@ -392,7 +358,6 @@ public abstract class AbstractHarmonica implements Harmonica {
         if (hasInverseCentsHandling(channel)) {
             frequency = Math.pow(2.0, 100.0 / 1200.0) * getChannelOutFrequency(channel);
         }
-        LOGGER.info("Return " + frequency);
         return frequency;
     }
 

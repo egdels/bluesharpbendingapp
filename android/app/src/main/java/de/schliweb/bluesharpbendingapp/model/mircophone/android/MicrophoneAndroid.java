@@ -37,7 +37,6 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 
 /**
  * The type Microphone android.
@@ -47,10 +46,6 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      * The constant BUFFER_SIZE.
      */
     private static final int BUFFER_SIZE = 4096;
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(MicrophoneAndroid.class);
     /**
      * The constant OVERLAP.
      */
@@ -62,7 +57,7 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
     /**
      * The Algo.
      */
-    private final PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.MPM;
+    private static final PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.MPM;
     /**
      * The Dispatcher.
      */
@@ -73,30 +68,18 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
     private MicrophoneHandler microphoneHandler;
 
     /**
-     * Instantiates a new Microphone android.
-     */
-    public MicrophoneAndroid() {
-        LOGGER.info("Created");
-    }
-
-    /**
      * Get supported algorithms string [ ].
      *
      * @return the string [ ]
      */
     @Override
     public String[] getSupportedAlgorithms() {
-        LOGGER.info("Enter");
         PitchProcessor.PitchEstimationAlgorithm[] values = PitchProcessor.PitchEstimationAlgorithm.values();
         ArrayList<String> algorithms = new ArrayList<>();
         for (PitchProcessor.PitchEstimationAlgorithm value : values) {
             algorithms.add(value.name());
         }
-        LOGGER.info("Return " + algorithms);
-        LOGGER.info("Return " + Arrays.toString(algorithms.toArray()));
-        return Arrays.copyOf(algorithms.toArray(),
-                algorithms.toArray().length,
-                String[].class);
+        return Arrays.copyOf(algorithms.toArray(), algorithms.toArray().length, String[].class);
     }
 
     /**
@@ -106,7 +89,6 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public String[] getSupportedMicrophones() {
-        LOGGER.info("Enter");
         // no need on android
         return new String[0];
     }
@@ -115,12 +97,10 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      * Close.
      */
     public void close() {
-        LOGGER.info("Enter");
         if (dispatcher != null) {
             dispatcher.stop();
             dispatcher = null;
         }
-        LOGGER.info("Leave");
     }
 
     /**
@@ -130,8 +110,6 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public String getAlgorithm() {
-        LOGGER.info("Enter");
-        LOGGER.info("Return" + algo.name());
         return algo.name();
     }
 
@@ -142,10 +120,7 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public void setAlgorithm(int index) {
-        LOGGER.info("Enter with parameter " + index);
-        // algo = PitchEstimationAlgorithm.values()[index]; not used on android to keep it simple
-        LOGGER.debug("has algorithm " + algo);
-        LOGGER.info("Leave");
+        // not used on android to keep it simple
     }
 
     /**
@@ -154,7 +129,6 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      * @return the microphone handler
      */
     private MicrophoneHandler getMicrophoneHandler() {
-        LOGGER.info("Enter");
         return microphoneHandler;
     }
 
@@ -165,9 +139,7 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public void setMicrophoneHandler(MicrophoneHandler microphoneHandler) {
-        LOGGER.info("Enter ");
         this.microphoneHandler = microphoneHandler;
-        LOGGER.info("Leave");
     }
 
     /**
@@ -177,7 +149,6 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public String getName() {
-        LOGGER.info("Enter");
         // no need on android
         return "";
     }
@@ -189,9 +160,7 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public void setName(int microphoneIndex) {
-        LOGGER.info("Enter with parameter " + microphoneIndex);
         // no need on android
-        LOGGER.info("Leave");
     }
 
     /**
@@ -200,8 +169,6 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
     @SuppressLint("MissingPermission")
     @Override
     public void open() {
-        LOGGER.info("Enter");
-
         if (dispatcher != null) {
             dispatcher.stop();
         }
@@ -214,7 +181,6 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
                 try {
                     dispatcher.run();
                 } catch (AssertionError e) {
-                    LOGGER.error("AssertionError " + e.getMessage());
                     open();
                 }
             }
@@ -231,24 +197,19 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
-        LOGGER.info("handlePitch");
         float pitch = 0;
         float probability = 0;
         double rms = 0;
         if (pitchDetectionResult.getPitch() != -1) {
-            double timeStamp = audioEvent.getTimeStamp();
             pitch = pitchDetectionResult.getPitch();
             probability = pitchDetectionResult.getProbability();
             rms = audioEvent.getRMS() * 100;
-            @SuppressLint("DefaultLocale") String message = String.format("Pitch detected at %.2fs: %.2fHz ( %.2f probability, RMS: %.5f )\n",
-                    timeStamp, pitch, probability, rms);
-            LOGGER.debug(message);
         }
-        MicrophoneHandler microphoneHandler = getMicrophoneHandler();
-        if (microphoneHandler != null) {
-            microphoneHandler.handle(pitch, rms, probability);
+        MicrophoneHandler handler = getMicrophoneHandler();
+        if (handler != null) {
+            handler.handle(pitch, rms, probability);
         }
-        LOGGER.info("Pitch handled");
+
     }
 }
 

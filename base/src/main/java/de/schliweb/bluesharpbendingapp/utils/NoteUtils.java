@@ -36,10 +36,8 @@ public class NoteUtils {
      */
     private static final int DECIMAL_PRECISION = 3;
 
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(NoteUtils.class);
+    private NoteUtils() {
+    }
 
     /**
      * Gets cents.
@@ -49,10 +47,7 @@ public class NoteUtils {
      * @return the cents
      */
     public static double getCents(double f1, double f2) {
-        LOGGER.info("Enter with parameters " + f1 + " " + f2);
-        double cents = (1200) * (Math.log((f1 / f2)) / Math.log(2));
-        LOGGER.info("Return " + cents);
-        return cents;
+        return (1200) * (Math.log((f1 / f2)) / Math.log(2));
     }
 
     /**
@@ -62,10 +57,8 @@ public class NoteUtils {
      * @return the double
      */
     public static double round(double value) {
-        LOGGER.info("Enter with parameter " + value);
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(DECIMAL_PRECISION, RoundingMode.FLOOR);
-        LOGGER.info("Return " + bd.doubleValue());
         return bd.doubleValue();
     }
 
