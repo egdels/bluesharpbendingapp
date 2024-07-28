@@ -40,11 +40,11 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
      */
     private static final HashMap<JPanel, HarpViewNoteElementDesktop> instances = new HashMap<>();
     /**
-     * The Note panel.
+     * The NoteContainer panel.
      */
     private final JPanel notePanel;
     /**
-     * The Note pane.
+     * The NoteContainer pane.
      */
     private NotePane notePane;
 
@@ -53,7 +53,7 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
      */
     private Color color = Color.black;
     /**
-     * The Note name.
+     * The NoteContainer name.
      */
     private String noteName = "";
 
@@ -76,10 +76,7 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
      * @return the instance
      */
     public static HarpViewNoteElementDesktop getInstance(JPanel notePanel) {
-        if (!instances.containsKey(notePanel)) {
-            instances.put(notePanel, new HarpViewNoteElementDesktop(notePanel));
-        }
-        return instances.get(notePanel);
+        return instances.computeIfAbsent(notePanel, HarpViewNoteElementDesktop::new);
     }
 
     /**

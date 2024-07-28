@@ -28,20 +28,20 @@ import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 /**
- * The type Note.
+ * The type NoteContainer.
  */
-public class Note implements Runnable {
+public class NoteContainer implements Runnable {
 
     /**
      * The Channel.
      */
     private final int channel;
     /**
-     * The Note.
+     * The NoteContainer.
      */
     private final int note;
     /**
-     * The Note name.
+     * The NoteContainer name.
      */
     private final String noteName;
     /**
@@ -70,20 +70,20 @@ public class Note implements Runnable {
     private double minFrequency;
 
     /**
-     * Instantiates a new Note.
+     * Instantiates a new NoteContainer.
      *
      * @param channel  the channel
      * @param note     the note
      * @param noteName the note name
      */
-    public Note(int channel, int note, String noteName) {
+    public NoteContainer(int channel, int note, String noteName) {
         this.channel = channel;
         this.note = note;
         this.noteName = noteName;
     }
 
     /**
-     * Instantiates a new Note.
+     * Instantiates a new NoteContainer.
      *
      * @param channel   the channel
      * @param note      the note
@@ -91,7 +91,7 @@ public class Note implements Runnable {
      * @param harmonica the harmonica
      * @param harpView  the harp view
      */
-    public Note(int channel, int note, String noteName, Harmonica harmonica, HarpView harpView) {
+    public NoteContainer(int channel, int note, String noteName, Harmonica harmonica, HarpView harpView) {
         this(channel, note, noteName);
         this.harpViewElement = harpView.getHarpViewElement(channel, note);
         this.minFrequency = harmonica.getNoteFrequencyMinimum(channel, note);
@@ -100,7 +100,7 @@ public class Note implements Runnable {
     }
 
     /**
-     * Instantiates a new Note.
+     * Instantiates a new NoteContainer.
      *
      * @param channel                 the channel
      * @param note                    the note
@@ -109,8 +109,8 @@ public class Note implements Runnable {
      * @param harpView                the harp view
      * @param hasInverseCentsHandling the has inverse cents handling
      */
-    public Note(int channel, int note, String noteName, Harmonica harmonica, HarpView harpView,
-                boolean hasInverseCentsHandling) {
+    public NoteContainer(int channel, int note, String noteName, Harmonica harmonica, HarpView harpView,
+                         boolean hasInverseCentsHandling) {
         this(channel, note, noteName, harmonica, harpView);
         this.hasInverseCentsHandling = hasInverseCentsHandling;
     }

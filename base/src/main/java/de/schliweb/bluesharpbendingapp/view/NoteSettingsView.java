@@ -24,7 +24,7 @@ package de.schliweb.bluesharpbendingapp.view;
  */
 
 /**
- * The interface Note settings view.
+ * The interface NoteContainer settings view.
  */
 public interface NoteSettingsView {
 

@@ -5,7 +5,7 @@ import java.awt.*;
 
 
 /**
- * The type Note pane.
+ * The type NoteContainer pane.
  */
 public class NotePane extends JPanel {
 
@@ -18,12 +18,12 @@ public class NotePane extends JPanel {
      */
     private double cents;
     /**
-     * The Note name.
+     * The NoteContainer name.
      */
     private String noteName;
 
     /**
-     * Instantiates a new Note pane.
+     * Instantiates a new NoteContainer pane.
      *
      * @param noteName the note name
      * @param color    the color
@@ -35,7 +35,7 @@ public class NotePane extends JPanel {
     }
 
     /**
-     * Instantiates a new Note pane.
+     * Instantiates a new NoteContainer pane.
      *
      * @param noteName the note name
      * @param color    the color
@@ -116,7 +116,7 @@ public class NotePane extends JPanel {
                 position = 0;
             }
             if(position+lineHeight>getHeight()) {
-                position = getHeight() - lineHeight;
+                position = getHeight() - (double) lineHeight;
             }
             gr.fillRect(0, (int) position, getWidth(), lineHeight);
         }

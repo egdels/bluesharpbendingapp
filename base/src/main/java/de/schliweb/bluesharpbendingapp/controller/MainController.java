@@ -65,7 +65,7 @@ public class MainController
     /**
      * The Notes.
      */
-    private Note[] notes;
+    private NoteContainer[] noteContainers;
 
     /**
      * Instantiates a new Main controller.
@@ -175,7 +175,7 @@ public class MainController
     @Override
     public void initNotes() {
         if (window.isHarpViewActive()) {
-            ArrayList<Note> notesList = new ArrayList<>();
+            ArrayList<NoteContainer> notesList = new ArrayList<>();
             Harmonica harmonica = model.getHarmonica();
             HarpView harpView = window.getHarpView();
 
@@ -185,13 +185,13 @@ public class MainController
                 boolean hasInverseCentsHandling = harmonica.hasInverseCentsHandling(channel);
                 Entry<String, Double> note0 = NoteLookup.getNote(frequency0);
                 assert note0 != null;
-                notesList.add(new Note(channel, 0, note0.getKey(), harmonica, harpView, hasInverseCentsHandling));
+                notesList.add(new NoteContainer(channel, 0, note0.getKey(), harmonica, harpView, hasInverseCentsHandling));
 
                 // Ziehtöne
                 double frequency1 = harmonica.getNoteFrequency(channel, 1);
                 Entry<String, Double> note1 = NoteLookup.getNote(frequency1);
                 assert note1 != null;
-                notesList.add(new Note(channel, 1, note1.getKey(), harmonica, harpView, hasInverseCentsHandling));
+                notesList.add(new NoteContainer(channel, 1, note1.getKey(), harmonica, harpView, hasInverseCentsHandling));
 
                 // Bendingtöne
                 int blowBendingCount = harmonica.getBlowBendingTonesCount(channel);
@@ -199,30 +199,30 @@ public class MainController
                 for (int note = 2; note < 2 + drawBendingCount; note++) {
                     Entry<String, Double> noteEntry = NoteLookup.getNote(harmonica.getNoteFrequency(channel, note));
                     assert noteEntry != null;
-                    notesList.add(new Note(channel, note, noteEntry.getKey(), harmonica, harpView));
+                    notesList.add(new NoteContainer(channel, note, noteEntry.getKey(), harmonica, harpView));
                 }
                 for (int note = -blowBendingCount; note < 0; note++) {
                     Entry<String, Double> noteEntry = NoteLookup.getNote(harmonica.getNoteFrequency(channel, note));
                     assert noteEntry != null;
-                    notesList.add(new Note(channel, note, noteEntry.getKey(), harmonica, harpView, true));
+                    notesList.add(new NoteContainer(channel, note, noteEntry.getKey(), harmonica, harpView, true));
                 }
 
                 // Overblows
                 if (!hasInverseCentsHandling) {
                     Entry<String, Double> noteEntry = NoteLookup.getNote(harmonica.getNoteFrequency(channel, -1));
                     assert noteEntry != null;
-                    notesList.add(new Note(channel, -1, noteEntry.getKey(), harmonica, harpView, false));
+                    notesList.add(new NoteContainer(channel, -1, noteEntry.getKey(), harmonica, harpView, false));
                 }
 
                 // Overdraws
                 if (hasInverseCentsHandling) {
                     Entry<String, Double> noteEntry = NoteLookup.getNote(harmonica.getNoteFrequency(channel, 2));
                     assert noteEntry != null;
-                    notesList.add(new Note(channel, 2, noteEntry.getKey(), harmonica, harpView, true));
+                    notesList.add(new NoteContainer(channel, 2, noteEntry.getKey(), harmonica, harpView, true));
                 }
             }
-            this.notes = Arrays.copyOf(notesList.toArray(), notesList.toArray().length, Note[].class);
-            harpView.initNotes(Arrays.copyOf(notesList.toArray(), notesList.toArray().length, Note[].class));
+            this.noteContainers = Arrays.copyOf(notesList.toArray(), notesList.toArray().length, NoteContainer[].class);
+            harpView.initNotes(Arrays.copyOf(notesList.toArray(), notesList.toArray().length, NoteContainer[].class));
         }
     }
 
@@ -250,10 +250,10 @@ public class MainController
      * @param frequency the frequency
      */
     private void updateHarpView(double frequency) {
-        if (window.isHarpViewActive() && this.notes != null) {
-            for (Note note : notes) {
-                note.setFrequencyToHandle(frequency);
-                (new Thread(note)).start();
+        if (window.isHarpViewActive() && this.noteContainers != null) {
+            for (NoteContainer noteContainer : noteContainers) {
+                noteContainer.setFrequencyToHandle(frequency);
+                (new Thread(noteContainer)).start();
             }
         }
     }

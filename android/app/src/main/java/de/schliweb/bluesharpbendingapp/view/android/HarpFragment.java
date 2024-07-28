@@ -38,7 +38,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.Note;
+import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentHarpBinding;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
@@ -107,8 +107,8 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * @param notes the notes
      */
     @Override
-    public void initNotes(Note[] notes) {
-        for (Note note : notes) {
+    public void initNotes(NoteContainer[] notes) {
+        for (NoteContainer note : notes) {
             initNote(note.getChannel(), note.getNote(), note.getNoteName());
             if (note.isOverblow() || note.isOverdraw()) {
                 setNoteColor(note.getChannel(), note.getNote());

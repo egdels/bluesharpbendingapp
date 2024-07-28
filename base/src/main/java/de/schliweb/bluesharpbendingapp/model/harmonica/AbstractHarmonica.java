@@ -327,9 +327,6 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     @Override
-    public abstract String getTuneName();
-
-    @Override
     public boolean hasInverseCentsHandling(int channel) {
         return getNoteFrequency(channel, 0) > getNoteFrequency(channel, 1);
     }

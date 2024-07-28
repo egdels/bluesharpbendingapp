@@ -24,7 +24,7 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 /**
- * The interface Note settings view handler.
+ * The interface NoteContainer settings view handler.
  */
 public interface NoteSettingsViewHandler {
 

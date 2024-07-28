@@ -25,7 +25,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import de.schliweb.bluesharpbendingapp.controller.Note;
+import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
@@ -485,26 +485,26 @@ public class HarpViewDesktop implements HarpView {
     }
 
     @Override
-    public void initNotes(Note[] notes) {
+    public void initNotes(NoteContainer[] noteContainers) {
 
         hideNotes();
-        for (Note note : notes) {
+        for (NoteContainer noteContainer : noteContainers) {
 
-            JPanel panel = getNotePanel(note.getChannel(), note.getNote());
+            JPanel panel = getNotePanel(noteContainer.getChannel(), noteContainer.getNote());
             panel.setVisible(true);
             HarpViewNoteElementDesktop harpViewNoteElementDesktop = HarpViewNoteElementDesktop.getInstance(panel);
 
             Color color = panel.getBackground();
-            if (note.isOverblow()) {
+            if (noteContainer.isOverblow()) {
                 color = OVERBLOW_COLOR;
                 panel.setBackground(color);
             }
-            if (note.isOverdraw()) {
+            if (noteContainer.isOverdraw()) {
                 color = OVERDRAW_COLOR;
                 panel.setBackground(color);
             }
             harpViewNoteElementDesktop.setColor(color);
-            harpViewNoteElementDesktop.setNoteName(note.getNoteName());
+            harpViewNoteElementDesktop.setNoteName(noteContainer.getNoteName());
         }
     }
 

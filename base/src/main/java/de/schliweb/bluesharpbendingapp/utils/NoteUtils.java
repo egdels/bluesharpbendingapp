@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * The type Note utils.
+ * The type NoteContainer utils.
  */
 public class NoteUtils {
 

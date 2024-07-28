@@ -381,11 +381,11 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
         /**
          * The Interval.
          */
-        static int interval = 10;
+        int interval = 10;
         /**
          * The Timer.
          */
-        static java.util.Timer timer;
+        java.util.Timer timer;
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {

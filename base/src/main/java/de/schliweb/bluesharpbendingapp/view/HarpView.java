@@ -23,7 +23,7 @@ package de.schliweb.bluesharpbendingapp.view;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.controller.Note;
+import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
 
 /**
  * The interface Harp view.
@@ -40,10 +40,10 @@ public interface HarpView {
     HarpViewNoteElement getHarpViewElement(int channel, int note);
 
     /**
-     * Init notes.
+     * Init noteContainers.
      *
-     * @param notes the notes
+     * @param noteContainers the noteContainers
      */
-    void initNotes(Note[] notes);
+    void initNotes(NoteContainer[] noteContainers);
 
 }

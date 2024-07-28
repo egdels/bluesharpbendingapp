@@ -106,7 +106,7 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
      */
     private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
     /**
-     * The Note settings view handler.
+     * The NoteContainer settings view handler.
      */
     private NoteSettingsViewHandler noteSettingsViewHandler;
 
@@ -207,6 +207,7 @@ public class MainWindowDesktop extends JDialog implements MainWindow {
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
                 onCancel();
             }

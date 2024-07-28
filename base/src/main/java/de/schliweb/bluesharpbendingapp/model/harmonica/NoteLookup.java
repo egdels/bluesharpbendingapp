@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 /**
- * The type Note lookup.
+ * The type NoteContainer lookup.
  */
 public class NoteLookup {
 
