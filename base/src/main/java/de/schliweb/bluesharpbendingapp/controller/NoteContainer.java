@@ -27,6 +27,9 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 /**
  * The type NoteContainer.
  */
@@ -68,6 +71,17 @@ public class NoteContainer implements Runnable {
      * The Min frequency.
      */
     private double minFrequency;
+
+    /**
+     * The Thread Executer.
+     */
+    private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+
+    /**
+     * The To Be Cleared.
+     */
+    private boolean  toBeCleared = false;
+
 
     /**
      * Instantiates a new NoteContainer.
@@ -151,8 +165,14 @@ public class NoteContainer implements Runnable {
             else {
                 harpViewElement.update(-cents);
             }
+            toBeCleared = true;
         } else {
-            harpViewElement.clear();
+            if(toBeCleared) {
+                exec.schedule(() -> {
+                    harpViewElement.clear();
+                    toBeCleared = false;
+                }, 100, TimeUnit.MILLISECONDS);
+            }
         }
     }
 

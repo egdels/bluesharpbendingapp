@@ -113,6 +113,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
             if (note.isOverblow() || note.isOverdraw()) {
                 setNoteColor(note.getChannel(), note.getNote());
             }
+            getHarpViewElement(note.getChannel(), note.getNote()).clear();
         }
     }
 

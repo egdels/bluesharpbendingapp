@@ -505,6 +505,7 @@ public class HarpViewDesktop implements HarpView {
             }
             harpViewNoteElementDesktop.setColor(color);
             harpViewNoteElementDesktop.setNoteName(noteContainer.getNoteName());
+            harpViewNoteElementDesktop.clear();
         }
     }
 
