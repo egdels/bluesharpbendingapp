@@ -147,6 +147,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
             setSelectedConcertPitch(model.getStoredConcertPitchIndex());
             setSelectedKey(model.getStoredKeyIndex());
             setSelectedTune(model.getStoredTuneIndex());
+            setSelectedAlgorithm(model.getStoredAlgorithmIndex());
             initScreenLock(model.getStoredLockScreenIndex());
         });
 
@@ -243,7 +244,21 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setAlgorithms(String[] algorithms) {
-        // on android do nothing
+        Spinner spinner = binding.settingsAlgoList;
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, algorithms);
+        adapter.setDropDownViewResource(R.layout.spinner_list);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        microphoneSettingsViewHandler.handleAlgorithmSelection(((int) id));
+                    }
+
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        // no need
+                    }
+                }
+        );
     }
 
     /**
@@ -273,7 +288,8 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setSelectedAlgorithm(int i) {
-        // on android do nothing
+        Spinner spinner = binding.settingsAlgoList;
+        spinner.setSelection(i);
     }
 
     /**

@@ -31,7 +31,7 @@ public class PaddyRichterHarmonica extends AbstractHarmonica {
      * The constant HALF_TONES_IN.
      * <p>D G H D F# A H D F# A</p>
      */
-    private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 18, 21, 23, 26, 30, 33};
+    private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 17, 21, 23, 26, 29, 33};
 
     /**
      * The constant HALF_TONES_OUT.

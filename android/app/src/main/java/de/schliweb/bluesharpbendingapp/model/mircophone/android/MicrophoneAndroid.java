@@ -57,7 +57,7 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
     /**
      * The Algo.
      */
-    private static final PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.MPM;
+    private PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.MPM;
     /**
      * The Dispatcher.
      */
@@ -120,7 +120,7 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
      */
     @Override
     public void setAlgorithm(int index) {
-        // not used on android to keep it simple
+        algo = PitchEstimationAlgorithm.values()[index];
     }
 
     /**

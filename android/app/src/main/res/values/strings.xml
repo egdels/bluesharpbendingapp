@@ -40,4 +40,5 @@
     <string name="permission_information_message">To utilize the application properly, access to the microphone is necessary. If you have any doubts, check the privacy policy for this application.</string>
     <string name="permission_information_title">Information</string>
     <string name="permission_information_button_label">Proceed anyway</string>
+    <string name="settings_algo_label">Algorithms</string>
 </resources>

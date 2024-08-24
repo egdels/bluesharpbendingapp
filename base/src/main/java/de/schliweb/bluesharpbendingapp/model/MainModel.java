@@ -76,7 +76,7 @@ public class MainModel {
     /**
      * The Stored concert pitch index.
      */
-    private int storedConcertPitchIndex = 9;
+    private int storedConcertPitchIndex = 11;
 
     /**
      * The Stored lock screen index.

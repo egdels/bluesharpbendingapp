@@ -24,27 +24,28 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Melody maker harmonica.
+ * The type Circular harmonica.
  */
-public class MelodyMakerHarmonica extends AbstractHarmonica {
+public class CircularHarmonica extends AbstractHarmonica {
+
     /**
      * The constant HALF_TONES_IN.
      * <p>D G H D F A H D F A</p>
      */
-    private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 18, 21, 23, 26, 29, 33};
+    private static final int[] HALF_TONES_IN = {0, 2, 5, 9, 12, 16, 19, 22, 26, 29, 33};
 
     /**
      * The constant HALF_TONES_OUT.
-     * <p>C E A C E G C E G C</p>
+     * <p>C E G H D F A C E G</p>
      */
-    private static final int[] HALF_TONES_OUT = {0, 0, 4, 9, 12, 16, 19, 24, 28, 31, 36};
+    private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 10, 14, 17, 21, 24, 28, 31};
 
     /**
-     * Instantiates a new Melody maker harmonica.
+     * Instantiates a new Circular harmonica.
      *
      * @param keyFrequency the key frequency
      */
-    public MelodyMakerHarmonica(double keyFrequency) {
+    public CircularHarmonica(double keyFrequency) {
         super(keyFrequency);
     }
 
@@ -60,6 +61,6 @@ public class MelodyMakerHarmonica extends AbstractHarmonica {
 
     @Override
     public String getTuneName() {
-        return TUNE.MELODYMAKER.name();
+        return TUNE.CIRCULAR.name();
     }
 }

@@ -24,27 +24,29 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Melody maker harmonica.
+ * The type Augmented harmonica.
  */
-public class MelodyMakerHarmonica extends AbstractHarmonica {
+public class AugmentedHarmonica extends AbstractHarmonica {
+
     /**
      * The constant HALF_TONES_IN.
-     * <p>D G H D F A H D F A</p>
+     * <p>Eb G B Eb	G B	Eb G B Eb</p>
      */
-    private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 18, 21, 23, 26, 29, 33};
+    private static final int[] HALF_TONES_IN = {0, 3, 7, 11, 15, 19, 23, 27, 31, 35, 39};
 
     /**
      * The constant HALF_TONES_OUT.
-     * <p>C E A C E G C E G C</p>
+     * <p>C E G# C E G# C E G# C</p>
      */
-    private static final int[] HALF_TONES_OUT = {0, 0, 4, 9, 12, 16, 19, 24, 28, 31, 36};
+    private static final int[] HALF_TONES_OUT = {0, 0, 4, 8, 12, 16, 20, 24, 28, 32, 36};
+
 
     /**
-     * Instantiates a new Melody maker harmonica.
+     * Instantiates a new Augmented harmonica.
      *
      * @param keyFrequency the key frequency
      */
-    public MelodyMakerHarmonica(double keyFrequency) {
+    public AugmentedHarmonica(double keyFrequency) {
         super(keyFrequency);
     }
 
@@ -60,6 +62,6 @@ public class MelodyMakerHarmonica extends AbstractHarmonica {
 
     @Override
     public String getTuneName() {
-        return TUNE.MELODYMAKER.name();
+        return TUNE.AUGMENTED.name();
     }
 }

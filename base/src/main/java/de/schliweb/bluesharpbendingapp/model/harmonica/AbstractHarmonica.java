@@ -148,6 +148,12 @@ public abstract class AbstractHarmonica implements Harmonica {
         if (TUNE.NATURALMOLL.equals(tune)) {
             harmonica = new NaturalMollHarmonica(key.getFrequency());
         }
+        if(TUNE.CIRCULAR.equals(tune)) {
+            harmonica = new CircularHarmonica(key.getFrequency());
+        }
+        if(TUNE.AUGMENTED.equals(tune)) {
+            harmonica = new AugmentedHarmonica(key.getFrequency());
+        }
         return harmonica;
     }
 
@@ -548,6 +554,14 @@ public abstract class AbstractHarmonica implements Harmonica {
         /**
          * Richter tune.
          */
-        RICHTER
+        RICHTER,
+        /**
+         * Circular tune.
+         */
+        CIRCULAR,
+        /**
+         * Augmented tune.
+         */
+        AUGMENTED
     }
 }
