@@ -387,94 +387,254 @@ public class HarpViewDesktop implements HarpView {
     private void hideNotes() {
 
 
-        channel1NoteM3.setVisible(false);
-        channel2NoteM3.setVisible(false);
-        channel3NoteM3.setVisible(false);
-        channel4NoteM3.setVisible(false);
-        channel5NoteM3.setVisible(false);
-        channel6NoteM3.setVisible(false);
-        channel7NoteM3.setVisible(false);
-        channel8NoteM3.setVisible(false);
-        channel9NoteM3.setVisible(false);
-        channel10NoteM3.setVisible(false);
+        if (channel1NoteM3 != null) {
+            channel1NoteM3.setVisible(false);
+        }
+        if (channel2NoteM3 != null) {
+            channel2NoteM3.setVisible(false);
+        }
+        if (channel3NoteM3 != null) {
+            channel3NoteM3.setVisible(false);
+        }
+        if (channel4NoteM3 != null) {
+            channel4NoteM3.setVisible(false);
+        }
+        if (channel5NoteM3 != null) {
+            channel5NoteM3.setVisible(false);
+        }
+        if (channel6NoteM3 != null) {
+            channel6NoteM3.setVisible(false);
+        }
+        if (channel7NoteM3 != null) {
+            channel7NoteM3.setVisible(false);
+        }
+        if (channel8NoteM3 != null) {
+            channel8NoteM3.setVisible(false);
+        }
+        if (channel9NoteM3 != null) {
+            channel9NoteM3.setVisible(false);
+        }
+        if (channel10NoteM3 != null) {
+            channel10NoteM3.setVisible(false);
+        }
 
-        channel1NoteM2.setVisible(false);
-        channel2NoteM2.setVisible(false);
-        channel3NoteM2.setVisible(false);
-        channel4NoteM2.setVisible(false);
-        channel5NoteM2.setVisible(false);
-        channel6NoteM2.setVisible(false);
-        channel7NoteM2.setVisible(false);
-        channel8NoteM2.setVisible(false);
-        channel9NoteM2.setVisible(false);
-        channel10NoteM2.setVisible(false);
+        if (channel1NoteM2 != null) {
+            channel1NoteM2.setVisible(false);
+        }
+        if (channel2NoteM2 != null) {
+            channel2NoteM2.setVisible(false);
+        }
+        if (channel3NoteM2 != null) {
+            channel3NoteM2.setVisible(false);
+        }
+        if (channel4NoteM2 != null) {
+            channel4NoteM2.setVisible(false);
+        }
+        if (channel5NoteM2 != null) {
+            channel5NoteM2.setVisible(false);
+        }
+        if (channel6NoteM2 != null) {
+            channel6NoteM2.setVisible(false);
+        }
+        if (channel7NoteM2 != null) {
+            channel7NoteM2.setVisible(false);
+        }
+        if (channel8NoteM2 != null) {
+            channel8NoteM2.setVisible(false);
+        }
+        if (channel9NoteM2 != null) {
+            channel9NoteM2.setVisible(false);
+        }
+        if (channel10NoteM2 != null) {
+            channel10NoteM2.setVisible(false);
+        }
 
 
-        channel1NoteM1.setVisible(false);
-        channel2NoteM1.setVisible(false);
-        channel3NoteM1.setVisible(false);
-        channel4NoteM1.setVisible(false);
-        channel5NoteM1.setVisible(false);
-        channel6NoteM1.setVisible(false);
-        channel7NoteM1.setVisible(false);
-        channel8NoteM1.setVisible(false);
-        channel9NoteM1.setVisible(false);
-        channel10NoteM1.setVisible(false);
+        if (channel1NoteM1 != null) {
+            channel1NoteM1.setVisible(false);
+        }
+        if (channel2NoteM1 != null) {
+            channel2NoteM1.setVisible(false);
+        }
+        if (channel3NoteM1 != null) {
+            channel3NoteM1.setVisible(false);
+        }
+        if (channel4NoteM1 != null) {
+            channel4NoteM1.setVisible(false);
+        }
+        if (channel5NoteM1 != null) {
+            channel5NoteM1.setVisible(false);
+        }
+        if (channel6NoteM1 != null) {
+            channel6NoteM1.setVisible(false);
+        }
+        if (channel7NoteM1 != null) {
+            channel7NoteM1.setVisible(false);
+        }
+        if (channel8NoteM1 != null) {
+            channel8NoteM1.setVisible(false);
+        }
+        if (channel9NoteM1 != null) {
+            channel9NoteM1.setVisible(false);
+        }
+        if (channel10NoteM1 != null) {
+            channel10NoteM1.setVisible(false);
+        }
 
-        channel1Note0.setVisible(false);
-        channel2Note0.setVisible(false);
-        channel3Note0.setVisible(false);
-        channel4Note0.setVisible(false);
-        channel5Note0.setVisible(false);
-        channel6Note0.setVisible(false);
-        channel7Note0.setVisible(false);
-        channel8Note0.setVisible(false);
-        channel9Note0.setVisible(false);
-        channel10Note0.setVisible(false);
+        if (channel1Note0 != null) {
+            channel1Note0.setVisible(false);
+        }
+        if (channel2Note0 != null) {
+            channel2Note0.setVisible(false);
+        }
+        if (channel3Note0 != null) {
+            channel3Note0.setVisible(false);
+        }
+        if (channel4Note0 != null) {
+            channel4Note0.setVisible(false);
+        }
+        if (channel5Note0 != null) {
+            channel5Note0.setVisible(false);
+        }
+        if (channel6Note0 != null) {
+            channel6Note0.setVisible(false);
+        }
+        if (channel7Note0 != null) {
+            channel7Note0.setVisible(false);
+        }
+        if (channel8Note0 != null) {
+            channel8Note0.setVisible(false);
+        }
+        if (channel9Note0 != null) {
+            channel9Note0.setVisible(false);
+        }
+        if (channel10Note0 != null) {
+            channel10Note0.setVisible(false);
+        }
 
-        channel1Note1.setVisible(false);
-        channel2Note1.setVisible(false);
-        channel3Note1.setVisible(false);
-        channel4Note1.setVisible(false);
-        channel5Note1.setVisible(false);
-        channel6Note1.setVisible(false);
-        channel7Note1.setVisible(false);
-        channel8Note1.setVisible(false);
-        channel9Note1.setVisible(false);
-        channel10Note1.setVisible(false);
+        if (channel1Note1 != null) {
+            channel1Note1.setVisible(false);
+        }
+        if (channel2Note1 != null) {
+            channel2Note1.setVisible(false);
+        }
+        if (channel3Note1 != null) {
+            channel3Note1.setVisible(false);
+        }
+        if (channel4Note1 != null) {
+            channel4Note1.setVisible(false);
+        }
+        if (channel5Note1 != null) {
+            channel5Note1.setVisible(false);
+        }
+        if (channel6Note1 != null) {
+            channel6Note1.setVisible(false);
+        }
+        if (channel7Note1 != null) {
+            channel7Note1.setVisible(false);
+        }
+        if (channel8Note1 != null) {
+            channel8Note1.setVisible(false);
+        }
+        if (channel9Note1 != null) {
+            channel9Note1.setVisible(false);
+        }
+        if (channel10Note1 != null) {
+            channel10Note1.setVisible(false);
+        }
 
-        channel1Note2.setVisible(false);
-        channel2Note2.setVisible(false);
-        channel3Note2.setVisible(false);
-        channel4Note2.setVisible(false);
-        channel5Note2.setVisible(false);
-        channel6Note2.setVisible(false);
-        channel7Note2.setVisible(false);
-        channel8Note2.setVisible(false);
-        channel9Note2.setVisible(false);
-        channel10Note2.setVisible(false);
+        if (channel1Note2 != null) {
+            channel1Note2.setVisible(false);
+        }
+        if (channel2Note2 != null) {
+            channel2Note2.setVisible(false);
+        }
+        if (channel3Note2 != null) {
+            channel3Note2.setVisible(false);
+        }
+        if (channel4Note2 != null) {
+            channel4Note2.setVisible(false);
+        }
+        if (channel5Note2 != null) {
+            channel5Note2.setVisible(false);
+        }
+        if (channel6Note2 != null) {
+            channel6Note2.setVisible(false);
+        }
+        if (channel7Note2 != null) {
+            channel7Note2.setVisible(false);
+        }
+        if (channel8Note2 != null) {
+            channel8Note2.setVisible(false);
+        }
+        if (channel9Note2 != null) {
+            channel9Note2.setVisible(false);
+        }
+        if (channel10Note2 != null) {
+            channel10Note2.setVisible(false);
+        }
 
-        channel1Note3.setVisible(false);
-        channel2Note3.setVisible(false);
-        channel3Note3.setVisible(false);
-        channel4Note3.setVisible(false);
-        channel5Note3.setVisible(false);
-        channel6Note3.setVisible(false);
-        channel7Note3.setVisible(false);
-        channel8Note3.setVisible(false);
-        channel9Note3.setVisible(false);
-        channel10Note3.setVisible(false);
+        if (channel1Note3 != null) {
+            channel1Note3.setVisible(false);
+        }
+        if (channel2Note3 != null) {
+            channel2Note3.setVisible(false);
+        }
+        if (channel3Note3 != null) {
+            channel3Note3.setVisible(false);
+        }
+        if (channel4Note3 != null) {
+            channel4Note3.setVisible(false);
+        }
+        if (channel5Note3 != null) {
+            channel5Note3.setVisible(false);
+        }
+        if (channel6Note3 != null) {
+            channel6Note3.setVisible(false);
+        }
+        if (channel7Note3 != null) {
+            channel7Note3.setVisible(false);
+        }
+        if (channel8Note3 != null) {
+            channel8Note3.setVisible(false);
+        }
+        if (channel9Note3 != null) {
+            channel9Note3.setVisible(false);
+        }
+        if (channel10Note3 != null) {
+            channel10Note3.setVisible(false);
+        }
 
-        channel1Note4.setVisible(false);
-        channel2Note4.setVisible(false);
-        channel3Note4.setVisible(false);
-        channel4Note4.setVisible(false);
-        channel5Note4.setVisible(false);
-        channel6Note4.setVisible(false);
-        channel7Note4.setVisible(false);
-        channel8Note4.setVisible(false);
-        channel9Note4.setVisible(false);
-        channel10Note4.setVisible(false);
+        if (channel1Note4 != null) {
+            channel1Note4.setVisible(false);
+        }
+        if (channel2Note4 != null) {
+            channel2Note4.setVisible(false);
+        }
+        if (channel3Note4 != null) {
+            channel3Note4.setVisible(false);
+        }
+        if (channel4Note4 != null) {
+            channel4Note4.setVisible(false);
+        }
+        if (channel5Note4 != null) {
+            channel5Note4.setVisible(false);
+        }
+        if (channel6Note4 != null) {
+            channel6Note4.setVisible(false);
+        }
+        if (channel7Note4 != null) {
+            channel7Note4.setVisible(false);
+        }
+        if (channel8Note4 != null) {
+            channel8Note4.setVisible(false);
+        }
+        if (channel9Note4 != null) {
+            channel9Note4.setVisible(false);
+        }
+        if (channel10Note4 != null) {
+            channel10Note4.setVisible(false);
+        }
 
 
     }

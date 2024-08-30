@@ -40,7 +40,7 @@ import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentSettingsBinding;
-import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.AndroidModel;
 
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
@@ -143,7 +143,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         viewModel.selectFragmentView(this);
 
         binding.settingsResetButton.setOnClickListener(v -> {
-            MainModel model = new MainModel();
+            AndroidModel model = new AndroidModel();
             setSelectedConcertPitch(model.getStoredConcertPitchIndex());
             setSelectedKey(model.getStoredKeyIndex());
             setSelectedTune(model.getStoredTuneIndex());

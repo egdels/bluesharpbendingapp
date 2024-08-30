@@ -38,7 +38,6 @@ import java.util.Map.Entry;
 /**
  * The type Main controller.
  */
-@SuppressWarnings("unused")
 public class MainController
         implements MicrophoneHandler, MicrophoneSettingsViewHandler, HarpSettingsViewHandler, HarpViewHandler, NoteSettingsViewHandler {
 

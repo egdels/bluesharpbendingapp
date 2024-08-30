@@ -10,17 +10,13 @@ import java.awt.*;
 public class NotePane extends JPanel {
 
     /**
-     * The Color.
-     */
-    private Color color;
-    /**
      * The Cents.
      */
     private double cents;
     /**
      * The NoteContainer name.
      */
-    private String noteName;
+    private final String noteName;
 
     /**
      * Instantiates a new NoteContainer pane.
@@ -42,63 +38,8 @@ public class NotePane extends JPanel {
      */
     public NotePane(String noteName, Color color) {
         this.noteName = noteName;
-        this.color = color;
         this.cents = -1000;
         setBackground(color);
-    }
-
-    /**
-     * Gets cents.
-     *
-     * @return the cents
-     */
-    public double getCents() {
-        return cents;
-    }
-
-    /**
-     * Sets cents.
-     *
-     * @param cents the cents
-     */
-    public void setCents(double cents) {
-        this.cents = cents;
-    }
-
-    /**
-     * Gets color.
-     *
-     * @return the color
-     */
-    public Color getColor() {
-        return color;
-    }
-
-    /**
-     * Sets color.
-     *
-     * @param color the color
-     */
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    /**
-     * Gets note name.
-     *
-     * @return the note name
-     */
-    public String getNoteName() {
-        return noteName;
-    }
-
-    /**
-     * Sets note name.
-     *
-     * @param noteName the note name
-     */
-    public void setNoteName(String noteName) {
-        this.noteName = noteName;
     }
 
     @Override

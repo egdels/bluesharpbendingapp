@@ -79,11 +79,6 @@ public class MainModel {
     private int storedConcertPitchIndex = 11;
 
     /**
-     * The Stored lock screen index.
-     */
-    private int storedLockScreenIndex = 0;
-
-    /**
      * Create from string main model.
      *
      * @param string the string
@@ -112,24 +107,6 @@ public class MainModel {
             }
         }
         return model;
-    }
-
-    /**
-     * Gets stored lock screen index.
-     *
-     * @return the stored lock screen index
-     */
-    public int getStoredLockScreenIndex() {
-        return storedLockScreenIndex;
-    }
-
-    /**
-     * Sets stored lock screen index.
-     *
-     * @param storedlockScreenIndex the storedlock screen index
-     */
-    public void setStoredLockScreenIndex(int storedlockScreenIndex) {
-        this.storedLockScreenIndex = storedlockScreenIndex;
     }
 
     /**
@@ -388,6 +365,11 @@ public class MainModel {
         return AbstractHarmonica.getSupportedTunes();
     }
 
+    /**
+     * Gets string.
+     *
+     * @return the string
+     */
     public String getString() {
         Method[] methods = this.getClass().getMethods();
         ArrayList<String> stringList = new ArrayList<>();

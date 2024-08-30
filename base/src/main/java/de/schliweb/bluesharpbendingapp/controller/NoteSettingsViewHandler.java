@@ -33,13 +33,11 @@ public interface NoteSettingsViewHandler {
      *
      * @param pitchIndex the pitch index
      */
-    @SuppressWarnings("unused")
     void handleConcertPitchSelection(int pitchIndex);
 
     /**
      * Init concert pitch list.
      */
-    @SuppressWarnings("unused")
     void initConcertPitchList();
 
 }

@@ -32,7 +32,6 @@ public interface MicrophoneSettingsViewHandler {
      *
      * @param algorithmIndex the algorithm index
      */
-    @SuppressWarnings("unused")
     void handleAlgorithmSelection(int algorithmIndex);
 
     /**
@@ -40,18 +39,15 @@ public interface MicrophoneSettingsViewHandler {
      *
      * @param microphoneIndex the microphone index
      */
-    @SuppressWarnings("unused")
     void handleMicrophoneSelection(int microphoneIndex);
 
     /**
      * Init algorithm list.
      */
-    @SuppressWarnings("unused")
     void initAlgorithmList();
 
     /**
      * Init microphone list.
      */
-    @SuppressWarnings("unused")
     void initMicrophoneList();
 }

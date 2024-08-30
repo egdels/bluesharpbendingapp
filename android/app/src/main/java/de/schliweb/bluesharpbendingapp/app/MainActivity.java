@@ -54,7 +54,7 @@ import de.schliweb.bluesharpbendingapp.controller.MainController;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.ActivityMainBinding;
-import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.AndroidModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.mircophone.android.MicrophoneAndroid;
@@ -112,9 +112,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
     /**
-     * The Main model.
+     * The Android model.
      */
-    private MainModel mainModel;
+    private AndroidModel model;
     /**
      * The Is paused.
      */
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      *
      * @param model the model
      */
-    private void storeModel(MainModel model) {
+    private void storeModel(AndroidModel model) {
         
         File directory = this.getApplicationContext().getCacheDir();
         File file = new File(directory, TEMP_FILE);
@@ -159,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      *
      * @return the main model
      */
-    private MainModel readModel() {
+    private AndroidModel readModel() {
 
-        MainModel model = new MainModel();
+        AndroidModel model = new AndroidModel();
         File directory = this.getApplicationContext().getCacheDir();
         File file = new File(directory, TEMP_FILE);
 
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
 
             String line = bw.readLine();
             if (line != null)
-                model = MainModel.createFromString(line);
+                model = AndroidModel.createFromString(line);
 
 
         } catch (IOException e) {
@@ -192,11 +192,11 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         Logger.setDebug(false);
         Logger.setInfo(false);
 
-        mainModel = readModel();
+        model = readModel();
 
         Microphone microphone = new MicrophoneAndroid();
-        mainModel.setMicrophone(microphone);
-        mainModel.setHarmonica(AbstractHarmonica.create(mainModel.getStoredKeyIndex(), mainModel.getStoredTuneIndex()));
+        model.setMicrophone(microphone);
+        model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
 
         // check permission
         permissionGranted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
@@ -221,24 +221,24 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
                 settingsFragment.getMicrophoneSettingsViewHandler().initAlgorithmList();
                 settingsFragment.getMicrophoneSettingsViewHandler().initMicrophoneList();
                 settingsFragment.getNoteSettingsViewHandler().initConcertPitchList();
-                settingsFragment.initScreenLock(mainModel.getStoredLockScreenIndex());
+                settingsFragment.initScreenLock(model.getStoredLockScreenIndex());
 
-                mainModel.getMicrophone().setMicrophoneHandler(mainController);
+                model.getMicrophone().setMicrophoneHandler(mainController);
 
             }
             if (item.getInstance() instanceof HarpFragment) {
                 HarpFragment harpFragment = (HarpFragment) item.getInstance();
                 harpFragment.setHarpViewHandler(getHarpViewHandler());
                 harpFragment.getHarpViewHandler().initNotes();
-                mainModel.getMicrophone().setMicrophoneHandler(mainController);
+                model.getMicrophone().setMicrophoneHandler(mainController);
             }
             if (item.getInstance() instanceof AboutFragment) {
-                mainModel.getMicrophone().setMicrophoneHandler(null);
+                model.getMicrophone().setMicrophoneHandler(null);
             }
         });
 
 
-        mainController = new MainController(this, mainModel);
+        mainController = new MainController(this, model);
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         hideAppBar();
         hideNavigationBar();
 
-        handleLookScreen(mainModel.getStoredLockScreenIndex() > 0);
+        handleLookScreen(model.getStoredLockScreenIndex() > 0);
 
         if (permissionGranted) {
             microphone.open();
@@ -342,9 +342,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
                 if(!permissionGranted) {
                     showPermissionInformation();
                 }
-                Microphone microphone = mainModel.getMicrophone();
+                Microphone microphone = model.getMicrophone();
                 if (permissionGranted && microphone != null) {
-                    mainModel.getMicrophone().open();
+                    model.getMicrophone().open();
                 }
             });
 
@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         // onDestroy wird nicht immer ausgeführt, daher auch beim Wechsel der View Speichern
-        storeModel(mainModel);
+        storeModel(model);
 
         if (id == R.id.action_settings) {
             Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_to_SettingsFragment);
@@ -495,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Override
     public void onDestroy() {
         super.onDestroy();
-        storeModel(mainModel);
+        storeModel(model);
     }
 
     /**
@@ -581,9 +581,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Override
     protected void onResume() {
         super.onResume();
-        Microphone microphone = mainModel.getMicrophone();
+        Microphone microphone = model.getMicrophone();
         if (isPaused && permissionGranted && microphone != null) {
-            mainModel.getMicrophone().open();
+            model.getMicrophone().open();
         }
         isPaused = false;
     }
@@ -595,9 +595,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     protected void onPause() {
         super.onPause();
         isPaused = true;
-        Microphone microphone = mainModel.getMicrophone();
+        Microphone microphone = model.getMicrophone();
         if (permissionGranted && microphone != null) {
-            mainModel.getMicrophone().close();
+            model.getMicrophone().close();
         }
     }
 
@@ -608,7 +608,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     @Override
     public void handleLookScreen(boolean isLookScreen) {
-        mainModel.setStoredLockScreenIndex(isLookScreen ? 1 : 0);
+        model.setStoredLockScreenIndex(isLookScreen ? 1 : 0);
         if (isLookScreen) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
