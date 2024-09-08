@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.webapp;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -235,9 +235,7 @@ public class NoteLookup {
     private static void updateLookup() {
         double cents = NoteUtils.getCents(concertPitch, DEFAULT_CONCERT_PITCH_FREQUENCY);
         for (Entry<String, Double> note : notes.entrySet()) {
-            double noteFrequency = note.getValue();
-            double newNoteFrequency = NoteUtils.round(Math.pow(2.0, cents / 1200.0) * noteFrequency);
-            note.setValue(newNoteFrequency);
+            note.setValue(NoteUtils.round(NoteUtils.addCentsToFrequency(cents, note.getValue())));
         }
     }
 

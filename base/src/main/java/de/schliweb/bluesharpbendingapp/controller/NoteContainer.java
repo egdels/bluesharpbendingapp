@@ -48,6 +48,10 @@ public class NoteContainer implements Runnable {
      */
     private final String noteName;
     /**
+     * The Thread Executer.
+     */
+    private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    /**
      * The Frequency to handle.
      */
     private double frequencyToHandle;
@@ -71,16 +75,10 @@ public class NoteContainer implements Runnable {
      * The Min frequency.
      */
     private double minFrequency;
-
-    /**
-     * The Thread Executer.
-     */
-    private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
-
     /**
      * The To Be Cleared.
      */
-    private boolean  toBeCleared = false;
+    private boolean toBeCleared = false;
 
 
     /**
@@ -167,7 +165,7 @@ public class NoteContainer implements Runnable {
             }
             toBeCleared = true;
         } else {
-            if(toBeCleared) {
+            if (toBeCleared) {
                 exec.schedule(() -> {
                     harpViewElement.clear();
                     toBeCleared = false;

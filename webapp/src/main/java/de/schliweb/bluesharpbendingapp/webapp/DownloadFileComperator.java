@@ -22,10 +22,11 @@ package de.schliweb.bluesharpbendingapp.webapp;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 /**
  * The type Download file comperator.
  */
-public class DownloadFileComperator implements java.util.Comparator<DownloadFile>  {
+public class DownloadFileComperator implements java.util.Comparator<DownloadFile> {
 
     @Override
     public int compare(DownloadFile downloadFile1, DownloadFile downloadFile2) {

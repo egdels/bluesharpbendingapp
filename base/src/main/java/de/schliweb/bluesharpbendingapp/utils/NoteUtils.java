@@ -62,4 +62,15 @@ public class NoteUtils {
         return bd.doubleValue();
     }
 
+    /**
+     * Add cents to frequency double.
+     *
+     * @param cents     the cents
+     * @param frequency the frequency
+     * @return the double
+     */
+    public static double addCentsToFrequency(double cents, double frequency) {
+        return (Math.pow(2.0, cents / 1200.0) * frequency);
+    }
+
 }

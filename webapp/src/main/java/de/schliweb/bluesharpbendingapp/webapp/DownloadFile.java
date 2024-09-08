@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.webapp;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import lombok.Getter;
 import lombok.Setter;
 

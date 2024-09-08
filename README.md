@@ -26,8 +26,8 @@ The software project consists of several subprojects, which are listed below:
 * [android](android): <br>Gradle project for the Android version. The standard
   library [MediaRecorder](https://developer.android.com/reference/android/media/MediaRecorder) is used to read the
   microphone. Here too, the data stream is not persisted, but only evaluated at runtime for frequency determination.
-* [webapp](webapp): <br>SpringBootApplication. Responsive website for the app, which is linked in the Amazon App Store 
-  and Google Play Store. In particular, the necessary privacy policy for the Android version is provided here. There 
+* [webapp](webapp): <br>SpringBootApplication. Responsive website for the app, which is linked in the Amazon App Store
+  and Google Play Store. In particular, the necessary privacy policy for the Android version is provided here. There
   is a language switch based on AcceptHeaderLocaleResolver
   that displays the content of the website in either English or German depending on the language setting of the browser.
 * [debian-build](debian-build): <br>Maven project for creating the Debian package

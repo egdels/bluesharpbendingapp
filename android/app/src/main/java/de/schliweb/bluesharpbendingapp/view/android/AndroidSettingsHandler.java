@@ -5,11 +5,11 @@ package de.schliweb.bluesharpbendingapp.view.android;
  */
 public interface AndroidSettingsHandler {
 
-   /**
-    * Handle look screen.
-    *
-    * @param isLookScreen the is look screen
-    */
-   void handleLookScreen (boolean isLookScreen);
+    /**
+     * Handle look screen.
+     *
+     * @param isLookScreen the is look screen
+     */
+    void handleLookScreen(boolean isLookScreen);
 
 }

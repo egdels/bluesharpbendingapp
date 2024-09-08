@@ -116,6 +116,20 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     private AndroidModel model;
     /**
+     * The Request permission launcher.
+     */
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                permissionGranted = isGranted;
+                if (!permissionGranted) {
+                    showPermissionInformation();
+                }
+                Microphone microphone = model.getMicrophone();
+                if (permissionGranted && microphone != null) {
+                    model.getMicrophone().open();
+                }
+            });
+    /**
      * The Is paused.
      */
     private boolean isPaused = false;
@@ -138,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * @param model the model
      */
     private void storeModel(AndroidModel model) {
-        
+
         File directory = this.getApplicationContext().getCacheDir();
         File file = new File(directory, TEMP_FILE);
 
@@ -334,24 +348,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     }
 
     /**
-     * The Request permission launcher.
-     */
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                permissionGranted = isGranted;
-                if(!permissionGranted) {
-                    showPermissionInformation();
-                }
-                Microphone microphone = model.getMicrophone();
-                if (permissionGranted && microphone != null) {
-                    model.getMicrophone().open();
-                }
-            });
-
-    /**
      * Show permission information.
      */
-    private void showPermissionInformation () {
+    private void showPermissionInformation() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
         builder.setMessage(R.string.permission_information_message);

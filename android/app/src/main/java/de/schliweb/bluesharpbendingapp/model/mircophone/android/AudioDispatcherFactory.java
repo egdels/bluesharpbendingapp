@@ -36,8 +36,9 @@ import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
  */
 public class AudioDispatcherFactory {
 
-	private AudioDispatcherFactory () {}	
-	
+    private AudioDispatcherFactory() {
+    }
+
     /**
      * From default microphone audio dispatcher.
      *

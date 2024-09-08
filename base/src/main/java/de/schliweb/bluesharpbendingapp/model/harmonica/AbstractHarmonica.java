@@ -23,7 +23,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 
 import java.util.Objects;
@@ -33,10 +32,10 @@ import java.util.Objects;
  *
  * <pre>
  * Channel/Notes:
- * -------
- * | 10,-2|
- * -------------------
- * | 8,-1| 9,-1| 10,-1|
+ *                                                       --------
+ *                                                       | 10,-2|
+ *                                           --------------------
+ *                                           | 8,-1| 9,-1| 10,-1|
  * --------------------------------------------------------------
  * | 1,0 | 2,0 | 3,0 | 4,0 | 5,0 | 6,0 | 7,0 | 8,0 | 9,0 | 10,0 |
  * --------------------------------------------------------------
@@ -46,16 +45,16 @@ import java.util.Objects;
  * --------------------------------------------------------------
  * | 1,2 | 2,2 | 3,2 | 4,2 |     | 6,2 |
  * -------------------------     -------
- * | 2,3 | 3,3 |
- * -------------
- * | 3,4 |
- * -------
+ *       | 2,3 | 3,3 |
+ *       -------------
+ *             | 3,4 |
+ *             -------
  *
  * C-Dur-Richter-Harp:
- * -------
- * |   B♭ |
- * -------------------
- * |  E♭ |  F# |   B  |
+ *                                                        -------
+ *                                                        |  A# |
+ *                                            -------------------
+ *                                           |  D# |  F# |   B  |
  * --------------------------------------------------------------
  * |  C  |  E  |  G  |  C  |  E  |  G  |  C  |  E  |  G  |   C  |
  * --------------------------------------------------------------
@@ -63,12 +62,12 @@ import java.util.Objects;
  * --------------------------------------------------------------
  * |  D  |  G  |  B  |  D  |  F  |  A  |  B  |  D  |  F  |   A  |
  * --------------------------------------------------------------
- * | D♭  |  F#  | B♭  |  D♭ |    | A♭  |
+ * | C#  |  F# | A#  | C#  |     | G#  |
  * -------------------------     -------
- * |  F  |  A  |
- * -------------
- * |  A♭  |
- * -------
+ *       |  F  |  A  |
+ *       -------------
+ *             |  G# |
+ *             -------
  *
  * Frequencies:
  * <a href="https://de.wikipedia.org/wiki/Frequenzen_der_gleichstufigen_Stimmung">Wikipedia</a>
@@ -84,10 +83,6 @@ public abstract class AbstractHarmonica implements Harmonica {
      * The constant CHANNEL_MIN.
      */
     private static final int CHANNEL_MIN = 1;
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(AbstractHarmonica.class);
     /**
      * The constant NOTE_MAX.
      */
@@ -148,10 +143,10 @@ public abstract class AbstractHarmonica implements Harmonica {
         if (TUNE.NATURALMOLL.equals(tune)) {
             harmonica = new NaturalMollHarmonica(key.getFrequency());
         }
-        if(TUNE.CIRCULAR.equals(tune)) {
+        if (TUNE.CIRCULAR.equals(tune)) {
             harmonica = new CircularHarmonica(key.getFrequency());
         }
-        if(TUNE.AUGMENTED.equals(tune)) {
+        if (TUNE.AUGMENTED.equals(tune)) {
             harmonica = new AugmentedHarmonica(key.getFrequency());
         }
         return harmonica;
@@ -231,7 +226,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the channel in frequency
      */
     public double getChannelInFrequency(int channel) {
-        return Math.pow(2.0, getHalfTonesIn()[channel] * 100.0 / 1200.0) * getKeyFrequency();
+        return NoteUtils.addCentsToFrequency(getHalfTonesIn()[channel] * 100.0, getKeyFrequency());
     }
 
     /**
@@ -241,7 +236,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the channel out frequency
      */
     public double getChannelOutFrequency(int channel) {
-        return Math.pow(2.0, getHalfTonesOut()[channel] * 100.0 / 1200.0) * getKeyFrequency();
+        return NoteUtils.addCentsToFrequency(getHalfTonesOut()[channel] * 100.0, getKeyFrequency());
     }
 
     @Override
@@ -307,29 +302,26 @@ public abstract class AbstractHarmonica implements Harmonica {
                 // gezogene Bendings
                 if (note > 1 && note <= NOTE_MAX) {
                     frequency = getNoteFrequency(channel, note - 1); // Rekursion
-                    frequency = Math.pow(2.0, -100.0 / 1200.0) * frequency;
+                    frequency = NoteUtils.addCentsToFrequency(-100.0, frequency);
                 }
                 // geblasene Bendings
                 if (note < 0 && note >= NOTE_MIN) {
                     frequency = getNoteFrequency(channel, note + 1); // Rekursion
-                    frequency = Math.pow(2.0, -100.0 / 1200.0) * frequency;
+                    frequency = NoteUtils.addCentsToFrequency(-100.0, frequency);
                 }
             }
         }
-        LOGGER.debug("frequency before round " + frequency);
-        frequency = round(frequency);
-        LOGGER.debug("frequency after round " + frequency);
-        return frequency;
+        return round(frequency);
     }
 
     @Override
     public double getNoteFrequencyMaximum(int channel, int note) {
-        return (Math.pow(2.0, 50.0 / 1200.0) * getNoteFrequency(channel, note));
+        return NoteUtils.addCentsToFrequency(50.0, getNoteFrequency(channel, note));
     }
 
     @Override
     public double getNoteFrequencyMinimum(int channel, int note) {
-        return (Math.pow(2.0, -50.0 / 1200.0) * getNoteFrequency(channel, note));
+        return NoteUtils.addCentsToFrequency(-50.0, getNoteFrequency(channel, note));
     }
 
     @Override
@@ -340,11 +332,7 @@ public abstract class AbstractHarmonica implements Harmonica {
     @Override
     public boolean isNoteActive(int channel, int note, double frequency) {
         double harpFrequency = getNoteFrequency(channel, note);
-        LOGGER.debug(channel + " " + note + " " + harpFrequency);
-        double lowerBound = (Math.pow(2.0, -50.0 / 1200.0) * harpFrequency);
-        double upperBound = (Math.pow(2.0, 50.0 / 1200.0) * harpFrequency);
-        LOGGER.debug(channel + " " + note + " " + frequency + " " + lowerBound + " " + upperBound);
-        return frequency <= upperBound && frequency >= lowerBound;
+        return frequency <= NoteUtils.addCentsToFrequency(50.0, harpFrequency) && frequency >= NoteUtils.addCentsToFrequency(-50.0, harpFrequency);
     }
 
     /**
@@ -356,10 +344,10 @@ public abstract class AbstractHarmonica implements Harmonica {
     private double getOverblowOverdrawFrequency(int channel) {
         double frequency = 0.0;
         if (!hasInverseCentsHandling(channel)) {
-            frequency = Math.pow(2.0, 100.0 / 1200.0) * getChannelInFrequency(channel);
+            frequency = NoteUtils.addCentsToFrequency(100, getChannelInFrequency(channel));
         }
         if (hasInverseCentsHandling(channel)) {
-            frequency = Math.pow(2.0, 100.0 / 1200.0) * getChannelOutFrequency(channel);
+            frequency = NoteUtils.addCentsToFrequency(100, getChannelOutFrequency(channel));
         }
         return frequency;
     }

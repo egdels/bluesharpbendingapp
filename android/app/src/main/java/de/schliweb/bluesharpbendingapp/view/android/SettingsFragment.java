@@ -135,7 +135,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      * @param view               the view
      * @param savedInstanceState the saved instance state
      */
-	@Override
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -151,7 +151,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
             initScreenLock(model.getStoredLockScreenIndex());
         });
 
-        binding.settingsScreenlock.setOnClickListener(v-> androidSettingsViewHandler.handleLookScreen(binding.settingsScreenlock.isChecked()));
+        binding.settingsScreenlock.setOnClickListener(v -> androidSettingsViewHandler.handleLookScreen(binding.settingsScreenlock.isChecked()));
     }
 
     /**
@@ -182,8 +182,8 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
-						// no need 
-					}
+                        // no need
+                    }
                 }
         );
 
@@ -230,8 +230,8 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
-						// no need 
-					}
+                        // no need
+                    }
                 }
         );
 
@@ -351,8 +351,8 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
-						// no need 
-					}
+                        // no need
+                    }
                 }
         );
 
@@ -403,7 +403,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     public void initScreenLock(int storedLockScreenIndex) {
         binding.settingsScreenlock.setChecked(false);
-        if(storedLockScreenIndex>0){
+        if (storedLockScreenIndex > 0) {
             binding.settingsScreenlock.setChecked(true);
         }
     }

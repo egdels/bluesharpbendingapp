@@ -24,7 +24,8 @@
  */
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:lang="#{language}" th:xmllang="#{language}">
+<html th:lang="#{language}" th:xmllang="#{language}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/general :: head}"></head>
 <body>
 <header th:replace="~{fragments/general :: header}"></header>
@@ -36,18 +37,19 @@
             <table class="downloadTable">
                 <thead>
                 <tr>
-                    <th style="width:55%" data-th-utext="#{download.downloadTable.fileName}"></th>
-                    <th style="width:20%" data-th-utext="#{download.downloadTable.fileSize}"></th>
-                    <th style="width:25%" data-th-utext="#{download.downloadTable.fileDate}"></th>
+                    <th data-th-utext="#{download.downloadTable.fileName}" style="width:55%"></th>
+                    <th data-th-utext="#{download.downloadTable.fileSize}" style="width:20%"></th>
+                    <th data-th-utext="#{download.downloadTable.fileDate}" style="width:25%"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="downloadFile: ${downloadFiles}" th:unless="${downloadFile.isOldVersion}">
                     <td class="link">
-                        <a class="dont-break-out" th:href="${downloadFile.href}" data-th-text="${downloadFile.name}" th:title="${downloadFile.name}"></a>
+                        <a class="dont-break-out" data-th-text="${downloadFile.name}" th:href="${downloadFile.href}"
+                           th:title="${downloadFile.name}"></a>
                     </td>
-                    <td class="size" data-th-text="${downloadFile.size}" ></td>
-                    <td class="date" data-th-text="${downloadFile.createDate}" ></td>
+                    <td class="size" data-th-text="${downloadFile.size}"></td>
+                    <td class="date" data-th-text="${downloadFile.createDate}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -57,18 +59,19 @@
             <table class="downloadTable">
                 <thead>
                 <tr>
-                    <th style="width:55%" data-th-utext="#{download.downloadTable.fileName}"></th>
-                    <th style="width:20%" data-th-utext="#{download.downloadTable.fileSize}"></th>
-                    <th style="width:25%" data-th-utext="#{download.downloadTable.fileDate}"></th>
+                    <th data-th-utext="#{download.downloadTable.fileName}" style="width:55%"></th>
+                    <th data-th-utext="#{download.downloadTable.fileSize}" style="width:20%"></th>
+                    <th data-th-utext="#{download.downloadTable.fileDate}" style="width:25%"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="downloadFile: ${downloadFiles}" th:if="${downloadFile.isOldVersion}">
                     <td class="link">
-                        <a class="dont-break-out" th:href="${downloadFile.href}" data-th-text="${downloadFile.name}" th:title="${downloadFile.name}"></a>
+                        <a class="dont-break-out" data-th-text="${downloadFile.name}" th:href="${downloadFile.href}"
+                           th:title="${downloadFile.name}"></a>
                     </td>
-                    <td class="size" data-th-text="${downloadFile.size}" ></td>
-                    <td class="date" data-th-text="${downloadFile.createDate}" ></td>
+                    <td class="size" data-th-text="${downloadFile.size}"></td>
+                    <td class="date" data-th-text="${downloadFile.createDate}"></td>
                 </tr>
                 </tbody>
             </table>

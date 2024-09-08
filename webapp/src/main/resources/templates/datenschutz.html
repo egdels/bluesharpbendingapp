@@ -24,7 +24,8 @@
  */
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:lang="#{language}" th:xmllang="#{language}">
+<html th:lang="#{language}" th:xmllang="#{language}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/general :: head}"></head>
 <body>
 <header th:replace="~{fragments/general :: header}"></header>
@@ -32,7 +33,7 @@
 <main>
     <div class="container">
         <div data-th-utext="#{datenschutz.content}"></div>
-        <div id="privacy_policy_android" data-th-utext="#{android.PrivacyPolicy}"></div>
+        <div data-th-utext="#{android.PrivacyPolicy}" id="privacy_policy_android"></div>
         <div></div>
     </div>
 </main>

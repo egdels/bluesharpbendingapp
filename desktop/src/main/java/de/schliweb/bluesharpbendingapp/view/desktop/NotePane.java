@@ -10,13 +10,13 @@ import java.awt.*;
 public class NotePane extends JPanel {
 
     /**
-     * The Cents.
-     */
-    private double cents;
-    /**
      * The NoteContainer name.
      */
     private final String noteName;
+    /**
+     * The Cents.
+     */
+    private double cents;
 
     /**
      * Instantiates a new NoteContainer pane.
@@ -49,14 +49,14 @@ public class NotePane extends JPanel {
             int lineHeight = Math.max((int) (getHeight() / 10.0), 5);
 
             // between - (lineHeight/2) and getHeight - (lineHeight/2)
-            double position = 0.5 * (getHeight()) * (1.0 - (cents / 50.0)) - ((double) lineHeight /2);
+            double position = 0.5 * (getHeight()) * (1.0 - (cents / 50.0)) - ((double) lineHeight / 2);
             Color color = new Color((int) (250.0 * Math.abs(cents / 50.0)),
                     (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0);
             gr.setColor(color);
-            if(position<0) {
+            if (position < 0) {
                 position = 0;
             }
-            if(position+lineHeight>getHeight()) {
+            if (position + lineHeight > getHeight()) {
                 position = getHeight() - (double) lineHeight;
             }
             gr.fillRect(0, (int) position, getWidth(), lineHeight);
@@ -76,7 +76,7 @@ public class NotePane extends JPanel {
         // Determine the X coordinate for the text
         int x = cntrX - (metrics.stringWidth(noteName)) / 2;
         // Determine the Y coordinate for the text (note we add the ascent, as in java 2d 0 is top of the screen)
-        int y = cntrY - ( metrics.getHeight() / 2) + metrics.getAscent();
+        int y = cntrY - (metrics.getHeight() / 2) + metrics.getAscent();
 
 
         gr.setColor(Color.BLACK);

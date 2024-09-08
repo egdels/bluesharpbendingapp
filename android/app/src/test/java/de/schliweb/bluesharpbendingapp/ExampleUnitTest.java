@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
