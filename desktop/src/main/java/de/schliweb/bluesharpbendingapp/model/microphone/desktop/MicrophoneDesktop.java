@@ -188,7 +188,6 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
      * @param targetDataLine the target data line
      */
     public void setTargetDataLine(TargetDataLine targetDataLine) {
-        if (null != targetDataLine)
             this.targetDataLine = targetDataLine;
     }
 

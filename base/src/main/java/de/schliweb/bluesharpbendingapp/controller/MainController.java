@@ -240,6 +240,12 @@ public class MainController
     public void start() {
         this.model.getMicrophone().open();
         this.window.open();
+    }
+
+    /**
+     * Stop.
+     */
+    public void stop() {
         this.model.getMicrophone().close();
     }
 

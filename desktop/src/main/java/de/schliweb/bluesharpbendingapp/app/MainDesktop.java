@@ -66,6 +66,16 @@ public class MainDesktop {
     private static String versionFromHost = null;
 
     /**
+     * The constant controller.
+     */
+    private static MainController controller;
+
+    /**
+     * The constant mainModel.
+     */
+    private static MainModel mainModel;
+
+    /**
      * The entry point of application.
      *
      * @param args the input arguments
@@ -75,6 +85,24 @@ public class MainDesktop {
 
         Logger.setDebug(false);
 
+        if( SystemInfo.isMacOS ) {
+            // enable screen menu bar
+            // (moves menu bar from JFrame window to top of screen)
+            System.setProperty( "apple.laf.useScreenMenuBar", "false" );
+
+            // application name used in screen menu bar
+            // (in first menu after the "apple" menu)
+            System.setProperty( "apple.awt.application.name", "Let's Bend" );
+
+            // appearance of window title bars
+            // possible values:
+            //   - "system": use current macOS appearance (light or dark)
+            //   - "NSAppearanceNameAqua": use light appearance
+            //   - "NSAppearanceNameDarkAqua": use dark appearance
+            // (must be set on main thread and before AWT/Swing is initialized;
+            //  setting it on AWT thread does not work)
+            System.setProperty( "apple.awt.application.appearance", "system" );
+        }
 
         System.setProperty("flatlaf.menuBarEmbedded", "true");
         System.setProperty("flatlaf.useWindowDecorations", "true");
@@ -107,15 +135,12 @@ public class MainDesktop {
         MainWindow mainWindow = new MainWindowDesktop(isDonationWare);
 
 
-        MainModel mainModel = readModel();
+        mainModel = readModel();
         mainModel.setMicrophone(microphone);
         microphone.setAlgorithm(mainModel.getStoredAlgorithmIndex());
         microphone.setName(mainModel.getStoredMicrophoneIndex());
-        MainController controller = new MainController(mainWindow, mainModel);
+        controller = new MainController(mainWindow, mainModel);
         controller.start();
-        storeModel(mainModel);
-        LOGGER.info("Shutting down");
-        System.exit(0);
     }
 
     /**
@@ -205,5 +230,15 @@ public class MainDesktop {
         if (versionFromHost != null) return versionFromHost;
         checkVersionFromHost();
         return versionFromHost;
+    }
+
+    /**
+     * Close.
+     */
+    public static void close() {
+        LOGGER.info("Shutting down");
+        controller.stop();
+        storeModel(mainModel);
+        System.exit(0);
     }
 }

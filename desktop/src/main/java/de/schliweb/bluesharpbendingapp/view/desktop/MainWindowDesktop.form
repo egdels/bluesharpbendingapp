@@ -11,7 +11,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="e3588" binding="innerContentPane" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="e3588" binding="innerContentPane" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -19,64 +19,10 @@
         <properties/>
         <border type="none"/>
         <children>
-          <toolbar id="466" binding="toolBar">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="-1" height="20"/>
-              </grid>
-            </constraints>
-            <properties>
-              <borderPainted value="false"/>
-            </properties>
-            <border type="none"/>
-            <children>
-              <toolbar id="d25e2">
-                <constraints/>
-                <properties/>
-                <border type="none"/>
-                <children>
-                  <component id="c215d" class="javax.swing.JLabel" binding="labelLetsBend">
-                    <constraints/>
-                    <properties>
-                      <text value="Let's Bend"/>
-                    </properties>
-                  </component>
-                  <component id="f221c" class="javax.swing.JToolBar$Separator">
-                    <constraints/>
-                    <properties>
-                      <separatorSize width="20" height="10"/>
-                    </properties>
-                  </component>
-                  <component id="bc17b" class="javax.swing.JLabel" binding="labelSettings">
-                    <constraints/>
-                    <properties>
-                      <horizontalAlignment value="10"/>
-                      <horizontalTextPosition value="11"/>
-                      <text value="Settings"/>
-                    </properties>
-                  </component>
-                  <component id="3b9dc" class="javax.swing.JToolBar$Separator">
-                    <constraints/>
-                    <properties>
-                      <separatorSize width="20" height="10"/>
-                    </properties>
-                  </component>
-                  <component id="9c81f" class="javax.swing.JLabel" binding="labelAbout">
-                    <constraints/>
-                    <properties>
-                      <horizontalAlignment value="10"/>
-                      <horizontalTextPosition value="11"/>
-                      <text value="About"/>
-                    </properties>
-                  </component>
-                </children>
-              </toolbar>
-            </children>
-          </toolbar>
           <grid id="9aafe" binding="innerContentHarpPane" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -91,7 +37,7 @@
           <grid id="6f406" binding="innerContentSettingsPane" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -106,7 +52,7 @@
           <grid id="3ba29" binding="innerContentAboutPane" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
