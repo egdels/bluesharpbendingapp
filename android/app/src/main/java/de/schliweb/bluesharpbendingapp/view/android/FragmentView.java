@@ -1,8 +1,4 @@
 package de.schliweb.bluesharpbendingapp.view.android;
-
-/**
- * The interface Fragment view.
- */
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -25,6 +21,10 @@ package de.schliweb.bluesharpbendingapp.view.android;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  *
+ */
+
+/**
+ * The interface Fragment view.
  */
 public interface FragmentView {
     /**

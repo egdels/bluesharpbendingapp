@@ -157,8 +157,8 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
         menuAbout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         menuAbout.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
                 innerContentSettingsPane.setVisible(false);
                 innerContentAboutPane.setVisible(true);
                 innerContentHarpPane.setVisible(false);
@@ -170,8 +170,8 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
         menuLetsBend.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         menuLetsBend.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
                 innerContentSettingsPane.setVisible(false);
                 innerContentAboutPane.setVisible(false);
                 innerContentHarpPane.setVisible(true);
@@ -182,8 +182,8 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
         menuSettings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         menuSettings.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
                 innerContentSettingsPane.setVisible(true);
                 innerContentAboutPane.setVisible(false);
                 innerContentHarpPane.setVisible(false);
@@ -244,9 +244,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
         }
 
         if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
-            desktop.setQuitHandler((e, response) -> {
-                close();
-            });
+            desktop.setQuitHandler((e, response) -> close());
         }
 
         // call onCancel() when cross is clicked
