@@ -58,6 +58,14 @@
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
         </dependency>
+        <dependency>
+            <groupId>be.tarsos.dsp</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>be.tarsos.dsp</groupId>
+            <artifactId>jvm</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

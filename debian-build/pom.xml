@@ -44,93 +44,6 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.github.akman</groupId>
-                    <artifactId>jpackage-maven-plugin</artifactId>
-                    <version>0.1.5</version>
-                    <configuration>
-                        <!--
-                          Specifies the JDK home path which provides the tool needed.
-                          If not specified the jpackage tool executable will be find in
-                          the following order:
-
-                            - user specified JDK home directory by toolchains-plugin
-                            - JDK home directory specified by system variable JAVA_HOME
-                            - system path specified by system variable PATH
-                        -->
-                        <toolhome>${env.JPACKAGE_HOME}</toolhome>
-
-                        <!--
-                          Specifies the location in which generated output files are placed.
-                          Default value: ${project.build.directory}/jpackage
-                        -->
-                        <dest>${project.build.directory}/jpackage</dest>
-
-                        <!--
-                          Specifies the name of subdirectory relative to the destination
-                          directory in which files of generated application image are placed.
-                        -->
-                        <name>bluesharpbendingapp</name>
-
-                        <!--
-                          Specifies the type of package to
-                          create: { PLATFORM | IMAGE | EXE | MSI }.
-                          Default value: PLATFORM (a platform dependent default type)
-                        -->
-                        <type>PLATFORM</type>
-
-                        <!--
-                          Specifies the location of the predefined runtime
-                          image (result of jlink) that will be copied into
-                          the application image.
-                          If not specified, jpackage will run jlink to create
-                          the runtime image using options:
-                            - strip-debug
-                            - no-header-files
-                            - no-man-pages
-                            - strip-native-commands
-
-                        <runtimeimage>${project.build.directory}/jlink/runtime-image</runtimeimage>
-                        -->
-                        <!--
-                          Specifies version of the application and/or package.
-                        -->
-                        <appversion>${project.version}</appversion>
-
-                        <!--
-                          Specifies copyright for the application.
-                        -->
-                        <copyright>Copyright</copyright>
-
-                        <!--
-                          Specifies description of the application.
-                        -->
-                        <description>Description</description>
-
-                        <!--
-                          Specifies vendor of the application.
-                        -->
-                        <vendor>Vendor</vendor>
-
-                        <!--
-                          Specifies the location of the icon of the application package.
-                        -->
-                        <icon>${project.basedir}/src/main/resources/ic_launcher_round.png</icon>
-
-                        <input>${project.build.directory}/bluesharpbendingapp/</input>
-                        <mainjar>bluesharpbendingapp-${project.version}-all.jar</mainjar>
-                        <mainclass>de.schliweb.bluesharpbendingapp.app.MainDesktop</mainclass>
-                        <arguments>donationware</arguments>
-                        <linuxpackagename>bluesharpbendingapp</linuxpackagename>
-                        <linuxdebmaintainer>christian.kierdorf@schliweb.de</linuxdebmaintainer>
-                        <linuxshortcut>true</linuxshortcut>
-                        <linuxapprelease>${project.version}</linuxapprelease>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -160,21 +73,53 @@
                             <finalName>
                                 bluesharpbendingapp-${project.version}-all
                             </finalName>
-                            <outputDirectory>${project.build.directory}/bluesharpbendingapp/</outputDirectory>
+                            <outputDirectory>${project.build.directory}/jpackage/${maven.build.timestamp}/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.akman</groupId>
-                <artifactId>jpackage-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.4.0</version>
                 <executions>
                     <execution>
-                        <id>jpackage-image</id>
-                        <phase>verify</phase>
+                        <id>package</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>jpackage</goal>
+                            <goal>exec</goal>
                         </goals>
+                        <configuration>
+                            <executable>${env.JPACKAGE_HOME}/bin/jpackage</executable>
+                            <arguments>
+                                <argument>--type</argument>
+                                <argument>deb</argument>
+                                <argument>--name</argument>
+                                <argument>bluesharpbendingapp</argument>
+                                <argument>--app-version</argument>
+                                <argument>${project.version}</argument>
+                                <argument>--main-jar</argument>
+                                <argument>bluesharpbendingapp-${project.version}-all.jar</argument>
+                                <argument>--input</argument>
+                                <argument>.</argument>
+                                <argument>--main-class</argument>
+                                <argument>de.schliweb.bluesharpbendingapp.app.MainDesktop</argument>
+                                <argument>--arguments</argument>
+                                <argument>donationware</argument>
+                                <argument>--icon</argument>
+                                <argument>${project.basedir}/src/main/resources/ic_launcher_round.png</argument>
+                                <argument>--linux-shortcut</argument>
+                                <argument>--vendor</argument>
+                                <argument>letsbend.de</argument>
+                                <argument>--linux-package-name</argument>
+                                <argument>bluesharpbendingapp</argument>
+                                <argument>--linux-app-release</argument>
+                                <argument>${project.version}</argument>
+                                <argument>--linux-deb-maintainer</argument>
+                                <argument>christian.kierdorf@schliweb.de</argument>
+                            </arguments>
+                            <workingDirectory>${project.build.directory}/jpackage/${maven.build.timestamp}/</workingDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

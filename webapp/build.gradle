@@ -30,7 +30,7 @@ plugins {
 }
 
 group = 'de.schliweb.bluesharpbendingapp'
-version = '1.6.8'
+version = '1.7.3'
 
 java {
     sourceCompatibility = '17'
