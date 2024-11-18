@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "de.schliweb.bluesharpbendingapp",
+      "sha256_cert_fingerprints": [
+        "8B:72:17:34:CF:4C:7D:82:A0:D7:91:38:5C:92:AF:6F:08:BA:D8:EE:2E:52:82:12:2A:FB:21:69:F1:BF:70:99"
+      ]
+    }
+  }
+]

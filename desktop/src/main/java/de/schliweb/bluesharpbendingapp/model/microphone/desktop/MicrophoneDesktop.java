@@ -98,8 +98,11 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
 
     @Override
     public void close() {
-        getTargetDataLine().stop();
-        getTargetDataLine().close();
+        TargetDataLine dataLine = getTargetDataLine();
+        if (dataLine != null) {
+            dataLine.stop();
+            dataLine.close();
+        }
         setTargetDataLine(null);
     }
 
@@ -188,7 +191,7 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
      * @param targetDataLine the target data line
      */
     public void setTargetDataLine(TargetDataLine targetDataLine) {
-            this.targetDataLine = targetDataLine;
+        this.targetDataLine = targetDataLine;
     }
 
     @Override
@@ -235,15 +238,19 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
             dispatcher.stop();
         }
         try {
-            getTargetDataLine().open(getAudioFormat(), BUFFER_SIZE);
-            getTargetDataLine().start();
-            final AudioInputStream stream = new AudioInputStream(getTargetDataLine());
-            JVMAudioInputStream audioStream = new JVMAudioInputStream(stream);
-            // create a new dispatcher
-            dispatcher = new AudioDispatcher(audioStream, BUFFER_SIZE, OVERLAP);
-            dispatcher.addAudioProcessor(new PitchProcessor(algo, SAMPLE_RATE, BUFFER_SIZE, this));
+            TargetDataLine dataLine = getTargetDataLine();
+            if (null != dataLine) {
+                dataLine.open(getAudioFormat(), BUFFER_SIZE);
+                dataLine.start();
+                final AudioInputStream stream = new AudioInputStream(dataLine);
+                JVMAudioInputStream audioStream = new JVMAudioInputStream(stream);
+                // create a new dispatcher
+                dispatcher = new AudioDispatcher(audioStream, BUFFER_SIZE, OVERLAP);
+                dispatcher.addAudioProcessor(new PitchProcessor(algo, SAMPLE_RATE, BUFFER_SIZE, this));
 
-            new Thread(dispatcher, "Audio dispatching").start();
+                new Thread(dispatcher, "Audio dispatching").start();
+            }
+
         } catch (LineUnavailableException e) {
             LOGGER.error(e.getMessage());
         }

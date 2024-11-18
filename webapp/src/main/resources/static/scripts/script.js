@@ -25,14 +25,62 @@
 document.addEventListener("DOMContentLoaded", function() {
   let navbarToggler = document.querySelector(".navbar-toggler");
   let menu = document.querySelector(".menu ul");
-
   navbarToggler.addEventListener("click", function() {
-       
-    if (menu.style.display === "none") {
-        menu.style.display = "block";
-    } else {
-        menu.style.display = "none";
-    }
-  });
+     if (!menu.style.display || menu.style.display === "none") {
+            menu.style.display = "block";
+        } else {
+            menu.style.display = "none";
+        }
+      });
 });
+/*
+// MainModel Test
+import { MainModel } from './modules/model.js';
+console.log("Test MainModel")
+let mainModel = new MainModel();
+mainModel.setStoredMicrophoneIndex(1);
+mainModel.setStoredAlgorithmIndex(2);
+mainModel.setStoredKeyIndex(3);
+mainModel.setStoredConcertPitchIndex(100);
+mainModel.setStoredTuneIndex(42);
+console.log(mainModel.getString());
+let newMainModel = MainModel.createFromString(mainModel.getString());
+console.assert(1===newMainModel.getStoredMicrophoneIndex());
+console.assert(2===newMainModel.getStoredAlgorithmIndex());
+console.assert(3===newMainModel.getStoredKeyIndex());
+console.assert(100===newMainModel.getStoredConcertPitchIndex());
+console.assert(42===newMainModel.getStoredTuneIndex());
+console.log(newMainModel.getString());
 
+// Harmonica Test
+import { RichterHarmonica } from './modules/harmonica.js';
+import { AbstractHarmonica } from './modules/harmonica.js';
+console.log("Test RichterHarmonica")
+let harmonica = new RichterHarmonica();
+console.assert(harmonica.getBlowBendingTonesCount(1)===0);
+console.assert(harmonica.getBlowBendingTonesCount(2)===0);
+console.assert(harmonica.getBlowBendingTonesCount(3)===0);
+console.assert(harmonica.getBlowBendingTonesCount(4)===0);
+console.assert(harmonica.getBlowBendingTonesCount(5)===0);
+console.assert(harmonica.getBlowBendingTonesCount(6)===0);
+console.assert(harmonica.getBlowBendingTonesCount(7)===0);
+console.assert(harmonica.getBlowBendingTonesCount(8)===1);
+console.assert(harmonica.getBlowBendingTonesCount(9)===1);
+console.assert(harmonica.getBlowBendingTonesCount(10)===2);
+
+import { HarmonicMollHarmonica } from './modules/harmonica.js';
+console.log("Test HarmonicMollHarmonica")
+harmonica = new HarmonicMollHarmonica();
+console.assert(harmonica.getBlowBendingTonesCount(1)===0);
+console.assert(harmonica.getBlowBendingTonesCount(2)===0);
+console.assert(harmonica.getBlowBendingTonesCount(2)===0);
+console.assert(harmonica.getBlowBendingTonesCount(3)===0);
+console.assert(harmonica.getBlowBendingTonesCount(4)===0);
+console.assert(harmonica.getBlowBendingTonesCount(5)===0);
+console.assert(harmonica.getBlowBendingTonesCount(6)===0);
+console.assert(harmonica.getBlowBendingTonesCount(7)===0);
+console.assert(harmonica.getBlowBendingTonesCount(8)===0);
+console.assert(harmonica.getBlowBendingTonesCount(9)===1);
+console.assert(harmonica.getBlowBendingTonesCount(10)===3);
+
+*/
