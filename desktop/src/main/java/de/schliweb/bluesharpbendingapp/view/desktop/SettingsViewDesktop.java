@@ -167,15 +167,6 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
     @Override
     public void setFrequency(double frequency) {
         valueFrequency.setText(String.valueOf(frequency));
-
-        String textFrequency = String.valueOf((int) frequency);
-        for (int index = 0; index < comboConcertPitches.getModel().getSize(); index++) {
-            String entry = comboConcertPitches.getModel().getElementAt(index);
-            if (entry.equals(textFrequency)) {
-                int finalIndex = index;
-                SwingUtilities.invokeLater(() -> comboConcertPitches.setSelectedItem(comboConcertPitches.getModel().getElementAt(finalIndex)));
-            }
-        }
     }
 
     @Override
