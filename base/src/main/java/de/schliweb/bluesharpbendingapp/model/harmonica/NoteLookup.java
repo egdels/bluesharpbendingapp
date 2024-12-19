@@ -64,36 +64,30 @@ public class NoteLookup {
     }
 
     /**
-     * Gets note.
+     * Gets note name.
      *
      * @param frequency the frequency
-     * @return the note
+     * @return the note name
      */
-    public static Entry<String, Double> getNote(double frequency) {
+    public static String getNoteName(double frequency) {
         for (Entry<String, Double> note : notes.entrySet()) {
             Double noteFrequency = note.getValue();
             double cents = NoteUtils.getCents(noteFrequency, frequency);
             if (cents >= CENTS_MIN && cents <= CENTS_MAX) {
-                return note;
+                return note.getKey();
             }
         }
         return null;
     }
 
     /**
-     * Gets note.
+     * Gets note frequency.
      *
      * @param name the name
-     * @return the note
+     * @return the note frequency
      */
-    public static Entry<String, Double> getNote(String name) {
-        for (Entry<String, Double> note : notes.entrySet()) {
-            String noteName = note.getKey();
-            if (noteName.equals(name)) {
-                return note;
-            }
-        }
-        return null;
+    public static Double getNoteFrequency(String name) {
+        return notes.getOrDefault(name, null);
     }
 
     /**

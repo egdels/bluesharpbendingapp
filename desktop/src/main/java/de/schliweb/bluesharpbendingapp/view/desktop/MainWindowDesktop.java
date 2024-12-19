@@ -27,10 +27,7 @@ import com.formdev.flatlaf.util.SystemInfo;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import de.schliweb.bluesharpbendingapp.app.MainDesktop;
-import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.*;
 import de.schliweb.bluesharpbendingapp.view.*;
 
 import javax.swing.*;
@@ -76,10 +73,20 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
      * The About view.
      */
     private AboutViewDesktop aboutView;
+
+    /**
+     * The Training view.
+     */
+    private TrainingViewDesktop trainingView;
+
     /**
      * The Inner content pane.
      */
     private JPanel innerContentPane;
+    /**
+     * The Inner content training pane.
+     */
+    private JPanel innerContentTrainingPane;
     /**
      * The Harp settings view handler.
      */
@@ -96,6 +103,11 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
      * The NoteContainer settings view handler.
      */
     private NoteSettingsViewHandler noteSettingsViewHandler;
+
+    /**
+     * The Training view handler.
+     */
+    private TrainingViewHandler trainingViewHandler;
 
     /**
      * Instantiates a new Main window desktop.
@@ -120,18 +132,17 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
         innerContentHarpPane.setVisible(false);
         innerContentSettingsPane.setVisible(false);
         innerContentAboutPane.setVisible(false);
+        innerContentTrainingPane.setVisible(false);
 
 
-        this.addComponentListener(
-                new ComponentAdapter() {
-                    @Override
-                    public void componentShown(ComponentEvent e) {
-                        super.componentShown(e);
-                        setSize(500, 500);
-                        innerContentHarpPane.setVisible(true);
-                    }
-                }
-        );
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);
+                setSize(500, 500);
+                innerContentHarpPane.setVisible(true);
+            }
+        });
 
         innerContentHarpPane.addComponentListener(new ComponentAdapter() {
             @Override
@@ -153,6 +164,16 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
             }
         });
 
+        innerContentTrainingPane.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);
+                trainingViewHandler.initTrainingList();
+                trainingViewHandler.initTrainingContainer();
+                trainingViewHandler.initPrecisionList();
+            }
+        });
+
         JMenu menuAbout = new JMenu("About");
         menuAbout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         menuAbout.addMouseListener(new MouseAdapter() {
@@ -162,6 +183,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
                 innerContentSettingsPane.setVisible(false);
                 innerContentAboutPane.setVisible(true);
                 innerContentHarpPane.setVisible(false);
+                innerContentTrainingPane.setVisible(false);
             }
         });
 
@@ -175,6 +197,20 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
                 innerContentSettingsPane.setVisible(false);
                 innerContentAboutPane.setVisible(false);
                 innerContentHarpPane.setVisible(true);
+                innerContentTrainingPane.setVisible(false);
+            }
+        });
+
+        JMenu menuTraining = new JMenu("Training");
+        menuTraining.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        menuTraining.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                innerContentSettingsPane.setVisible(false);
+                innerContentAboutPane.setVisible(false);
+                innerContentHarpPane.setVisible(false);
+                innerContentTrainingPane.setVisible(true);
             }
         });
 
@@ -187,13 +223,16 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
                 innerContentSettingsPane.setVisible(true);
                 innerContentAboutPane.setVisible(false);
                 innerContentHarpPane.setVisible(false);
+                innerContentTrainingPane.setVisible(false);
             }
         });
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(menuLetsBend);
+        menuBar.add(menuTraining);
         menuBar.add(menuSettings);
         menuBar.add(menuAbout);
+
         setJMenuBar(menuBar);
 
         if (SystemInfo.isMacOS) {
@@ -213,16 +252,14 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
                 // hide window title
                 if (SystemInfo.isJava_17_orLater)
                     getRootPane().putClientProperty("apple.awt.windowTitleVisible", false);
-                else
-                    setTitle(null);
+                else setTitle(null);
 
                 // add gap to left side of toolbar
                 menuBar.add(Box.createHorizontalStrut(70), 0);
             }
 
             // enable full screen mode for this window (for Java 8 - 10; not necessary for Java 11+)
-            if (!SystemInfo.isJava_11_orLater)
-                getRootPane().putClientProperty("apple.awt.fullscreenable", true);
+            if (!SystemInfo.isJava_11_orLater) getRootPane().putClientProperty("apple.awt.fullscreenable", true);
         }
 
 
@@ -232,6 +269,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
                 innerContentSettingsPane.setVisible(false);
                 innerContentAboutPane.setVisible(true);
                 innerContentHarpPane.setVisible(false);
+                innerContentTrainingPane.setVisible(false);
             });
         }
 
@@ -240,6 +278,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
                 innerContentSettingsPane.setVisible(true);
                 innerContentAboutPane.setVisible(false);
                 innerContentHarpPane.setVisible(false);
+                innerContentTrainingPane.setVisible(false);
             });
         }
 
@@ -296,10 +335,16 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
     }
 
     @Override
+    public boolean isTrainingViewActive() {
+        return innerContentTrainingPane.isVisible();
+    }
+
+    @Override
     public void open() {
         settingsView.addHarpSettingsViewHandler(harpSettingsViewHandler);
         settingsView.addMicrophoneSettingsViewHandler(microphoneSettingsViewHandler);
         settingsView.addNoteSettingsViewHandler(noteSettingsViewHandler);
+        trainingView.addTrainingViewHandler(trainingViewHandler);
         pack();
         setVisible(true);
     }
@@ -312,6 +357,11 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
     @Override
     public void setHarpViewHandler(HarpViewHandler harpViewHandler) {
         this.harpViewHandler = harpViewHandler;
+    }
+
+    @Override
+    public void setTrainingViewHandler(TrainingViewHandler trainingViewHandler) {
+        this.trainingViewHandler = trainingViewHandler;
     }
 
     @Override
@@ -334,12 +384,18 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
         this.noteSettingsViewHandler = noteSettingsViewHandler;
     }
 
+    @Override
+    public TrainingView getTrainingView() {
+        return trainingView;
+    }
+
     /**
      * Create ui components.
      */
     private void createUIComponents() {
         aboutView = new AboutViewDesktop(isDonationWare);
         settingsView = new SettingsViewDesktop(isDonationWare);
+        trainingView = new TrainingViewDesktop();
     }
 
     /**
@@ -356,7 +412,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
         contentPane.setMinimumSize(new Dimension(500, 500));
         contentPane.setName("BluesHarpBendingApp");
         innerContentPane = new JPanel();
-        innerContentPane.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        innerContentPane.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(innerContentPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         innerContentHarpPane = new JPanel();
         innerContentHarpPane.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
@@ -371,9 +427,16 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
         innerContentAboutPane.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         innerContentPane.add(innerContentAboutPane, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         innerContentAboutPane.add(aboutView.$$$getRootComponent$$$(), new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        innerContentTrainingPane = new JPanel();
+        innerContentTrainingPane.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        innerContentPane.add(innerContentTrainingPane, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        innerContentTrainingPane.add(trainingView.$$$getRootComponent$$$(), new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

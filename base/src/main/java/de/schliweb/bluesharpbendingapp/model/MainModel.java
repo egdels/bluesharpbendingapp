@@ -27,6 +27,8 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
+import de.schliweb.bluesharpbendingapp.model.training.Training;
 import de.schliweb.bluesharpbendingapp.utils.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +49,11 @@ public class MainModel {
      * The Harmonica.
      */
     private Harmonica harmonica;
+
+    /**
+     * The Training.
+     */
+    private Training training;
 
     /**
      * The Microphone.
@@ -79,6 +86,16 @@ public class MainModel {
     private int storedConcertPitchIndex = 11;
 
     /**
+     * The Stored training index.
+     */
+    private int storedTrainingIndex = 0;
+
+    /**
+     * The Stored precision index.
+     */
+    private int storedPrecisionIndex;
+
+    /**
      * Create from string main model.
      *
      * @param string the string
@@ -98,8 +115,7 @@ public class MainModel {
                     if (method.getName().equals(m)) {
                         try {
                             method.invoke(model, Integer.parseInt(p));
-                        } catch (IllegalAccessException | IllegalArgumentException |
-                                 InvocationTargetException e) {
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                             LOGGER.error(e.getMessage());
                         }
                     }
@@ -384,4 +400,103 @@ public class MainModel {
         }
         return stringList.toString();
     }
+
+    /**
+     * Get trainings string [ ].
+     *
+     * @return the string [ ]
+     */
+    public String[] getTrainings() {
+        return AbstractTraining.getSupportedTrainings();
+    }
+
+    /**
+     * Gets selected training index.
+     *
+     * @return the selected training index
+     */
+    public int getSelectedTrainingIndex() {
+        String[] trainings = getTrainings();
+        int index = 0;
+        for (int i = 0; i < trainings.length; i++) {
+            if (trainings[i].equals(training.getTrainingName())) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * Gets stored training index.
+     *
+     * @return the stored training index
+     */
+    public int getStoredTrainingIndex() {
+        return storedTrainingIndex;
+    }
+
+    /**
+     * Sets stored training index.
+     *
+     * @param trainingIndex the training index
+     */
+    public void setStoredTrainingIndex(int trainingIndex) {
+        this.storedTrainingIndex = trainingIndex;
+    }
+
+    /**
+     * Gets training.
+     *
+     * @return the training
+     */
+    public Training getTraining() {
+        return training;
+    }
+
+    /**
+     * Sets training.
+     *
+     * @param training the training
+     */
+    public void setTraining(Training training) {
+        this.training = training;
+    }
+
+    /**
+     * Get precisions string [ ].
+     *
+     * @return the string [ ]
+     */
+    public String[] getPrecisions() {
+        return AbstractTraining.getSupportedPrecisions();
+    }
+
+    /**
+     * Gets selected precision index.
+     *
+     * @return the selected precision index
+     */
+    public int getSelectedPrecisionIndex() {
+        return this.storedPrecisionIndex;
+    }
+
+    /**
+     * Gets stored precision index.
+     *
+     * @return the stored precision index
+     */
+    public int getStoredPrecisionIndex() {
+        return this.storedPrecisionIndex;
+    }
+
+    /**
+     * Sets stored precision index.
+     *
+     * @param storedPrecisionIndex the stored precision index
+     */
+    public void setStoredPrecisionIndex(int storedPrecisionIndex) {
+        this.storedPrecisionIndex = storedPrecisionIndex;
+    }
+
 }

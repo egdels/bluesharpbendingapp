@@ -25,8 +25,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -384,45 +382,45 @@ class HarmonicaTest {
     @Test
     void testOverblowOverdraw() {
         harmonica = new RichterHarmonica(AbstractHarmonica.KEY.C.getFrequency());
-        Map.Entry<String, Double> note = NoteLookup.getNote(harmonica.getNoteFrequency(1, -1));
+        String note = NoteLookup.getNoteName(harmonica.getNoteFrequency(1, -1));
         assert note != null;
-        assertEquals("D#4", note.getKey());
+        assertEquals("D#4", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(2, -1));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(2, -1));
         assert note != null;
-        assertEquals("G#4", note.getKey());
+        assertEquals("G#4", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(3, -1));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(3, -1));
         assert note != null;
-        assertEquals("C5", note.getKey());
+        assertEquals("C5", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(4, -1));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(4, -1));
         assert note != null;
-        assertEquals("D#5", note.getKey());
+        assertEquals("D#5", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(5, -1));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(5, -1));
         assert note != null;
-        assertEquals("F#5", note.getKey());
+        assertEquals("F#5", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(6, -1));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(6, -1));
         assert note != null;
-        assertEquals("A#5", note.getKey());
+        assertEquals("A#5", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(7, 2));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(7, 2));
         assert note != null;
-        assertEquals("C#6", note.getKey());
+        assertEquals("C#6", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(8, 2));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(8, 2));
         assert note != null;
-        assertEquals("F6", note.getKey());
+        assertEquals("F6", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(9, 2));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(9, 2));
         assert note != null;
-        assertEquals("G#6", note.getKey());
+        assertEquals("G#6", note);
 
-        note = NoteLookup.getNote(harmonica.getNoteFrequency(10, 2));
+        note = NoteLookup.getNoteName(harmonica.getNoteFrequency(10, 2));
         assert note != null;
-        assertEquals("C#7", note.getKey());
+        assertEquals("C#7", note);
 
         assertTrue(harmonica.isNoteActive(1, -1, Dis4));
         assertTrue(harmonica.isNoteActive(2, -1, Gis4));

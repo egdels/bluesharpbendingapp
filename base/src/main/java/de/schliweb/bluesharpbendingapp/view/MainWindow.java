@@ -23,10 +23,7 @@ package de.schliweb.bluesharpbendingapp.view;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.*;
 
 /**
  * The interface Main window.
@@ -77,6 +74,13 @@ public interface MainWindow {
     boolean isMicrophoneSettingsViewActive();
 
     /**
+     * Is training view active boolean.
+     *
+     * @return the boolean
+     */
+    boolean isTrainingViewActive();
+
+    /**
      * Open.
      */
     void open();
@@ -94,6 +98,8 @@ public interface MainWindow {
      * @param harpViewHandler the harp view handler
      */
     void setHarpViewHandler(HarpViewHandler harpViewHandler);
+
+    void setTrainingViewHandler(TrainingViewHandler trainingViewHandler);
 
     /**
      * Sets microphone settings view handler.
@@ -122,4 +128,6 @@ public interface MainWindow {
      * @param noteSettingsViewHandler the note settings view handler
      */
     void setNoteSettingsViewHandler(NoteSettingsViewHandler noteSettingsViewHandler);
+
+    TrainingView getTrainingView();
 }

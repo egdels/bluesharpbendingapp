@@ -29,17 +29,17 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
+import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
+import de.schliweb.bluesharpbendingapp.model.training.Training;
 import de.schliweb.bluesharpbendingapp.view.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map.Entry;
 
 /**
  * The type Main controller.
  */
-public class MainController
-        implements MicrophoneHandler, MicrophoneSettingsViewHandler, HarpSettingsViewHandler, HarpViewHandler, NoteSettingsViewHandler {
+public class MainController implements MicrophoneHandler, MicrophoneSettingsViewHandler, HarpSettingsViewHandler, HarpViewHandler, NoteSettingsViewHandler, TrainingViewHandler {
 
     /**
      * The constant CHANNEL_MAX.
@@ -65,6 +65,7 @@ public class MainController
      * The Notes.
      */
     private NoteContainer[] noteContainers;
+    private TrainingContainer trainingContainer;
 
     /**
      * Instantiates a new Main controller.
@@ -77,8 +78,8 @@ public class MainController
         this.model = model;
         // Gespeicherten Kammerton, vor Erstellung der Harmonika setzen
         NoteLookup.setConcertPitchByIndex(model.getStoredConcertPitchIndex());
-        Harmonica harmonica = AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex());
-        this.model.setHarmonica(harmonica);
+        this.model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
+        this.model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), model.getStoredTrainingIndex()));
         Microphone microphone = model.getMicrophone();
         microphone.setAlgorithm(model.getStoredAlgorithmIndex());
         microphone.setName(model.getStoredMicrophoneIndex());
@@ -87,6 +88,7 @@ public class MainController
         this.window.setHarpSettingsViewHandler(this);
         this.window.setHarpViewHandler(this);
         this.window.setNoteSettingsViewHandler(this);
+        this.window.setTrainingViewHandler(this);
         this.model.getMicrophone().setMicrophoneHandler(this);
 
     }
@@ -129,8 +131,15 @@ public class MainController
         updateMicrophoneSettingsViewFrequency(frequency);
         updateMicrophoneSettingsViewProbability(probability);
         updateHarpView(frequency);
+        updateTrainingView(frequency);
     }
 
+    private void updateTrainingView(double frequency) {
+        if (window.isTrainingViewActive() && this.trainingContainer != null) {
+            trainingContainer.setFrequencyToHandle(frequency);
+            (new Thread(trainingContainer)).start();
+        }
+    }
 
     /**
      * Update microphone settings view probability.
@@ -182,42 +191,42 @@ public class MainController
                 // Blastöne
                 double frequency0 = harmonica.getNoteFrequency(channel, 0);
                 boolean hasInverseCentsHandling = harmonica.hasInverseCentsHandling(channel);
-                Entry<String, Double> note0 = NoteLookup.getNote(frequency0);
+                String note0 = NoteLookup.getNoteName(frequency0);
                 assert note0 != null;
-                notesList.add(new NoteContainer(channel, 0, note0.getKey(), harmonica, harpView, hasInverseCentsHandling));
+                notesList.add(new NoteContainer(channel, 0, note0, harmonica, harpView, hasInverseCentsHandling));
 
                 // Ziehtöne
                 double frequency1 = harmonica.getNoteFrequency(channel, 1);
-                Entry<String, Double> note1 = NoteLookup.getNote(frequency1);
+                String note1 = NoteLookup.getNoteName(frequency1);
                 assert note1 != null;
-                notesList.add(new NoteContainer(channel, 1, note1.getKey(), harmonica, harpView, hasInverseCentsHandling));
+                notesList.add(new NoteContainer(channel, 1, note1, harmonica, harpView, hasInverseCentsHandling));
 
                 // Bendingtöne
                 int blowBendingCount = harmonica.getBlowBendingTonesCount(channel);
                 int drawBendingCount = harmonica.getDrawBendingTonesCount(channel);
                 for (int note = 2; note < 2 + drawBendingCount; note++) {
-                    Entry<String, Double> noteEntry = NoteLookup.getNote(harmonica.getNoteFrequency(channel, note));
+                    String noteEntry = NoteLookup.getNoteName(harmonica.getNoteFrequency(channel, note));
                     assert noteEntry != null;
-                    notesList.add(new NoteContainer(channel, note, noteEntry.getKey(), harmonica, harpView));
+                    notesList.add(new NoteContainer(channel, note, noteEntry, harmonica, harpView));
                 }
                 for (int note = -blowBendingCount; note < 0; note++) {
-                    Entry<String, Double> noteEntry = NoteLookup.getNote(harmonica.getNoteFrequency(channel, note));
+                    String noteEntry = NoteLookup.getNoteName(harmonica.getNoteFrequency(channel, note));
                     assert noteEntry != null;
-                    notesList.add(new NoteContainer(channel, note, noteEntry.getKey(), harmonica, harpView, true));
+                    notesList.add(new NoteContainer(channel, note, noteEntry, harmonica, harpView, true));
                 }
 
                 // Overblows
                 if (!hasInverseCentsHandling) {
-                    Entry<String, Double> noteEntry = NoteLookup.getNote(harmonica.getNoteFrequency(channel, -1));
+                    String noteEntry = NoteLookup.getNoteName(harmonica.getNoteFrequency(channel, -1));
                     assert noteEntry != null;
-                    notesList.add(new NoteContainer(channel, -1, noteEntry.getKey(), harmonica, harpView, false));
+                    notesList.add(new NoteContainer(channel, -1, noteEntry, harmonica, harpView, false));
                 }
 
                 // Overdraws
                 if (hasInverseCentsHandling) {
-                    Entry<String, Double> noteEntry = NoteLookup.getNote(harmonica.getNoteFrequency(channel, 2));
+                    String noteEntry = NoteLookup.getNoteName(harmonica.getNoteFrequency(channel, 2));
                     assert noteEntry != null;
-                    notesList.add(new NoteContainer(channel, 2, noteEntry.getKey(), harmonica, harpView, true));
+                    notesList.add(new NoteContainer(channel, 2, noteEntry, harmonica, harpView, true));
                 }
             }
             this.noteContainers = Arrays.copyOf(notesList.toArray(), notesList.toArray().length, NoteContainer[].class);
@@ -301,5 +310,58 @@ public class MainController
             noteSettingsView.setConcertPitches(model.getConcertPitches());
             noteSettingsView.setSelectedConcertPitch(model.getSelectedConcertPitchIndex());
         }
+    }
+
+    @Override
+    public void initTrainingList() {
+        if (window.isTrainingViewActive()) {
+            TrainingView trainingView = window.getTrainingView();
+            trainingView.setTrainings(model.getTrainings());
+            trainingView.setSelectedTraining(model.getSelectedTrainingIndex());
+        }
+    }
+
+    @Override
+    public void initPrecisionList() {
+        if (window.isTrainingViewActive()) {
+            TrainingView trainingView = window.getTrainingView();
+            trainingView.setPrecisions(model.getPrecisions());
+            trainingView.setSelectedPrecision(model.getSelectedPrecisionIndex());
+        }
+    }
+
+    @Override
+    public void handleTrainingSelection(int trainingIndex) {
+        this.model.setStoredTrainingIndex(trainingIndex);
+        model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), trainingIndex));
+        initTrainingContainer();
+    }
+
+    @Override
+    public void initTrainingContainer() {
+        if (window.isTrainingViewActive()) {
+            this.trainingContainer = new TrainingContainer(this.model.getTraining(), window.getTrainingView());
+            TrainingView trainingView = window.getTrainingView();
+            trainingView.initTrainingContainer(trainingContainer);
+        }
+    }
+
+    @Override
+    public void handleTrainingStart() {
+        Training training = this.model.getTraining();
+        training.start();
+        initTrainingContainer();
+    }
+
+    @Override
+    public void handleTrainingStop() {
+        Training training = this.model.getTraining();
+        training.stop();
+    }
+
+    @Override
+    public void handlePrecisionSelection(int selectedIndex) {
+        this.model.setStoredPrecisionIndex(selectedIndex);
+        AbstractTraining.setPrecision(Integer.parseInt(AbstractTraining.getSupportedPrecisions()[selectedIndex]));
     }
 }

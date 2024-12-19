@@ -36,6 +36,8 @@ import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktop;
 import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.Scanner;
@@ -202,7 +204,7 @@ public class MainDesktop {
         URL url;
         HttpURLConnection huc;
         try {
-            url = new URL("https://www.letsbend.de/download/version.txt");
+            url = new URI("https://www.letsbend.de/download/version.txt").toURL();
             huc = (HttpURLConnection) url.openConnection();
             int responseCode = huc.getResponseCode();
 
@@ -216,7 +218,7 @@ public class MainDesktop {
                 }
                 LOGGER.info(versionFromHost);
             }
-        } catch (IOException e) {
+        } catch (IOException |URISyntaxException e ) {
             LOGGER.error(e.getMessage());
         }
     }

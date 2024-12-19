@@ -507,7 +507,7 @@ public abstract class AbstractHarmonica implements Harmonica {
          * @return the frequency
          */
         public double getFrequency() {
-            return Objects.requireNonNull(NoteLookup.getNote(name)).getValue();
+            return Objects.requireNonNull(NoteLookup.getNoteFrequency(name));
         }
     }
 
