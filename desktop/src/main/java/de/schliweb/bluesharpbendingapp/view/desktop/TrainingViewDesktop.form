@@ -105,7 +105,7 @@
             <properties>
               <background color="-6513759"/>
             </properties>
-            <border type="line" title="Play Note">
+            <border type="line">
               <title-color color="-16777216"/>
             </border>
             <children/>

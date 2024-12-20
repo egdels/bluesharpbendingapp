@@ -122,7 +122,7 @@ public abstract class AbstractTraining implements Training {
      * @return the string [ ]
      */
     public static String[] getSupportedPrecisions() {
-        return new String[]{"5", "10", "15"};
+        return new String[]{"5", "10", "15", "20", "25", "30"};
     }
 
     /**

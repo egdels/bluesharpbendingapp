@@ -26,6 +26,7 @@ package de.schliweb.bluesharpbendingapp.controller;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
 import de.schliweb.bluesharpbendingapp.model.training.Training;
+import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
@@ -39,6 +40,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class TrainingContainer implements Runnable {
 
+    /**
+     * The constant LOGGER.
+     */
+    private static final Logger LOGGER = new Logger(TrainingContainer.class);
     /**
      * The Training.
      */
@@ -57,13 +62,13 @@ public class TrainingContainer implements Runnable {
      */
     private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     /**
-     * The To be cleared.
-     */
-    private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
-    /**
      * The To next note.
      */
     private final AtomicBoolean toNextNote = new AtomicBoolean(false);
+    /**
+     * The To be cleared.
+     */
+    private boolean toBeCleared = false;
     /**
      * The Frequency to handle.
      */
@@ -86,22 +91,25 @@ public class TrainingContainer implements Runnable {
         if (training.isRunning() && training.isNoteActive(frequencyToHandle)) {
             double cents = NoteUtils.getCents(NoteLookup.getNoteFrequency(training.getActualNote()), frequencyToHandle);
             element.update(cents);
-            toBeCleared.set(true);
-            if (Math.abs(cents) < AbstractTraining.getPrecision())
-                toNextNote.set(true);
+            toBeCleared = true;
+            if (Math.abs(cents) < AbstractTraining.getPrecision() && toNextNote.compareAndSet(false, true)) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+
         } else {
-            if (toBeCleared.get()) {
+            if (toBeCleared) {
                 exec.schedule(() -> {
                     element.clear();
-                    toBeCleared.set(false);
+                    toBeCleared = false;
                 }, 100, TimeUnit.MILLISECONDS);
             }
-            if (toNextNote.get()) {
-                exec.schedule(() -> {
-                    training.nextNote();
-                    toNextNote.set(false);
-                    view.initTrainingContainer(this);
-                }, 100, TimeUnit.MILLISECONDS);
+            if (toNextNote.compareAndSet(true, false)) {
+                training.nextNote();
+                view.initTrainingContainer(this);
             }
         }
     }
