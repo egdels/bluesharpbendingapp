@@ -103,4 +103,15 @@ public interface Training {
     int getProgress();
 
 
+    /**
+     * Is completed boolean.
+     *
+     * @return the boolean
+     */
+    boolean isCompleted();
+
+    /**
+     * Success.
+     */
+    void success();
 }

@@ -285,6 +285,6 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      */
     @Override
     public HarpViewNoteElement getHarpViewElement(int channel, int note) {
-        return new HarpViewNoteElementAndroid(getNote(channel, note), getActivity());
+        return HarpViewNoteElementAndroid.getInstance(getNote(channel, note));
     }
 }

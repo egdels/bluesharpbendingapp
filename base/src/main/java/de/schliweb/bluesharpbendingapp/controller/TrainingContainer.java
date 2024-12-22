@@ -26,7 +26,6 @@ package de.schliweb.bluesharpbendingapp.controller;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
 import de.schliweb.bluesharpbendingapp.model.training.Training;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
@@ -40,15 +39,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class TrainingContainer implements Runnable {
 
+
     /**
-     * The constant LOGGER.
+     * The Exec.
      */
-    private static final Logger LOGGER = new Logger(TrainingContainer.class);
+    private final static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    /**
+     * The constant lockAllThreads.
+     */
+    private static boolean lockAllThreads = false;
     /**
      * The Training.
      */
     private final Training training;
-
     /**
      * The View.
      */
@@ -57,10 +60,6 @@ public class TrainingContainer implements Runnable {
      * The Element.
      */
     private final HarpViewNoteElement element;
-    /**
-     * The Exec.
-     */
-    private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     /**
      * The To next note.
      */
@@ -84,32 +83,46 @@ public class TrainingContainer implements Runnable {
         this.training = training;
         this.view = trainingView;
         this.element = view.getActualHarpViewElement();
+        lockAllThreads = false;
     }
 
     @Override
     public void run() {
+        if (lockAllThreads) return;
         if (training.isRunning() && training.isNoteActive(frequencyToHandle)) {
             double cents = NoteUtils.getCents(NoteLookup.getNoteFrequency(training.getActualNote()), frequencyToHandle);
             element.update(cents);
             toBeCleared = true;
-            if (Math.abs(cents) < AbstractTraining.getPrecision() && toNextNote.compareAndSet(false, true)) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LOGGER.error(e.getMessage());
-                }
+            // set to next note (maybe several times)
+            if (Math.abs(cents) < AbstractTraining.getPrecision()) {
+                toNextNote.set(true);
             }
 
         } else {
-            if (toBeCleared) {
-                exec.schedule(() -> {
-                    element.clear();
-                    toBeCleared = false;
-                }, 100, TimeUnit.MILLISECONDS);
-            }
+            // if next note is set execute once!
             if (toNextNote.compareAndSet(true, false)) {
-                training.nextNote();
-                view.initTrainingContainer(this);
+                // lock all threads
+                lockAllThreads = true;
+                // mark actual note as success
+                training.success();
+                // wait 100 ms and execute
+                exec.schedule(() -> {
+                    if (training.isCompleted()) {
+                        training.stop();
+                        view.toggleButton();
+                    } else {
+                        training.nextNote();
+                    }
+                    view.initTrainingContainer(this);
+                    lockAllThreads = false; // unlock again
+                }, 100, TimeUnit.MILLISECONDS);
+            } else {
+                if (toBeCleared) {
+                    exec.schedule(() -> {
+                        element.clear();
+                        toBeCleared = false;
+                    }, 100, TimeUnit.MILLISECONDS);
+                }
             }
         }
     }

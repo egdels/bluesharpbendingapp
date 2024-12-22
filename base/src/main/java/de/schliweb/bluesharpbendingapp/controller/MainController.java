@@ -65,6 +65,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * The Notes.
      */
     private NoteContainer[] noteContainers;
+    /**
+     * The Training container.
+     */
     private TrainingContainer trainingContainer;
 
     /**
@@ -134,6 +137,11 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         updateTrainingView(frequency);
     }
 
+    /**
+     * Update training view.
+     *
+     * @param frequency the frequency
+     */
     private void updateTrainingView(double frequency) {
         if (window.isTrainingViewActive() && this.trainingContainer != null) {
             trainingContainer.setFrequencyToHandle(frequency);

@@ -29,8 +29,6 @@ import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The type Abstract training.
@@ -49,12 +47,17 @@ public abstract class AbstractTraining implements Training {
     /**
      * The Note index.
      */
-    private final AtomicInteger noteIndex = new AtomicInteger(0);
+    private int noteIndex = 0;
 
     /**
      * The Is running.
      */
-    private final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private boolean isRunning = false;
+
+    /**
+     * The Success index.
+     */
+    private int successIndex=0;
 
     /**
      * Instantiates a new Abstract training.
@@ -122,7 +125,7 @@ public abstract class AbstractTraining implements Training {
      * @return the string [ ]
      */
     public static String[] getSupportedPrecisions() {
-        return new String[]{"5", "10", "15", "20", "25", "30"};
+        return new String[]{"5", "10", "15", "20", "25", "30", "35", "40", "45"};
     }
 
     /**
@@ -161,52 +164,63 @@ public abstract class AbstractTraining implements Training {
 
     @Override
     public String getActualNote() {
-        return getNotes()[noteIndex.get()];
+        return getNotes()[noteIndex];
     }
 
     @Override
     public String getNextNote() {
-        if (noteIndex.get() == getNotes().length - 1) return null;
-        return getNotes()[noteIndex.get() + 1];
+        if (noteIndex == getNotes().length - 1) return null;
+        return getNotes()[noteIndex + 1];
     }
 
     @Override
     public int getProgress() {
-        return (100 * noteIndex.get()) / (getNotes().length - 1);
+        return (100 * (successIndex)) / (getNotes().length+1);
     }
 
     @Override
     public String getPreviousNote() {
-        if (noteIndex.get() == 0) return null;
-        return getNotes()[noteIndex.get() - 1];
+        if (noteIndex == 0) return null;
+        return getNotes()[noteIndex - 1];
     }
 
     @Override
     public void start() {
-        noteIndex.set(0);
-        isRunning.set(true);
+        noteIndex=0;
+        successIndex=0;
+        isRunning=true;
     }
 
     @Override
     public void stop() {
-        isRunning.set(false);
+        isRunning=false;
     }
 
     @Override
     public boolean isRunning() {
-        return isRunning.get();
+        return isRunning;
     }
 
     @Override
     public String nextNote() {
-        if (noteIndex.get() < getNotes().length - 1) return getNotes()[noteIndex.incrementAndGet()];
+        if (noteIndex < getNotes().length - 1) return getNotes()[++noteIndex];
         return null;
     }
 
     @Override
     public boolean isNoteActive(double frequency) {
-        double cents = NoteUtils.getCents(NoteLookup.getNoteFrequency(getNotes()[noteIndex.get()]), frequency);
+        double cents = NoteUtils.getCents(NoteLookup.getNoteFrequency(getNotes()[noteIndex]), frequency);
         return cents <= 50 && cents >= -50;
+    }
+
+    @Override
+    public boolean isCompleted() {
+        return successIndex == getNotes().length+1;
+    }
+
+    @Override
+    public void success () {
+        successIndex++;
     }
 
     /**

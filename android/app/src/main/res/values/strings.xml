@@ -43,4 +43,11 @@
     <string name="permission_information_title">Information</string>
     <string name="permission_information_button_label">Proceed anyway</string>
     <string name="settings_algo_label">Algorithms</string>
+    <string name="action_training">Training</string>
+    <string name="training_start_button">Start</string>
+    <string name="training_stop_button">Stop</string>
+    <string name="training_start_label">Start Training</string>
+    <string name="training_trainings_label">Trainings</string>
+    <string name="training_precision_label">Precision</string>
+    <string name="training_progress_label">Progress</string>
 </resources>

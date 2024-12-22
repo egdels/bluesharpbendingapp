@@ -25,18 +25,14 @@ package de.schliweb.bluesharpbendingapp.app;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,12 +43,19 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MainController;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.ActivityMainBinding;
 import de.schliweb.bluesharpbendingapp.model.AndroidModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
@@ -64,14 +67,14 @@ import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
+import de.schliweb.bluesharpbendingapp.view.TrainingView;
 import de.schliweb.bluesharpbendingapp.view.android.AboutFragment;
 import de.schliweb.bluesharpbendingapp.view.android.AndroidSettingsHandler;
 import de.schliweb.bluesharpbendingapp.view.android.FragmentView;
 import de.schliweb.bluesharpbendingapp.view.android.FragmentViewModel;
 import de.schliweb.bluesharpbendingapp.view.android.HarpFragment;
 import de.schliweb.bluesharpbendingapp.view.android.SettingsFragment;
-
-import java.io.*;
+import de.schliweb.bluesharpbendingapp.view.android.TrainingFragment;
 
 
 /**
@@ -145,6 +148,10 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * The Note settings view handler.
      */
     private NoteSettingsViewHandler noteSettingsViewHandler;
+    /**
+     * The Training view handler.
+     */
+    private TrainingViewHandler trainingViewHandler;
 
     /**
      * Store model.
@@ -223,8 +230,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         viewModel.getSelectedFragmentView().observe(this, item -> {
             // Perform an action with the latest item data.
             this.selectedFragmentView = item;
-            if (item.getInstance() instanceof SettingsFragment) {
-                SettingsFragment settingsFragment = (SettingsFragment) item.getInstance();
+            if (item.getInstance() instanceof SettingsFragment settingsFragment) {
                 settingsFragment.setHarpSettingsViewHandler(getHarpSettingsViewHandler());
                 settingsFragment.setMicrophoneSettingsViewHandler(getMicrophoneSettingsViewHandler());
                 settingsFragment.setNoteSettingsViewHandler(getNoteSettingsViewHandler());
@@ -240,14 +246,20 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
                 model.getMicrophone().setMicrophoneHandler(mainController);
 
             }
-            if (item.getInstance() instanceof HarpFragment) {
-                HarpFragment harpFragment = (HarpFragment) item.getInstance();
+            if (item.getInstance() instanceof HarpFragment harpFragment) {
                 harpFragment.setHarpViewHandler(getHarpViewHandler());
                 harpFragment.getHarpViewHandler().initNotes();
                 model.getMicrophone().setMicrophoneHandler(mainController);
             }
             if (item.getInstance() instanceof AboutFragment) {
                 model.getMicrophone().setMicrophoneHandler(null);
+            }
+            if (item.getInstance() instanceof TrainingFragment trainingFragment) {
+                trainingFragment.setTrainingViewHandler(getTrainingViewHandler());
+                trainingFragment.getTrainingViewHandler().initTrainingContainer();
+                trainingFragment.getTrainingViewHandler().initTrainingList();
+                trainingFragment.getTrainingViewHandler().initPrecisionList();
+                model.getMicrophone().setMicrophoneHandler(mainController);
             }
         });
 
@@ -266,13 +278,31 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         hideAppBar();
-        hideNavigationBar();
 
         handleLookScreen(model.getStoredLockScreenIndex() > 0);
 
         if (permissionGranted) {
             microphone.open();
         }
+    }
+
+    /**
+     * Gets training view handler.
+     *
+     * @return the training view handler
+     */
+    private TrainingViewHandler getTrainingViewHandler() {
+        return this.trainingViewHandler;
+    }
+
+    /**
+     * Sets training view handler.
+     *
+     * @param trainingViewHandler the training view handler
+     */
+    @Override
+    public void setTrainingViewHandler(TrainingViewHandler trainingViewHandler) {
+        this.trainingViewHandler = trainingViewHandler;
     }
 
     /**
@@ -292,6 +322,16 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Override
     public void setNoteSettingsViewHandler(NoteSettingsViewHandler noteSettingsViewHandler) {
         this.noteSettingsViewHandler = noteSettingsViewHandler;
+    }
+
+    /**
+     * Gets training view.
+     *
+     * @return the training view
+     */
+    @Override
+    public TrainingView getTrainingView() {
+        return (TrainingView) selectedFragmentView.getInstance();
     }
 
     /**
@@ -324,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        if (isHarpViewActive() && (e.getAction() == MotionEvent.ACTION_UP)) {
+        if ((isHarpViewActive() || isTrainingViewActive()) && (e.getAction() == MotionEvent.ACTION_UP)) {
             if (isAppBarHidden) {
                 unHideAppBar();
             } else {
@@ -332,19 +372,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
             }
         }
         return true;
-    }
-
-    /**
-     * Hide navigation bar.
-     */
-    private void hideNavigationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().setDecorFitsSystemWindows(false);
-            if (getWindow().getInsetsController() != null) {
-                getWindow().getInsetsController().hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-                getWindow().getInsetsController().setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-            }
-        }
     }
 
     /**
@@ -402,6 +429,10 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         }
         if (id == R.id.action_harp) {
             Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_to_HarpFragment);
+            return true;
+        }
+        if (id == R.id.action_training) {
+            Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_to_TrainingFragment);
             return true;
         }
 
@@ -478,6 +509,16 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Override
     public boolean isMicrophoneSettingsViewActive() {
         return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof SettingsFragment;
+    }
+
+    /**
+     * Is training view active boolean.
+     *
+     * @return the boolean
+     */
+    @Override
+    public boolean isTrainingViewActive() {
+        return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof TrainingFragment;
     }
 
     /**

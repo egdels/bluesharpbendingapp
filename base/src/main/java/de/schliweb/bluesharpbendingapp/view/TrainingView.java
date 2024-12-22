@@ -71,4 +71,9 @@ public interface TrainingView {
      * @param trainingContainer the training container
      */
     void initTrainingContainer(TrainingContainer trainingContainer);
+
+    /**
+     * Toggle button.
+     */
+    void toggleButton();
 }

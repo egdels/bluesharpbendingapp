@@ -3,8 +3,7 @@ package de.schliweb.bluesharpbendingapp.model.training;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * The type Training test.
@@ -78,6 +77,8 @@ public class TrainingTest {
         assertEquals("B4", notes[26]);
         assertEquals("B5", notes[27]);
         assertEquals("B6", notes[28]); // Blow Bending
+
+
         assertEquals("B5", notes[29]);
     }
 
@@ -164,58 +165,42 @@ public class TrainingTest {
     void testTraining() {
         Training training = AbstractTraining.create(AbstractHarmonica.KEY.C, AbstractTraining.TRAINING.MAJOR_CHORD_ARPEGGIO);
         training.start();
-        System.out.println(training.getProgress());
+
         assertNull(training.getPreviousNote());
         assertEquals("D4", training.getActualNote());
         assertEquals("F#4", training.getNextNote());
         training.nextNote();
-        System.out.println(training.getProgress());
         assertEquals("D4", training.getPreviousNote());
         assertEquals("F#4", training.getActualNote());
         assertEquals("A4", training.getNextNote());
-        training.nextNote();
-        System.out.println(training.getProgress());
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        System.out.println(training.getProgress());
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        System.out.println(training.getProgress());
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        training.nextNote();
-        System.out.println(training.getProgress());
-
+        while(!training.isCompleted()) {
+            training.nextNote();
+            training.success();
+        }
         assertNull(training.getNextNote());
         assertEquals("D5", training.getActualNote());
-
+        assertEquals(100, training.getProgress());
         training.stop();
         training.start();
         assertNull(training.getPreviousNote());
         assertEquals("D4", training.getActualNote());
         assertEquals("F#4", training.getNextNote());
-
+        training.stop();
+        training.start();
+        String[] notes = training.getNotes();
+        for(String note : notes){
+            assertEquals(note,training.getActualNote());
+            training.nextNote();
+        }
+        training.start();
+        for(int i=0;i<notes.length;i++) {
+            training.nextNote();
+            training.success();
+        }
+        training.nextNote();
+        assertFalse(training.isCompleted());
+        assertTrue(training.getProgress()< 100 && training.getProgress()>0);
+        training.success();
+        assertEquals(100,training.getProgress());
     }
 }

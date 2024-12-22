@@ -30,12 +30,19 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 
+import java.util.HashMap;
+
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 /**
  * The type Harp view note element android.
  */
 public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
+
+    /**
+     * The constant instances.
+     */
+    private static final HashMap<TextView, HarpViewNoteElementAndroid> instances = new HashMap<>();
 
     /**
      * The Text view.
@@ -48,14 +55,24 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
     private final FragmentActivity activity;
 
     /**
+     * Gets instance.
+     *
+     * @param textView the text view
+     * @return the instance
+     */
+    public static HarpViewNoteElement getInstance(TextView textView) {
+        return instances.computeIfAbsent(textView, HarpViewNoteElementAndroid::new);
+    }
+
+
+    /**
      * Instantiates a new Harp view note element android.
      *
      * @param textView the text view
-     * @param activity the activity
      */
-    public HarpViewNoteElementAndroid(TextView textView, FragmentActivity activity) {
+    private HarpViewNoteElementAndroid(TextView textView) {
         this.textView = textView;
-        this.activity = activity;
+        this.activity = (FragmentActivity) textView.getContext();
     }
 
     /**
