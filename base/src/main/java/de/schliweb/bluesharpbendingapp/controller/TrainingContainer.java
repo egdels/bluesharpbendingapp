@@ -43,7 +43,7 @@ public class TrainingContainer implements Runnable {
     /**
      * The Exec.
      */
-    private final static ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     /**
      * The constant lockAllThreads.
      */
@@ -67,11 +67,11 @@ public class TrainingContainer implements Runnable {
     /**
      * The To be cleared.
      */
-    private boolean toBeCleared = false;
+    private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
     /**
      * The Frequency to handle.
      */
-    private double frequencyToHandle;
+    private volatile double frequencyToHandle;
 
     /**
      * Instantiates a new Training container.
@@ -88,15 +88,17 @@ public class TrainingContainer implements Runnable {
 
     @Override
     public void run() {
-        if (lockAllThreads) return;
+        if(lockAllThreads) return;
         if (training.isRunning() && training.isNoteActive(frequencyToHandle)) {
-            double cents = NoteUtils.getCents(NoteLookup.getNoteFrequency(training.getActualNote()), frequencyToHandle);
+            double actualNoteFrequency = NoteLookup.getNoteFrequency(training.getActualNote());
+            double cents = NoteUtils.getCents(actualNoteFrequency, frequencyToHandle);
             element.update(cents);
-            toBeCleared = true;
+
             // set to next note (maybe several times)
             if (Math.abs(cents) < AbstractTraining.getPrecision()) {
                 toNextNote.set(true);
-            }
+            } else
+                toBeCleared.set(true);
 
         } else {
             // if next note is set execute once!
@@ -105,22 +107,22 @@ public class TrainingContainer implements Runnable {
                 lockAllThreads = true;
                 // mark actual note as success
                 training.success();
+                // to next Note
+                training.nextNote();
                 // wait 100 ms and execute
                 exec.schedule(() -> {
                     if (training.isCompleted()) {
                         training.stop();
                         view.toggleButton();
-                    } else {
-                        training.nextNote();
                     }
                     view.initTrainingContainer(this);
                     lockAllThreads = false; // unlock again
-                }, 100, TimeUnit.MILLISECONDS);
+                }, 500, TimeUnit.MILLISECONDS);
             } else {
-                if (toBeCleared) {
+                // execute once
+                if (toBeCleared.compareAndSet(true, false)) {
                     exec.schedule(() -> {
                         element.clear();
-                        toBeCleared = false;
                     }, 100, TimeUnit.MILLISECONDS);
                 }
             }

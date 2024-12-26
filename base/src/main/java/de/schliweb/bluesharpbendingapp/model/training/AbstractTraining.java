@@ -100,6 +100,9 @@ public abstract class AbstractTraining implements Training {
         if (TRAINING.MAJOR_SCALE.equals(t)) {
             training = new MajorScaleTraining(k);
         }
+        if (TRAINING.DUMMY.equals(t)) {
+            training = new DummyTraining(k);
+        }
         return training;
     }
 
@@ -169,18 +172,18 @@ public abstract class AbstractTraining implements Training {
 
     @Override
     public String getNextNote() {
-        if (noteIndex == getNotes().length - 1) return null;
+        if (noteIndex >= getNotes().length - 1) return null;
         return getNotes()[noteIndex + 1];
     }
 
     @Override
     public int getProgress() {
-        return (100 * (successIndex)) / (getNotes().length+1);
+        return (100 * (successIndex)) / getNotes().length;
     }
 
     @Override
     public String getPreviousNote() {
-        if (noteIndex == 0) return null;
+        if (noteIndex <= 0) return null;
         return getNotes()[noteIndex - 1];
     }
 
@@ -215,7 +218,7 @@ public abstract class AbstractTraining implements Training {
 
     @Override
     public boolean isCompleted() {
-        return successIndex == getNotes().length+1;
+        return successIndex >= getNotes().length;
     }
 
     @Override
@@ -243,6 +246,8 @@ public abstract class AbstractTraining implements Training {
          * Major scale training.
          */
         MAJOR_SCALE,
+
+        DUMMY,
         /**
          * Octave leaps training.
          */

@@ -43,7 +43,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_algo_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Spinner
                 android:id="@+id/settings_algo_list"
@@ -68,7 +68,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_key_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Spinner
                 android:id="@+id/settings_key_list"
@@ -92,7 +92,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_tune_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Spinner
                 android:id="@+id/settings_tune_list"
@@ -116,7 +116,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_pitches_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Spinner
                 android:id="@+id/settings_pitches_list"
@@ -140,7 +140,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_screenlock_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/settings_screenlock"
@@ -164,7 +164,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_reset_label"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
         <Button
@@ -173,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings_reset_button"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginEnd="50dp"
                 app:strokeColor="?attr/buttonStrokeColor"/>
     </TableRow>

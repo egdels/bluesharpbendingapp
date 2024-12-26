@@ -193,7 +193,7 @@ public class TrainingTest {
             training.nextNote();
         }
         training.start();
-        for(int i=0;i<notes.length;i++) {
+        for(int i=0;i<notes.length-1;i++) {
             training.nextNote();
             training.success();
         }

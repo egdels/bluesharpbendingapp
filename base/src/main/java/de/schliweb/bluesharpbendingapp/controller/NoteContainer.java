@@ -29,6 +29,7 @@ import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The type NoteContainer.
@@ -54,7 +55,7 @@ public class NoteContainer implements Runnable {
     /**
      * The Frequency to handle.
      */
-    private double frequencyToHandle;
+    private volatile double frequencyToHandle;
     /**
      * The Harmonica.
      */
@@ -78,7 +79,7 @@ public class NoteContainer implements Runnable {
     /**
      * The To Be Cleared.
      */
-    private boolean toBeCleared = false;
+    private final AtomicBoolean toBeCleared= new AtomicBoolean(false);;
 
 
     /**
@@ -163,12 +164,12 @@ public class NoteContainer implements Runnable {
             else {
                 harpViewElement.update(-cents);
             }
-            toBeCleared = true;
+            toBeCleared.set(true);
         } else {
-            if (toBeCleared) {
+            // execute once
+            if (toBeCleared.compareAndSet(true, false)) {
                 exec.schedule(() -> {
                     harpViewElement.clear();
-                    toBeCleared = false;
                 }, 100, TimeUnit.MILLISECONDS);
             }
         }
