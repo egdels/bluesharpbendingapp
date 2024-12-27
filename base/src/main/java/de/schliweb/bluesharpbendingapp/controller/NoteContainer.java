@@ -79,7 +79,7 @@ public class NoteContainer implements Runnable {
     /**
      * The To Be Cleared.
      */
-    private final AtomicBoolean toBeCleared= new AtomicBoolean(false);;
+    private final AtomicBoolean toBeCleared= new AtomicBoolean(false);
 
 
     /**
@@ -159,18 +159,12 @@ public class NoteContainer implements Runnable {
     public void run() {
         if (frequencyToHandle <= maxFrequency && minFrequency <= frequencyToHandle) {
             double cents = harmonica.getCentsNote(channel, note, frequencyToHandle);
-            if (!hasInverseCentsHandling)
-                harpViewElement.update(cents);
-            else {
-                harpViewElement.update(-cents);
-            }
+            harpViewElement.update(hasInverseCentsHandling ? -cents : cents);
             toBeCleared.set(true);
         } else {
             // execute once
             if (toBeCleared.compareAndSet(true, false)) {
-                exec.schedule(() -> {
-                    harpViewElement.clear();
-                }, 100, TimeUnit.MILLISECONDS);
+                exec.schedule(harpViewElement::clear, 100, TimeUnit.MILLISECONDS);
             }
         }
     }

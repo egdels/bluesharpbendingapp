@@ -95,7 +95,9 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
 
                     line.setStroke(lineWidth, Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0));
 
-                    double position = height - height * (cents / 50.0);
+                    // Begrenze die cents-Werte auf den Bereich von -44 bis 44
+                    double limitedCents = Math.max(-44.0, Math.min(44.0, cents));
+                    double position = height - height * (limitedCents / 50.0);
 
                     line.setBounds(line.getBounds().left, line.getBounds().top, line.getBounds().right, (int) position);
                 }

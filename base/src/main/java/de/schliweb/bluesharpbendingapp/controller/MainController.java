@@ -35,6 +35,8 @@ import de.schliweb.bluesharpbendingapp.view.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * The type Main controller.
@@ -71,6 +73,11 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     private TrainingContainer trainingContainer;
 
     /**
+     * The Executor service.
+     */
+    private final ExecutorService executorService;
+
+    /**
      * Instantiates a new Main controller.
      *
      * @param window the window
@@ -79,6 +86,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     public MainController(MainWindow window, MainModel model) {
         this.window = window;
         this.model = model;
+        this.executorService = Executors.newCachedThreadPool();
         // Gespeicherten Kammerton, vor Erstellung der Harmonika setzen
         NoteLookup.setConcertPitchByIndex(model.getStoredConcertPitchIndex());
         this.model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
@@ -98,33 +106,40 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     @Override
     public void handleAlgorithmSelection(int algorithmIndex) {
-        this.model.setStoredAlgorithmIndex(algorithmIndex);
-        Microphone microphone = model.getMicrophone();
-        microphone.close();
-        microphone.setAlgorithm(algorithmIndex);
-        microphone.open();
-
+        if (this.model.getStoredAlgorithmIndex() != algorithmIndex) {
+            this.model.setStoredAlgorithmIndex(algorithmIndex);
+            Microphone microphone = model.getMicrophone();
+            microphone.close();
+            microphone.setAlgorithm(algorithmIndex);
+            microphone.open();
+        }
     }
 
     @Override
     public void handleKeySelection(int keyIndex) {
-        this.model.setStoredKeyIndex(keyIndex);
-        model.setHarmonica(AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex()));
+        if (this.model.getStoredKeyIndex() != keyIndex) {
+            this.model.setStoredKeyIndex(keyIndex);
+            model.setHarmonica(AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex()));
+        }
     }
 
     @Override
     public void handleMicrophoneSelection(int microphoneIndex) {
-        this.model.setStoredMicrophoneIndex(microphoneIndex);
-        Microphone microphone = model.getMicrophone();
-        microphone.close();
-        microphone.setName(microphoneIndex);
-        microphone.open();
+        if (this.model.getStoredMicrophoneIndex() != microphoneIndex) {
+            this.model.setStoredMicrophoneIndex(microphoneIndex);
+            Microphone microphone = model.getMicrophone();
+            microphone.close();
+            microphone.setName(microphoneIndex);
+            microphone.open();
+        }
     }
 
     @Override
     public void handleTuneSelection(int tuneIndex) {
-        this.model.setStoredTuneIndex(tuneIndex);
-        model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex));
+        if (this.model.getStoredTuneIndex() != tuneIndex) {
+            this.model.setStoredTuneIndex(tuneIndex);
+            model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex));
+        }
     }
 
 
@@ -145,7 +160,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     private void updateTrainingView(double frequency) {
         if (window.isTrainingViewActive() && this.trainingContainer != null) {
             trainingContainer.setFrequencyToHandle(frequency);
-            (new Thread(trainingContainer)).start();
+            executorService.submit(trainingContainer);
         }
     }
 
@@ -264,6 +279,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      */
     public void stop() {
         this.model.getMicrophone().close();
+        executorService.shutdown();
     }
 
     /**
@@ -275,7 +291,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         if (window.isHarpViewActive() && this.noteContainers != null) {
             for (NoteContainer noteContainer : noteContainers) {
                 noteContainer.setFrequencyToHandle(frequency);
-                (new Thread(noteContainer)).start();
+                executorService.submit(noteContainer);
             }
         }
     }
@@ -306,9 +322,11 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     @Override
     public void handleConcertPitchSelection(int pitchIndex) {
-        this.model.setStoredConcertPitchIndex(pitchIndex);
-        NoteLookup.setConcertPitchByIndex(pitchIndex);
-        model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
+        if (this.model.getStoredConcertPitchIndex() != pitchIndex) {
+            this.model.setStoredConcertPitchIndex(pitchIndex);
+            NoteLookup.setConcertPitchByIndex(pitchIndex);
+            model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
+        }
     }
 
     @Override
@@ -340,9 +358,11 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     @Override
     public void handleTrainingSelection(int trainingIndex) {
-        this.model.setStoredTrainingIndex(trainingIndex);
-        model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), trainingIndex));
-        initTrainingContainer();
+        if (this.model.getStoredTrainingIndex() != trainingIndex) {
+            this.model.setStoredTrainingIndex(trainingIndex);
+            model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), trainingIndex));
+            initTrainingContainer();
+        }
     }
 
     @Override
@@ -369,7 +389,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     @Override
     public void handlePrecisionSelection(int selectedIndex) {
-        this.model.setStoredPrecisionIndex(selectedIndex);
-        AbstractTraining.setPrecision(Integer.parseInt(AbstractTraining.getSupportedPrecisions()[selectedIndex]));
+        if (this.model.getStoredPrecisionIndex() != selectedIndex) {
+            this.model.setStoredPrecisionIndex(selectedIndex);
+            AbstractTraining.setPrecision(Integer.parseInt(AbstractTraining.getSupportedPrecisions()[selectedIndex]));
+        }
     }
 }

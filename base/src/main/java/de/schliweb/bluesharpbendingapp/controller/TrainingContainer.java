@@ -93,7 +93,6 @@ public class TrainingContainer implements Runnable {
             double actualNoteFrequency = NoteLookup.getNoteFrequency(training.getActualNote());
             double cents = NoteUtils.getCents(actualNoteFrequency, frequencyToHandle);
             element.update(cents);
-
             // set to next note (maybe several times)
             if (Math.abs(cents) < AbstractTraining.getPrecision()) {
                 toNextNote.set(true);
@@ -121,9 +120,7 @@ public class TrainingContainer implements Runnable {
             } else {
                 // execute once
                 if (toBeCleared.compareAndSet(true, false)) {
-                    exec.schedule(() -> {
-                        element.clear();
-                    }, 100, TimeUnit.MILLISECONDS);
+                    exec.schedule(element::clear, 100, TimeUnit.MILLISECONDS);
                 }
             }
         }
