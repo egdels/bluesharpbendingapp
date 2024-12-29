@@ -37,6 +37,8 @@ import de.schliweb.bluesharpbendingapp.utils.Logger;
 import javax.sound.sampled.*;
 import javax.sound.sampled.Mixer.Info;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -66,7 +68,7 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
     /**
      * The Algo.
      */
-    private PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.MPM;
+    private volatile PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.MPM;
     /**
      * The Dispatcher.
      */
@@ -75,7 +77,7 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
     /**
      * The Microphone handler.
      */
-    private MicrophoneHandler microphoneHandler;
+    private volatile MicrophoneHandler microphoneHandler;
 
     /**
      * The Name.
@@ -83,9 +85,9 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
     private String name;
 
     /**
-     * The Target data line.
+     * The Executor service.
      */
-    private TargetDataLine targetDataLine;
+    private ExecutorService executorService;
 
     /**
      * Gets audio format.
@@ -98,12 +100,10 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
 
     @Override
     public void close() {
-        TargetDataLine dataLine = getTargetDataLine();
-        if (dataLine != null) {
-            dataLine.stop();
-            dataLine.close();
+        if (dispatcher != null) {
+            dispatcher.stop();
         }
-        setTargetDataLine(null);
+        executorService.shutdown();
     }
 
     @Override
@@ -172,27 +172,6 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
         return microphones.toArray(String[]::new);
     }
 
-    /**
-     * Gets target data line.
-     *
-     * @return the target data line
-     */
-    public TargetDataLine getTargetDataLine() {
-        if (targetDataLine == null) {
-            LOGGER.debug("has name " + name);
-            initTargetDataLine(name);
-        }
-        return targetDataLine;
-    }
-
-    /**
-     * Sets target data line.
-     *
-     * @param targetDataLine the target data line
-     */
-    public void setTargetDataLine(TargetDataLine targetDataLine) {
-        this.targetDataLine = targetDataLine;
-    }
 
     @Override
     public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
@@ -211,46 +190,45 @@ public class MicrophoneDesktop implements PitchDetectionHandler, Microphone {
         }
     }
 
+
     /**
-     * Init target data line.
+     * Gets target data line.
      *
      * @param name the name
+     * @return the target data line
      */
-    private void initTargetDataLine(String name) {
+    private TargetDataLine getTargetDataLine(String name) {
+        TargetDataLine targetDataLine = null;
         Info[] mixerInfos = AudioSystem.getMixerInfo();
         DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, getAudioFormat());
+
         for (Info mixerInfo : mixerInfos) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);
             if (mixer.isLineSupported(dataLineInfo) && mixer.getMixerInfo().getName().equals(name)) {
                 try {
-                    mixer.getLine(dataLineInfo);
-                    setTargetDataLine((TargetDataLine) mixer.getLine(dataLineInfo));
+                    targetDataLine = (TargetDataLine) mixer.getLine(dataLineInfo);
                 } catch (LineUnavailableException e) {
                     LOGGER.error(e.getMessage());
                 }
             }
         }
+        return targetDataLine;
     }
 
     @Override
     public void open() {
-        if (dispatcher != null) {
-            dispatcher.stop();
-        }
+        executorService = Executors.newSingleThreadExecutor();
         try {
-            TargetDataLine dataLine = getTargetDataLine();
-            if (null != dataLine) {
-                dataLine.open(getAudioFormat(), BUFFER_SIZE);
-                dataLine.start();
-                final AudioInputStream stream = new AudioInputStream(dataLine);
-                JVMAudioInputStream audioStream = new JVMAudioInputStream(stream);
-                // create a new dispatcher
+            AudioFormat format = getAudioFormat();
+            TargetDataLine line = getTargetDataLine(name);
+            if (line != null) {
+                line.open(format);
+                line.start();
+                JVMAudioInputStream audioStream = new JVMAudioInputStream(new AudioInputStream(line));
                 dispatcher = new AudioDispatcher(audioStream, BUFFER_SIZE, OVERLAP);
                 dispatcher.addAudioProcessor(new PitchProcessor(algo, SAMPLE_RATE, BUFFER_SIZE, this));
-
-                new Thread(dispatcher, "Audio dispatching").start();
+                executorService.submit(dispatcher);
             }
-
         } catch (LineUnavailableException e) {
             LOGGER.error(e.getMessage());
         }

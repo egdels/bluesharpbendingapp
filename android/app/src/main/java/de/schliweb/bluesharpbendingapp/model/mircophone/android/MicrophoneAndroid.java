@@ -28,6 +28,8 @@ import android.os.Process;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
@@ -37,11 +39,17 @@ import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
+import de.schliweb.bluesharpbendingapp.utils.Logger;
 
 /**
  * The type Microphone android.
  */
 public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
+
+    /**
+     * The constant LOGGER.
+     */
+    private static final Logger LOGGER = new Logger(MicrophoneAndroid.class);
     /**
      * The constant BUFFER_SIZE.
      */
@@ -57,7 +65,7 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
     /**
      * The Algo.
      */
-    private PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.MPM;
+    private volatile PitchEstimationAlgorithm algo = PitchEstimationAlgorithm.MPM;
     /**
      * The Dispatcher.
      */
@@ -65,7 +73,11 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
     /**
      * The Microphone handler.
      */
-    private MicrophoneHandler microphoneHandler;
+    private volatile MicrophoneHandler microphoneHandler;
+    /**
+     * The Executor service.
+     */
+    private ExecutorService executorService;
 
     /**
      * Get supported algorithms string [ ].
@@ -101,6 +113,8 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
             dispatcher.stop();
             dispatcher = null;
         }
+        executorService.shutdown();
+        executorService = null;
     }
 
     /**
@@ -169,23 +183,20 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
     @SuppressLint("MissingPermission")
     @Override
     public void open() {
-        if (dispatcher != null) {
-            dispatcher.stop();
-        }
+        executorService = Executors.newSingleThreadExecutor();
+
         dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(SAMPLE_RATE, BUFFER_SIZE, OVERLAP);
         dispatcher.addAudioProcessor(new PitchProcessor(algo, SAMPLE_RATE, BUFFER_SIZE, this));
-        class DispatcherRunnable implements Runnable {
-            @Override
-            public void run() {
-                Process.setThreadPriority(Process.THREAD_PRIORITY_AUDIO);
-                try {
-                    dispatcher.run();
-                } catch (AssertionError e) {
-                    open();
-                }
+        executorService.submit(() -> {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_AUDIO);
+            try {
+                dispatcher.run();
+            } catch (AssertionError e) {
+                LOGGER.info("AssertionError:" + " Reopen Microphone to process this issue.");
+                close();
+                open();
             }
-        }
-        new Thread(new DispatcherRunnable(), "Audio dispatching").start();
+        });
     }
 
 
@@ -209,7 +220,6 @@ public class MicrophoneAndroid implements PitchDetectionHandler, Microphone {
         if (handler != null) {
             handler.handle(pitch, rms, probability);
         }
-
     }
 }
 

@@ -62,7 +62,10 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * The Window.
      */
     private final MainWindow window;
-
+    /**
+     * The Executor service.
+     */
+    private final ExecutorService executorService;
     /**
      * The Notes.
      */
@@ -71,11 +74,6 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * The Training container.
      */
     private TrainingContainer trainingContainer;
-
-    /**
-     * The Executor service.
-     */
-    private final ExecutorService executorService;
 
     /**
      * Instantiates a new Main controller.
@@ -106,40 +104,33 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     @Override
     public void handleAlgorithmSelection(int algorithmIndex) {
-        if (this.model.getStoredAlgorithmIndex() != algorithmIndex) {
-            this.model.setStoredAlgorithmIndex(algorithmIndex);
-            Microphone microphone = model.getMicrophone();
-            microphone.close();
-            microphone.setAlgorithm(algorithmIndex);
-            microphone.open();
-        }
+        this.model.setStoredAlgorithmIndex(algorithmIndex);
+        Microphone microphone = model.getMicrophone();
+        microphone.close();
+        microphone.setAlgorithm(algorithmIndex);
+        microphone.open();
+
     }
 
     @Override
     public void handleKeySelection(int keyIndex) {
-        if (this.model.getStoredKeyIndex() != keyIndex) {
-            this.model.setStoredKeyIndex(keyIndex);
-            model.setHarmonica(AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex()));
-        }
+        this.model.setStoredKeyIndex(keyIndex);
+        model.setHarmonica(AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex()));
     }
 
     @Override
     public void handleMicrophoneSelection(int microphoneIndex) {
-        if (this.model.getStoredMicrophoneIndex() != microphoneIndex) {
-            this.model.setStoredMicrophoneIndex(microphoneIndex);
-            Microphone microphone = model.getMicrophone();
-            microphone.close();
-            microphone.setName(microphoneIndex);
-            microphone.open();
-        }
+        this.model.setStoredMicrophoneIndex(microphoneIndex);
+        Microphone microphone = model.getMicrophone();
+        microphone.close();
+        microphone.setName(microphoneIndex);
+        microphone.open();
     }
 
     @Override
     public void handleTuneSelection(int tuneIndex) {
-        if (this.model.getStoredTuneIndex() != tuneIndex) {
-            this.model.setStoredTuneIndex(tuneIndex);
-            model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex));
-        }
+        this.model.setStoredTuneIndex(tuneIndex);
+        model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex));
     }
 
 
@@ -322,11 +313,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     @Override
     public void handleConcertPitchSelection(int pitchIndex) {
-        if (this.model.getStoredConcertPitchIndex() != pitchIndex) {
-            this.model.setStoredConcertPitchIndex(pitchIndex);
-            NoteLookup.setConcertPitchByIndex(pitchIndex);
-            model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
-        }
+        this.model.setStoredConcertPitchIndex(pitchIndex);
+        NoteLookup.setConcertPitchByIndex(pitchIndex);
+        model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
     }
 
     @Override
@@ -358,11 +347,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     @Override
     public void handleTrainingSelection(int trainingIndex) {
-        if (this.model.getStoredTrainingIndex() != trainingIndex) {
-            this.model.setStoredTrainingIndex(trainingIndex);
-            model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), trainingIndex));
-            initTrainingContainer();
-        }
+        this.model.setStoredTrainingIndex(trainingIndex);
+        model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), trainingIndex));
+        initTrainingContainer();
     }
 
     @Override
@@ -389,9 +376,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     @Override
     public void handlePrecisionSelection(int selectedIndex) {
-        if (this.model.getStoredPrecisionIndex() != selectedIndex) {
-            this.model.setStoredPrecisionIndex(selectedIndex);
-            AbstractTraining.setPrecision(Integer.parseInt(AbstractTraining.getSupportedPrecisions()[selectedIndex]));
-        }
+        this.model.setStoredPrecisionIndex(selectedIndex);
+        AbstractTraining.setPrecision(Integer.parseInt(AbstractTraining.getSupportedPrecisions()[selectedIndex]));
     }
 }
