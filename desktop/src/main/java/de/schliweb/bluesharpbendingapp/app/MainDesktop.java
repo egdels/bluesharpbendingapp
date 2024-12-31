@@ -43,44 +43,86 @@ import java.nio.file.FileSystems;
 import java.util.Scanner;
 
 /**
- * The type Main desktop.
+ * The MainDesktop class serves as the entry point and main controller for the
+ * desktop application. It handles application settings initialization,
+ * version management, and model persistence. This class defines static variables
+ * and methods to configure the application behavior, manage resources, and
+ * communicate between different system components.
  */
 public class MainDesktop {
 
     /**
-     * The constant LOGGER.
+     * A Logger instance for logging messages specifically related to the MainDesktop class.
+     * This logger provides contextual logging capabilities, using the MainDesktop class
+     * as a reference for the source of logged messages. It supports different logging levels
+     * such as debug, info, and error to aid in tracing application behavior and troubleshooting.
      */
     private static final Logger LOGGER = new Logger(MainDesktop.class);
 
     /**
-     * The constant TEMP_DIR.
+     * A constant representing the directory path for temporary files used by the application.
+     *
+     * This path is automatically generated based on the user's home directory and a predefined
+     * folder structure specific to the application. The directory is intended to store temporary files
+     * and data that may be created or used during the application's runtime.
+     *
+     * The directory path includes:
+     * - The user's home directory (retrieved using the "user.home" system property).
+     * - A folder named "BluesHarpBendingApp.tmp" for organizational purposes.
+     *
+     * The use of `FileSystems.getDefault().getSeparator()` ensures that the generated path
+     * conforms to the file system and platform-specific directory separator.
+     *
+     * This field is defined as `private` for encapsulation, `static` to allow shared usage across
+     * the class, and `final` to prevent modification after initialization.
      */
     private static final String TEMP_DIR = System.getProperty("user.home") + FileSystems.getDefault().getSeparator() + "BluesHarpBendingApp.tmp" + FileSystems.getDefault().getSeparator();
 
     /**
-     * The constant TEMP_FILE.
+     * Represents the name of the temporary file used for storing serialized data of the application's model.
+     * This is a constant value that specifies the file name where the model will be saved or read during
+     * operations within the MainDesktop class.
+     *
+     * The file is expected to be located in the application's designated temporary directory.
      */
     private static final String TEMP_FILE = "Model.tmp";
 
     /**
-     * The constant versionFromHost.
+     * Represents a cached version string retrieved from the host system or server.
+     * This static field is intended to store the version information temporarily,
+     * allowing it to be accessed by other methods or components within the application.
+     *
+     * This variable is initially set to null and is expected to be populated through
+     * interactions with the host, such as through network communications or file I/O.
+     * It may be used for version checks or other operations requiring the application
+     * to verify the version information of the host.
      */
     private static String versionFromHost = null;
 
     /**
-     * The constant controller.
+     * A static reference to the main controller instance used within the application.
+     * This controller serves as a central point for managing the application's primary operations.
+     *
+     * It is used across the application to coordinate tasks, manage state, and provide
+     * a single access point for key functionalities implemented in the system.
      */
     private static MainController controller;
 
     /**
-     * The constant mainModel.
+     * Represents the static instance of the MainModel used as the primary data model
+     * within the MainDesktop application. This is shared across the application's context
+     * to maintain consistency and synchronization of data.
      */
     private static MainModel mainModel;
 
     /**
-     * The entry point of application.
+     * The main entry point of the application. This method initializes application configurations,
+     * sets up a graphical user interface, and starts the main controller.
      *
-     * @param args the input arguments
+     * @param args an array of command-line arguments. Recognized arguments include:
+     *             - "debug": enables debug-level logging.
+     *             - "info": enables informational logging.
+     *             - "donationware": enables application operation in donationware mode.
      */
     public static void main(String[] args) {
         Logger.setInfo(true);
@@ -146,9 +188,14 @@ public class MainDesktop {
     }
 
     /**
-     * Store model.
+     * Stores the provided MainModel instance to a temporary file within the application's
+     * designated temporary directory. If the temporary directory or file does not exist,
+     * it will attempt to create them. The content of the model is written as a string
+     * to the file.
      *
-     * @param model the model
+     * @param model the MainModel instance to be stored. It must provide a valid string
+     *              representation through the getString() method, which will be written
+     *              to the file.
      */
     private static void storeModel(MainModel model) {
 
@@ -171,9 +218,13 @@ public class MainDesktop {
     }
 
     /**
-     * Read model main model.
+     * Reads a MainModel instance from a temporary file in the designated temporary directory.
+     * If the temporary directory does not exist, it attempts to create it. If the temporary file
+     * exists, its content is read and used to construct a MainModel instance. If the file is absent
+     * or an error occurs during the process, a new MainModel instance is returned.
      *
-     * @return the main model
+     * @return a MainModel instance. If the file exists and is readable, the model is constructed
+     *         from its content. Otherwise, a default instance is returned.
      */
     private static MainModel readModel() {
 
@@ -198,7 +249,16 @@ public class MainDesktop {
     }
 
     /**
-     * Check version from host.
+     * Checks the version of the application from a remote host by accessing a specified URL.
+     * Retrieves the version information from the content, trims it, and logs the result.
+     * If an error occurs during the process, logs the error message.
+     *
+     * This method connects to the remote host using HTTPS, reads the content from the response,
+     * and stores the version information in the class-level variable `versionFromHost`.
+     * The HTTP response is validated before processing the content.
+     *
+     * Exceptions caught include `IOException` for network-related issues and `URISyntaxException`
+     * for invalid URI syntax.
      */
     private static void checkVersionFromHost() {
         URL url;
@@ -224,9 +284,12 @@ public class MainDesktop {
     }
 
     /**
-     * Gets version from host.
+     * Retrieves the version information of the application from a remote host.
+     * If the version has already been fetched, it returns the cached version.
+     * Otherwise, it triggers a check to fetch the version from the host.
      *
-     * @return the version from host
+     * @return the version of the application as a String. If the version could not be fetched,
+     *         it may return null or an empty string.
      */
     public static String getVersionFromHost() {
         if (versionFromHost != null) return versionFromHost;
@@ -235,7 +298,16 @@ public class MainDesktop {
     }
 
     /**
-     * Close.
+     * Terminates the application by performing necessary cleanup operations and shutting down.
+     *
+     * This method executes the following tasks in order:
+     * 1. Logs an informational message indicating the application is shutting down.
+     * 2. Stops the main controller, ensuring that all essential components and resources
+     *    are properly released, including audio input devices and any ongoing
+     *    asynchronous operations.
+     * 3. Saves the current state of the main application model to a designated temporary
+     *    file, allowing recovery or storage of application data.
+     * 4. Exits the application with a termination status of 0, signaling a successful shutdown.
      */
     public static void close() {
         LOGGER.info("Shutting down");

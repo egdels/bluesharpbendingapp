@@ -23,12 +23,16 @@ package de.schliweb.bluesharpbendingapp.controller;
  *
  */
 
+
 /**
- * The interface Harp view handler.
+ * The HarpViewHandler interface defines methods for managing and interacting
+ * with the visual and functional elements of a harp application.
  */
 public interface HarpViewHandler {
     /**
-     * Init notes.
+     * Initializes the notes in the harp application view. This method ensures
+     * that the necessary data and visual representations for the notes
+     * are prepared and ready for interaction.
      */
     void initNotes();
 }

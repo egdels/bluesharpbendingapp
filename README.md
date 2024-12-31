@@ -1,73 +1,137 @@
-# bluesharpbendingapp
+# Bluesharp Bending App
 
-This is the repository of the software project bluesharpbendingapp. It is designed to help beginners bend notes on a
-harmonica by visualizing the notes played.
+**Bluesharp Bending App** is a software tool designed to help beginners learn to bend notes on a harmonica by visualizing the notes being played.
 
-The original idea behind the development was to create an application that is available on all common operating systems
-and whose application window scales well. It is not uncommon to have other applications open while practicing
-or want to use the program on different devices. Last but not least, all keys and the most common
-special tunings of harmonicas should be supported.
+---
 
-As a result, there are now two versions of the app. A desktop version for the macOS, Debian and Windows operating
-systems,
-and an Android version for mobile devices.
+## Project Goal
 
-The software project consists of several subprojects, which are listed below:
+The main goals of the Bluesharp Bending App are:
 
-## Structure of the project
+- **Learn Note Bending**: Create a user-friendly application that helps beginners practice and master bending notes on the harmonica.
+- **Scale Training**: Provide an effective tool for scale training to improve musical knowledge and harmonica technique.
+- **Multi-Platform Support**: Make the app available on all common operating systems (macOS, Debian Linux, Windows, and Android).
+- **Scalable UI**: Ensure a scalable application window for flexible use, allowing users to practice comfortably even while multitasking or using devices with different screen sizes.
+- **Support for Different Tunings and Keys**: Include support for all harmonica keys and the most common special tunings.
 
-* [base](base): <br>Maven project that is used for both the desktop versions and the Android version. It is developed
-  using MVC patterns and contains all program components that are not device-specific. The extensive
-  library [TarsosDSP](https://github.com/JorenSix/TarsosDSP) is used to determine the frequency of the sounds.
-* [desktop](desktop): <br>Maven project for the desktop version for the macOS, Debian and Windows operating systems. The
-  standard classes under javax.sound.sampled.\* are used to read from the microphone. The data stream is not persisted,
-  but the frequency, volume and accuracy of the frequency determination are calculated at runtime. The interfaces are
-  created using [intellij gui designer](https://www.jetbrains.com/help/idea/creating-and-opening-forms.html).
-* [android](android): <br>Gradle project for the Android version. The standard
-  library [MediaRecorder](https://developer.android.com/reference/android/media/MediaRecorder) is used to read the
-  microphone. Here too, the data stream is not persisted, but only evaluated at runtime for frequency determination.
-* [webapp](webapp): <br>SpringBootApplication. Responsive website for the app, which is linked in the Amazon App Store
-  and Google Play Store. In particular, the necessary privacy policy for the Android version is provided here. There
-  is a language switch based on AcceptHeaderLocaleResolver
-  that displays the content of the website in either English or German depending on the language setting of the browser.
-* [debian-build](debian-build): <br>Maven project for creating the Debian package
-  using [jpackage](https://openjdk.org/jeps/392). There is no support for cross-compilers, so a corresponding Debian
-  device is required for successful package creation.
-* [macos-build](macos-build): <br>Maven project for creating the macOS package
-  using [jpackage](https://openjdk.org/jeps/392). There is no support for cross-compilers, so a corresponding macOS
-  device is required for successful package creation. Without signing the package with a trusted developer certificate,
-  gatekeeper will prevent installation. For workaround see [here](https://www.letsbend.de/download/readme_macos.txt)
-* [win-build](win-build): <br>Maven project for creating the Windows package
-  using [jpackage](https://openjdk.org/jeps/392). There is no support for cross-compilers, so a corresponding Windows
-  device is required for successful package creation. If the package is not signed by a trusted developer certificate, a
-  warning is issued during installation.
+---
 
-## Build
+## Versions Overview
 
-In order to build the respective desktop variants, a corresponding operating system with JDK including jpackage
-is required. The path to jpackage is configured in the Maven parameter env.JPACKAGE_HOME.
+The Bluesharp Bending App includes two main versions:
 
-### Build under Debian
+1. **Desktop Version**:
+  - Supported operating systems: *macOS*, *Debian Linux*, *Windows*.
+2. **Android Version**:
+  - Developed specifically for mobile devices.
 
-    mvn clean install -Pdebian -DprofileIdEnabled=true
+---
 
-The created package can then be found under debian-build/target/jpackage
+## Project Structure
 
-### Build under Windows
+The project is divided into several subprojects to keep development modular and maintainable. Below is an overview:
 
-In addition to jpackage, wixtoolset version 3 is required to build the MSI package. This can be
-downloaded [here](https://github.com/wixtoolset/wix3/releases).
+### 1. **Base** ([base](base))
+- A shared Maven project for both the desktop and Android versions.
+- Developed using the **Model-View-Controller (MVC)** pattern.
+- Contains all platform-independent components of the application.
 
-    mvn clean install -Pwin -DprofileIdEnabled=true
+### 2. **Desktop** ([desktop](desktop))
+- Maven project for the desktop version (macOS, Debian, Windows).
+- Uses the standard classes from `javax.sound.sampled.*` to access the microphone.
+- Microphone data is not persisted; instead, the following is computed in real-time:
+  - Frequency,
+  - Volume
+- User interfaces are created using the [IntelliJ GUI Designer](https://www.jetbrains.com/help/idea/creating-and-opening-forms.html).
 
-The MSI package created can then be found under win-build/target/jpackage
+### 3. **Android** ([android](android))
+- Gradle project developed for Android.
+- Leverages the [MediaRecorder](https://developer.android.com/reference/android/media/MediaRecorder) standard library for microphone access.
+- Similar to the desktop version, the audio stream is analyzed in real-time for frequency determination without persisting the data.
 
-### Build under macOS
+### 4. **WebApp** ([webapp](webapp))
+- A **Spring Boot**-based responsive website accompanying the app.
+- Key functionalities:
+  - Hosting the required privacy policy for the Android app.
+  - Language switching based on the `AcceptHeaderLocaleResolver`.
+  - Automatically displays content in *English* or *German* based on browser settings.
+- The app is linked to this website via the *Amazon App Store* and *Google Play Store*.
 
-Under macOS, package creation using OpenJDK results in a missing dependency to harfbuzz in the package. Compare
-[https://github.com/JetBrains/compose-multiplatform/issues/3107](https://github.com/JetBrains/compose-multiplatform/issues/3107)
-As a work-around, an alternative JDK can be used in the Maven parameter env.JPACKAGE_HOME.
+### 5. **Debian-Build** ([debian-build](debian-build))
+- Maven project for creating Debian packages using [jpackage](https://openjdk.org/jeps/392).
+- Note: A Debian device is required for building (cross-compilers are not supported).
 
-    mvn clean install -Pmacos -DprofileIdEnabled=true
+### 6. **macOS-Build** ([macos-build](macos-build))
+- Maven project for building macOS packages using [jpackage](https://openjdk.org/jeps/392).
+- Note: Installation requires signing the package with a trusted developer certificate; otherwise, *Gatekeeper* will block the installation. See the [MacOS-Readme workaround](https://www.letsbend.de/download/readme_macos.txt).
 
-The created package can then be found under win-build/target/jpackage
+### 7. **Windows-Build** ([win-build](win-build))
+- Maven project for building Windows packages using [jpackage](https://openjdk.org/jeps/392).
+- Note: The **WiX Toolset Version 3** is required to create MSI packages. It can be [downloaded here](https://github.com/wixtoolset/wix3/releases).
+- If the package is not signed with a trusted developer certificate, users will receive a warning during installation.
+
+---
+
+## Build Instructions
+
+To build the desktop variants, the respective operating system and a JDK installation (including `jpackage`) are required. The path to `jpackage` is configured via the Maven parameter `env.JPACKAGE_HOME`.
+
+### Build on Debian
+
+```bash
+mvn clean install -Pdebian -DprofileIdEnabled=true
+```
+
+The created package can be found in the following directory:
+`debian-build/target/jpackage`
+
+---
+
+### Build on Windows
+
+In addition to `jpackage`, the **WiX Toolset Version 3** is required. Download it here: [WiX Toolset](https://github.com/wixtoolset/wix3/releases).
+
+```bash
+mvn clean install -Pwin -DprofileIdEnabled=true
+```
+
+The created MSI package can be found in the following directory:
+`win-build/target/jpackage`
+
+---
+
+### Build on macOS
+
+Note: Building macOS packages with OpenJDK may result in missing **harfbuzz dependencies**. For details, review the [GitHub issue](https://github.com/JetBrains/compose-multiplatform/issues/3107).
+
+As a workaround, use an alternative JDK specified as the Maven parameter `env.JPACKAGE_HOME`.
+
+```bash
+mvn clean install -Pmacos -DprofileIdEnabled=true
+```
+
+The created package can be found in the following directory:
+`macos-build/target/jpackage`
+
+---
+
+## Contribution Guidelines
+
+Contributions to this project are welcome! Follow these steps to contribute:
+1. Fork the repository.
+2. Create a new branch for your changes.
+3. Submit a **Pull Request** with a clear description of your changes.
+
+---
+
+## License
+
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
+
+---
+
+## Contact
+
+For questions or feedback:
+- **Website**: [letsbend.de](https://www.letsbend.de)
+- **Support Email**: *christian.kierdorf@letsbend.de*

@@ -37,82 +37,157 @@ import java.util.ArrayList;
 
 
 /**
- * The type Main window desktop.
+ * The MainWindowDesktop class represents the main user interface window for a desktop
+ * application. It provides functionality for managing and displaying views such as
+ * HarpView, Settings, Training, and About sections. It extends JFrame and serves
+ * as the central controller for handling these views and their interactions.
+ *
+ * Fields in the class are used for maintaining a structured UI and handling the
+ * different components of the application.
  */
 public class MainWindowDesktop extends JFrame implements MainWindow {
     /**
-     * The Is donation ware.
+     * Indicates whether the software is classified as donationware.
+     * Donationware refers to software that is free to use but encourages
+     * users to voluntarily donate to support its development or maintenance.
      */
     private final boolean isDonationWare;
     /**
-     * The Content pane.
+     * Represents the main content pane of the application window. This panel
+     * serves as the container for various UI components and is used as the
+     * root panel for the layout and organization of the desktop application's
+     * interface. The `contentPane` is typically initialized and managed within
+     * the main application window class, ensuring the proper display and interaction
+     * of the application's graphical elements.
      */
     private JPanel contentPane;
 
     /**
-     * The Inner content harp pane.
+     * Represents a JPanel that serves as an inner container for the harp view content within the MainWindowDesktop.
+     * This panel is used to encapsulate and manage the layout and display of harp-related components or views.
      */
     private JPanel innerContentHarpPane;
     /**
-     * The Harp view.
+     * Represents the main view component for interacting with and displaying
+     * information about the "Harp" functionality within the MainWindowDesktop class.
+     * This variable references a desktop-specific implementation of the HarpView interface.
+     *
+     * It is used to manage and visualize the harp-related functions or data, typically
+     * through graphical user interface elements in the application.
      */
     private HarpViewDesktop harpView;
     /**
-     * The Inner content settings pane.
+     * A JPanel representing the settings pane of the inner content in the main window.
+     * This component is part of the main window's layout and is used for displaying or managing
+     * settings-related functionality within the application.
      */
     private JPanel innerContentSettingsPane;
     /**
-     * The Inner content about pane.
+     * A JPanel instance that represents the inner content area for the "About" section of the application.
+     * This panel is used to display information about the application, such as details about the software,
+     * developer credits, or usage guidelines.
      */
     private JPanel innerContentAboutPane;
     /**
-     * The Settings view.
+     * Represents the settings view specific to the desktop implementation of the application.
+     * Acts as a visual and interactive interface to manage and configure various application settings.
+     * It is a key component within the MainWindowDesktop class structure.
      */
     private SettingsViewDesktop settingsView;
     /**
-     * The About view.
+     * Represents the AboutViewDesktop component within the MainWindowDesktop.
+     * This variable is responsible for managing and displaying the "About" section
+     * of the application within the desktop interface.
      */
     private AboutViewDesktop aboutView;
 
     /**
-     * The Training view.
+     * Represents the training view component utilized within the desktop version of the main application window.
+     * This view is responsible for presenting the training interface to the user.
      */
     private TrainingViewDesktop trainingView;
 
     /**
-     * The Inner content pane.
+     * Represents the inner content pane of the main window in the desktop application.
+     * This JPanel serves as a container for other components or panes that make up
+     * the main user interface. The `innerContentPane` is likely used for dynamically
+     * displaying and managing different views or panels, such as settings, training,
+     * or harp-related components.
      */
     private JPanel innerContentPane;
     /**
-     * The Inner content training pane.
+     * Represents a JPanel that serves as the container for the training view's content
+     * within the MainWindowDesktop application. This panel organizes and displays
+     * components related to the training functionality, enabling users to interact
+     * with training features.
      */
     private JPanel innerContentTrainingPane;
     /**
-     * The Harp settings view handler.
+     * Represents the handler responsible for managing interactions and functionality
+     * related to the harp settings view within the application. It serves as a mediator
+     * between user interactions in the UI and the underlying application logic concerning
+     * harp settings, such as key and tuning management.
+     *
+     * This field is set using the `setHarpSettingsViewHandler` method and is utilized
+     * by the `MainWindowDesktop` class to delegate harp settings-related actions to the
+     * appropriate implementation of the `HarpSettingsViewHandler` interface.
      */
     private HarpSettingsViewHandler harpSettingsViewHandler;
     /**
-     * The Harp view handler.
+     * The {@code harpViewHandler} is an instance of the {@link HarpViewHandler} interface
+     * responsible for handling interactions and managing functionalities specific to the
+     * "Harp View" within the MainWindowDesktop class.
+     *
+     * This variable facilitates initialization, communication, and updates related to
+     * the harp application's visual representation and its associated actions.
      */
     private HarpViewHandler harpViewHandler;
     /**
-     * The Microphone settings view handler.
+     * Represents a handler for managing the microphone settings view in the application.
+     * This variable is responsible for handling interactions, user inputs, and settings
+     * related to the microphone and algorithm configuration.
+     *
+     * <ul>
+     *     <li>Facilitates initialization of the microphone and algorithm lists.</li>
+     *     <li>Handles user selection of specific microphones and algorithms.</li>
+     *     <li>Acts as a bridge between the microphone settings view and the application logic.</li>
+     * </ul>
+     *
+     * Used within the MainWindowDesktop class to connect the microphone settings view
+     * with its corresponding logic.
      */
     private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
     /**
-     * The NoteContainer settings view handler.
+     * A handler for managing interactions and operations related to the Note Settings view
+     * within the user interface. This variable is responsible for linking the interface logic
+     * and functionality of the NoteSettingsViewHandler with the corresponding view in the application.
+     *
+     * The `noteSettingsViewHandler` is utilized to initialize the concert pitch list and
+     * handle user interactions such as selecting a specific concert pitch. It facilitates
+     * the communication between the view and the underlying application logic.
      */
     private NoteSettingsViewHandler noteSettingsViewHandler;
 
     /**
-     * The Training view handler.
+     * Field to manage the interaction and logic associated with the training view.
+     *
+     * The `trainingViewHandler` is responsible for coordinating the behaviors,
+     * events, and updates related to the training view in the application. It acts
+     * as a bridge between the visual presentation of the training view and the
+     * underlying business logic, ensuring that user actions are properly managed
+     * and reflected in the view.
+     *
+     * This field is expected to hold an implementation of the `TrainingViewHandler`
+     * interface, which defines methods for handling training initialization,
+     * user interactions, and the start/stop processes of training sessions.
      */
     private TrainingViewHandler trainingViewHandler;
 
     /**
-     * Instantiates a new Main window desktop.
+     * Constructs the MainWindowDesktop class, sets up the main window of the application,
+     * initializes UI components, and configures event listeners for different panes and menu options.
      *
-     * @param isDonationWare the is donation ware
+     * @param isDonationWare a boolean indicating if the application is donation-based (true) or not (false)
      */
     public MainWindowDesktop(boolean isDonationWare) {
         this.isDonationWare = isDonationWare;
@@ -297,7 +372,10 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
     }
 
     /**
-     * Close.
+     * Closes the main window of the application.
+     *
+     * This method is responsible for disposing of the current window's resources
+     * and triggering the centralized close operation via MainDesktop.close().
      */
     private void close() {
         dispose();

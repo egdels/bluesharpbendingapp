@@ -24,19 +24,20 @@ package de.schliweb.bluesharpbendingapp.view;
  */
 
 /**
- * The interface Harp view note element.
+ * The HarpViewNoteElement interface defines the contract for handling
+ * and managing individual note-related elements within the harp view.
  */
 public interface HarpViewNoteElement {
 
     /**
-     * Clear.
+     * Clears the state or content of the note element, resetting it to its default state.
      */
     void clear();
 
     /**
-     * Update.
+     * Updates the state of the harp view note element based on the given cents value.
      *
-     * @param cents the cents
+     * @param cents the pitch shift value in cents used to update the note element
      */
     void update(double cents);
 

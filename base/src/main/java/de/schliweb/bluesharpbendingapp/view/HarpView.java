@@ -26,23 +26,24 @@ package de.schliweb.bluesharpbendingapp.view;
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
 
 /**
- * The interface Harp view.
+ * The HarpView interface provides methods to interact with and manage
+ * the visual elements of a harp view.
  */
 public interface HarpView {
 
     /**
-     * Gets harp view element.
+     * Retrieves the harp view note element associated with the specified channel and note.
      *
-     * @param channel the channel
-     * @param note    the note
-     * @return the harp view element
+     * @param channel the channel number corresponding to the harp element
+     * @param note the note number corresponding to the harp element
+     * @return the harp view note element associated with the given channel and note
      */
     HarpViewNoteElement getHarpViewElement(int channel, int note);
 
     /**
-     * Init noteContainers.
+     * Initializes the notes within the harp view using the provided array of NoteContainer objects.
      *
-     * @param noteContainers the noteContainers
+     * @param noteContainers an array of NoteContainer instances representing the notes to be initialized
      */
     void initNotes(NoteContainer[] noteContainers);
 

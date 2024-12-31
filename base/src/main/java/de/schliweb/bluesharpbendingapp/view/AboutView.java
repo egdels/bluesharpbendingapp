@@ -24,7 +24,10 @@ package de.schliweb.bluesharpbendingapp.view;
  */
 
 /**
- * The interface About view.
+ * The AboutView interface defines the contract for representing the "About" view
+ * in the application. This interface is used for displaying information
+ * about the application, including but not limited to version details,
+ * donation links, and contact information.
  */
 public interface AboutView {
 

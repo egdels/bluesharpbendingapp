@@ -34,15 +34,63 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 /**
- * The type Harp view desktop.
+ * The HarpViewDesktop class represents a graphical view of a harmonica within a desktop application.
+ * This implementation provides the ability to initialize and manage visual note elements for multiple harp channels
+ * and supports customized actions such as hiding notes and retrieving specific note components.
+ * It extends the generic HarpView class and adds desktop-specific functionality and behavior.
+ * <p>
+ * Fields:
+ * - OVERBLOW_COLOR: A constant defining the color used to visually represent overblow notes.
+ * - OVERDRAW_COLOR: A constant defining the color used to visually represent overdraw notes.
+ * - channel[N]Note[M]: Variables representing the graphical components (or placeholders) for notes
+ * across multiple channels (1 through 10) and their specific positions
+ * (e.g., M1, M2, M3 for missing notes or other custom ranges,
+ * and 0 through 4 for standard note indexes).
+ * - contentPane: The UI container that holds all harp note panels and graphical components.
+ * <p>
+ * Methods:
+ * <p>
+ * - HarpViewDesktop():
+ * Instantiates a new HarpViewDesktop with a predefined layout and initializes the UI components.
+ * <p>
+ * - hideNotes():
+ * Hides or clears the visual representation of all notes on the harp view for resetting or refreshing purposes.
+ * <p>
+ * - getHarpViewElement(int channel, int note):
+ * Retrieves the corresponding HarpViewNoteElement for the specified channel and note. This method
+ * overrides the getHarpViewElement method from the HarpView superclass to add desktop-specific functionality.
+ * <p>
+ * - initNotes(NoteContainer[] noteContainers):
+ * Initializes the note elements on the harp view with the given NoteContainer objects. It maps and prepares
+ * the UI components for interacting and displaying notes from each container.
+ * Overrides the initNotes method from the HarpView superclass.
+ * <p>
+ * - getNotePanel(int channel, int note):
+ * Fetches the UI JPanel that visually represents the specified note on the given channel.
+ * This private method aids in note component retrieval for internal rendering and interaction purposes.
+ * <p>
+ * - $$$setupUI$$$():
+ * Automatically generated method for setting up the UI components of the HarpViewDesktop instance.
+ * It is critical not to modify this method manually to avoid inconsistencies in UI behavior.
+ * This method uses annotations to suppress warnings and is meant solely for internal GUI initialization.
+ * <p>
+ * - $$$getRootComponent$$$():
+ * Provides the root UI component of this class, primarily used for integrating with other UI modules or
+ * for rendering purposes within the parent application.
  */
 public class HarpViewDesktop implements HarpView {
     /**
-     * The constant OVERBLOW_COLOR.
+     * Defines the color used to visually represent an overblow note.
+     * Overblow notes are a type of technique in harmonica playing that
+     * allows the player to produce additional pitches not available through
+     * standard draw or blow techniques. This constant is primarily used for
+     * graphical purposes to highlight overblow notes within the user interface.
      */
     private static final Color OVERBLOW_COLOR = Color.MAGENTA;
     /**
-     * The constant OVERDRAW_COLOR.
+     * Defines the color used to visually indicate an "overdraw" state in the application.
+     * This color is primarily used in graphical components to represent or highlight areas
+     * where an overdraw operation has occurred or as a warning/visual cue within the user interface.
      */
     private static final Color OVERDRAW_COLOR = Color.MAGENTA;
 
@@ -368,20 +416,33 @@ public class HarpViewDesktop implements HarpView {
     private JPanel channel9NoteM1;
 
     /**
-     * The Content pane.
+     * Represents the main content panel for the GUI layout of the HarpViewDesktop class.
+     * This panel acts as a container for other UI components and manages their arrangement
+     * within the graphical user interface.
      */
     private JPanel contentPane;
 
     /**
-     * Instantiates a new Harp view desktop.
+     * Constructs an instance of the HarpViewDesktop class.
+     * This constructor initializes the harp view by hiding the notes.
      */
     public HarpViewDesktop() {
         hideNotes();
-
     }
 
     /**
-     * Hide notes.
+     * Hides all available notes by setting their visibility to false.
+     * <p>
+     * This method checks each note object from various channels and
+     * levels (M3, M2, M1, 0, 1, 2, 3, 4) for null, and if the object
+     * is not null, it sets its visibility to false. The structure of
+     * the method ensures that every note reference is verified and handled
+     * individually.
+     * <p>
+     * Note:
+     * - The method operates on multiple note objects spread across
+     * different channels and levels.
+     * - The visibility logic ensures no action is performed on null objects.
      */
     private void hideNotes() {
 
@@ -669,11 +730,11 @@ public class HarpViewDesktop implements HarpView {
     }
 
     /**
-     * Gets note panel.
+     * Retrieves the JPanel corresponding to the specified channel and note.
      *
-     * @param channel the channel
-     * @param note    the note
-     * @return the note panel
+     * @param channel the channel number (1-10) for which the JPanel is to be retrieved
+     * @param note    the note value (-3 to 4) for which the JPanel is to be retrieved
+     * @return the JPanel associated with the given channel and note
      */
     private JPanel getNotePanel(int channel, int note) {
         JPanel[][] jPanels = new JPanel[10][8];

@@ -32,62 +32,94 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * The type NoteContainer.
+ * The NoteContainer class represents a musical note within a specific channel
+ * and provides functionality to handle frequency updates, harmonic adjustments,
+ * and interaction with a visual representation of a harp.
+ *
+ * This class implements the {@link Runnable} interface to periodically update
+ * its associated harp view element based on the frequency handling.
  */
 public class NoteContainer implements Runnable {
 
     /**
-     * The Channel.
+     * Represents the musical channel associated with this NoteContainer.
+     * The channel is used to identify the specific audio channel
+     * this note is related to. It is a key parameter for managing and
+     * handling notes in multi-channel systems.
      */
     private final int channel;
     /**
-     * The NoteContainer.
+     * Represents the note value associated with a musical note.
+     * This field is immutable after being set and determines the specific
+     * note being handled within the musical context of the application.
      */
     private final int note;
     /**
-     * The NoteContainer name.
+     * Represents the name of the note associated with this NoteContainer instance.
+     * This variable is immutable and is set during the instantiation of the object.
      */
     private final String noteName;
     /**
-     * The Thread Executer.
+     * A scheduled thread pool executor responsible for running periodic or delayed tasks within the
+     * context of the NoteContainer class.
+     *
+     * Initialized with a single-threaded scheduler to ensure tasks are executed in sequence and
+     * to avoid concurrency issues related to shared resources within the NoteContainer.
+     *
+     * This executor is suitable for tasks that require controlled scheduling, such as
+     * managing note-related functionalities or handling time-sensitive operations.
      */
     private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     /**
-     * The Frequency to handle.
+     * Represents the frequency value that is to be processed or handled within the NoteContainer.
+     * This field is marked as volatile to ensure visibility and thread-safety in a concurrent environment,
+     * as it may be accessed or modified by multiple threads.
      */
     private volatile double frequencyToHandle;
     /**
-     * The Harmonica.
+     * Represents a harmonica instance used within a NoteContainer.
+     * This field enables operations involving various harmonica-related
+     * functionalities such as retrieving note frequencies, bending tones,
+     * active notes evaluation, and handling of harmonica-specific configurations.
      */
     private Harmonica harmonica;
     /**
-     * The Harp view element.
+     * Represents a visual or interactive element in the harp view corresponding to a musical note.
+     * This element provides methods to update its state or clear its representation,
+     * supporting dynamic updates such as displaying pitch variations.
      */
     private HarpViewNoteElement harpViewElement;
     /**
-     * The Has inverse cents handling.
+     * Indicates whether inverse cents handling is enabled for this NoteContainer instance.
+     * Inverse cents handling refers to a specific behavior or adjustment related
+     * to musical tuning or note calculation. When set to true, this behavior is activated.
+     * Defaults to false.
      */
     private boolean hasInverseCentsHandling = false;
     /**
-     * The Max frequency.
+     * Represents the maximum frequency that can be handled within the NoteContainer.
+     * This value is used to enforce an upper limit on frequency-related operations.
      */
     private double maxFrequency;
     /**
-     * The Min frequency.
+     * Represents the minimum frequency that a NoteContainer can handle.
+     * This value is used to define the lower boundary for frequency processing
+     * or identification.
      */
     private double minFrequency;
     /**
-     * The To Be Cleared.
+     * Indicates whether the NoteContainer instance needs to be cleared or reset.
+     * The value is managed in a thread-safe manner using an AtomicBoolean.
      */
     private final AtomicBoolean toBeCleared= new AtomicBoolean(false);
 
 
     /**
-     * Instantiates a new NoteContainer.
+     * Instantiates a new NoteContainer with specified channel, note, and note name.
      *
-     * @param channel  the channel
-     * @param note     the note
-     * @param noteName the note name
+     * @param channel the channel associated with the note
+     * @param note the numerical value of the note
+     * @param noteName the name of the note
      */
     public NoteContainer(int channel, int note, String noteName) {
         this.channel = channel;
@@ -96,13 +128,13 @@ public class NoteContainer implements Runnable {
     }
 
     /**
-     * Instantiates a new NoteContainer.
+     * Instantiates a new NoteContainer with specified channel, note, note name, harmonica, and harp view.
      *
-     * @param channel   the channel
-     * @param note      the note
-     * @param noteName  the note name
-     * @param harmonica the harmonica
-     * @param harpView  the harp view
+     * @param channel   the channel associated with the note
+     * @param note      the numerical value of the note
+     * @param noteName  the name of the note
+     * @param harmonica the harmonica used for note frequency calculations
+     * @param harpView  the harp view used to obtain the harp view element
      */
     public NoteContainer(int channel, int note, String noteName, Harmonica harmonica, HarpView harpView) {
         this(channel, note, noteName);
@@ -113,14 +145,15 @@ public class NoteContainer implements Runnable {
     }
 
     /**
-     * Instantiates a new NoteContainer.
+     * Instantiates a new NoteContainer with specified channel, note, note name, harmonica, harp view,
+     * and inverse cents handling option.
      *
-     * @param channel                 the channel
-     * @param note                    the note
-     * @param noteName                the note name
-     * @param harmonica               the harmonica
-     * @param harpView                the harp view
-     * @param hasInverseCentsHandling the has inverse cents handling
+     * @param channel                 the channel associated with the note
+     * @param note                    the numerical value of the note
+     * @param noteName                the name of the note
+     * @param harmonica               the harmonica used for note frequency calculations
+     * @param harpView                the harp view used to obtain the harp view element
+     * @param hasInverseCentsHandling the flag indicating if inverse cents handling is enabled
      */
     public NoteContainer(int channel, int note, String noteName, Harmonica harmonica, HarpView harpView,
                          boolean hasInverseCentsHandling) {
@@ -129,27 +162,27 @@ public class NoteContainer implements Runnable {
     }
 
     /**
-     * Gets channel.
+     * Retrieves the channel associated with this NoteContainer.
      *
-     * @return the channel
+     * @return the channel value as an integer
      */
     public int getChannel() {
         return channel;
     }
 
     /**
-     * Gets note.
+     * Retrieves the numerical value of the note associated with this NoteContainer.
      *
-     * @return the note
+     * @return the numerical value of the note as an integer
      */
     public int getNote() {
         return note;
     }
 
     /**
-     * Gets note name.
+     * Retrieves the name of the note associated with this NoteContainer.
      *
-     * @return the note name
+     * @return the name of the note as a string
      */
     public String getNoteName() {
         return noteName;
@@ -170,27 +203,27 @@ public class NoteContainer implements Runnable {
     }
 
     /**
-     * Sets frequency to handle.
+     * Sets the frequency to handle for the NoteContainer.
      *
-     * @param frequencyToHandle the frequency to handle
+     * @param frequencyToHandle the frequency value to be handled
      */
     public void setFrequencyToHandle(double frequencyToHandle) {
         this.frequencyToHandle = frequencyToHandle;
     }
 
     /**
-     * Is overblow boolean.
+     * Determines if the note in the current channel is overblow.
      *
-     * @return the boolean
+     * @return true if the note is an overblow note, false otherwise
      */
     public boolean isOverblow() {
         return harmonica.isOverblow(channel, note);
     }
 
     /**
-     * Is overdraw boolean.
+     * Determines if the note in the specified channel is an overdraw.
      *
-     * @return the boolean
+     * @return true if the note is an overdraw, false otherwise
      */
     public boolean isOverdraw() {
         return harmonica.isOverdraw(channel, note);

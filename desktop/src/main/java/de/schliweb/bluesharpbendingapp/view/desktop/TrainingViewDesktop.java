@@ -36,64 +36,101 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 
 /**
- * The type Training view desktop.
+ * The TrainingViewDesktop class provides a graphical user interface for managing
+ * training sessions. It implements the TrainingView interface, allowing functionality
+ * such as setting training options, updating precision levels, and displaying progress
+ * and other training details. This desktop representation uses swing components to render
+ * the interface.
  */
 public class TrainingViewDesktop implements TrainingView {
     /**
-     * The Content pane.
+     * The contentPane variable represents the main container panel for the application's
+     * graphical user interface. It acts as a root container to aggregate and manage
+     * other UI components, such as buttons, labels, and other sub-panels.
      */
     private JPanel contentPane;
     /**
-     * The Start button.
+     * Represents the start button in the TrainingViewDesktop interface.
+     * This button is used to initiate the training process.
      */
     private JButton startButton;
     /**
-     * The Label trainings.
+     * A private JLabel component used to display text related to trainings
+     * in the TrainingViewDesktop class. This label typically serves as a
+     * static or informative display element within the training interface.
      */
     private JLabel labelTrainings;
     /**
-     * The Combo trainings.
+     * Represents a combo box in the TrainingViewDesktop that allows users to select
+     * from a predefined list of training options. The combo box dynamically updates
+     * based on the available training configurations and allows users to make a
+     * selection for training purposes.
      */
     private JComboBox<String> comboTrainings;
     /**
-     * The Label percentage.
+     * The `labelPercentage` is a `JLabel` component used to display textual
+     * information related to the percentage of a specific process or value
+     * within the `TrainingViewDesktop` interface.
+     *
+     * This label serves as a visual indicator for presenting percentage-based
+     * data, such as progress or precision metrics, in a clear and user-friendly manner.
      */
     private JLabel labelPercentage;
     /**
-     * The Content pane header.
+     * Represents the header panel of the content pane in the TrainingViewDesktop UI.
+     * This JPanel is a graphical container that can be used to display components
+     * or organize layouts specifically for the header section.
      */
     private JPanel contentPaneHeader;
     /**
-     * The Content pane footer.
+     * Represents the footer section of the content pane in the TrainingViewDesktop.
+     * This JPanel is likely used to structure or organize UI components specific
+     * to the footer area of the application view.
      */
     private JPanel contentPaneFooter;
     /**
-     * The Stop button.
+     * The `stopButton` variable represents a JButton component that provides
+     * functionality to stop or terminate an operation within the TrainingViewDesktop UI.
+     * It is used to handle user interaction for stopping an ongoing training process or activity.
      */
     private JButton stopButton;
     /**
-     * The Content pane main.
+     * Represents the main content pane of the TrainingViewDesktop UI.
+     * This JPanel serves as the container for the primary layout and
+     * components of the desktop training view.
      */
     private JPanel contentPaneMain;
     /**
-     * The Actual note.
+     * Represents a JPanel that visualizes the current note being displayed
+     * or played in the TrainingViewDesktop. This panel could potentially
+     * interact with or display components such as NotePane to represent
+     * musical notes graphically, along with their pitch deviations or
+     * other related information.
      */
     private JPanel actualNote;
     /**
-     * The Progress bar.
+     * A JProgressBar used to visually indicate the progress of a task or operation
+     * within the TrainingViewDesktop. This component dynamically updates to show
+     * progress completion as a percentage.
      */
     private JProgressBar progressBar;
     /**
-     * The Label precision.
+     * The JLabel instance used to display the precision level of the selected training or operation.
+     * This label provides a representation or description of the precision option currently active
+     * in the TrainingViewDesktop interface.
      */
     private JLabel labelPrecision;
     /**
-     * The Combo precision.
+     * A combo box that allows the user to select precision levels.
+     * Commonly used within the Training View Desktop for choosing different
+     * levels of precision for training configurations or tasks.
      */
     private JComboBox<String> comboPrecision;
 
     /**
-     * Instantiates a new Training view desktop.
+     * Constructs a `TrainingViewDesktop` object and initializes its components.
+     * This constructor disables the stop button by default, ensuring that it
+     * cannot be interacted with until specific actions enable it.
      */
     public TrainingViewDesktop() {
         stopButton.setEnabled(false);
@@ -203,9 +240,15 @@ public class TrainingViewDesktop implements TrainingView {
     }
 
     /**
-     * Add training view handler.
+     * Registers a {@link TrainingViewHandler} to manage training view interactions and events.
      *
-     * @param trainingViewHandler the training view handler
+     * This method adds listeners to the UI components such as combo boxes and buttons,
+     * delegating the handling of training and precision selection, as well as start and stop
+     * button actions, to the provided {@link TrainingViewHandler}.
+     *
+     * @param trainingViewHandler the handler responsible for managing training view interactions,
+     *                            including selection and action events for training and precision,
+     *                            as well as handling the start and stop of training processes
      */
     public void addTrainingViewHandler(TrainingViewHandler trainingViewHandler) {
         comboTrainings.addItemListener(event -> {

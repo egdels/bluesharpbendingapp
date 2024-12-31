@@ -27,9 +27,12 @@ import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 
 import java.util.Objects;
 
+
 /**
- * The type Abstract harmonica.
- *
+ * Abstract base class representing the common features and behaviors of a harmonica.
+ * This class implements the {@link Harmonica} interface and provides a foundation
+ * for different types of harmonicas, including methods for note and frequency calculations.
+
  * <pre>
  * Channel/Notes:
  *                                                       --------
@@ -76,52 +79,61 @@ import java.util.Objects;
 public abstract class AbstractHarmonica implements Harmonica {
 
     /**
-     * The constant CHANNEL_MAX.
+     * Represents the maximum number of channels supported by the harmonica model.
+     * This constant defines the upper limit on the number of channels that can be used
+     * or processed within a single harmonica instance.
      */
     private static final int CHANNEL_MAX = 10;
     /**
-     * The constant CHANNEL_MIN.
+     * The minimum valid channel number for the harmonica. This value defines the lowest
+     * channel index that can be used when interacting with a harmonica instance.
      */
     private static final int CHANNEL_MIN = 1;
     /**
-     * The constant NOTE_MAX.
+     * Represents the maximum note value allowed for a harmonica channel.
+     * This constant is used to define the upper bound of valid note ranges
+     * for the harmonica.
      */
     private static final int NOTE_MAX = 4;
     /**
-     * The constant NOTE_MIN.
+     * Defines the lowest possible musical note value that the system can represent.
+     * This value is used as a lower bound for note calculations and validations
+     * within the harmonica model.
      */
     private static final int NOTE_MIN = -3;
     /**
-     * The Key frequency.
+     * Represents the base frequency of the musical key that the harmonica is tuned to.
+     * This value determines the starting point for calculating the frequencies
+     * of all notes in the harmonica's range.
      */
     private final double keyFrequency;
 
     /**
-     * Instantiates a new Abstract harmonica.
+     * Constructs an instance of AbstractHarmonica with the specified key frequency.
      *
-     * @param keyFrequency the key frequency
+     * @param keyFrequency the base frequency of the musical key that the harmonica is tuned to
      */
     protected AbstractHarmonica(double keyFrequency) {
         this.keyFrequency = keyFrequency;
     }
 
     /**
-     * Create harmonica.
+     * Creates a harmonica instance using indexes for key and tune.
      *
-     * @param keyIndex  the key index
-     * @param tuneIndex the tune index
-     * @return the harmonica
+     * @param keyIndex  the index of the musical key in the enumeration of keys
+     * @param tuneIndex the index of the tuning system in the enumeration of tunes
+     * @return a new instance of a {@link Harmonica} configured for the specified key and tuning system
      */
     public static Harmonica create(int keyIndex, int tuneIndex) {
         return create(KEY.values()[keyIndex], TUNE.values()[tuneIndex]);
     }
 
     /**
-     * Create harmonica.
+     * Creates a harmonica instance based on the provided key and tune.
      *
-     * @param key  the key
-     * @param tune the tune
-     * @return the harmonica
+     * @param key  the musical key for the harmonica (e.g., C, D)
+     * @param tune the tuning system that determines the layout of notes
+     * @return a new instance of a {@link Harmonica} configured for the given key and tuning system
      */
     public static Harmonica create(KEY key, TUNE tune) {
         Harmonica harmonica = new RichterHarmonica(key.getFrequency());
@@ -153,20 +165,20 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
-     * Gets cents.
+     * Calculates the distance between two frequencies in musical cents.
      *
-     * @param f1 the f 1
-     * @param f2 the f 2
-     * @return the cents
+     * @param f1 the reference frequency
+     * @param f2 the target frequency
+     * @return the difference in cents between the two frequencies
      */
     protected static double getCents(double f1, double f2) {
         return NoteUtils.getCents(f1, f2);
     }
 
     /**
-     * Get supported tunes string [ ].
+     * Returns the names of all supported tuning systems for the harmonica.
      *
-     * @return the string [ ]
+     * @return an array of tuning system names as strings
      */
     public static String[] getSupportedTunes() {
         TUNE[] values = TUNE.values();
@@ -180,9 +192,9 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
-     * Get supporter keys string [ ].
+     * Returns the list of musical keys supported by this application.
      *
-     * @return the string [ ]
+     * @return an array of key names as strings
      */
     public static String[] getSupporterKeys() {
         KEY[] values = KEY.values();
@@ -196,10 +208,10 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
-     * Round double.
+     * Rounds the provided value to a fixed precision using the NoteUtils utility method.
      *
-     * @param value the value
-     * @return the double
+     * @param value the value to be rounded
+     * @return the rounded value with a fixed precision
      */
     protected static double round(double value) {
         return NoteUtils.round(value);
@@ -220,20 +232,22 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
-     * Gets channel in frequency.
+     * Calculates the frequency of a specific channel on the harmonica based on its relative pitch (in cents)
+     * and the harmonic key's base frequency.
      *
-     * @param channel the channel
-     * @return the channel in frequency
+     * @param channel the channel number for which the frequency should be calculated
+     * @return the frequency of the specified channel in Hertz
      */
     public double getChannelInFrequency(int channel) {
         return NoteUtils.addCentsToFrequency(getHalfTonesIn()[channel] * 100.0, getKeyFrequency());
     }
 
     /**
-     * Gets channel out frequency.
+     * Calculates the frequency of a specific channel on the harmonica for an output sound,
+     * based on its relative pitch (in cents) and the harmonic key's base frequency.
      *
-     * @param channel the channel
-     * @return the channel out frequency
+     * @param channel the channel number for which the output frequency should be calculated
+     * @return the frequency of the specified channel in Hertz
      */
     public double getChannelOutFrequency(int channel) {
         return NoteUtils.addCentsToFrequency(getHalfTonesOut()[channel] * 100.0, getKeyFrequency());
@@ -249,23 +263,23 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
-     * Get halftones in int [ ].
+     * Retrieves an array of halftone intervals available for the input notes of the harmonica.
      *
-     * @return the int [ ]
+     * @return an array of integers representing the halftone intervals associated with the input notes.
      */
     abstract int[] getHalfTonesIn();
 
     /**
-     * Get halftones out int [ ].
+     * Retrieves an array of halftone intervals available for the output notes of the harmonica.
      *
-     * @return the int [ ]
+     * @return an array of integers representing the halftone intervals associated with the output notes.
      */
     abstract int[] getHalfTonesOut();
 
     /**
-     * Gets key frequency.
+     * Returns the base frequency of the musical key that the harmonica is tuned to.
      *
-     * @return the key frequency
+     * @return the frequency of the key in Hertz
      */
     public double getKeyFrequency() {
         return keyFrequency;
@@ -336,10 +350,13 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
-     * Gets overblow overdraw frequency.
+     * Calculates the overblow or overdraw frequency for a specified channel on the harmonica.
      *
-     * @param channel the channel
-     * @return the overblow overdraw frequency
+     * The method determines the frequency based on whether the channel uses inverse cents handling.
+     * It adjusts the frequency of the channel by adding 100 cents using input or output frequencies.
+     *
+     * @param channel the channel number for which the overblow or overdraw frequency should be calculated
+     * @return the calculated overblow or overdraw frequency in Hertz
      */
     private double getOverblowOverdrawFrequency(int channel) {
         double frequency = 0.0;
@@ -363,7 +380,7 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
-     * The enum Key.
+     * An enumeration of musical keys, each associated with a specific pitch frequency.
      */
     public enum KEY {
         /**
@@ -488,23 +505,27 @@ public abstract class AbstractHarmonica implements Harmonica {
         LLF_HASH("F#2");
 
         /**
-         * The Name.
+         * Represents the name of the musical key, corresponding to a specific pitch.
+         * This value is used to identify the frequency associated with the key.
          */
         private final String name;
 
         /**
-         * Instantiates a new Key.
+         * Constructs a KEY instance with the specified musical key name.
          *
-         * @param name the name
+         * @param name the name of the musical key, representing a specific pitch frequency
          */
         KEY(String name) {
             this.name = name;
         }
 
         /**
-         * Gets frequency.
+         * Retrieves the frequency of the musical key associated with this instance.
+         * The frequency is determined by looking up the musical key's name.
          *
-         * @return the frequency
+         * @return the frequency in Hertz (Hz) corresponding to the musical key
+         *         associated with this instance
+         * @throws NullPointerException if the frequency cannot be determined
          */
         public double getFrequency() {
             return Objects.requireNonNull(NoteLookup.getNoteFrequency(name));
@@ -512,7 +533,7 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
-     * The enum Tune.
+     * An enumeration of supported harmonica tuning systems.
      */
     public enum TUNE {
         /**

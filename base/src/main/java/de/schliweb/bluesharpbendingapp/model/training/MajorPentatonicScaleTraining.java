@@ -26,20 +26,40 @@ package de.schliweb.bluesharpbendingapp.model.training;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 
 /**
- * The type Major pentatonic scale training.
+ * MajorPentatonicScaleTraining is a concrete implementation of {@link AbstractTraining}
+ * for training exercises based on the major pentatonic scale.
+ *
+ * This class provides a specific set of half-tone intervals corresponding to
+ * the notes in the major pentatonic scale and defines the behavior for retrieving
+ * the training name and note sequence.
  */
 public class MajorPentatonicScaleTraining extends AbstractTraining {
 
     /**
-     * The constant HALF_TONES.
+     * Represents the sequence of half-tone intervals corresponding to the
+     * major pentatonic scale for training exercises.
+     *
+     * This array defines the notes in the scale as a series of half-step
+     * intervals, where each value indicates the interval in semitones from
+     * the root note.
+     *
+     * The array is used to generate the correct note sequence for training
+     * exercises in the {@link MajorPentatonicScaleTraining} implementation.
+     *
+     * These intervals adhere to the structure of the major pentatonic scale
+     * and are utilized in methods such as {@code getHalfTones} to provide
+     * the functional behavior for the training.
      */
     private static final int[] HALF_TONES = {2, 4, 7, 9, 11, 14, 16, 19, 21, 23, 26, 28, 31, 33, 35};
 
 
     /**
-     * Instantiates a new Major pentatonic scale training.
+     * Constructs a MajorPentatonicScaleTraining instance for practicing the major
+     * pentatonic scale based on the specified key.
      *
-     * @param key the key
+     * @param key the key of the harmonica for which the training exercises
+     *            are based. This determines the root note and scale structure
+     *            for the training session.
      */
     protected MajorPentatonicScaleTraining(AbstractHarmonica.KEY key) {
         super(key);

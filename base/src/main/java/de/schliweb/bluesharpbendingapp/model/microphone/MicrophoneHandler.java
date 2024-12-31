@@ -31,9 +31,8 @@ public interface MicrophoneHandler {
     /**
      * Handle all.
      *
-     * @param frequency   the frequency
-     * @param volume      the volume
-     * @param probability the probability
+     * @param frequency the frequency
+     * @param volume    the volume
      */
-    void handle(double frequency, double volume, double probability);
+    void handle(double frequency, double volume);
 }

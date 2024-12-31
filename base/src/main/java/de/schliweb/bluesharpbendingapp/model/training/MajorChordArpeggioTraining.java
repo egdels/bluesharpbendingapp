@@ -26,19 +26,34 @@ package de.schliweb.bluesharpbendingapp.model.training;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 
 /**
- * The type Major chord arpeggio training.
+ * The MajorChordArpeggioTraining class is a specific implementation of the
+ * AbstractTraining class. It provides functionality for practicing major
+ * chord arpeggios on a harmonica. This training helps users develop their
+ * ability to play arpeggios corresponding to major chords.
+ *
+ * This class uses predefined half-tone intervals to define the major chord
+ * arpeggio sequence and provides methods to retrieve these intervals and
+ * the associated training name.
  */
 public class MajorChordArpeggioTraining extends AbstractTraining {
 
     /**
-     * The constant HALF_TONES.
+     * This array stores the predefined sequence of half-tone intervals for
+     * defining major chord arpeggios.
+     * It is used to represent the positions of notes in the major chord
+     * arpeggio pattern, aiding in training and practice scenarios.
+     * The intervals correspond to the relationship between the notes in
+     * a harmonica for major chord arpeggio exercises.
      */
     private static final int[] HALF_TONES = {2, 6, 9, 2, 6, 9, 11, 2, 6, 9, 12, 2, 6, 9, 11, 12, 14};
 
     /**
-     * Instantiates a new Major chord arpeggio training.
+     * Constructs a new MajorChordArpeggioTraining instance for practicing
+     * major chord arpeggios on a harmonica with the specified key.
      *
-     * @param key the key
+     * @param key the key of the harmonica, which determines the root note
+     *            for the major chord arpeggio training. This parameter
+     *            corresponds to the musical key in which the arpeggios are practiced.
      */
     protected MajorChordArpeggioTraining(AbstractHarmonica.KEY key) {
         super(key);

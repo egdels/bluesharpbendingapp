@@ -24,26 +24,31 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Circular harmonica.
+ * The CircularHarmonica class represents a circular tuned harmonica.
+ * It extends the AbstractHarmonica class, providing specific half-tone
+ * mappings for inwards and outwards notes, representing the circular tuning system.
  */
 public class CircularHarmonica extends AbstractHarmonica {
 
     /**
-     * The constant HALF_TONES_IN.
-     * <p>D G H D F A H D F A</p>
+     * A static array representing the half-tone steps for inward notes
+     * in the circular tuning system of the harmonica. Each value corresponds
+     * to the number of half-tone steps from the base pitch in a specific channel.
      */
     private static final int[] HALF_TONES_IN = {0, 2, 5, 9, 12, 16, 19, 22, 26, 29, 33};
 
     /**
-     * The constant HALF_TONES_OUT.
-     * <p>C E G H D F A C E G</p>
+     * A static array representing the half-tone steps for outward notes
+     * in the circular tuning system of the harmonica. Each value corresponds
+     * to the number of half-tone steps from the base pitch in a specific channel.
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 10, 14, 17, 21, 24, 28, 31};
 
     /**
-     * Instantiates a new Circular harmonica.
+     * Constructs a CircularHarmonica instance with the specified key frequency.
      *
-     * @param keyFrequency the key frequency
+     * @param keyFrequency the base frequency of the musical key to which
+     *                     the circular harmonica is tuned
      */
     public CircularHarmonica(double keyFrequency) {
         super(keyFrequency);

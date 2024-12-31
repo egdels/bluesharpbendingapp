@@ -24,30 +24,38 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 /**
- * The interface Harp settings view handler.
+ * This interface defines methods for handling and managing the harp settings view.
+ * It provides functionality for selecting keys and tunings, as well as initializing
+ * the key and tuning options available in the settings. Implementations of this interface
+ * are responsible for managing user interactions with the harp settings and updating
+ * the associated application state accordingly.
  */
 public interface HarpSettingsViewHandler {
     /**
-     * Handle key selection.
+     * Handles the selection of a key in the harp settings.
+     * This method is invoked to process the user's chosen key from a list of available keys.
      *
-     * @param keyIndex the key index
+     * @param keyIndex the index of the selected key, used to identify and apply the chosen key
      */
     void handleKeySelection(int keyIndex);
 
     /**
-     * Handle tune selection.
+     * Handles the selection of a tuning in the harp settings.
+     * This method updates the application state based on the tuning option selected by the user.
      *
-     * @param tuneIndex the tune index
+     * @param tuneIndex the index of the selected tuning option
      */
     void handleTuneSelection(int tuneIndex);
 
     /**
-     * Init key list.
+     * Initializes and prepares the list of available keys in the harp settings.
+     * This method ensures that the key options are populated and ready for user interaction.
      */
     void initKeyList();
 
     /**
-     * Init tune list.
+     * Initializes and populates the list of tuning options available in the harp settings.
+     * Provides users with a list of tunings they can select and apply.
      */
     void initTuneList();
 }

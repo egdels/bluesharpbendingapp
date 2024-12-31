@@ -28,25 +28,32 @@ import java.awt.*;
 
 
 /**
- * The type NoteContainer pane.
+ * The NotePane class extends JPanel and represents a graphical component
+ * designed to display a note name along with a visual representation.
+ * The visual representation is influenced by the current cent value.
  */
 public class NotePane extends JPanel {
 
     /**
-     * The NoteContainer name.
+     * Represents the name of the musical note to be displayed in the NotePane.
+     * This variable is a constant (immutable) and provides the text that will
+     * appear as the note label in the graphical representation.
      */
     private final String noteName;
     /**
-     * The Cents.
+     * Represents the deviation in cents from a reference pitch, used for visualizing
+     * the tuning or pitch accuracy of the musical note in the NotePane component.
      */
     private double cents;
 
     /**
-     * Instantiates a new NoteContainer pane.
+     * Constructs a NotePane object with the specified note name, background color,
+     * and cent deviation. This constructor allows initializing the instance with a
+     * specific cent value in addition to the note name and color.
      *
-     * @param noteName the note name
-     * @param color    the color
-     * @param cents    the cents
+     * @param noteName the name of the musical note to display
+     * @param color    the background color of the NotePane
+     * @param cents    the deviation in cents from a reference pitch for the note
      */
     public NotePane(String noteName, Color color, double cents) {
         this(noteName, color);
@@ -54,10 +61,11 @@ public class NotePane extends JPanel {
     }
 
     /**
-     * Instantiates a new NoteContainer pane.
+     * Constructs a NotePane object with the specified note name and background color.
+     * This constructor initializes the NotePane with a default cent deviation of -1000.
      *
-     * @param noteName the note name
-     * @param color    the color
+     * @param noteName the name of the musical note to display
+     * @param color    the background color of the NotePane
      */
     public NotePane(String noteName, Color color) {
         this.noteName = noteName;
@@ -65,6 +73,13 @@ public class NotePane extends JPanel {
         setBackground(color);
     }
 
+    /**
+     * Paints the component by drawing a filled rectangle representing the cent deviation
+     * and displaying the note name centered within the panel. This method is responsible
+     * for the custom rendering of the NotePane based on its current state.
+     *
+     * @param gr the Graphics object used for drawing on the component
+     */
     @Override
     public void paintComponent(Graphics gr) {
         super.paintComponent(gr);

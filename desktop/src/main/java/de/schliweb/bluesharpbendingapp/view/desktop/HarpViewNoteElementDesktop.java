@@ -30,37 +30,63 @@ import java.awt.*;
 import java.util.HashMap;
 
 /**
- * The type Harp view note element desktop.
+ * The HarpViewNoteElementDesktop class is a concrete implementation of the
+ * HarpViewNoteElement interface specific to the desktop environment. It manages
+ * the display and state of individual note elements within a harp view, using
+ * a JPanel as the visual container.
  */
 public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
 
 
     /**
-     * The constant instances.
+     * A mapping of JPanel instances to their corresponding HarpViewNoteElementDesktop objects.
+     * Ensures that there is a one-to-one relationship between a JPanel and its associated
+     * HarpViewNoteElementDesktop instance, facilitating efficient management and reuse of
+     * note element views in the user interface.
      */
     private static final HashMap<JPanel, HarpViewNoteElementDesktop> instances = new HashMap<>();
     /**
-     * The NoteContainer panel.
+     * Represents a JPanel used as the visual container for the note element in the
+     * graphical user interface. This panel is dynamically updated to reflect changes
+     * in the state or properties of the note, such as its name, color, and visual
+     * representation of tuning or pitch adjustment.
+     *
+     * Acts as the primary display component within the HarpViewNoteElementDesktop
+     * implementation, hosting and updating the NotePane instance according to the
+     * current configuration or input parameters.
+     *
+     * The notePanel is initialized with a BorderLayout and will contain a NotePane
+     * instance as its primary child component, which handles the actual rendering
+     * of the note's graphical state.
      */
     private final JPanel notePanel;
     /**
-     * The NoteContainer pane.
+     * An instance of NotePane used to represent and display musical note information in the UI.
+     * It utilizes a JPanel to visually represent a musical note with additional features
+     * such as cent tuning indicators.
      */
     private NotePane notePane;
 
     /**
-     * The Color.
+     * Represents the color associated with the note element in the harp view.
+     * This field is used to define the visual appearance of the note element,
+     * such as its background or graphical highlights, in the desktop view.
      */
     private Color color = Color.black;
     /**
-     * The NoteContainer name.
+     * Represents the name of the musical note associated with this element.
+     *
+     * This variable is used to store and modify the name of the note
+     * represented within the component. It can be updated dynamically
+     * through the setNoteName method to reflect changes in the visual
+     * note elements.
      */
     private String noteName = "";
 
     /**
-     * Instantiates a new Harp view note element desktop.
+     * Constructs an instance of HarpViewNoteElementDesktop.
      *
-     * @param notePanel the note panel
+     * @param notePanel the JPanel to be used for displaying the note pane.
      */
     private HarpViewNoteElementDesktop(JPanel notePanel) {
         this.notePanel = notePanel;
@@ -70,28 +96,30 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
     }
 
     /**
-     * Gets instance.
+     * Returns an instance of {@code HarpViewNoteElementDesktop} associated with the given
+     * {@code JPanel}. If an instance does not already exist for the specified panel, a new
+     * instance is created and associated with it.
      *
-     * @param notePanel the note panel
-     * @return the instance
+     * @param notePanel the {@code JPanel} to be used for displaying the note pane.
+     * @return an instance of {@code HarpViewNoteElementDesktop} associated with the specified {@code JPanel}.
      */
     public static HarpViewNoteElementDesktop getInstance(JPanel notePanel) {
         return instances.computeIfAbsent(notePanel, HarpViewNoteElementDesktop::new);
     }
 
     /**
-     * Sets color.
+     * Sets the color for this instance.
      *
-     * @param color the color
+     * @param color the new color to be set
      */
     public void setColor(Color color) {
         this.color = color;
     }
 
     /**
-     * Sets note name.
+     * Sets the name of the note associated with this instance.
      *
-     * @param noteName the note name
+     * @param noteName the name of the note to be set
      */
     public void setNoteName(String noteName) {
         this.noteName = noteName;

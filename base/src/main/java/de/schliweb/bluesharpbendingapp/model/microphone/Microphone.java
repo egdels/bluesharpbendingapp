@@ -24,66 +24,77 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
  */
 
 /**
- * The interface Microphone.
+ * The Microphone interface represents a model for audio input devices. It defines methods
+ * for controlling microphone operations and managing configurations such as supported
+ * algorithms, device selection, and handlers for audio processing.
  */
 public interface Microphone {
 
     /**
-     * Close.
+     * Closes the microphone resource to release any active audio input streams.
+     * This method is used to ensure proper cleanup of the microphone when it is
+     * no longer needed or is about to be reconfigured.
      */
     void close();
 
     /**
-     * Gets algorithm.
+     * Retrieves the currently selected algorithm of the microphone.
      *
-     * @return the algorithm
+     * @return the name of the active algorithm as a String
      */
     String getAlgorithm();
 
     /**
-     * Sets algorithm.
+     * Sets the algorithm to be used by the microphone based on the given index.
+     * The index corresponds to a pre-defined list of algorithms supported by the microphone.
      *
-     * @param storedAlgorithmIndex the stored algorithm index
+     * @param storedAlgorithmIndex the index of the algorithm to be set
      */
     void setAlgorithm(int storedAlgorithmIndex);
 
     /**
-     * Gets name.
+     * Retrieves the name of the microphone.
      *
-     * @return the name
+     * @return the name of the microphone as a String
      */
     String getName();
 
     /**
-     * Sets name.
+     * Sets the name of the microphone based on the given index.
+     * The index corresponds to a pre-defined list of supported microphones.
      *
-     * @param storedMicrophoneIndex the stored microphone index
+     * @param storedMicrophoneIndex the index of the microphone to be set
      */
     void setName(int storedMicrophoneIndex);
 
     /**
-     * Get supported algorithms string [ ].
+     * Retrieves the list of algorithms supported by the microphone.
      *
-     * @return the string [ ]
+     * @return an array of strings, where each string represents a supported algorithm
      */
     String[] getSupportedAlgorithms();
 
     /**
-     * Get supported microphones string [ ].
+     * Retrieves a list of microphones supported by the system or application.
      *
-     * @return the string [ ]
+     * @return an array of strings, where each string represents the name of a supported microphone
      */
     String[] getSupportedMicrophones();
 
     /**
-     * Open.
+     * Opens the microphone for audio input.
+     * This method is used to initialize the microphone and allocate necessary
+     * resources for capturing audio data. It should be called after configuring
+     * any specific microphone or algorithm settings, to activate the microphone
+     * for use in the application.
      */
     void open();
 
     /**
-     * Sets microphone handler.
+     * Sets the MicrophoneHandler for the microphone. The handler is responsible
+     * for processing audio data, including handling frequency and volume changes.
      *
-     * @param handler the handler
+     * @param handler the MicrophoneHandler instance that will process audio data
      */
     void setMicrophoneHandler(MicrophoneHandler handler);
 

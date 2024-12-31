@@ -24,25 +24,33 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Richter harmonica.
+ * The RichterHarmonica class represents a harmonica following the Richter tuning system.
+ * This specific tuning is defined by its unique arrangement of half-tone steps for
+ * both inhaling and exhaling notes.
+ * <p>The harmonica operates using a defined key frequency, and the tone arrangements
+ * are modeled by two arrays, HALF_TONES_IN and HALF_TONES_OUT.</p>
  */
 public class RichterHarmonica extends AbstractHarmonica {
     /**
-     * The constant HALF_TONES_IN.
-     * <p>D G H D F A H D F A</p>
+     * Represents the sequence of half-tone intervals for inhaling notes
+     * on a Richter-tuned harmonica. The array values correspond to the
+     * cumulative number of half-tones from the base key note for each
+     * harmonica channel when air is drawn in.
      */
     private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 17, 21, 23, 26, 29, 33};
 
     /**
-     * The constant HALF_TONES_OUT.
-     * <p>C E G C E G C E G C</p>
+     * Represents the sequence of half-tone intervals for exhaling (blowing) notes
+     * on a Richter-tuned harmonica. The array values correspond to the
+     * cumulative number of half-tones from the base key note for each
+     * harmonica channel when air is blown out.
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 12, 16, 19, 24, 28, 31, 36};
 
     /**
-     * Instantiates a new Richter harmonica.
+     * Constructs a new RichterHarmonica instance with the specified key frequency.
      *
-     * @param keyFrequency the key frequency
+     * @param keyFrequency the base frequency of the key this harmonica is tuned to, in hertz
      */
     public RichterHarmonica(double keyFrequency) {
         super(keyFrequency);

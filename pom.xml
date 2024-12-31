@@ -38,15 +38,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <revision>1.8.7</revision>
+        <revision>1.9.0</revision>
     </properties>
 
     <repositories>
-        <repository>
-            <id>be.0110.repo-releases</id>
-            <name>0110.be repository</name>
-            <url>https://mvn.0110.be/releases</url>
-        </repository>
         <repository>
             <id>jetbrains.releases</id>
             <url>https://www.jetbrains.com/intellij-repository/releases</url>
@@ -78,16 +73,6 @@
                 <version>5.9.3</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>be.tarsos.dsp</groupId>
-                <artifactId>core</artifactId>
-                <version>2.5</version>
-            </dependency>
-            <dependency>
-                <groupId>be.tarsos.dsp</groupId>
-                <artifactId>jvm</artifactId>
-                <version>2.5</version>
             </dependency>
             <dependency>
                 <groupId>de.schliweb.bluesharpbendingapp</groupId>

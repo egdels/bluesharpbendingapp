@@ -31,60 +31,78 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * The type Abstract training.
+ * The AbstractTraining class provides a base implementation of the {@link Training} interface.
+ * It contains methods and properties common to different types of training exercises.
+ *
+ * This class also provides static methods to create specific types of training exercises
+ * and retrieve supported training options and precision levels.
  */
 public abstract class AbstractTraining implements Training {
 
     /**
-     * The constant precision.
+     * Represents the level of precision used in training-related calculations or operations.
+     * This variable is a shared static field across training instances
+     * and determines the granularity or accuracy of training evaluations.
      */
     private static int precision;
     /**
-     * The Key frequency.
+     * Represents the central frequency value associated with a key in the
+     * context of training. This frequency is used to identify the pitch or note
+     * being targeted during a training session.
+     *
+     * It is a constant and defined as a Double to allow for precision in
+     * representing pitch frequencies.
      */
     private final Double keyFrequency;
 
     /**
-     * The Note index.
+     * Represents the index of the current note in the training session.
+     * This variable is used for tracking the progress within a sequence of notes.
+     * It is initialized to 0 and updated as the training progresses.
      */
     private int noteIndex = 0;
 
     /**
-     * The Is running.
+     * A flag indicating whether the training is currently active or running.
+     * This variable is used to track the state of the training and is typically
+     * modified by the {@code start()} and {@code stop()} methods.
      */
     private boolean isRunning = false;
 
     /**
-     * The Success index.
+     * Represents the index for tracking the number of consecutive successes
+     * during a training session. This variable is used to monitor progress
+     * and can help determine when a specific training task or activity has
+     * been successfully completed multiple times in succession.
      */
     private int successIndex=0;
 
     /**
-     * Instantiates a new Abstract training.
+     * Constructs an instance of AbstractTraining with the specified key.
      *
-     * @param key the key
+     * @param key the harmonica key used to determine the frequency
      */
     protected AbstractTraining(AbstractHarmonica.KEY key) {
         this.keyFrequency = key.getFrequency();
     }
 
     /**
-     * Create training.
+     * Creates a new Training instance based on the specified key and training indices.
      *
-     * @param keyIndex      the key index
-     * @param trainingIndex the training index
-     * @return the training
+     * @param keyIndex the index of the harmonica key, used to determine which key to use
+     * @param trainingIndex the index of the training type, used to determine which training to create
+     * @return a Training instance corresponding to the specified key and training type
      */
     public static Training create(int keyIndex, int trainingIndex) {
         return create(AbstractHarmonica.KEY.values()[keyIndex], AbstractTraining.TRAINING.values()[trainingIndex]);
     }
 
     /**
-     * Create training.
+     * Creates a new Training instance based on the specified key and training type.
      *
-     * @param k the k
-     * @param t the t
-     * @return the training
+     * @param k the harmonica key used to create the training instance
+     * @param t the type of training to be created
+     * @return a Training instance corresponding to the specified key and training type
      */
     public static Training create(AbstractHarmonica.KEY k, TRAINING t) {
         Training training = new MajorPentatonicScaleTraining(k);
@@ -107,9 +125,9 @@ public abstract class AbstractTraining implements Training {
     }
 
     /**
-     * Get supported trainings string [ ].
+     * Retrieves an array of all supported training types as their respective names.
      *
-     * @return the string [ ]
+     * @return an array of strings representing the names of all available training types
      */
     public static String[] getSupportedTrainings() {
         AbstractTraining.TRAINING[] values = AbstractTraining.TRAINING.values();
@@ -123,36 +141,40 @@ public abstract class AbstractTraining implements Training {
     }
 
     /**
-     * Get supported precisions string [ ].
+     * Retrieves an array of supported precision levels for the training.
      *
-     * @return the string [ ]
+     * @return an array of strings, where each string represents a precision level
+     *         available for the training, such as "5", "10", "15", etc.
      */
     public static String[] getSupportedPrecisions() {
         return new String[]{"5", "10", "15", "20", "25", "30", "35", "40", "45"};
     }
 
     /**
-     * Gets precision.
+     * Retrieves the current precision level for the training.
      *
-     * @return the precision
+     * @return the precision level as an integer
      */
     public static int getPrecision() {
         return precision;
     }
 
     /**
-     * Sets precision.
+     * Sets the precision level for the training.
      *
-     * @param precision the precision
+     * @param precision the precision value to be set. It determines the level
+     *                  of accuracy or granularity for training operations.
      */
     public static void setPrecision(int precision) {
         AbstractTraining.precision = precision;
     }
 
     /**
-     * Get half tones int [ ].
+     * Retrieves an array of integers representing the half-tone intervals
+     * relevant to the specific implementation of a training type.
      *
-     * @return the int [ ]
+     * @return an array of integers, where each integer corresponds to a half-tone step
+     *         required for the associated training.
      */
     abstract int[] getHalfTones();
 
@@ -227,7 +249,10 @@ public abstract class AbstractTraining implements Training {
     }
 
     /**
-     * The enum Training.
+     * An enumeration representing different types of training modes available
+     * for a harmonica training application. Each enum constant corresponds
+     * to a specific training type that targets a particular skill or aspect
+     * of playing the harmonica.
      */
     public enum TRAINING {
         /**

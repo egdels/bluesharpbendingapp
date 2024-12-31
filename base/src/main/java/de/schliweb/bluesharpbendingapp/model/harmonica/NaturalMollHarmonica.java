@@ -24,25 +24,32 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Natural moll harmonica.
+ * The NaturalMollHarmonica class represents a harmonica with a natural minor tuning.
+ * This class defines specific half-tone arrangements for the in and out breath patterns,
+ * and extends the functionality of the AbstractHarmonica class.
  */
 public class NaturalMollHarmonica extends AbstractHarmonica {
     /**
-     * The constant HALF_TONES_IN.
-     * <p>D G Bb D F A Bb D F A</p>
+     * Defines the half-tone intervals for the in-breath pattern of a natural
+     * minor tuned harmonica. Each element represents the half-tone offset
+     * from the base note for a corresponding channel of the harmonica in
+     * ascending order.
      */
     private static final int[] HALF_TONES_IN = {0, 2, 7, 10, 14, 17, 21, 22, 26, 29, 33};
 
     /**
-     * The constant HALF_TONES_OUT.
-     * <p>C Eb G C Eb G C Eb G C</p>
+     * Defines the half-tone intervals for the out-breath pattern of a natural
+     * minor tuned harmonica. Each element represents the half-tone offset
+     * from the base note for a corresponding channel of the harmonica in
+     * ascending order.
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 3, 7, 12, 15, 19, 24, 27, 31, 36};
 
     /**
-     * Instantiates a new Natural moll harmonica.
+     * Constructs a NaturalMollHarmonica instance with the specified key frequency.
      *
-     * @param keyFrequency the key frequency
+     * @param keyFrequency the base frequency of the musical key that the harmonica is tuned to,
+     *                     defining the pitch that serves as the foundation for its notes
      */
     public NaturalMollHarmonica(double keyFrequency) {
         super(keyFrequency);

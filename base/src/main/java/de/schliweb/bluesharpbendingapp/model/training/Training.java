@@ -24,94 +24,112 @@ package de.schliweb.bluesharpbendingapp.model.training;
  */
 
 /**
- * The interface Training.
+ * The Training interface represents a blueprint for training functionality
+ * which includes managing notes, controlling the state, and tracking the progress.
+ * This can be implemented to define specific types of trainings.
  */
 public interface Training {
 
     /**
-     * Get notes string [ ].
+     * Retrieves the notes associated with the training.
      *
-     * @return the string [ ]
+     * @return an array of strings representing the notes for the training
      */
     String[] getNotes();
 
     /**
-     * Gets training name.
+     * Retrieves the name of the training.
      *
-     * @return the training name
+     * @return a string representing the name of the training
      */
     String getTrainingName();
 
     /**
-     * Gets actual note.
+     * Retrieves the actual note currently being processed or focused on during the training.
      *
-     * @return the actual note
+     * @return a string representing the actual note
      */
     String getActualNote();
 
     /**
-     * Gets previous note.
+     * Retrieves the previous note in the training sequence.
      *
-     * @return the previous note
+     * @return a string representing the previous note, or null if no previous note exists
      */
     String getPreviousNote();
 
     /**
-     * Gets next note.
+     * Retrieves the next note in the training sequence.
      *
-     * @return the next note
+     * @return a string representing the next note in the sequence, or null if no further
+     *         notes are available.
      */
     String getNextNote();
 
     /**
-     * Next note string.
+     * Advances the training to the next note in the sequence and returns it.
+     * This method typically updates the state of the training to point to the next note.
      *
-     * @return the string
+     * @return a string representing the next note in the sequence, or null if no further
+     *         notes are available.
      */
     String nextNote();
 
     /**
-     * Is note active boolean.
+     * Determines whether a note with the given frequency is currently active.
      *
-     * @param frequency the frequency
-     * @return the boolean
+     * @param frequency the frequency of the note to check
+     * @return true if the note with the specified frequency is active, false otherwise
      */
     boolean isNoteActive(double frequency);
 
     /**
-     * Is running boolean.
+     * Indicates whether the training process is currently running.
      *
-     * @return the boolean
+     * @return true if the training is running, false otherwise
      */
     boolean isRunning();
 
     /**
-     * Start.
+     * Starts the training process. This method transitions the training
+     * into a running state and begins processing the sequence of training events.
+     * Implementations may use this method to set up initial conditions,
+     * reset relevant states, or trigger the first event in the sequence.
      */
     void start();
 
     /**
-     * Stop.
+     * Stops the training process. This method transitions the training
+     * out of a running state and halts any ongoing processing of training
+     * events or sequence of notes. Implementations may use this method
+     * to reset relevant states, release resources, or terminate active components.
      */
     void stop();
 
     /**
-     * Gets progress.
+     * Retrieves the progress of the training process as an integer value.
+     * The progress may represent a percentage or any other unit indicating
+     * how much of the training has been completed.
      *
-     * @return the progress
+     * @return an integer representing the progress of the training
      */
     int getProgress();
 
 
     /**
-     * Is completed boolean.
+     * Indicates whether the training has been completed.
      *
-     * @return the boolean
+     * @return true if the training is completed, false otherwise
      */
     boolean isCompleted();
 
     /**
-     * Success.
+     * Marks the completion of a successful operation or task within the training process.
+     *
+     * This method can be used to signify that a specific milestone, step, or goal
+     * within the training sequence has been successfully achieved. It may trigger
+     * actions such as updating internal states, logging success events, or
+     * notifying listeners, if applicable.
      */
     void success();
 }

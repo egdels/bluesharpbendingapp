@@ -24,30 +24,37 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 /**
- * The interface Microphone settings view handler.
+ * Interface responsible for handling interactions and settings related to the microphone
+ * and algorithm configuration in the application. This interface provides methods
+ * to initialize lists of available algorithms and microphones, as well as handlers
+ * for selecting specific algorithms or microphones.
  */
 public interface MicrophoneSettingsViewHandler {
     /**
-     * Handle algorithm selection.
+     * Handles the selection of a specific algorithm based on the provided index.
      *
-     * @param algorithmIndex the algorithm index
+     * @param algorithmIndex the index of the algorithm to be selected
      */
     void handleAlgorithmSelection(int algorithmIndex);
 
     /**
-     * Handle microphone selection.
+     * Handles the selection of a specific microphone based on the provided index.
      *
-     * @param microphoneIndex the microphone index
+     * @param microphoneIndex the index of the microphone to be selected
      */
     void handleMicrophoneSelection(int microphoneIndex);
 
     /**
-     * Init algorithm list.
+     * Initializes the list of available algorithms. This method is responsible for
+     * setting up and preparing the list of algorithms that can be used or selected
+     * in the application.
      */
     void initAlgorithmList();
 
     /**
-     * Init microphone list.
+     * Initializes the list of available microphones. This method is responsible for
+     * gathering, setting up, and preparing the microphone options that can be used or
+     * selected in the application.
      */
     void initMicrophoneList();
 }

@@ -24,25 +24,40 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Diminished harmonica.
+ * The DiminishedHarmonica class represents a type of harmonica with a specific
+ * tuning known as the diminished tuning. It extends the AbstractHarmonica class,
+ * providing the necessary implementation details for this specific tuning type.
  */
 public class DiminishedHarmonica extends AbstractHarmonica {
     /**
-     * The constant HALF_TONES_IN.
-     * <p>D G H D F A H D F A</p>
+     * An array representing the semitone offsets for the draw notes of the
+     * diminished harmonica tuning. These offsets specify the pitch differences
+     * between the note produced by drawing air through each channel and the root
+     * note for the harmonica.
+     *
+     * The values in this array correspond to specific semitone offsets for each
+     * draw note, providing the foundation for the diminished tuning structure in
+     * this context.
      */
     private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 17, 21, 23, 26, 29, 33};
 
     /**
-     * The constant HALF_TONES_OUT.
-     * <p>C E G C E G C E G C</p>
+     * An array representing the semitone offsets for the blow notes of the
+     * diminished harmonica tuning. These offsets define the pitch differences
+     * between the note produced by blowing air through each channel and the root
+     * note of the harmonica.
+     *
+     * The values in this array correspond to specific semitone offsets for each
+     * blow note, contributing to the tuning structure of this harmonica type.
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 12, 16, 19, 24, 28, 31, 36};
 
     /**
-     * Instantiates a new Diminished harmonica.
+     * Constructs a DiminishedHarmonica object with the specified key frequency.
+     * This constructor initializes the harmonica with the diminished tuning,
+     * setting the base frequency of the musical key that the harmonica is tuned to.
      *
-     * @param keyFrequency the key frequency
+     * @param keyFrequency the base frequency of the key that the diminished harmonica is tuned to
      */
     public DiminishedHarmonica(double keyFrequency) {
         super(keyFrequency);

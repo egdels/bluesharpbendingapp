@@ -24,27 +24,44 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Augmented harmonica.
+ * The AugmentedHarmonica class represents a type of harmonica tuned to the augmented scale.
+ * It extends the functionality of the AbstractHarmonica class and provides specific
+ * implementations for the notes' half-tone intervals for both in and out directions.
+ *
+ * This class uses two static arrays to define half-tone intervals for the draw (HALF_TONES_IN)
+ * and blow (HALF_TONES_OUT) operations on the harmonica.
+ *
+ * The augmented scale is defined by its unique pattern of intervals, and this harmonica
+ * is tuned specifically to conform to that scale.
  */
 public class AugmentedHarmonica extends AbstractHarmonica {
 
     /**
-     * The constant HALF_TONES_IN.
-     * <p>Eb G B Eb	G B	Eb G B Eb</p>
+     * Defines the half-tone intervals for the draw (inhale) notes of the augmented harmonica.
+     * These values represent the pitch differences, in semitones, relative to the base frequency
+     * of the harmonica's key for each draw channel.
+     *
+     * The pattern provided aligns with the augmented scale, which is characterized by equal intervals
+     * of three semitones between consecutive notes.
      */
     private static final int[] HALF_TONES_IN = {0, 3, 7, 11, 15, 19, 23, 27, 31, 35, 39};
 
     /**
-     * The constant HALF_TONES_OUT.
-     * <p>C E G# C E G# C E G# C</p>
+     * Defines the half-tone intervals for the blow (exhale) notes of the augmented harmonica.
+     * These values represent the pitch differences, in semitones, relative to the base frequency
+     * of the harmonica's key for each blow channel.
+     *
+     * The pattern provided aligns with the augmented scale and starts with a doubling of the base
+     * frequency at the initial two positions, followed by intervals increasing by four semitones
+     * from the third position onward.
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 4, 8, 12, 16, 20, 24, 28, 32, 36};
 
 
     /**
-     * Instantiates a new Augmented harmonica.
+     * Constructs an instance of AugmentedHarmonica with the specified key frequency.
      *
-     * @param keyFrequency the key frequency
+     * @param keyFrequency the base frequency of the musical key that the harmonica is tuned to
      */
     public AugmentedHarmonica(double keyFrequency) {
         super(keyFrequency);

@@ -24,25 +24,34 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Harmonic moll harmonica.
+ * The HarmonicMollHarmonica class represents a harmonica tuned to the Harmonic Moll scale.
+ * This class extends the AbstractHarmonica base class and provides the specific
+ * half-tone mappings for the Harmonic Moll tuning.
  */
 public class HarmonicMollHarmonica extends AbstractHarmonica {
     /**
-     * The constant HALF_TONES_IN.
-     * <p>D G H D F Ab H D F Ab</p>
+     * Represents the half-tone intervals for the blow notes of the harmonica
+     * in the Harmonic Moll tuning system. Each value in the array corresponds
+     * to the number of semitone steps (half-tones) from a reference note,
+     * typically used to determine the pitch of the blow notes for specific
+     * channels.
      */
     private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 17, 20, 23, 26, 29, 32};
 
     /**
-     * The constant HALF_TONES_OUT.
-     * <p>C Eb G C Eb G C Eb G C</p>
+     * Represents the half-tone intervals for the draw notes of the harmonica
+     * in the Harmonic Moll tuning system. Each value in the array corresponds
+     * to the number of semitone steps (half-tones) from a reference note,
+     * typically used to determine the pitch of the draw notes for specific
+     * channels.
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 3, 7, 12, 15, 19, 24, 27, 31, 36};
 
     /**
-     * Instantiates a new Harmonic moll harmonica.
+     * Constructs a Harmonic Moll Harmonica with the specified key frequency.
      *
-     * @param keyFrequency the key frequency
+     * @param keyFrequency the fundamental frequency (in hertz) of the musical key
+     *                     to which the harmonica is tuned
      */
     public HarmonicMollHarmonica(double keyFrequency) {
         super(keyFrequency);

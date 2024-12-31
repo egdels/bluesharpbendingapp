@@ -313,16 +313,6 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
     }
 
     /**
-     * Sets probability.
-     *
-     * @param v the v
-     */
-    @Override
-    public void setProbability(double v) {
-        // on android do nothing
-    }
-
-    /**
      * Gets instance.
      *
      * @return the instance

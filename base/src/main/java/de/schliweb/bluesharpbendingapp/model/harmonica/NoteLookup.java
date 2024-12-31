@@ -29,30 +29,44 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 /**
- * The type NoteContainer lookup.
+ * The NoteLookup class provides utility methods to perform operations related
+ * to musical notes and their frequencies. It allows for retrieving note
+ * names, frequencies, and managing concert pitches.
  */
 public class NoteLookup {
 
     /**
-     * The constant CENTS_MAX.
+     * Defines the maximum allowable deviation in cents for note pitch accuracy.
+     * This value is used to determine the range of acceptable pitch deviation
+     * when comparing frequencies to their expected values.
      */
     private static final double CENTS_MAX = 50.0;
     /**
-     * The constant CENTS_MIN.
+     * Represents the minimum permissible deviation in cents.
+     * The value is used as a lower bound for frequency deviation calculations.
+     * A negative value indicates a downward deviation from the reference frequency.
      */
     private static final double CENTS_MIN = -50.0;
 
     /**
-     * The constant DEFAULT_CONCERT_PITCH_FREQUENCY.
+     * Represents the default frequency of the concert pitch (A4) in hertz.
+     * This value is widely accepted as the standard pitch reference in
+     * music tuning and is commonly set to 440.0 Hz.
      */
     private static final double DEFAULT_CONCERT_PITCH_FREQUENCY = 440.0;
 
     /**
-     * The constant notes.
+     * A static map that holds note names as keys and their corresponding frequencies as values.
+     * Serves as a lookup table for quick retrieval of note frequencies or names.
      */
     private static final HashMap<String, Double> notes = new HashMap<>();
     /**
-     * The constant concertPitch.
+     * Represents the concert pitch frequency used as a reference point
+     * for tuning musical notes. This value is initialized to the default
+     * concert pitch frequency and can be modified based on user preferences.
+     *
+     * Concert pitch generally refers to the pitch standard that sets the
+     * frequency of the note A above middle C (A4), commonly at 440 Hz.
      */
     private static int concertPitch = (int) DEFAULT_CONCERT_PITCH_FREQUENCY;
 
@@ -64,10 +78,12 @@ public class NoteLookup {
     }
 
     /**
-     * Gets note name.
+     * Retrieves the name of the musical note for a given frequency.
+     * The method iterates through a predefined set of notes and determines
+     * the closest match based on the frequency difference in cents.
      *
-     * @param frequency the frequency
-     * @return the note name
+     * @param frequency the frequency in hertz for which to determine the note name
+     * @return the name of the note corresponding to the given frequency, or null if no match is found
      */
     public static String getNoteName(double frequency) {
         for (Entry<String, Double> note : notes.entrySet()) {
@@ -81,17 +97,23 @@ public class NoteLookup {
     }
 
     /**
-     * Gets note frequency.
+     * Retrieves the frequency of a musical note by its name.
      *
-     * @param name the name
-     * @return the note frequency
+     * @param name the name of the musical note whose frequency is to be retrieved
+     * @return the frequency of the specified note in hertz, or null if the note is not found
      */
     public static Double getNoteFrequency(String name) {
         return notes.getOrDefault(name, null);
     }
 
     /**
-     * Init lookup.
+     * Initializes the lookup table for musical notes and their corresponding frequencies.
+     * Populates a predefined map with note names as keys (e.g., "A4", "C#3") and their
+     * precise frequencies in hertz as values.
+     *
+     * This method is typically invoked to set up the static data used for frequency and
+     * note matching in the system. The frequency data spans multiple octaves, covering
+     * a wide range of musical notes from "C0" to "C8".
      */
     private static void initLookup() {
         notes.put("C8", 4186.01);
@@ -194,9 +216,9 @@ public class NoteLookup {
     }
 
     /**
-     * Get supported concert pitches string [ ].
+     * Retrieves the list of supported concert pitch frequencies expressed in Hertz.
      *
-     * @return the string [ ]
+     * @return an array of strings representing supported concert pitch frequencies
      */
     public static String[] getSupportedConcertPitches() {
         return new String[]{"431", "432", "433", "434", "435", "436", "437", "438",
@@ -204,18 +226,19 @@ public class NoteLookup {
     }
 
     /**
-     * Gets concert pitch.
+     * Retrieves the current concert pitch setting in hertz.
      *
-     * @return the concert pitch
+     * @return the current concert pitch frequency in hertz
      */
     public static int getConcertPitch() {
         return concertPitch;
     }
 
     /**
-     * Sets concert pitch.
+     * Sets the concert pitch used for tuning musical notes.
+     * Updates internal lookup data based on the newly specified concert pitch.
      *
-     * @param concertPitch the concert pitch
+     * @param concertPitch the frequency in Hertz to set as the concert pitch
      */
     public static void setConcertPitch(int concertPitch) {
         NoteLookup.concertPitch = concertPitch;
@@ -224,7 +247,16 @@ public class NoteLookup {
     }
 
     /**
-     * Update lookup.
+     * Updates the lookup table for musical notes and their frequencies.
+     *
+     * This method recalculates the frequencies of all notes in the lookup table based on the current
+     * concert pitch. It adjusts each note’s frequency by computing the difference in cents between the
+     * current concert pitch and the default concert pitch frequency, then applies this adjustment to
+     * each note's frequency. Adjusted frequencies are rounded to a defined precision.
+     *
+     * The process relies on the `NoteUtils` utility methods for calculating cents, adding them to
+     * frequencies, and rounding the resulting frequencies. These adjustments ensure that the musical
+     * note frequencies align with the specified concert pitch.
      */
     private static void updateLookup() {
         double cents = NoteUtils.getCents(concertPitch, DEFAULT_CONCERT_PITCH_FREQUENCY);
@@ -234,18 +266,26 @@ public class NoteLookup {
     }
 
     /**
-     * Gets concert pitch name.
+     * Retrieves the name of the current concert pitch.
+     * The concert pitch represents the reference tuning frequency
+     * (commonly A4) used for musical note calculations.
      *
-     * @return the concert pitch name
+     * This method uses the current concert pitch frequency to
+     * derive its corresponding musical note name.
+     *
+     * @return the name of the musical note corresponding to the current concert pitch
      */
     public static String getConcertPitchName() {
         return String.valueOf(getConcertPitch());
     }
 
     /**
-     * Sets concert pitch by index.
+     * Sets the concert pitch by selecting it from a predefined list of supported
+     * frequencies using an index value. The selected concert pitch is then applied
+     * as the tuning reference for musical notes.
      *
-     * @param pitchIndex the pitch index
+     * @param pitchIndex the index of the desired concert pitch from the supported
+     *                   list of concert pitch frequencies
      */
     public static void setConcertPitchByIndex(int pitchIndex) {
         String pitchName = getSupportedConcertPitches()[pitchIndex];

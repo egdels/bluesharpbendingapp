@@ -35,49 +35,78 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * The type Training container.
+ * The TrainingContainer class is responsible for managing the training process,
+ * coordinating updates between the active training session, associated view,
+ * and note display logic. It implements the Runnable interface to execute
+ * periodic training logic on a separate thread.
  */
 public class TrainingContainer implements Runnable {
 
 
     /**
-     * The Exec.
+     * A ScheduledThreadPoolExecutor instance used to schedule and execute tasks with a single-threaded execution policy.
+     * This executor ensures that tasks are executed sequentially in a dedicated thread, providing thread safety for
+     * operations within the class.
      */
     private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
     /**
-     * The constant lockAllThreads.
+     * A static flag indicating whether all threads should be locked.
+     * When set to true, this variable ensures that the ongoing operations
+     * in multiple threads are restricted or paused, preventing further execution.
+     * This is primarily used to manage thread states in a synchronized manner
+     * within the TrainingContainer class.
      */
     private static boolean lockAllThreads = false;
     /**
-     * The Training.
+     * Represents a specific training process or activity that is managed by the
+     * TrainingContainer. This variable provides access to the methods defined
+     * by the Training interface, allowing the container to control and retrieve
+     * details about the training session.
+     *
+     * The Training instance supports functionalities like starting, stopping,
+     * tracking progress, and managing training notes.
      */
     private final Training training;
     /**
-     * The View.
+     * Represents the view associated with the training functionality.
+     * This is an instance of the {@link TrainingView} interface responsible
+     * for interacting with the UI layer of the training component.
+     *
+     * This variable is immutable and initialized during the construction
+     * of the {@link TrainingContainer} class.
      */
     private final TrainingView view;
     /**
-     * The Element.
+     * Represents a note element in the harp view associated with the training container.
+     * This element is responsible for visual updates and clearing operations
+     * based on the state of the training session.
+     * It adheres to the HarpViewNoteElement interface.
      */
     private final HarpViewNoteElement element;
     /**
-     * The To next note.
+     * Represents a flag to indicate whether to proceed to the next note in a training sequence.
+     * Uses an atomic boolean for thread-safe operations to ensure consistent state
+     * across multiple threads within the TrainingContainer.
      */
     private final AtomicBoolean toNextNote = new AtomicBoolean(false);
     /**
-     * The To be cleared.
+     * Represents a flag indicating whether a certain operation or state within the
+     * TrainingContainer should be cleared or reset. This is a thread-safe indicator
+     * managed through an AtomicBoolean to allow concurrent access and modification.
      */
     private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
     /**
-     * The Frequency to handle.
+     * Represents the frequency currently being handled by the TrainingContainer.
+     * This variable is volatile to ensure thread-safe operations when accessed or
+     * updated concurrently by multiple threads.
      */
     private volatile double frequencyToHandle;
 
     /**
-     * Instantiates a new Training container.
+     * Constructs a new TrainingContainer instance.
      *
-     * @param training     the training
-     * @param trainingView the training view
+     * @param training      the training instance to manage, responsible for handling the training logic
+     * @param trainingView  the view instance associated with the training, providing visual elements and interactions
      */
     public TrainingContainer(Training training, TrainingView trainingView) {
         this.training = training;
@@ -127,27 +156,29 @@ public class TrainingContainer implements Runnable {
     }
 
     /**
-     * Sets frequency to handle.
+     * Sets the frequency value to handle in the training process.
      *
-     * @param frequencyToHandle the frequency to handle
+     * @param frequencyToHandle the frequency value to be handled, typically used for processing
+     *                          or analysis during the training session
      */
     public void setFrequencyToHandle(double frequencyToHandle) {
         this.frequencyToHandle = frequencyToHandle;
     }
 
     /**
-     * Gets actual note name.
+     * Retrieves the actual note name currently being processed or managed in the training instance.
      *
-     * @return the actual note name
+     * @return the name of the actual note as a String
      */
     public String getActualNoteName() {
         return training.getActualNote();
     }
 
     /**
-     * Gets progress.
+     * Retrieves the current progress of the training.
      *
-     * @return the progress
+     * @return the progress value as an integer, typically representing the
+     *         completion percentage or status of the training process
      */
     public int getProgress() {
         return training.getProgress();

@@ -26,19 +26,31 @@ package de.schliweb.bluesharpbendingapp.model.training;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 
 /**
- * The type Octave leaps training.
+ * The OctaveLeapsTraining class is a specific implementation of the {@link AbstractTraining} class,
+ * designed to train users on octave leaps exercises using a harmonica key. This class focuses
+ * on octave intervals and provides relevant functionalities tailored for this type of training.
  */
 public class OctaveLeapsTraining extends AbstractTraining {
 
     /**
-     * The constant HALF_TONES.
+     * A constant array representing the sequence of half-tone steps used in the
+     * octave leaps training exercise. Each element denotes a half-tone offset
+     * relative to a base note in the harmonica's scale.
+     *
+     * This array defines the structure of the musical intervals utilized for
+     * training purposes in the {@link OctaveLeapsTraining} class. The intervals
+     * represented include various patterns designed to simulate octave leaps
+     * on a harmonica.
      */
     private static final int[] HALF_TONES = {0, 12, 24, 36, 24, 12, 2, 14, 26, 14, 4, 16, 28, 16, 5, 17, 29, 17, 7, 19, 31, 19, 9, 21, 33, 21, 11, 23, 35, 23};
 
     /**
-     * Instantiates a new Octave leaps training.
+     * Constructs an instance of OctaveLeapsTraining with the specified harmonica key.
+     * This initializer sets up the training to target octave leaps utilities
+     * and prepares internal configurations based on the given key.
      *
-     * @param key the key
+     * @param key The harmonica key used for initializing the training session. This key
+     *            determines the pitch and tonal structure for the octave leaps exercises.
      */
     protected OctaveLeapsTraining(AbstractHarmonica.KEY key) {
         super(key);

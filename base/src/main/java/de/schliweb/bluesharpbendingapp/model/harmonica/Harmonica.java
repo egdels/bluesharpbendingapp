@@ -24,111 +24,115 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The interface Harmonica.
+ * Represents the functionality of a Harmonica, including methods
+ * for retrieving note frequencies, detecting bending, overblowing,
+ * and overdraw characteristics, as well as information about tuning
+ * and key configurations.
  */
 public interface Harmonica {
     /**
-     * Gets blow bending tones count.
+     * Retrieves the number of blow bending tones available on a specified channel of the harmonica.
      *
-     * @param channel the channel
-     * @return the blow bending tones count
+     * @param channel the channel of the harmonica for which to determine the blow bending tones count
+     * @return the number of blow bending tones on the specified channel
      */
     int getBlowBendingTonesCount(int channel);
 
 
     /**
-     * Gets cents note.
+     * Calculates the deviation in cents between the specified note's frequency and a reference frequency.
      *
-     * @param channel   the channel
-     * @param note      the note
-     * @param frequency the frequency
-     * @return the cents note
+     * @param channel   the channel of the harmonica where the note resides
+     * @param note      the specific note on the given channel
+     * @param frequency the actual frequency of the note
+     * @return the deviation in cents from the reference frequency for the given note
      */
     double getCentsNote(int channel, int note, double frequency);
 
 
     /**
-     * Gets draw bending tones count.
+     * Retrieves the number of draw bending tones available on a specified channel of the harmonica.
      *
-     * @param channel the channel
-     * @return the draw bending tones count
+     * @param channel the channel of the harmonica for which to determine the draw bending tones count
+     * @return the number of draw bending tones on the specified channel
      */
     int getDrawBendingTonesCount(int channel);
 
     /**
-     * Gets key name.
+     * Retrieves the name of the key associated with the harmonica.
      *
-     * @return the key name
+     * @return the name of the key as a string
      */
     String getKeyName();
 
     /**
-     * Gets note frequency.
+     * Retrieves the frequency of a specific note on a given channel of the harmonica.
      *
-     * @param channel the channel
-     * @param note    the note
-     * @return the note frequency
+     * @param channel the channel of the harmonica where the note is located
+     * @param note the specific note whose frequency is to be retrieved
+     * @return the frequency of the specified note in hertz
      */
     double getNoteFrequency(int channel, int note);
 
     /**
-     * Gets note frequency maximum.
+     * Retrieves the maximum frequency of a specified note on a given channel of the harmonica.
      *
-     * @param channel the channel
-     * @param note    the note
-     * @return the note frequency maximum
+     * @param channel the channel of the harmonica where the note is located
+     * @param note    the specific note whose maximum frequency is to be retrieved
+     * @return the maximum frequency of the specified note in hertz
      */
     double getNoteFrequencyMaximum(int channel, int note);
 
     /**
-     * Gets note frequency minimum.
+     * Retrieves the minimum frequency of a specified note on a given channel of the harmonica.
      *
-     * @param channel the channel
-     * @param note    the note
-     * @return the note frequency minimum
+     * @param channel the channel of the harmonica where the note is located
+     * @param note the specific note whose minimum frequency is to be retrieved
+     * @return the minimum frequency of the specified note in hertz
      */
     double getNoteFrequencyMinimum(int channel, int note);
 
     /**
-     * Gets tune name.
+     * Retrieves the name of the tune associated with the harmonica.
      *
-     * @return the tune name
+     * @return the name of the tune as a string
      */
     String getTuneName();
 
     /**
-     * Has inverse cents handling boolean.
+     * Determines whether the specified channel of the harmonica has inverse cents handling enabled.
      *
-     * @param channel the channel
-     * @return the boolean
+     * @param channel the channel of the harmonica to check for inverse cents handling
+     * @return true if the specified channel has inverse cents handling enabled; false otherwise
      */
     boolean hasInverseCentsHandling(int channel);
 
     /**
-     * Is note active boolean.
+     * Determines whether the specified note on a given channel of the harmonica
+     * with the provided frequency is currently active.
      *
-     * @param channel   the channel
-     * @param note      the note
-     * @param frequency the frequency
-     * @return the boolean
+     * @param channel   the channel of the harmonica where the note is located
+     * @param note      the specific note to check for activity
+     * @param frequency the frequency of the note to check
+     * @return true if the specified note is active, false otherwise
      */
     boolean isNoteActive(int channel, int note, double frequency);
 
     /**
-     * Is overblow boolean.
+     * Determines whether the specified note on a given channel of the harmonica is an overblow.
      *
-     * @param channel the channel
-     * @param note    the note
-     * @return the boolean
+     * @param channel the channel of the harmonica where the note is located
+     * @param note    the specific note to check
+     * @return true if the specified note is an overblow, false otherwise
      */
     boolean isOverblow(int channel, int note);
 
     /**
-     * Is overdraw boolean.
+     * Determines whether the specified note on a given channel of the harmonica is an overdraw.
      *
-     * @param channel the channel
-     * @param note    the note
-     * @return the boolean
+     * @param channel the channel of the harmonica where the note is located
+     * @param note    the specific note to check
+     * @return true if the specified note is an overdraw, false otherwise
      */
     boolean isOverdraw(int channel, int note);
 }

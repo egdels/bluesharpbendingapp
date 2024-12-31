@@ -24,27 +24,33 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The type Country harmonica.
+ * The CountryHarmonica class represents a specific type of harmonica
+ * tuned to produce the "Country" scale.
+ * It extends the AbstractHarmonica class, inheriting its core behavior,
+ * and overrides methods to provide tuning information specific to the
+ * Country harmonica style.
  */
 public class CountryHarmonica extends AbstractHarmonica {
 
     /**
-     * The constant HALF_TONES_IN.
-     * <p>D G B D F# A B D F A</p>
+     * Represents the sequence of half-tone intervals for the "in" direction
+     * (draw notes) on a Country Harmonica. Each element corresponds to the
+     * cumulative number of half-tones relative to the first note.
      */
     private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 18, 21, 23, 26, 29, 33};
 
     /**
-     * The constant HALF_TONES_OUT.
-     * <p>C E G C E G C E G C</p>
+     * Represents the sequence of half-tone intervals for the "out" direction
+     * (blow notes) on a Country Harmonica. Each element corresponds to the
+     * cumulative number of half-tones relative to the first note.
      */
     private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 12, 16, 19, 24, 28, 31, 36};
 
 
     /**
-     * Instantiates a new Country harmonica.
+     * Constructs an instance of CountryHarmonica with the specified key frequency.
      *
-     * @param keyFrequency the key frequency
+     * @param keyFrequency the base frequency of the musical key that the harmonica is tuned to
      */
     public CountryHarmonica(double keyFrequency) {
         super(keyFrequency);

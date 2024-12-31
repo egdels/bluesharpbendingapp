@@ -24,21 +24,23 @@ package de.schliweb.bluesharpbendingapp.view;
  */
 
 /**
- * The interface NoteContainer settings view.
+ * The NoteSettingsView interface defines methods for managing the note-related settings
+ * in the application. It encapsulates functionality to set and update concert pitches.
  */
 public interface NoteSettingsView {
 
     /**
-     * Sets concert pitches.
+     * Sets the array of concert pitches. The provided array contains
+     * string representations of the available concert pitches.
      *
-     * @param pitches the pitches
+     * @param pitches an array of strings representing the concert pitches
      */
     void setConcertPitches(String[] pitches);
 
     /**
-     * Sets selected concert pitch.
+     * Sets the selected concert pitch by its index in the list of available concert pitches.
      *
-     * @param selectedConcertPitchIndex the selected concert pitch index
+     * @param selectedConcertPitchIndex the index of the concert pitch to be selected
      */
     void setSelectedConcertPitch(int selectedConcertPitchIndex);
 

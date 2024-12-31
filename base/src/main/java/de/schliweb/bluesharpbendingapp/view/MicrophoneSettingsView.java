@@ -24,56 +24,54 @@ package de.schliweb.bluesharpbendingapp.view;
  */
 
 /**
- * The interface Microphone settings view.
+ * The MicrophoneSettingsView interface provides methods for managing and configuring
+ * settings related to microphones. This includes setting algorithms, microphones,
+ * frequencies, volumes, and the indices of selected microphones and algorithms.
  */
 public interface MicrophoneSettingsView {
 
     /**
-     * Sets algorithms.
+     * Sets the available algorithms to be used for processing in the application.
      *
-     * @param algorithms the algorithms
+     * @param algorithms an array of strings representing the names of the algorithms to be set
      */
     void setAlgorithms(String[] algorithms);
 
     /**
-     * Sets frequency.
+     * Sets the frequency value to be used in the microphone settings.
      *
-     * @param frequency the frequency
+     * @param frequency the frequency value to be set, represented as a double
      */
     void setFrequency(double frequency);
 
     /**
-     * Sets microphones.
+     * Sets the list of available microphones to be used in the application.
      *
-     * @param microphones the microphones
+     * @param microphones an array of strings representing the names or identifiers of the microphones
      */
     void setMicrophones(String[] microphones);
 
     /**
-     * Sets selected algorithm.
+     * Sets the index of the selected algorithm from a list of available algorithms.
      *
-     * @param selectedAlgorithmIndex the selected algorithm index
+     * @param selectedAlgorithmIndex the index of the algorithm to be selected,
+     *                               represented as an integer
      */
     void setSelectedAlgorithm(int selectedAlgorithmIndex);
 
     /**
-     * Sets selected microphone.
+     * Sets the index of the selected microphone from a list of available microphones.
      *
-     * @param selectedMicrophoneIndex the selected microphone index
+     * @param selectedMicrophoneIndex the index of the microphone to be selected,
+     *                                represented as an integer
      */
     void setSelectedMicrophone(int selectedMicrophoneIndex);
 
     /**
-     * Sets volume.
+     * Sets the volume level for the microphone settings.
      *
-     * @param volume the volume
+     * @param volume the volume level to be set, represented as a double
      */
     void setVolume(double volume);
 
-    /**
-     * Sets probability.
-     *
-     * @param probability the probability
-     */
-    void setProbability(double probability);
 }
