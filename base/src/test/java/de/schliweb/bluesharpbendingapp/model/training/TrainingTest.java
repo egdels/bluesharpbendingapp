@@ -173,7 +173,7 @@ public class TrainingTest {
         assertEquals("D4", training.getPreviousNote());
         assertEquals("F#4", training.getActualNote());
         assertEquals("A4", training.getNextNote());
-        while(!training.isCompleted()) {
+        while (!training.isCompleted()) {
             training.nextNote();
             training.success();
         }
@@ -188,19 +188,19 @@ public class TrainingTest {
         training.stop();
         training.start();
         String[] notes = training.getNotes();
-        for(String note : notes){
-            assertEquals(note,training.getActualNote());
+        for (String note : notes) {
+            assertEquals(note, training.getActualNote());
             training.nextNote();
         }
         training.start();
-        for(int i=0;i<notes.length-1;i++) {
+        for (int i = 0; i < notes.length - 1; i++) {
             training.nextNote();
             training.success();
         }
         training.nextNote();
         assertFalse(training.isCompleted());
-        assertTrue(training.getProgress()< 100 && training.getProgress()>0);
+        assertTrue(training.getProgress() < 100 && training.getProgress() > 0);
         training.success();
-        assertEquals(100,training.getProgress());
+        assertEquals(100, training.getProgress());
     }
 }

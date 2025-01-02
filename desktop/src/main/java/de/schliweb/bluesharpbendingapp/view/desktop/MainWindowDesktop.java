@@ -41,7 +41,7 @@ import java.util.ArrayList;
  * application. It provides functionality for managing and displaying views such as
  * HarpView, Settings, Training, and About sections. It extends JFrame and serves
  * as the central controller for handling these views and their interactions.
- *
+ * <p>
  * Fields in the class are used for maintaining a structured UI and handling the
  * different components of the application.
  */
@@ -71,7 +71,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
      * Represents the main view component for interacting with and displaying
      * information about the "Harp" functionality within the MainWindowDesktop class.
      * This variable references a desktop-specific implementation of the HarpView interface.
-     *
+     * <p>
      * It is used to manage and visualize the harp-related functions or data, typically
      * through graphical user interface elements in the application.
      */
@@ -127,7 +127,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
      * related to the harp settings view within the application. It serves as a mediator
      * between user interactions in the UI and the underlying application logic concerning
      * harp settings, such as key and tuning management.
-     *
+     * <p>
      * This field is set using the `setHarpSettingsViewHandler` method and is utilized
      * by the `MainWindowDesktop` class to delegate harp settings-related actions to the
      * appropriate implementation of the `HarpSettingsViewHandler` interface.
@@ -137,7 +137,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
      * The {@code harpViewHandler} is an instance of the {@link HarpViewHandler} interface
      * responsible for handling interactions and managing functionalities specific to the
      * "Harp View" within the MainWindowDesktop class.
-     *
+     * <p>
      * This variable facilitates initialization, communication, and updates related to
      * the harp application's visual representation and its associated actions.
      */
@@ -152,7 +152,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
      *     <li>Handles user selection of specific microphones and algorithms.</li>
      *     <li>Acts as a bridge between the microphone settings view and the application logic.</li>
      * </ul>
-     *
+     * <p>
      * Used within the MainWindowDesktop class to connect the microphone settings view
      * with its corresponding logic.
      */
@@ -161,7 +161,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
      * A handler for managing interactions and operations related to the Note Settings view
      * within the user interface. This variable is responsible for linking the interface logic
      * and functionality of the NoteSettingsViewHandler with the corresponding view in the application.
-     *
+     * <p>
      * The `noteSettingsViewHandler` is utilized to initialize the concert pitch list and
      * handle user interactions such as selecting a specific concert pitch. It facilitates
      * the communication between the view and the underlying application logic.
@@ -170,13 +170,13 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
 
     /**
      * Field to manage the interaction and logic associated with the training view.
-     *
+     * <p>
      * The `trainingViewHandler` is responsible for coordinating the behaviors,
      * events, and updates related to the training view in the application. It acts
      * as a bridge between the visual presentation of the training view and the
      * underlying business logic, ensuring that user actions are properly managed
      * and reflected in the view.
-     *
+     * <p>
      * This field is expected to hold an implementation of the `TrainingViewHandler`
      * interface, which defines methods for handling training initialization,
      * user interactions, and the start/stop processes of training sessions.
@@ -373,7 +373,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
 
     /**
      * Closes the main window of the application.
-     *
+     * <p>
      * This method is responsible for disposing of the current window's resources
      * and triggering the centralized close operation via MainDesktop.close().
      */

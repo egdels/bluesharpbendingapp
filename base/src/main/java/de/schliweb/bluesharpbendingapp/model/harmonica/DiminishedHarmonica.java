@@ -34,7 +34,7 @@ public class DiminishedHarmonica extends AbstractHarmonica {
      * diminished harmonica tuning. These offsets specify the pitch differences
      * between the note produced by drawing air through each channel and the root
      * note for the harmonica.
-     *
+     * <p>
      * The values in this array correspond to specific semitone offsets for each
      * draw note, providing the foundation for the diminished tuning structure in
      * this context.
@@ -46,7 +46,7 @@ public class DiminishedHarmonica extends AbstractHarmonica {
      * diminished harmonica tuning. These offsets define the pitch differences
      * between the note produced by blowing air through each channel and the root
      * note of the harmonica.
-     *
+     * <p>
      * The values in this array correspond to specific semitone offsets for each
      * blow note, contributing to the tuning structure of this harmonica type.
      */

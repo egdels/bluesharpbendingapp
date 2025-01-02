@@ -69,7 +69,7 @@ public class Logger {
      * @param depth the depth in the call stack from which the method name should be retrieved,
      *              where 0 refers to the current method.
      * @return the name of the method at the specified depth in the call stack.
-     *         If the depth is invalid, an exception may be thrown.
+     * If the depth is invalid, an exception may be thrown.
      */
     public static String getMethodName(final int depth) {
         return Thread.currentThread().getStackTrace()[depth].getMethodName();

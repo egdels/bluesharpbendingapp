@@ -73,7 +73,8 @@
                             <finalName>
                                 bluesharpbendingapp-${project.version}-all
                             </finalName>
-                            <outputDirectory>${project.build.directory}/jpackage/${maven.build.timestamp}/</outputDirectory>
+                            <outputDirectory>${project.build.directory}/jpackage/${maven.build.timestamp}/
+                            </outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -115,7 +116,8 @@
                                 <argument>--mac-package-name</argument>
                                 <argument>BluesharpBendingApp</argument>
                             </arguments>
-                            <workingDirectory>${project.build.directory}/jpackage/${maven.build.timestamp}/</workingDirectory>
+                            <workingDirectory>${project.build.directory}/jpackage/${maven.build.timestamp}/
+                            </workingDirectory>
                         </configuration>
                     </execution>
                 </executions>

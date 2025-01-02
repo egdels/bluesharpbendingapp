@@ -27,7 +27,7 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  * Represents a Paddy Richter tuned harmonica, which is a modification of the Richter tuning.
  * It features a specific arrangement of pitches for blow (out) and draw (in) notes, tailored
  * for particular playing styles such as Irish music.
- *
+ * <p>
  * This class extends the {@code AbstractHarmonica} class and provides the custom
  * half-tone mappings for the Paddy Richter tuning.
  */
@@ -37,7 +37,7 @@ public class PaddyRichterHarmonica extends AbstractHarmonica {
      * These intervals specify the number of half-tone steps above a reference note for each channel
      * of the harmonica, tailored to the Paddy Richter tuning. The values correspond to the following
      * tone arrangement:
-     *
+     * <p>
      * Channel 1: 0 half-tones,
      * Channel 2: 2 half-tones,
      * Channel 3: 7 half-tones,
@@ -57,7 +57,7 @@ public class PaddyRichterHarmonica extends AbstractHarmonica {
      * These intervals represent the number of half-tone steps above a reference note for each channel
      * of the harmonica, tailored to the Paddy Richter tuning. The values correspond to the following
      * tone arrangement:
-     *
+     * <p>
      * Channel 1: 0 half-tones,
      * Channel 2: 0 half-tones,
      * Channel 3: 4 half-tones,

@@ -30,7 +30,7 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
  * with the major scale in the context of harmonica practice. This class
  * extends the {@link AbstractTraining} class to leverage common training
  * behaviors and implements methods tailored to the major scale.
- *
+ * <p>
  * The major scale is represented by predefined half-tone intervals stored
  * in the {@code HALF_TONES} constant array. This ensures consistent and
  * accurate generation of notes for training purposes.
@@ -42,11 +42,11 @@ public class MajorScaleTraining extends AbstractTraining {
      * {@code MajorScaleTraining} class. These intervals define the semitone
      * differences between consecutive notes in the scale, ensuring accurate
      * note generation for training purposes.
-     *
+     * <p>
      * This array includes repeated octaves and additional intervals to support
      * transposition and advanced usage in harmonica practice. The values are
      * structured such that it spans multiple octaves:
-     *
+     * <p>
      * - 0: Root note (no offset)
      * - 2: Whole step
      * - 4: Two whole steps
@@ -54,7 +54,7 @@ public class MajorScaleTraining extends AbstractTraining {
      * - 7: Perfect fourth
      * - 9: Perfect fifth
      * - 11: Major sixth, etc.
-     *
+     * <p>
      * The intervals continue to repeat for a total to cover multiple octaves
      * for extended scales.
      */

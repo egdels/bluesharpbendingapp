@@ -25,14 +25,12 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
 
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 
-import java.util.Objects;
-
 
 /**
  * Abstract base class representing the common features and behaviors of a harmonica.
  * This class implements the {@link Harmonica} interface and provides a foundation
  * for different types of harmonicas, including methods for note and frequency calculations.
-
+ *
  * <pre>
  * Channel/Notes:
  *                                                       --------
@@ -343,15 +341,9 @@ public abstract class AbstractHarmonica implements Harmonica {
         return getNoteFrequency(channel, 0) > getNoteFrequency(channel, 1);
     }
 
-    @Override
-    public boolean isNoteActive(int channel, int note, double frequency) {
-        double harpFrequency = getNoteFrequency(channel, note);
-        return frequency <= NoteUtils.addCentsToFrequency(50.0, harpFrequency) && frequency >= NoteUtils.addCentsToFrequency(-50.0, harpFrequency);
-    }
-
     /**
      * Calculates the overblow or overdraw frequency for a specified channel on the harmonica.
-     *
+     * <p>
      * The method determines the frequency based on whether the channel uses inverse cents handling.
      * It adjusts the frequency of the channel by adding 100 cents using input or output frequencies.
      *
@@ -524,11 +516,11 @@ public abstract class AbstractHarmonica implements Harmonica {
          * The frequency is determined by looking up the musical key's name.
          *
          * @return the frequency in Hertz (Hz) corresponding to the musical key
-         *         associated with this instance
+         * associated with this instance
          * @throws NullPointerException if the frequency cannot be determined
          */
         public double getFrequency() {
-            return Objects.requireNonNull(NoteLookup.getNoteFrequency(name));
+            return NoteLookup.getNoteFrequency(name);
         }
     }
 

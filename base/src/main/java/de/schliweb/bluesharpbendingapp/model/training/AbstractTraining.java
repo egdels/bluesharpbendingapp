@@ -33,7 +33,7 @@ import java.util.Arrays;
 /**
  * The AbstractTraining class provides a base implementation of the {@link Training} interface.
  * It contains methods and properties common to different types of training exercises.
- *
+ * <p>
  * This class also provides static methods to create specific types of training exercises
  * and retrieve supported training options and precision levels.
  */
@@ -49,7 +49,7 @@ public abstract class AbstractTraining implements Training {
      * Represents the central frequency value associated with a key in the
      * context of training. This frequency is used to identify the pitch or note
      * being targeted during a training session.
-     *
+     * <p>
      * It is a constant and defined as a Double to allow for precision in
      * representing pitch frequencies.
      */
@@ -75,7 +75,7 @@ public abstract class AbstractTraining implements Training {
      * and can help determine when a specific training task or activity has
      * been successfully completed multiple times in succession.
      */
-    private int successIndex=0;
+    private int successIndex = 0;
 
     /**
      * Constructs an instance of AbstractTraining with the specified key.
@@ -89,7 +89,7 @@ public abstract class AbstractTraining implements Training {
     /**
      * Creates a new Training instance based on the specified key and training indices.
      *
-     * @param keyIndex the index of the harmonica key, used to determine which key to use
+     * @param keyIndex      the index of the harmonica key, used to determine which key to use
      * @param trainingIndex the index of the training type, used to determine which training to create
      * @return a Training instance corresponding to the specified key and training type
      */
@@ -144,7 +144,7 @@ public abstract class AbstractTraining implements Training {
      * Retrieves an array of supported precision levels for the training.
      *
      * @return an array of strings, where each string represents a precision level
-     *         available for the training, such as "5", "10", "15", etc.
+     * available for the training, such as "5", "10", "15", etc.
      */
     public static String[] getSupportedPrecisions() {
         return new String[]{"5", "10", "15", "20", "25", "30", "35", "40", "45"};
@@ -174,7 +174,7 @@ public abstract class AbstractTraining implements Training {
      * relevant to the specific implementation of a training type.
      *
      * @return an array of integers, where each integer corresponds to a half-tone step
-     *         required for the associated training.
+     * required for the associated training.
      */
     abstract int[] getHalfTones();
 
@@ -211,14 +211,14 @@ public abstract class AbstractTraining implements Training {
 
     @Override
     public void start() {
-        noteIndex=0;
-        successIndex=0;
-        isRunning=true;
+        noteIndex = 0;
+        successIndex = 0;
+        isRunning = true;
     }
 
     @Override
     public void stop() {
-        isRunning=false;
+        isRunning = false;
     }
 
     @Override
@@ -244,7 +244,7 @@ public abstract class AbstractTraining implements Training {
     }
 
     @Override
-    public void success () {
+    public void success() {
         successIndex++;
     }
 

@@ -25,7 +25,7 @@ package de.schliweb.bluesharpbendingapp.controller;
 
 /**
  * Interface defining methods for handling the training view and associated actions.
- *
+ * <p>
  * This interface provides functionality such as initializing training and precision lists,
  * handling selections, and managing the start and stop of training processes. Implementers
  * of this interface are expected to define how these operations interact with the application
@@ -35,7 +35,7 @@ public interface TrainingViewHandler {
 
     /**
      * Initializes the training list with the necessary data.
-     *
+     * <p>
      * This method is responsible for preparing the training list that will
      * be displayed or utilized within the application. It ensures that the list
      * is populated and ready for further operations such as selection or modification.
@@ -46,7 +46,7 @@ public interface TrainingViewHandler {
 
     /**
      * Initializes the precision list with the necessary data.
-     *
+     * <p>
      * This method is responsible for preparing the precision list to be displayed or utilized
      * within the application. It ensures that the list is accurately populated and ready for
      * operations such as selection or further processing. Implementers are expected to define
@@ -57,7 +57,7 @@ public interface TrainingViewHandler {
 
     /**
      * Handles the selection event for a training item.
-     *
+     * <p>
      * This method is invoked when a user interacts with the training list and selects
      * a specific training item. The selected index corresponds to the position of the
      * chosen item in the training list. Implementers should define the logic to handle
@@ -69,11 +69,11 @@ public interface TrainingViewHandler {
 
     /**
      * Initializes the training container.
-     *
+     * <p>
      * This method is responsible for setting up and configuring the training container,
      * ensuring it is ready for use within the application. The training container typically
      * serves as the primary structure for managing training-related components or data.
-     *
+     * <p>
      * Implementers should define the specific logic required to properly initialize and
      * prepare the container based on the application's requirements, such as setting up
      * dependencies, views, or any necessary state.
@@ -82,7 +82,7 @@ public interface TrainingViewHandler {
 
     /**
      * Handles the start of a training process.
-     *
+     * <p>
      * This method is invoked to initiate the training process within the application.
      * Implementers should define the logic necessary to prepare and trigger any required
      * operations or state changes associated with the beginning of a training session.
@@ -93,7 +93,7 @@ public interface TrainingViewHandler {
 
     /**
      * Handles the stopping of a training process.
-     *
+     * <p>
      * This method is invoked to terminate an ongoing training session within the application.
      * Implementers should define the logic required to gracefully stop the training process,
      * release any resources associated with the session, and update the application state
@@ -103,7 +103,7 @@ public interface TrainingViewHandler {
 
     /**
      * Handles the selection event for a precision item.
-     *
+     * <p>
      * This method is invoked when a user interacts with the precision list and selects
      * a specific precision item. The selected index corresponds to the position of the
      * chosen item in the precision list. Implementers should define the logic to handle

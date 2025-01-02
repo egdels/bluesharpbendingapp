@@ -27,10 +27,10 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  * The AugmentedHarmonica class represents a type of harmonica tuned to the augmented scale.
  * It extends the functionality of the AbstractHarmonica class and provides specific
  * implementations for the notes' half-tone intervals for both in and out directions.
- *
+ * <p>
  * This class uses two static arrays to define half-tone intervals for the draw (HALF_TONES_IN)
  * and blow (HALF_TONES_OUT) operations on the harmonica.
- *
+ * <p>
  * The augmented scale is defined by its unique pattern of intervals, and this harmonica
  * is tuned specifically to conform to that scale.
  */
@@ -40,7 +40,7 @@ public class AugmentedHarmonica extends AbstractHarmonica {
      * Defines the half-tone intervals for the draw (inhale) notes of the augmented harmonica.
      * These values represent the pitch differences, in semitones, relative to the base frequency
      * of the harmonica's key for each draw channel.
-     *
+     * <p>
      * The pattern provided aligns with the augmented scale, which is characterized by equal intervals
      * of three semitones between consecutive notes.
      */
@@ -50,7 +50,7 @@ public class AugmentedHarmonica extends AbstractHarmonica {
      * Defines the half-tone intervals for the blow (exhale) notes of the augmented harmonica.
      * These values represent the pitch differences, in semitones, relative to the base frequency
      * of the harmonica's key for each blow channel.
-     *
+     * <p>
      * The pattern provided aligns with the augmented scale and starts with a doubling of the base
      * frequency at the initial two positions, followed by intervals increasing by four semitones
      * from the third position onward.

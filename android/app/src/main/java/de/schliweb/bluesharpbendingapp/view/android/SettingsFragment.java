@@ -30,18 +30,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentSettingsBinding;
 import de.schliweb.bluesharpbendingapp.model.AndroidModel;
-
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;

@@ -30,7 +30,7 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
  * AbstractTraining class. It provides functionality for practicing major
  * chord arpeggios on a harmonica. This training helps users develop their
  * ability to play arpeggios corresponding to major chords.
- *
+ * <p>
  * This class uses predefined half-tone intervals to define the major chord
  * arpeggio sequence and provides methods to retrieve these intervals and
  * the associated training name.

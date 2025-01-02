@@ -63,4 +63,45 @@ class MainModelTest {
         assertEquals(42, newMainModel.getStoredTuneIndex());
     }
 
+    /**
+     * Test createFromString with an empty string.
+     */
+    @Test
+    void testCreateFromStringEmptyString() {
+        MainModel newMainModel = MainModel.createFromString("");
+        assertEquals(0, newMainModel.getStoredMicrophoneIndex());
+        assertEquals(1, newMainModel.getStoredAlgorithmIndex());
+        assertEquals(4, newMainModel.getStoredKeyIndex());
+        assertEquals(11, newMainModel.getStoredConcertPitchIndex());
+        assertEquals(6, newMainModel.getStoredTuneIndex());
+    }
+
+    /**
+     * Test createFromString with an invalid string.
+     */
+    @Test
+    void testCreateFromStringInvalidString() {
+        MainModel newMainModel = MainModel.createFromString("invalid:data, other:data");
+        assertEquals(0, newMainModel.getStoredMicrophoneIndex());
+        assertEquals(1, newMainModel.getStoredAlgorithmIndex());
+        assertEquals(4, newMainModel.getStoredKeyIndex());
+        assertEquals(11, newMainModel.getStoredConcertPitchIndex());
+        assertEquals(6, newMainModel.getStoredTuneIndex());
+    }
+
+    /**
+     * Test createFromString with a valid string.
+     */
+    @Test
+    void testCreateFromStringValidString() {
+        String validString = "[getStoredMicrophoneIndex:2, getStoredAlgorithmIndex:4, getStoredKeyIndex:6, "
+                + "getStoredConcertPitchIndex:440, getStoredTuneIndex:9]";
+        MainModel newMainModel = MainModel.createFromString(validString);
+        assertEquals(2, newMainModel.getStoredMicrophoneIndex());
+        assertEquals(4, newMainModel.getStoredAlgorithmIndex());
+        assertEquals(6, newMainModel.getStoredKeyIndex());
+        assertEquals(440, newMainModel.getStoredConcertPitchIndex());
+        assertEquals(9, newMainModel.getStoredTuneIndex());
+    }
+
 }

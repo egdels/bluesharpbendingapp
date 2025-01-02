@@ -69,7 +69,7 @@ public interface Harmonica {
      * Retrieves the frequency of a specific note on a given channel of the harmonica.
      *
      * @param channel the channel of the harmonica where the note is located
-     * @param note the specific note whose frequency is to be retrieved
+     * @param note    the specific note whose frequency is to be retrieved
      * @return the frequency of the specified note in hertz
      */
     double getNoteFrequency(int channel, int note);
@@ -87,7 +87,7 @@ public interface Harmonica {
      * Retrieves the minimum frequency of a specified note on a given channel of the harmonica.
      *
      * @param channel the channel of the harmonica where the note is located
-     * @param note the specific note whose minimum frequency is to be retrieved
+     * @param note    the specific note whose minimum frequency is to be retrieved
      * @return the minimum frequency of the specified note in hertz
      */
     double getNoteFrequencyMinimum(int channel, int note);
@@ -106,17 +106,6 @@ public interface Harmonica {
      * @return true if the specified channel has inverse cents handling enabled; false otherwise
      */
     boolean hasInverseCentsHandling(int channel);
-
-    /**
-     * Determines whether the specified note on a given channel of the harmonica
-     * with the provided frequency is currently active.
-     *
-     * @param channel   the channel of the harmonica where the note is located
-     * @param note      the specific note to check for activity
-     * @param frequency the frequency of the note to check
-     * @return true if the specified note is active, false otherwise
-     */
-    boolean isNoteActive(int channel, int note, double frequency);
 
     /**
      * Determines whether the specified note on a given channel of the harmonica is an overblow.

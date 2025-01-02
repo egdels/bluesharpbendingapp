@@ -23,94 +23,95 @@
  */
 /* Allgemeine Style */
 body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: white;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white;
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-main div.container div:last-child{
-  padding-bottom: 100px;
+main div.container div:last-child {
+    padding-bottom: 100px;
 }
 
 .rtl {
-	unicode-bidi: bidi-override;
-	direction: rtl;
+    unicode-bidi: bidi-override;
+    direction: rtl;
 }
 
 /* ---------------- Start Header-Style --------------------------- */
 header {
-  background-color: #ff9800;
-  padding: 20px 0px 20px 0px;
+    background-color: #ff9800;
+    padding: 20px 0 20px 0;
 }
 
 nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
 }
 
 .logo img {
-  max-width: 100px;
+    max-width: 100px;
 }
 
 .menu ul {
-  /* list-style: none; */
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
+    /* list-style: none; */
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
 }
 
 .menu li {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 .menu li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 10px 15px;
-  text-decoration: none;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 10px 15px;
+    text-decoration: none;
 }
 
 .navbar-toggler {
-  display: none;
-  cursor: pointer;
+    display: none;
+    cursor: pointer;
 }
 
 .navbar-toggler span {
-  display: block;
-  width: 20px;
-  height: 2px;
-  background-color: #333;
-  margin-bottom: 4px;
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: #333;
+    margin-bottom: 4px;
 }
+
 /* ---------------- Ende Header-Style --------------------------- */
 
 /* ---------------- Start Main-Style --------------------------- */
 .video-container {
-  position: relative;
-  padding-bottom: 56.25%;
+    position: relative;
+    padding-bottom: 56.25%;
 }
 
 .video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
 }
 
 .video {
-  aspect-ratio: 16 / 9;
-  width: 100%;
+    aspect-ratio: 16 / 9;
+    width: 100%;
 }
 
 /* ---------------- Ende Main-Style --------------------------- */
@@ -126,110 +127,113 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
 /* ---------------- Ende Footer ---------------- */
 
 /* Media Queries für Handy- oder Tablet-Modus */
 @media screen and (max-width: 768px) {
     header {
-        width:100%;
+        width: 100%;
     }
+
     .container {
         padding: 0 10px;
     }
 
-	main div.container div:last-child{
-  		padding-bottom: 100px;
-	}
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    main div.container div:last-child {
+        padding-bottom: 100px;
     }
 
-  .logo img {
-    max-width: 85px;
-  }
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-  .menu ul {
-    display: none;
-  }
-  .menu ul li {
-    margin-right: 0px;
-  }
+    .logo img {
+        max-width: 85px;
+    }
 
-  .menu li a {
-        padding: 0px 0px;
-  }
+    .menu ul {
+        display: none;
+    }
 
-  .navbar-toggler {
-    display: block;
-  }
+    .menu ul li {
+        margin-right: 0;
+    }
 
-  .navbar-toggler span {
-    width: 20px;
-    height: 2px;
-    margin-bottom: 4px;
-    background-color: #333;
-  }
+    .menu li a {
+        padding: 0 0;
+    }
 
-  .menu.open {
-    display: flex;
-    flex-direction: column;
-  }
+    .navbar-toggler {
+        display: block;
+    }
 
-  .menu.open ul {
-    margin-top: 10px;
-    display:block;
-  }
+    .navbar-toggler span {
+        width: 20px;
+        height: 2px;
+        margin-bottom: 4px;
+        background-color: #333;
+    }
+
+    .menu.open {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu.open ul {
+        margin-top: 10px;
+        display: block;
+    }
 }
 
 /** Download-Tabelle **/
 .downloadTable tr:nth-child(even) {
-    background:#f4f4f4;
+    background: #f4f4f4;
 }
 
-.downloadTable th,td {
-    padding:0.1em 0.5em;
+.downloadTable th, td {
+    padding: 0.1em 0.5em;
 }
 
 .downloadTable th {
-    text-align:left;
-    font-weight:bold;
-    background:#eee;
-    border-bottom:1px solid #aaa;
+    text-align: left;
+    font-weight: bold;
+    background: #eee;
+    border-bottom: 1px solid #aaa;
 }
 
 .downloadTable {
-    border:1px solid #aaa;
-    width:100%;
+    border: 1px solid #aaa;
+    width: 100%;
 }
 
 .downloadTable a {
-    color:#a33;
+    color: #a33;
 }
 
 .downloadTable a:hover {
-    color:#e33;
+    color: #e33;
 }
 
 /* Siehe: https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/ */
 .dont-break-out {
 
-  /* These are technically the same, but use both */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
+    /* These are technically the same, but use both */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 
-  -ms-word-break: break-all;
-  /* This is the dangerous one in WebKit, as it breaks things wherever */
-  word-break: break-all;
-  /* Instead use this non-standard one: */
-  word-break: break-word;
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+    /* Instead use this non-standard one: */
+    word-break: break-word;
 
-  /* Adds a hyphen where the word breaks, if supported (No Blink) */
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 
 }

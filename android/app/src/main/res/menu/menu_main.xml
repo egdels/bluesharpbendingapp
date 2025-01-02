@@ -33,10 +33,10 @@
             android:title="@string/action_harp"
             app:showAsAction="never"/>
     <item
-        android:id="@+id/action_training"
-        android:orderInCategory="100"
-        android:title="@string/action_training"
-        app:showAsAction="never"/>
+            android:id="@+id/action_training"
+            android:orderInCategory="100"
+            android:title="@string/action_training"
+            app:showAsAction="never"/>
 
     <item
             android:id="@+id/action_settings"

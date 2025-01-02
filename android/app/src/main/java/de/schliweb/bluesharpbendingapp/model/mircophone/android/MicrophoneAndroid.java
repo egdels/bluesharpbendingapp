@@ -16,14 +16,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * The MicrophoneAndroid class implements the Microphone interface and provides
- * functionalities for recording audio data, processing it in real-time, and
- * using pitch detection algorithms to extract meaningful information such as
- * pitch and amplitude from the audio signal.
+ * Implementation of the {@link Microphone} interface specific to the Android platform.
+ * This class provides functionality for capturing and processing audio data from the device's microphone.
+ * It allows real-time audio analysis, including pitch detection and amplitude measurement,
+ * using configurable algorithms and threading mechanisms.
  * <p>
- * This class serves as a foundational component for applications that require
- * audio signal analysis or interaction, such as music applications, voice
- * recognition systems, and sound level meters.
+ * Main features include:
+ * - Audio recording using Android's {@link AudioRecord} API.
+ * - Customizable pitch detection algorithm (e.g., YIN, MPM).
+ * - Multi-threaded processing with specialized executors for audio data capture and analysis.
  */
 public class MicrophoneAndroid implements Microphone {
 
@@ -73,7 +74,7 @@ public class MicrophoneAndroid implements Microphone {
      * Being a static final instance, this logger is shared across all instances of {@link MicrophoneAndroid}
      * and cannot be modified after initialization.
      */
-    private static final Logger LOGGER = new Logger(MicrophoneAndroid.class);
+    private static final Logger logger = new Logger(MicrophoneAndroid.class);
 
     /**
      * A volatile instance of {@link MicrophoneHandler} used for handling
@@ -194,7 +195,7 @@ public class MicrophoneAndroid implements Microphone {
             );
 
             if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-                LOGGER.error("Failed to initialize AudioRecord.");
+                logger.error("Failed to initialize AudioRecord.");
                 return;
             }
 
@@ -219,14 +220,14 @@ public class MicrophoneAndroid implements Microphone {
                             // add to queue
                             audioDataQueue.offer(dataCopy);
                         } else if (bytesRead < 0) {
-                            LOGGER.error("AudioRecord read error: " + bytesRead);
+                            logger.error("AudioRecord read error: " + bytesRead);
                             break;
                         }
                     }
                 } finally {
                     audioRecord.stop();
                     audioRecord.release();
-                    LOGGER.info("Audio recording thread stopped.");
+                    logger.info("Audio recording thread stopped.");
                 }
             });
 
@@ -239,13 +240,13 @@ public class MicrophoneAndroid implements Microphone {
                         processAudioData(audioFrame, audioFrame.length);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        LOGGER.info("Processing thread interrupted.");
+                        logger.info("Processing thread interrupted.");
                     }
                 }
             });
 
         } catch (Exception e) {
-            LOGGER.error("Failed to start recording: " + e.getMessage());
+            logger.error("Failed to start recording: " + e.getMessage());
         }
     }
 

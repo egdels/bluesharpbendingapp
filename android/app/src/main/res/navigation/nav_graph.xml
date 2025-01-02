@@ -47,8 +47,8 @@
                 android:id="@+id/action_to_AboutFragment"
                 app:destination="@id/AboutFragment"/>
         <action
-            android:id="@+id/action_to_TrainingFragment"
-            app:destination="@id/TrainingFragment"/>
+                android:id="@+id/action_to_TrainingFragment"
+                app:destination="@id/TrainingFragment"/>
     </fragment>
     <fragment
             android:id="@+id/SettingsFragment"
@@ -68,8 +68,8 @@
                 android:id="@+id/action_to_AboutFragment"
                 app:destination="@id/AboutFragment"/>
         <action
-            android:id="@+id/action_to_TrainingFragment"
-            app:destination="@id/TrainingFragment"/>
+                android:id="@+id/action_to_TrainingFragment"
+                app:destination="@id/TrainingFragment"/>
     </fragment>
     <fragment
             android:id="@+id/AboutFragment"
@@ -89,29 +89,29 @@
                 android:id="@+id/action_to_AboutFragment"
                 app:destination="@id/AboutFragment"/>
         <action
-            android:id="@+id/action_to_TrainingFragment"
-            app:destination="@id/TrainingFragment"/>
+                android:id="@+id/action_to_TrainingFragment"
+                app:destination="@id/TrainingFragment"/>
     </fragment>
     <fragment
-        android:id="@+id/TrainingFragment"
-        android:name="de.schliweb.bluesharpbendingapp.view.android.TrainingFragment"
-        android:label="@string/action_training"
-        tools:layout="@layout/fragment_training">
+            android:id="@+id/TrainingFragment"
+            android:name="de.schliweb.bluesharpbendingapp.view.android.TrainingFragment"
+            android:label="@string/action_training"
+            tools:layout="@layout/fragment_training">
 
         <action
-            android:id="@+id/action_to_HarpFragment"
-            app:destination="@id/HarpFragment"/>
+                android:id="@+id/action_to_HarpFragment"
+                app:destination="@id/HarpFragment"/>
 
         <action
-            android:id="@+id/action_to_SettingsFragment"
-            app:destination="@id/SettingsFragment"/>
+                android:id="@+id/action_to_SettingsFragment"
+                app:destination="@id/SettingsFragment"/>
 
         <action
-            android:id="@+id/action_to_AboutFragment"
-            app:destination="@id/AboutFragment"/>
+                android:id="@+id/action_to_AboutFragment"
+                app:destination="@id/AboutFragment"/>
 
         <action
-            android:id="@+id/action_to_TrainingFragment"
-            app:destination="@id/TrainingFragment"/>
+                android:id="@+id/action_to_TrainingFragment"
+                app:destination="@id/TrainingFragment"/>
     </fragment>
 </navigation>

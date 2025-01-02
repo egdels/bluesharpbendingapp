@@ -62,7 +62,7 @@ public interface Training {
      * Retrieves the next note in the training sequence.
      *
      * @return a string representing the next note in the sequence, or null if no further
-     *         notes are available.
+     * notes are available.
      */
     String getNextNote();
 
@@ -71,7 +71,7 @@ public interface Training {
      * This method typically updates the state of the training to point to the next note.
      *
      * @return a string representing the next note in the sequence, or null if no further
-     *         notes are available.
+     * notes are available.
      */
     String nextNote();
 
@@ -125,7 +125,7 @@ public interface Training {
 
     /**
      * Marks the completion of a successful operation or task within the training process.
-     *
+     * <p>
      * This method can be used to signify that a specific milestone, step, or goal
      * within the training sequence has been successfully achieved. It may trigger
      * actions such as updating internal states, logging success events, or

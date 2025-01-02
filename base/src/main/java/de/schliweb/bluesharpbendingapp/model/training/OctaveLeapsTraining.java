@@ -36,7 +36,7 @@ public class OctaveLeapsTraining extends AbstractTraining {
      * A constant array representing the sequence of half-tone steps used in the
      * octave leaps training exercise. Each element denotes a half-tone offset
      * relative to a base note in the harmonica's scale.
-     *
+     * <p>
      * This array defines the structure of the musical intervals utilized for
      * training purposes in the {@link OctaveLeapsTraining} class. The intervals
      * represented include various patterns designed to simulate octave leaps

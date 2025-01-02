@@ -23,6 +23,9 @@ package de.schliweb.bluesharpbendingapp.utils;
  *
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Utility class for pitch detection and signal analysis.
  * Provides static methods for detecting pitch using different algorithms
@@ -113,11 +116,13 @@ public class PitchDetectionUtil {
     }
 
     /**
-     * Detects pitch using the McLeod Pitch Method (MPM).
+     * Detects the pitch of an audio signal using the McLeod Pitch Method (MPM).
+     * The method analyzes the normalized square difference function (NSDF) of
+     * the audio data to estimate the fundamental frequency.
      *
-     * @param audioData   the normalized audio data as an array of doubles
-     * @param sampleRate  the sampling rate of the audio data (Hz)
-     * @return detected pitch frequency in Hertz (Hz)
+     * @param audioData  the normalized audio data as an array of doubles
+     * @param sampleRate the sampling rate of the audio data (Hz)
+     * @return the detected pitch frequency in Hertz (Hz), or -1 if no pitch is detected
      */
     public static double detectPitchWithMPM(double[] audioData, int sampleRate) {
         int n = audioData.length;
@@ -137,11 +142,21 @@ public class PitchDetectionUtil {
 
         // Step 2: Find peaks in the NSDF
         int peakIndex = -1;
-        double maxValue = 0;
+        // Step 2: Find peaks in the NSDF
+        List<Integer> candidatePeaks = new ArrayList<>();
         for (int lag = 1; lag < maxLag - 1; lag++) {
-            if (nsdf[lag] > nsdf[lag - 1] && nsdf[lag] > nsdf[lag + 1] && nsdf[lag] > maxValue) {
-                maxValue = nsdf[lag];
-                peakIndex = lag;
+            if (nsdf[lag] > nsdf[lag - 1] && nsdf[lag] > nsdf[lag + 1] && nsdf[lag] > 0.5) {
+                candidatePeaks.add(lag);
+            }
+        }
+
+        // Filter peaks for harmonics
+        if (!candidatePeaks.isEmpty()) {
+            for (int i = 1; i < candidatePeaks.size(); i++) {
+                if ((double) candidatePeaks.get(i) / candidatePeaks.get(0) >= 2.0) {
+                    peakIndex = candidatePeaks.get(0); // Fundamental Frequency
+                    break;
+                }
             }
         }
 

@@ -75,7 +75,7 @@ public class NoteUtils {
      * This method calculates the new frequency by applying the formula
      * based on cents, which is a logarithmic unit used to measure musical intervals.
      *
-     * @param cents the number of cents to add or subtract from the base frequency
+     * @param cents     the number of cents to add or subtract from the base frequency
      * @param frequency the base frequency to be adjusted
      * @return the adjusted frequency after applying the given cents
      */

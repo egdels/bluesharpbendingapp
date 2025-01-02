@@ -30,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
@@ -42,39 +41,18 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import de.schliweb.bluesharpbendingapp.R;
-import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.MainController;
-import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.*;
 import de.schliweb.bluesharpbendingapp.databinding.ActivityMainBinding;
 import de.schliweb.bluesharpbendingapp.model.AndroidModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.mircophone.android.MicrophoneAndroid;
 import de.schliweb.bluesharpbendingapp.utils.Logger;
-import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
-import de.schliweb.bluesharpbendingapp.view.HarpView;
-import de.schliweb.bluesharpbendingapp.view.MainWindow;
-import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
-import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
-import de.schliweb.bluesharpbendingapp.view.TrainingView;
-import de.schliweb.bluesharpbendingapp.view.android.AboutFragment;
-import de.schliweb.bluesharpbendingapp.view.android.AndroidSettingsHandler;
-import de.schliweb.bluesharpbendingapp.view.android.FragmentView;
-import de.schliweb.bluesharpbendingapp.view.android.FragmentViewModel;
-import de.schliweb.bluesharpbendingapp.view.android.HarpFragment;
-import de.schliweb.bluesharpbendingapp.view.android.SettingsFragment;
-import de.schliweb.bluesharpbendingapp.view.android.TrainingFragment;
+import de.schliweb.bluesharpbendingapp.view.*;
+import de.schliweb.bluesharpbendingapp.view.android.*;
+
+import java.io.*;
 
 
 /**
@@ -121,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     /**
      * The Request permission launcher.
      */
-    private final ActivityResultLauncher<String> requestPermissionLauncher =
+    protected final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 permissionGranted = isGranted;
                 if (!permissionGranted) {
@@ -180,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      *
      * @return the main model
      */
-    private AndroidModel readModel() {
+    protected AndroidModel readModel() {
 
         AndroidModel model = new AndroidModel();
         File directory = this.getApplicationContext().getCacheDir();
@@ -337,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     /**
      * Hide app bar.
      */
-    private void hideAppBar() {
+    protected void hideAppBar() {
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.hide();

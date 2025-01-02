@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * The NoteContainer class represents a musical note within a specific channel
  * and provides functionality to handle frequency updates, harmonic adjustments,
  * and interaction with a visual representation of a harp.
- *
+ * <p>
  * This class implements the {@link Runnable} interface to periodically update
  * its associated harp view element based on the frequency handling.
  */
@@ -62,14 +62,19 @@ public class NoteContainer implements Runnable {
     /**
      * A scheduled thread pool executor responsible for running periodic or delayed tasks within the
      * context of the NoteContainer class.
-     *
+     * <p>
      * Initialized with a single-threaded scheduler to ensure tasks are executed in sequence and
      * to avoid concurrency issues related to shared resources within the NoteContainer.
-     *
+     * <p>
      * This executor is suitable for tasks that require controlled scheduling, such as
      * managing note-related functionalities or handling time-sensitive operations.
      */
     private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    /**
+     * Indicates whether the NoteContainer instance needs to be cleared or reset.
+     * The value is managed in a thread-safe manner using an AtomicBoolean.
+     */
+    private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
     /**
      * Represents the frequency value that is to be processed or handled within the NoteContainer.
      * This field is marked as volatile to ensure visibility and thread-safety in a concurrent environment,
@@ -107,18 +112,13 @@ public class NoteContainer implements Runnable {
      * or identification.
      */
     private double minFrequency;
-    /**
-     * Indicates whether the NoteContainer instance needs to be cleared or reset.
-     * The value is managed in a thread-safe manner using an AtomicBoolean.
-     */
-    private final AtomicBoolean toBeCleared= new AtomicBoolean(false);
 
 
     /**
      * Instantiates a new NoteContainer with specified channel, note, and note name.
      *
-     * @param channel the channel associated with the note
-     * @param note the numerical value of the note
+     * @param channel  the channel associated with the note
+     * @param note     the numerical value of the note
      * @param noteName the name of the note
      */
     public NoteContainer(int channel, int note, String noteName) {

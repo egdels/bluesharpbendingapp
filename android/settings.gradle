@@ -33,10 +33,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         mavenLocal()
-        maven {
-            name = "TarsosDSP repository"
-            url = "https://mvn.0110.be/releases"
-        }
     }
 }
 rootProject.name = "BluesHarpBendingApp"

@@ -35,7 +35,7 @@ public interface HarpView {
      * Retrieves the harp view note element associated with the specified channel and note.
      *
      * @param channel the channel number corresponding to the harp element
-     * @param note the note number corresponding to the harp element
+     * @param note    the note number corresponding to the harp element
      * @return the harp view note element associated with the given channel and note
      */
     HarpViewNoteElement getHarpViewElement(int channel, int note);

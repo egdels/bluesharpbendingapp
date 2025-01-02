@@ -42,7 +42,7 @@ import java.util.concurrent.Executors;
  * The MainController class orchestrates communication and logic between the view and model components
  * of the application. It handles user interactions, updates views, manages background tasks, and
  * processes microphone input for the harmonica and training features.
- *
+ * <p>
  * Implements multiple handler interfaces to manage various sections of the application.
  */
 public class MainController implements MicrophoneHandler, MicrophoneSettingsViewHandler, HarpSettingsViewHandler, HarpViewHandler, NoteSettingsViewHandler, TrainingViewHandler {
@@ -64,7 +64,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * Represents the primary data model used by the MainController to manage application state and logic.
      * This model contains the core data structures and methods necessary for handling business logic
      * and interactions within the application.
-     *
+     * <p>
      * The MainController relies on this model to process and update relevant data during runtime, and
      * to coordinate the behavior of the user interface and underlying components.
      */
@@ -74,12 +74,12 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * Represents the primary window of the application's user interface.
      * This field holds a reference to the {@link MainWindow} implementation
      * used by the {@code MainController} to manage and interact with the UI components.
-     *
+     * <p>
      * The {@link MainWindow} interface provides access to various views such as
      * harp settings, microphone settings, note settings, harp view, and training view,
      * and allows for the assignment of corresponding handlers to manage specific
      * functionality for these views.
-     *
+     * <p>
      * This field is immutable and is initialized in the constructor of {@code MainController}.
      */
     private final MainWindow window;
@@ -110,7 +110,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * Also configures the stored settings for concert pitch, key, tune, training, and microphone parameters.
      *
      * @param window the main application window interface that acts as a view layer
-     * @param model the main application model containing data and logic
+     * @param model  the main application model containing data and logic
      */
     public MainController(MainWindow window, MainModel model) {
         this.window = window;
@@ -129,8 +129,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         this.window.setHarpViewHandler(this);
         this.window.setNoteSettingsViewHandler(this);
         this.window.setTrainingViewHandler(this);
-        this.model.getMicrophone().setMicrophoneHandler(this);
-
+        microphone.setMicrophoneHandler(this);
     }
 
     @Override
@@ -181,10 +180,11 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * @param frequency the frequency value to update the training view with
      */
     private void updateTrainingView(double frequency) {
-        if (window.isTrainingViewActive() && this.trainingContainer != null) {
-            trainingContainer.setFrequencyToHandle(frequency);
-            executorService.submit(trainingContainer);
-        }
+        if (!executorService.isShutdown())
+            if (window.isTrainingViewActive() && (this.trainingContainer != null)) {
+                trainingContainer.setFrequencyToHandle(frequency);
+                executorService.submit(trainingContainer);
+            }
     }
 
     @Override
@@ -279,7 +279,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     /**
      * Starts the primary components of the application.
-     *
+     * <p>
      * This method initializes the application by opening the microphone for audio
      * input and launching the main application window for user interaction. It relies
      * on the underlying MainModel and MainWindow instances to perform these actions.
@@ -291,7 +291,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     /**
      * Stops the application by shutting down essential components.
-     *
+     * <p>
      * This method closes the microphone resource to ensure proper release
      * of audio input devices and shuts down the executor service
      * to terminate any ongoing asynchronous operations.
@@ -309,17 +309,19 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * @param frequency the frequency value to update the harp view with
      */
     private void updateHarpView(double frequency) {
-        if (window.isHarpViewActive() && this.noteContainers != null) {
-            for (NoteContainer noteContainer : noteContainers) {
-                noteContainer.setFrequencyToHandle(frequency);
-                executorService.submit(noteContainer);
+        if (!executorService.isShutdown()) {
+            if (window.isHarpViewActive() && this.noteContainers != null) {
+                for (NoteContainer noteContainer : noteContainers) {
+                    noteContainer.setFrequencyToHandle(frequency);
+                    executorService.submit(noteContainer);
+                }
             }
         }
     }
 
     /**
      * Updates the microphone settings view with the specified frequency.
-     *
+     * <p>
      * If the microphone settings view is active, this method retrieves the
      * instance of the MicrophoneSettingsView from the window and sets the
      * given frequency.
@@ -335,7 +337,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
     /**
      * Updates the microphone settings view with the specified volume level.
-     *
+     * <p>
      * If the microphone settings view is active, this method retrieves the
      * instance of the MicrophoneSettingsView from the window and sets the
      * given volume value.

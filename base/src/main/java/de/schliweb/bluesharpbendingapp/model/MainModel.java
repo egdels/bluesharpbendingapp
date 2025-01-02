@@ -40,7 +40,7 @@ import java.util.ArrayList;
  * that works with harmonicas, microphones, and related configurations.
  * It provides getters and setters for dynamic attribute manipulation as well as
  * methods to retrieve indices and configurations for selected or stored values.
- *
+ * <p>
  * This class also supports utility methods for creating an instance from a string
  * representation and accessing supported attributes like algorithms, keys, tunes,
  * and concert pitches.
@@ -64,12 +64,12 @@ public class MainModel {
      * This variable holds the current training instance and provides access
      * to training-related functionalities such as managing notes, controlling
      * the state, and tracking progress.
-     *
+     * <p>
      * The Training interface is a blueprint that offers methods for handling
      * different aspects of training, like retrieving notes, moving through
      * the training sequence, starting or stopping the process, and checking
      * the training status.
-     *
+     * <p>
      * This variable may be set or retrieved to interact with the active training
      * instance, enabling the use of training-specific operations in the main model.
      */
@@ -132,13 +132,13 @@ public class MainModel {
 
     /**
      * Creates a new instance of {@code MainModel} by parsing a provided string.
-     *
+     * <p>
      * The input string is expected to follow a specific format where key-value pairs
      * are represented as "getMethodName:value", separated by commas, and enclosed
      * in square brackets. The method converts each "get" method name in the input
      * to its corresponding "set" method and invokes the setter methods on a new
      * {@code MainModel} instance, passing the parsed integer values as arguments.
-     *
+     * <p>
      * If any error occurs during method invocation, it is logged using the {@code LOGGER}.
      *
      * @param string the input string to parse and create the {@code MainModel} object.
@@ -242,7 +242,7 @@ public class MainModel {
 
     /**
      * Determines the index of the currently selected algorithm in the list of supported algorithms.
-     *
+     * <p>
      * This method retrieves the list of algorithms supported by the microphone and
      * compares them with the currently active algorithm. The index of the matching algorithm
      * within the list is then returned. If no match is found, an index of 0 is returned by default.
@@ -263,7 +263,7 @@ public class MainModel {
 
     /**
      * Determines the index of the currently selected key in the list of supported keys.
-     *
+     * <p>
      * This method retrieves the list of supported keys from the harmonica and compares
      * them with the currently selected key name. The index of the matching key
      * within the list is then returned. If no match is found, an index of 0 is returned by default.
@@ -284,7 +284,7 @@ public class MainModel {
 
     /**
      * Determines the index of the currently selected microphone in the list of supported microphones.
-     *
+     * <p>
      * This method retrieves the list of microphones supported by the system and compares
      * them with the currently active microphone's name. The index of the matching microphone
      * within the list is then returned. If no match is found, an index of 0 is returned by default.
@@ -305,7 +305,7 @@ public class MainModel {
 
     /**
      * Determines the index of the currently selected tune in the list of supported tunes.
-     *
+     * <p>
      * This method retrieves the list of tunes from the harmonica and compares each tune
      * with the currently selected tune name. The index of the matching tune within the
      * list is then returned. If no match is found, an index of 0 is returned by default.
@@ -326,7 +326,7 @@ public class MainModel {
 
     /**
      * Determines the index of the currently selected concert pitch in the list of supported concert pitches.
-     *
+     * <p>
      * This method retrieves the list of supported concert pitches and compares each pitch
      * with the name of the currently selected concert pitch obtained from the NoteLookup utility.
      * The index of the matching concert pitch within the list is then returned.
@@ -447,14 +447,14 @@ public class MainModel {
 
     /**
      * Retrieves a string representation of this object's stored integer attributes.
-     *
+     * <p>
      * The method iterates through all public methods of the object's class, checking
      * for methods with names starting with "getStored" and returning an integer type.
      * It invokes these methods via reflection to gather their names and return values,
      * appending them to a list. If an exception occurs during method invocation, it is logged.
      *
      * @return a string representation of the list of "getStored" methods and their
-     *         corresponding integer return values, formatted as methodName:value pairs.
+     * corresponding integer return values, formatted as methodName:value pairs.
      */
     public String getString() {
         Method[] methods = this.getClass().getMethods();
@@ -548,15 +548,6 @@ public class MainModel {
      * @return the index corresponding to the selected precision setting
      */
     public int getSelectedPrecisionIndex() {
-        return this.storedPrecisionIndex;
-    }
-
-    /**
-     * Retrieves the stored precision index.
-     *
-     * @return the value of the stored precision index as an integer.
-     */
-    public int getStoredPrecisionIndex() {
         return this.storedPrecisionIndex;
     }
 

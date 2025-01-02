@@ -33,11 +33,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.TrainingContainer;
 import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;

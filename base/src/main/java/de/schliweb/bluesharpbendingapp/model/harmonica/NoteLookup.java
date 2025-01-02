@@ -25,9 +25,6 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
 
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 /**
  * The NoteLookup class provides utility methods to perform operations related
  * to musical notes and their frequencies. It allows for retrieving note
@@ -36,17 +33,12 @@ import java.util.Map.Entry;
 public class NoteLookup {
 
     /**
-     * Defines the maximum allowable deviation in cents for note pitch accuracy.
-     * This value is used to determine the range of acceptable pitch deviation
-     * when comparing frequencies to their expected values.
+     * An array of strings representing the names of musical notes in one chromatic octave.
+     * This array includes both natural notes (e.g., "C", "D", "E") and sharps (e.g., "C#", "D#"),
+     * covering a total of 12 semitones in western music notation.
+     * It is primarily used for musical note calculations and lookup operations related to note names.
      */
-    private static final double CENTS_MAX = 50.0;
-    /**
-     * Represents the minimum permissible deviation in cents.
-     * The value is used as a lower bound for frequency deviation calculations.
-     * A negative value indicates a downward deviation from the reference frequency.
-     */
-    private static final double CENTS_MIN = -50.0;
+    private static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     /**
      * Represents the default frequency of the concert pitch (A4) in hertz.
@@ -56,164 +48,100 @@ public class NoteLookup {
     private static final double DEFAULT_CONCERT_PITCH_FREQUENCY = 440.0;
 
     /**
-     * A static map that holds note names as keys and their corresponding frequencies as values.
-     * Serves as a lookup table for quick retrieval of note frequencies or names.
-     */
-    private static final HashMap<String, Double> notes = new HashMap<>();
-    /**
      * Represents the concert pitch frequency used as a reference point
      * for tuning musical notes. This value is initialized to the default
      * concert pitch frequency and can be modified based on user preferences.
-     *
+     * <p>
      * Concert pitch generally refers to the pitch standard that sets the
      * frequency of the note A above middle C (A4), commonly at 440 Hz.
      */
     private static int concertPitch = (int) DEFAULT_CONCERT_PITCH_FREQUENCY;
 
-    static {
-        initLookup();
-    }
-
     private NoteLookup() {
     }
 
     /**
-     * Retrieves the name of the musical note for a given frequency.
-     * The method iterates through a predefined set of notes and determines
-     * the closest match based on the frequency difference in cents.
+     * Computes the musical note name for a given frequency in Hertz.
+     * <p>
+     * This method uses the provided frequency to calculate the corresponding
+     * MIDI note number, from which the note name and octave are derived.
+     * The calculation takes into consideration the current concert pitch setting.
+     * If the frequency is invalid (non-positive or out of MIDI range), the method
+     * will return null.
      *
-     * @param frequency the frequency in hertz for which to determine the note name
-     * @return the name of the note corresponding to the given frequency, or null if no match is found
+     * @param frequency the frequency in Hertz for which to determine the note name
+     * @return the name of the note corresponding to the provided frequency, including the octave,
+     *         or null if the frequency is invalid or out of range
      */
     public static String getNoteName(double frequency) {
-        for (Entry<String, Double> note : notes.entrySet()) {
-            Double noteFrequency = note.getValue();
-            double cents = NoteUtils.getCents(noteFrequency, frequency);
-            if (cents >= CENTS_MIN && cents <= CENTS_MAX) {
-                return note.getKey();
+        if (frequency <= 0) return null;
+
+        int midiNumber = (int) Math.round(69 + 12 * Math.log(frequency / concertPitch) / Math.log(2));
+        if (midiNumber < 0 || midiNumber > 127) return null; // MIDI-Begrenzung
+
+        int octave = (midiNumber / 12) - 1;
+        String noteName = NOTE_NAMES[midiNumber % 12];
+
+        return noteName + octave;
+    }
+
+
+    /**
+     * Calculates the frequency in Hertz of a given musical note name.
+     * The provided note name should include both the note (e.g., "C", "D#", "F")
+     * and the octave number (e.g., "4"), using standard scientific pitch notation.
+     * The method uses the current concert pitch as a reference for frequency calculation.
+     *
+     * @param noteName the name of the musical note for which to determine the frequency,
+     *                 in the format "NoteOctave" (e.g., "A4", "C#3").
+     * @return the frequency in Hertz corresponding to the given note name.
+     * @throws IllegalArgumentException if the noteName is null, improperly formatted,
+     *                                  or includes an unsupported note or octave.
+     */
+    public static double getNoteFrequency(String noteName) {
+        if (noteName == null || noteName.length() < 2 || noteName.length() > 3) {
+            throw new IllegalArgumentException("Ungültiger Notenname: " + noteName);
+        }
+
+        // Extrahiere den Notennamen und die Oktavennummer
+        String note = noteName.substring(0, noteName.length() - 1); // Der Teil vor der Oktave (z. B. "C")
+        int midiNumber = getMidiNumber(noteName, note);
+
+        // Berechne die Frequenz basierend auf der MIDI-Nummer
+        return NoteUtils.round(concertPitch * Math.pow(2, (midiNumber - 69) / 12.0));
+    }
+
+    /**
+     * Calculates the MIDI number for a given musical note and its corresponding note name.
+     * The MIDI number is determined based on the note's position in the note name list
+     * and the specified octave extracted from the provided note name.
+     *
+     * @param noteName the full name of the note, which includes the letter and the octave
+     *                 (e.g., "C4", "D#5"). The last character(s) of the string represent the octave.
+     * @param note     the specific note (e.g., "C", "D#", "F") without the octave information.
+     * @return the MIDI number corresponding to the given note and octave.
+     * @throws IllegalArgumentException if the given note name or note is invalid or not recognized.
+     */
+    private static int getMidiNumber(String noteName, String note) {
+        int octave = Integer.parseInt(noteName.substring(noteName.length() - 1)); // Der Oktavenwert (z. B. "4")
+
+        // Bestimme den Index der Note in der Note-Namen-Liste
+        int noteIndex = -1;
+        for (int i = 0; i < NOTE_NAMES.length; i++) {
+            if (NOTE_NAMES[i].equals(note)) {
+                noteIndex = i;
+                break;
             }
         }
-        return null;
+
+        if (noteIndex == -1) {
+            throw new IllegalArgumentException("Ungültiger Notenname: " + noteName);
+        }
+
+        // Berechne die MIDI-Nummer der Note
+        return noteIndex + (octave + 1) * 12;
     }
 
-    /**
-     * Retrieves the frequency of a musical note by its name.
-     *
-     * @param name the name of the musical note whose frequency is to be retrieved
-     * @return the frequency of the specified note in hertz, or null if the note is not found
-     */
-    public static Double getNoteFrequency(String name) {
-        return notes.getOrDefault(name, null);
-    }
-
-    /**
-     * Initializes the lookup table for musical notes and their corresponding frequencies.
-     * Populates a predefined map with note names as keys (e.g., "A4", "C#3") and their
-     * precise frequencies in hertz as values.
-     *
-     * This method is typically invoked to set up the static data used for frequency and
-     * note matching in the system. The frequency data spans multiple octaves, covering
-     * a wide range of musical notes from "C0" to "C8".
-     */
-    private static void initLookup() {
-        notes.put("C8", 4186.01);
-        notes.put("B7", 3951.07);
-        notes.put("A#7", 3729.31);
-        notes.put("A7", 3520.0);
-        notes.put("G#7", 3322.44);
-        notes.put("G7", 3135.96);
-        notes.put("F#7", 2959.96);
-        notes.put("F7", 2793.83);
-        notes.put("E7", 2637.02);
-        notes.put("D#7", 2489.02);
-        notes.put("D7", 2349.32);
-        notes.put("C#7", 2217.46);
-        notes.put("C7", 2093.00);
-        notes.put("B6", 1975.53);
-        notes.put("A#6", 1864.66);
-        notes.put("A6", 1760.0);
-        notes.put("G#6", 1661.22);
-        notes.put("G6", 1567.98);
-        notes.put("F#6", 1479.98);
-        notes.put("F6", 1396.91);
-        notes.put("E6", 1318.51);
-        notes.put("D#6", 1244.51);
-        notes.put("D6", 1174.66);
-        notes.put("C#6", 1108.73);
-        notes.put("C6", 1046.50);
-        notes.put("B5", 987.767);
-        notes.put("A#5", 932.328);
-        notes.put("A5", 880.0);
-        notes.put("G#5", 830.609);
-        notes.put("G5", 783.991);
-        notes.put("F#5", 739.989);
-        notes.put("F5", 698.456);
-        notes.put("E5", 659.255);
-        notes.put("D#5", 622.254);
-        notes.put("D5", 587.330);
-        notes.put("C#5", 554.365);
-        notes.put("C5", 523.251);
-        notes.put("B4", 493.883);
-        notes.put("A#4", 466.164);
-        notes.put("A4", 440.0);
-        notes.put("G#4", 415.305);
-        notes.put("G4", 391.995);
-        notes.put("F#4", 369.994);
-        notes.put("F4", 349.228);
-        notes.put("E4", 329.628);
-        notes.put("D#4", 311.127);
-        notes.put("D4", 293.665);
-        notes.put("C#4", 277.183);
-        notes.put("C4", 261.626);
-        notes.put("B3", 246.942);
-        notes.put("A#3", 233.082);
-        notes.put("A3", 220.0);
-        notes.put("G#3", 207.652);
-        notes.put("G3", 195.998);
-        notes.put("F#3", 184.997);
-        notes.put("F3", 174.614);
-        notes.put("E3", 164.814);
-        notes.put("D#3", 155.563);
-        notes.put("D3", 146.832);
-        notes.put("C#3", 138.591);
-        notes.put("C3", 130.813);
-        notes.put("B2", 123.471);
-        notes.put("A#2", 116.541);
-        notes.put("A2", 110.0);
-        notes.put("G#2", 103.826);
-        notes.put("G2", 97.9989);
-        notes.put("F#2", 92.4986);
-        notes.put("F2", 87.3071);
-        notes.put("E2", 82.4069);
-        notes.put("D#2", 77.7817);
-        notes.put("D2", 73.4162);
-        notes.put("C#2", 69.2957);
-        notes.put("C2", 65.4064);
-        notes.put("B1", 61.7354);
-        notes.put("A#1", 58.2705);
-        notes.put("A1", 55.0);
-        notes.put("G#1", 51.9131);
-        notes.put("G1", 48.9994);
-        notes.put("F#1", 46.2493);
-        notes.put("F1", 43.6535);
-        notes.put("E1", 41.2034);
-        notes.put("D#1", 38.8909);
-        notes.put("D1", 36.7081);
-        notes.put("C#1", 34.6478);
-        notes.put("C1", 32.7032);
-        notes.put("B0", 30.8677);
-        notes.put("A#0", 29.1352);
-        notes.put("A0", 27.5);
-        notes.put("G#0", 25.9565);
-        notes.put("G0", 24.4997);
-        notes.put("F#0", 23.1247);
-        notes.put("F0", 21.8268);
-        notes.put("E0", 20.6017);
-        notes.put("D#0", 19.4454);
-        notes.put("D0", 18.3540);
-        notes.put("C#0", 17.3239);
-        notes.put("C0", 16.3516);
-    }
 
     /**
      * Retrieves the list of supported concert pitch frequencies expressed in Hertz.
@@ -242,34 +170,14 @@ public class NoteLookup {
      */
     public static void setConcertPitch(int concertPitch) {
         NoteLookup.concertPitch = concertPitch;
-        initLookup();
-        updateLookup();
     }
 
-    /**
-     * Updates the lookup table for musical notes and their frequencies.
-     *
-     * This method recalculates the frequencies of all notes in the lookup table based on the current
-     * concert pitch. It adjusts each note’s frequency by computing the difference in cents between the
-     * current concert pitch and the default concert pitch frequency, then applies this adjustment to
-     * each note's frequency. Adjusted frequencies are rounded to a defined precision.
-     *
-     * The process relies on the `NoteUtils` utility methods for calculating cents, adding them to
-     * frequencies, and rounding the resulting frequencies. These adjustments ensure that the musical
-     * note frequencies align with the specified concert pitch.
-     */
-    private static void updateLookup() {
-        double cents = NoteUtils.getCents(concertPitch, DEFAULT_CONCERT_PITCH_FREQUENCY);
-        for (Entry<String, Double> note : notes.entrySet()) {
-            note.setValue(NoteUtils.round(NoteUtils.addCentsToFrequency(cents, note.getValue())));
-        }
-    }
 
     /**
      * Retrieves the name of the current concert pitch.
      * The concert pitch represents the reference tuning frequency
      * (commonly A4) used for musical note calculations.
-     *
+     * <p>
      * This method uses the current concert pitch frequency to
      * derive its corresponding musical note name.
      *
@@ -291,4 +199,5 @@ public class NoteLookup {
         String pitchName = getSupportedConcertPitches()[pitchIndex];
         setConcertPitch(Integer.parseInt(pitchName));
     }
+
 }

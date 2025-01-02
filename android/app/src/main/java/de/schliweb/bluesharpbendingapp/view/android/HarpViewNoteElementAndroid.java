@@ -27,12 +27,10 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.widget.TextView;
-
 import androidx.fragment.app.FragmentActivity;
+import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 import java.util.HashMap;
-
-import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 /**
  * The type Harp view note element android.
@@ -55,17 +53,6 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
     private final FragmentActivity activity;
 
     /**
-     * Gets instance.
-     *
-     * @param textView the text view
-     * @return the instance
-     */
-    public static HarpViewNoteElement getInstance(TextView textView) {
-        return instances.computeIfAbsent(textView, HarpViewNoteElementAndroid::new);
-    }
-
-
-    /**
      * Instantiates a new Harp view note element android.
      *
      * @param textView the text view
@@ -73,6 +60,16 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
     private HarpViewNoteElementAndroid(TextView textView) {
         this.textView = textView;
         this.activity = (FragmentActivity) textView.getContext();
+    }
+
+    /**
+     * Gets instance.
+     *
+     * @param textView the text view
+     * @return the instance
+     */
+    public static HarpViewNoteElement getInstance(TextView textView) {
+        return instances.computeIfAbsent(textView, HarpViewNoteElementAndroid::new);
     }
 
     /**

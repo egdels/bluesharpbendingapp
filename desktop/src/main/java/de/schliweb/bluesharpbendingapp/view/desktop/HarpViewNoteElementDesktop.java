@@ -50,11 +50,11 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
      * graphical user interface. This panel is dynamically updated to reflect changes
      * in the state or properties of the note, such as its name, color, and visual
      * representation of tuning or pitch adjustment.
-     *
+     * <p>
      * Acts as the primary display component within the HarpViewNoteElementDesktop
      * implementation, hosting and updating the NotePane instance according to the
      * current configuration or input parameters.
-     *
+     * <p>
      * The notePanel is initialized with a BorderLayout and will contain a NotePane
      * instance as its primary child component, which handles the actual rendering
      * of the note's graphical state.
@@ -75,7 +75,7 @@ public class HarpViewNoteElementDesktop implements HarpViewNoteElement {
     private Color color = Color.black;
     /**
      * Represents the name of the musical note associated with this element.
-     *
+     * <p>
      * This variable is used to store and modify the name of the note
      * represented within the component. It can be updated dynamically
      * through the setNoteName method to reflect changes in the visual

@@ -61,18 +61,18 @@ public class MainDesktop {
 
     /**
      * A constant representing the directory path for temporary files used by the application.
-     *
+     * <p>
      * This path is automatically generated based on the user's home directory and a predefined
      * folder structure specific to the application. The directory is intended to store temporary files
      * and data that may be created or used during the application's runtime.
-     *
+     * <p>
      * The directory path includes:
      * - The user's home directory (retrieved using the "user.home" system property).
      * - A folder named "BluesHarpBendingApp.tmp" for organizational purposes.
-     *
+     * <p>
      * The use of `FileSystems.getDefault().getSeparator()` ensures that the generated path
      * conforms to the file system and platform-specific directory separator.
-     *
+     * <p>
      * This field is defined as `private` for encapsulation, `static` to allow shared usage across
      * the class, and `final` to prevent modification after initialization.
      */
@@ -82,7 +82,7 @@ public class MainDesktop {
      * Represents the name of the temporary file used for storing serialized data of the application's model.
      * This is a constant value that specifies the file name where the model will be saved or read during
      * operations within the MainDesktop class.
-     *
+     * <p>
      * The file is expected to be located in the application's designated temporary directory.
      */
     private static final String TEMP_FILE = "Model.tmp";
@@ -91,7 +91,7 @@ public class MainDesktop {
      * Represents a cached version string retrieved from the host system or server.
      * This static field is intended to store the version information temporarily,
      * allowing it to be accessed by other methods or components within the application.
-     *
+     * <p>
      * This variable is initially set to null and is expected to be populated through
      * interactions with the host, such as through network communications or file I/O.
      * It may be used for version checks or other operations requiring the application
@@ -102,7 +102,7 @@ public class MainDesktop {
     /**
      * A static reference to the main controller instance used within the application.
      * This controller serves as a central point for managing the application's primary operations.
-     *
+     * <p>
      * It is used across the application to coordinate tasks, manage state, and provide
      * a single access point for key functionalities implemented in the system.
      */
@@ -129,14 +129,14 @@ public class MainDesktop {
 
         Logger.setDebug(false);
 
-        if( SystemInfo.isMacOS ) {
+        if (SystemInfo.isMacOS) {
             // enable screen menu bar
             // (moves menu bar from JFrame window to top of screen)
-            System.setProperty( "apple.laf.useScreenMenuBar", "false" );
+            System.setProperty("apple.laf.useScreenMenuBar", "false");
 
             // application name used in screen menu bar
             // (in first menu after the "apple" menu)
-            System.setProperty( "apple.awt.application.name", "Let's Bend" );
+            System.setProperty("apple.awt.application.name", "Let's Bend");
 
             // appearance of window title bars
             // possible values:
@@ -145,7 +145,7 @@ public class MainDesktop {
             //   - "NSAppearanceNameDarkAqua": use dark appearance
             // (must be set on main thread and before AWT/Swing is initialized;
             //  setting it on AWT thread does not work)
-            System.setProperty( "apple.awt.application.appearance", "system" );
+            System.setProperty("apple.awt.application.appearance", "system");
         }
 
         System.setProperty("flatlaf.menuBarEmbedded", "true");
@@ -224,7 +224,7 @@ public class MainDesktop {
      * or an error occurs during the process, a new MainModel instance is returned.
      *
      * @return a MainModel instance. If the file exists and is readable, the model is constructed
-     *         from its content. Otherwise, a default instance is returned.
+     * from its content. Otherwise, a default instance is returned.
      */
     private static MainModel readModel() {
 
@@ -252,11 +252,11 @@ public class MainDesktop {
      * Checks the version of the application from a remote host by accessing a specified URL.
      * Retrieves the version information from the content, trims it, and logs the result.
      * If an error occurs during the process, logs the error message.
-     *
+     * <p>
      * This method connects to the remote host using HTTPS, reads the content from the response,
      * and stores the version information in the class-level variable `versionFromHost`.
      * The HTTP response is validated before processing the content.
-     *
+     * <p>
      * Exceptions caught include `IOException` for network-related issues and `URISyntaxException`
      * for invalid URI syntax.
      */
@@ -278,7 +278,7 @@ public class MainDesktop {
                 }
                 LOGGER.info(versionFromHost);
             }
-        } catch (IOException |URISyntaxException e ) {
+        } catch (IOException | URISyntaxException e) {
             LOGGER.error(e.getMessage());
         }
     }
@@ -289,7 +289,7 @@ public class MainDesktop {
      * Otherwise, it triggers a check to fetch the version from the host.
      *
      * @return the version of the application as a String. If the version could not be fetched,
-     *         it may return null or an empty string.
+     * it may return null or an empty string.
      */
     public static String getVersionFromHost() {
         if (versionFromHost != null) return versionFromHost;
@@ -299,14 +299,14 @@ public class MainDesktop {
 
     /**
      * Terminates the application by performing necessary cleanup operations and shutting down.
-     *
+     * <p>
      * This method executes the following tasks in order:
      * 1. Logs an informational message indicating the application is shutting down.
      * 2. Stops the main controller, ensuring that all essential components and resources
-     *    are properly released, including audio input devices and any ongoing
-     *    asynchronous operations.
+     * are properly released, including audio input devices and any ongoing
+     * asynchronous operations.
      * 3. Saves the current state of the main application model to a designated temporary
-     *    file, allowing recovery or storage of application data.
+     * file, allowing recovery or storage of application data.
      * 4. Exits the application with a termination status of 0, signaling a successful shutdown.
      */
     public static void close() {

@@ -23,10 +23,10 @@ package de.schliweb.bluesharpbendingapp.model;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.utils.Logger;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 
 /**
  * The type Android model.
@@ -80,6 +80,11 @@ public class AndroidModel extends MainModel {
             }
         }
         return model;
+    }
+
+    // Non-static equivalent:
+    public AndroidModel fromString(String input) {
+        return createFromString(input);
     }
 
     /**

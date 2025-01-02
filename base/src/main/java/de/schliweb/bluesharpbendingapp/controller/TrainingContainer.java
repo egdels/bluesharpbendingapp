@@ -44,12 +44,6 @@ public class TrainingContainer implements Runnable {
 
 
     /**
-     * A ScheduledThreadPoolExecutor instance used to schedule and execute tasks with a single-threaded execution policy.
-     * This executor ensures that tasks are executed sequentially in a dedicated thread, providing thread safety for
-     * operations within the class.
-     */
-    private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
-    /**
      * A static flag indicating whether all threads should be locked.
      * When set to true, this variable ensures that the ongoing operations
      * in multiple threads are restricted or paused, preventing further execution.
@@ -58,11 +52,17 @@ public class TrainingContainer implements Runnable {
      */
     private static boolean lockAllThreads = false;
     /**
+     * A ScheduledThreadPoolExecutor instance used to schedule and execute tasks with a single-threaded execution policy.
+     * This executor ensures that tasks are executed sequentially in a dedicated thread, providing thread safety for
+     * operations within the class.
+     */
+    private final ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+    /**
      * Represents a specific training process or activity that is managed by the
      * TrainingContainer. This variable provides access to the methods defined
      * by the Training interface, allowing the container to control and retrieve
      * details about the training session.
-     *
+     * <p>
      * The Training instance supports functionalities like starting, stopping,
      * tracking progress, and managing training notes.
      */
@@ -71,7 +71,7 @@ public class TrainingContainer implements Runnable {
      * Represents the view associated with the training functionality.
      * This is an instance of the {@link TrainingView} interface responsible
      * for interacting with the UI layer of the training component.
-     *
+     * <p>
      * This variable is immutable and initialized during the construction
      * of the {@link TrainingContainer} class.
      */
@@ -105,8 +105,8 @@ public class TrainingContainer implements Runnable {
     /**
      * Constructs a new TrainingContainer instance.
      *
-     * @param training      the training instance to manage, responsible for handling the training logic
-     * @param trainingView  the view instance associated with the training, providing visual elements and interactions
+     * @param training     the training instance to manage, responsible for handling the training logic
+     * @param trainingView the view instance associated with the training, providing visual elements and interactions
      */
     public TrainingContainer(Training training, TrainingView trainingView) {
         this.training = training;
@@ -117,7 +117,7 @@ public class TrainingContainer implements Runnable {
 
     @Override
     public void run() {
-        if(lockAllThreads) return;
+        if (lockAllThreads) return;
         if (training.isRunning() && training.isNoteActive(frequencyToHandle)) {
             double actualNoteFrequency = NoteLookup.getNoteFrequency(training.getActualNote());
             double cents = NoteUtils.getCents(actualNoteFrequency, frequencyToHandle);
@@ -178,7 +178,7 @@ public class TrainingContainer implements Runnable {
      * Retrieves the current progress of the training.
      *
      * @return the progress value as an integer, typically representing the
-     *         completion percentage or status of the training process
+     * completion percentage or status of the training process
      */
     public int getProgress() {
         return training.getProgress();

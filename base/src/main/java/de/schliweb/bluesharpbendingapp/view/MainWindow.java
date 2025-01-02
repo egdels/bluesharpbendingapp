@@ -109,7 +109,7 @@ public interface MainWindow {
 
     /**
      * Sets the handler responsible for managing and interacting with the training view.
-     *
+     * <p>
      * This method assigns the provided training view handler to facilitate operations
      * and event handling related to the training view. The handler is expected to
      * implement logic for managing the training view's components, data, and interactions
