@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        // onDestroy wird nicht immer ausgeführt, daher auch beim Wechsel der View Speichern
+        // onDestroy is not always called, so save also when switching the view
         storeModel(model);
 
         if (id == R.id.action_settings) {

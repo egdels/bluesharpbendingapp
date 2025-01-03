@@ -64,7 +64,7 @@ public class MicrophoneDesktop implements Microphone {
      * but requires more processing power and storage. In this case, the sample rate
      * is set to 48,000 samples per second, which is a common rate for high-quality audio.
      */
-    private static final int SAMPLE_RATE = 48000;
+    private static final int SAMPLE_RATE = 44100;
     /**
      * Represents the number of bits used per audio sample in the audio processing system.
      * This value defines the resolution of the audio samples, impacting the audio quality
@@ -84,7 +84,7 @@ public class MicrophoneDesktop implements Microphone {
      * debug, informational, and error messages with details about the current class
      * and method, aiding in application diagnostics and development debugging.
      */
-    private static Logger LOGGER = new Logger(MicrophoneDesktop.class);
+    private static final Logger LOGGER = new Logger(MicrophoneDesktop.class);
     /**
      * A reusable buffer for storing normalized audio sample data. The array is
      * sized proportionally to the audio buffer size and the number of bytes per sample,
@@ -231,7 +231,7 @@ public class MicrophoneDesktop implements Microphone {
                 LOGGER.debug("Mixer.getLineInfo(): " + mixer.getLineInfo().toString());
                 microphones.add(mixer.getMixerInfo().getName());
             } else {
-                LOGGER.debug("Kein unterstütztes Microphone: " + mixer.getLineInfo().toString());
+                LOGGER.debug("No supported microphone: " + mixer.getLineInfo().toString());
             }
         }
         return microphones.toArray(String[]::new);
@@ -304,14 +304,14 @@ public class MicrophoneDesktop implements Microphone {
     @Override
     public void open() {
 
-        // Initialisiere BlockingQueue und Thread-Pool
+        // Initialize BlockingQueue and Thread Pool
         audioDataQueue = new LinkedBlockingQueue<>();
         processingExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         executorService = Executors.newSingleThreadExecutor(r -> {
             Thread thread = new Thread(r, "AudioProcessingThread");
-            thread.setDaemon(true); // Verhindert, dass der Thread das Beenden der JVM blockiert
-            thread.setPriority(Thread.MAX_PRIORITY); // Höchste Priorität für Audio-Verarbeitung
+            thread.setDaemon(true); // Prevents the thread from blocking JVM shutdown
+            thread.setPriority(Thread.MAX_PRIORITY); // Highest priority for audio processing
             return thread;
         });
 
@@ -326,11 +326,11 @@ public class MicrophoneDesktop implements Microphone {
                     while (!Thread.currentThread().isInterrupted()) {
                         int bytesRead = line.read(buffer, 0, BUFFER_SIZE);
                         if (bytesRead > 0) {
-                            // Audio-Daten in die Queue einfügen
+                            // Insert audio data into the queue
                             byte[] dataCopy = new byte[bytesRead];
                             System.arraycopy(buffer, 0, dataCopy, 0, bytesRead);
 
-                            // Füge die Daten in die BlockingQueue ein
+                            // Offer the data to the BlockingQueue
                             audioDataQueue.offer(dataCopy);
                         }
                     }
@@ -341,14 +341,14 @@ public class MicrophoneDesktop implements Microphone {
             }
         });
 
-        // Verarbeitung in parallelen Threads
+        // Parallel thread processing
         processingExecutor.execute(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    // Daten aus der Queue abrufen
+                    // Retrieve data from the queue
                     byte[] audioFrame = audioDataQueue.take();
 
-                    // Verarbeite die Audiodaten
+                    // Process the audio data
                     processAudioData(audioFrame, audioFrame.length);
 
                 } catch (InterruptedException e) {
@@ -401,9 +401,5 @@ public class MicrophoneDesktop implements Microphone {
         if (microphoneHandler != null) {
             microphoneHandler.handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
         }
-    }
-
-    protected void setLogger(Logger loggerMock) {
-        LOGGER = loggerMock;
     }
 }

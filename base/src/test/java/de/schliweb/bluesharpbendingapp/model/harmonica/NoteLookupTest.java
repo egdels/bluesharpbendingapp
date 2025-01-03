@@ -83,7 +83,7 @@ class NoteLookupTest {
                 IllegalArgumentException.class,
                 () -> NoteLookup.getNoteFrequency(invalidNoteName)
         );
-        assertTrue(exception.getMessage().contains("Ungültiger Notenname"));
+        assertTrue(exception.getMessage().contains("Invalid note name"));
     }
 
     @Test
@@ -95,7 +95,7 @@ class NoteLookupTest {
                 IllegalArgumentException.class,
                 () -> NoteLookup.getNoteFrequency(null)
         );
-        assertTrue(exception.getMessage().contains("Ungültiger Notenname"));
+        assertTrue(exception.getMessage().contains("Invalid note name"));
     }
 
     @Test
@@ -108,6 +108,6 @@ class NoteLookupTest {
                 IllegalArgumentException.class,
                 () -> NoteLookup.getNoteFrequency(emptyNoteName)
         );
-        assertTrue(exception.getMessage().contains("Ungültiger Notenname"));
+        assertTrue(exception.getMessage().contains("Invalid note name"));
     }
 }

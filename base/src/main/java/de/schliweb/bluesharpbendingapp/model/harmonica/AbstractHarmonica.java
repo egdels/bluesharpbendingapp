@@ -303,22 +303,22 @@ public abstract class AbstractHarmonica implements Harmonica {
             frequency = getOverblowOverdrawFrequency(channel);
         } else {
             if (channel >= CHANNEL_MIN && channel <= CHANNEL_MAX) {
-                // obere Kanäle
+                // upper channels
                 if (note == 0) {
                     frequency = getChannelOutFrequency(channel);
                 }
-                // untere Kanäle
+                // lower channels
                 if (note == 1) {
                     frequency = getChannelInFrequency(channel);
                 }
-                // gezogene Bendings
+                // draw bendings
                 if (note > 1 && note <= NOTE_MAX) {
-                    frequency = getNoteFrequency(channel, note - 1); // Rekursion
+                    frequency = getNoteFrequency(channel, note - 1); // recursion
                     frequency = NoteUtils.addCentsToFrequency(-100.0, frequency);
                 }
-                // geblasene Bendings
+                // blow bendings
                 if (note < 0 && note >= NOTE_MIN) {
-                    frequency = getNoteFrequency(channel, note + 1); // Rekursion
+                    frequency = getNoteFrequency(channel, note + 1); // recursion
                     frequency = NoteUtils.addCentsToFrequency(-100.0, frequency);
                 }
             }

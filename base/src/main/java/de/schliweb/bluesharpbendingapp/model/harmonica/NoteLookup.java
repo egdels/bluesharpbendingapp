@@ -100,14 +100,14 @@ public class NoteLookup {
      */
     public static double getNoteFrequency(String noteName) {
         if (noteName == null || noteName.length() < 2 || noteName.length() > 3) {
-            throw new IllegalArgumentException("Ungültiger Notenname: " + noteName);
+            throw new IllegalArgumentException("Invalid note name: " + noteName);
         }
 
-        // Extrahiere den Notennamen und die Oktavennummer
-        String note = noteName.substring(0, noteName.length() - 1); // Der Teil vor der Oktave (z. B. "C")
+        // Extract the note name and the octave number
+        String note = noteName.substring(0, noteName.length() - 1); // The part before the octave (e.g., "C")
         int midiNumber = getMidiNumber(noteName, note);
 
-        // Berechne die Frequenz basierend auf der MIDI-Nummer
+        // Calculate the frequency based on the MIDI number
         return NoteUtils.round(concertPitch * Math.pow(2, (midiNumber - 69) / 12.0));
     }
 
@@ -123,9 +123,9 @@ public class NoteLookup {
      * @throws IllegalArgumentException if the given note name or note is invalid or not recognized.
      */
     private static int getMidiNumber(String noteName, String note) {
-        int octave = Integer.parseInt(noteName.substring(noteName.length() - 1)); // Der Oktavenwert (z. B. "4")
+        int octave = Integer.parseInt(noteName.substring(noteName.length() - 1)); // The octave value (e.g., "4")
 
-        // Bestimme den Index der Note in der Note-Namen-Liste
+        // Determine the index of the note in the note names list
         int noteIndex = -1;
         for (int i = 0; i < NOTE_NAMES.length; i++) {
             if (NOTE_NAMES[i].equals(note)) {
@@ -135,10 +135,10 @@ public class NoteLookup {
         }
 
         if (noteIndex == -1) {
-            throw new IllegalArgumentException("Ungültiger Notenname: " + noteName);
+            throw new IllegalArgumentException("Invalid note name: " + noteName);
         }
 
-        // Berechne die MIDI-Nummer der Note
+        // Calculate the MIDI number of the note
         return noteIndex + (octave + 1) * 12;
     }
 

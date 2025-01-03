@@ -86,7 +86,7 @@ public class MainModel {
      * This value is used to persist and retrieve the currently selected algorithm
      * state across different executions or sessions.
      */
-    private int storedAlgorithmIndex = 1;
+    private int storedAlgorithmIndex = 0;
 
     /**
      * Represents the stored index for the selected key in the main model.

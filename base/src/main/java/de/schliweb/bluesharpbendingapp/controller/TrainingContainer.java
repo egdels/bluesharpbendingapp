@@ -30,6 +30,7 @@ import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
 
+import java.util.HashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -95,12 +96,14 @@ public class TrainingContainer implements Runnable {
      * managed through an AtomicBoolean to allow concurrent access and modification.
      */
     private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
+    private final String cacheKey;
     /**
      * Represents the frequency currently being handled by the TrainingContainer.
      * This variable is volatile to ensure thread-safe operations when accessed or
      * updated concurrently by multiple threads.
      */
     private volatile double frequencyToHandle;
+    private final HashMap<String, Double> centsCache = new HashMap<>();
 
     /**
      * Constructs a new TrainingContainer instance.
@@ -113,21 +116,14 @@ public class TrainingContainer implements Runnable {
         this.view = trainingView;
         this.element = view.getActualHarpViewElement();
         lockAllThreads = false;
+        this.cacheKey = this.training.getActualNote();
     }
 
     @Override
     public void run() {
         if (lockAllThreads) return;
         if (training.isRunning() && training.isNoteActive(frequencyToHandle)) {
-            double actualNoteFrequency = NoteLookup.getNoteFrequency(training.getActualNote());
-            double cents = NoteUtils.getCents(actualNoteFrequency, frequencyToHandle);
-            element.update(cents);
-            // set to next note (maybe several times)
-            if (Math.abs(cents) < AbstractTraining.getPrecision()) {
-                toNextNote.set(true);
-            } else
-                toBeCleared.set(true);
-
+            handleFrequencyChange();
         } else {
             // if next note is set execute once!
             if (toNextNote.compareAndSet(true, false)) {
@@ -137,6 +133,8 @@ public class TrainingContainer implements Runnable {
                 training.success();
                 // to next Note
                 training.nextNote();
+                // no need to be cleared
+                toBeCleared.set(false);
                 // wait 100 ms and execute
                 exec.schedule(() -> {
                     if (training.isCompleted()) {
@@ -149,11 +147,32 @@ public class TrainingContainer implements Runnable {
             } else {
                 // execute once
                 if (toBeCleared.compareAndSet(true, false)) {
+                    centsCache.remove(cacheKey);
                     exec.schedule(element::clear, 100, TimeUnit.MILLISECONDS);
                 }
             }
         }
     }
+
+    private void handleFrequencyChange() {
+        // Calculate the current cents
+        double actualNoteFrequency = NoteLookup.getNoteFrequency(training.getActualNote());
+        double cents = NoteUtils.getCents(actualNoteFrequency, frequencyToHandle);
+        // Retrieve the last cached value (use default value - Double.MAX_VALUE if not present)
+        double lastCents = centsCache.getOrDefault(cacheKey, Double.MAX_VALUE);
+        // Check if there is a significant change (≥ 5 cents deviation)
+        if (Math.abs(cents - lastCents) >= 2) {
+            // Update the cache
+            centsCache.put(cacheKey, cents);
+            // Pass the value to HarpViewElement and optionally invert it
+            element.update(cents);
+            toBeCleared.set(true);
+        }
+        if (Math.abs(cents) < AbstractTraining.getPrecision()) {
+            toNextNote.set(true);
+        }
+    }
+
 
     /**
      * Sets the frequency value to handle in the training process.

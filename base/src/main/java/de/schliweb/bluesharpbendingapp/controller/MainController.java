@@ -116,7 +116,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         this.window = window;
         this.model = model;
         this.executorService = Executors.newCachedThreadPool();
-        // Gespeicherten Kammerton, vor Erstellung der Harmonika setzen
+        // Set the stored reference pitch before creating the harmonica
         NoteLookup.setConcertPitchByIndex(model.getStoredConcertPitchIndex());
         this.model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
         this.model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), model.getStoredTrainingIndex()));
@@ -222,20 +222,20 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             HarpView harpView = window.getHarpView();
 
             for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX; channel++) {
-                // Blastöne
+                // Blowing notes
                 double frequency0 = harmonica.getNoteFrequency(channel, 0);
                 boolean hasInverseCentsHandling = harmonica.hasInverseCentsHandling(channel);
                 String note0 = NoteLookup.getNoteName(frequency0);
                 assert note0 != null;
                 notesList.add(new NoteContainer(channel, 0, note0, harmonica, harpView, hasInverseCentsHandling));
 
-                // Ziehtöne
+                // Drawing notes
                 double frequency1 = harmonica.getNoteFrequency(channel, 1);
                 String note1 = NoteLookup.getNoteName(frequency1);
                 assert note1 != null;
                 notesList.add(new NoteContainer(channel, 1, note1, harmonica, harpView, hasInverseCentsHandling));
 
-                // Bendingtöne
+                // Bending notes
                 int blowBendingCount = harmonica.getBlowBendingTonesCount(channel);
                 int drawBendingCount = harmonica.getDrawBendingTonesCount(channel);
                 for (int note = 2; note < 2 + drawBendingCount; note++) {

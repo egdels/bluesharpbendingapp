@@ -27,6 +27,8 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,6 +42,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * its associated harp view element based on the frequency handling.
  */
 public class NoteContainer implements Runnable {
+
+    /**
+     * A cache storing the last updated cent values, indexed by a combination of channel and note.
+     * Used for optimizing frequency calculations and preventing redundant computations.
+     * The key is represented as a string combining channel and note, while the value is the cent offset as a double.
+     */
+    // Cache for the most recently updated cents values, indexed by channel and note
+    private static final Map<String, Double> centsCache = new HashMap<>();
 
     /**
      * Represents the musical channel associated with this NoteContainer.
@@ -76,11 +86,18 @@ public class NoteContainer implements Runnable {
      */
     private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
     /**
+     * Represents a unique identifier used for caching operations in the NoteContainer.
+     * The cacheKey is utilized to distinguish specific instances of notes and their
+     * associated data, ensuring efficient retrieval and storage in caching mechanisms.
+     * It is immutable and uniquely represents the data within a specific NoteContainer.
+     */
+    private final String cacheKey;
+    /**
      * Represents the frequency value that is to be processed or handled within the NoteContainer.
      * This field is marked as volatile to ensure visibility and thread-safety in a concurrent environment,
      * as it may be accessed or modified by multiple threads.
      */
-    private volatile double frequencyToHandle;
+    protected volatile double frequencyToHandle;
     /**
      * Represents a harmonica instance used within a NoteContainer.
      * This field enables operations involving various harmonica-related
@@ -125,6 +142,7 @@ public class NoteContainer implements Runnable {
         this.channel = channel;
         this.note = note;
         this.noteName = noteName;
+        this.cacheKey = channel + "-" + note;
     }
 
     /**
@@ -191,14 +209,41 @@ public class NoteContainer implements Runnable {
     @Override
     public void run() {
         if (frequencyToHandle <= maxFrequency && minFrequency <= frequencyToHandle) {
-            double cents = harmonica.getCentsNote(channel, note, frequencyToHandle);
-            harpViewElement.update(hasInverseCentsHandling ? -cents : cents);
-            toBeCleared.set(true);
+            handleFrequencyChange();
         } else {
             // execute once
             if (toBeCleared.compareAndSet(true, false)) {
+                centsCache.remove(cacheKey);
                 exec.schedule(harpViewElement::clear, 100, TimeUnit.MILLISECONDS);
             }
+
+        }
+    }
+
+    /**
+     * Handles the change in frequency for a specific note by calculating the deviation in cents,
+     * checking for significant changes, and updating the associated harp view element if needed.
+     * <p>
+     * This method performs the following steps:
+     * 1. Calculates the cents deviation for the note using the current frequency and retrieves
+     *    the last cached cents value for comparison.
+     * 2. Determines whether the change in cents exceeds a predefined threshold of significance.
+     * 3. Updates the cached cents value and the harp view element accordingly, while applying
+     *    inversion logic if specified.
+     * 4. Flags the state to indicate that updates are required for subsequent operations.
+     */
+    private void handleFrequencyChange() {
+        // Calculation of the current cents
+        double cents = harmonica.getCentsNote(channel, note, frequencyToHandle);
+        // Retrieve the last cached value (use default value - Double.MAX_VALUE if not present)
+        double lastCents = centsCache.getOrDefault(cacheKey, Double.MAX_VALUE);
+        // Check if there's a significant change (≥ 5 cents deviation)
+        if (Math.abs(cents - lastCents) >= 2) {
+            // Update the cache
+            centsCache.put(cacheKey, cents);
+            // Pass the value to HarpViewElement and invert it if necessary
+            harpViewElement.update(hasInverseCentsHandling ? -cents : cents);
+            toBeCleared.set(true);
         }
     }
 

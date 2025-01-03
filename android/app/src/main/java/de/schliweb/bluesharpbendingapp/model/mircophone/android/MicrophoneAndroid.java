@@ -295,7 +295,7 @@ public class MicrophoneAndroid implements Microphone {
 
     @Override
     public void setName(int microphoneIndex) {
-        // Nicht benötigt auf Android
+        // Not needed on Android
     }
 
 
@@ -321,7 +321,7 @@ public class MicrophoneAndroid implements Microphone {
         } else if ("MPM".equals(getAlgorithm())) {
             pitch = PitchDetectionUtil.detectPitchWithMPM(audioData, SAMPLE_RATE);
         }
-        if (microphoneHandler != null && pitch >= 0) {
+        if (microphoneHandler != null) {
             microphoneHandler.handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
         }
     }

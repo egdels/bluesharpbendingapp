@@ -6,6 +6,7 @@ import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class NoteContainerTest {
@@ -19,91 +20,147 @@ class NoteContainerTest {
 
     @BeforeEach
     void setUp() {
-        // Mocks erstellen
+        // Create mocks
         Harmonica mockHarmonica = mock(Harmonica.class);
         HarpView mockHarpView = mock(HarpView.class);
         mockHarpViewElement = mock(HarpViewNoteElement.class);
 
-        // Mock-Verhalten definieren
+        // Define mock behaviors
         when(mockHarmonica.getNoteFrequencyMinimum(CHANNEL, NOTE)).thenReturn(MIN_FREQUENCY);
         when(mockHarmonica.getNoteFrequencyMaximum(CHANNEL, NOTE)).thenReturn(MAX_FREQUENCY);
         when(mockHarpView.getHarpViewElement(CHANNEL, NOTE)).thenReturn(mockHarpViewElement);
 
-        // NoteContainer erstellen
+        // Create NoteContainer
         noteContainer = new NoteContainer(CHANNEL, NOTE, NOTE_NAME, mockHarmonica, mockHarpView);
     }
 
     @Test
     void testUpdateCalled_WhenFrequencyInRange() {
         // Arrange
-        double validFrequency = 150.0; // Innerhalb des Bereichs
+        double validFrequency = 150.0; // Within range
         noteContainer.setFrequencyToHandle(validFrequency);
 
         // Act
         noteContainer.run();
 
         // Assert
-        verify(mockHarpViewElement, times(1)).update(anyDouble()); // Update einmal
-        verify(mockHarpViewElement, never()).clear(); // Clear nicht aufgerufen
+        verify(mockHarpViewElement, times(1)).update(anyDouble()); // Update called once
+        verify(mockHarpViewElement, never()).clear(); // Clear not called
     }
 
     @Test
-    void testClearCalled_WhenFrequencyOutOfRange() throws InterruptedException {
+    void testClearCleanNotCalled_WhenFrequencyOutOfRange() throws InterruptedException {
         // Arrange
-        double outOfRangeFrequency = 250.0; // Außerhalb des Bereichs
-        double inRangeFrequency = 150.0;  // Innerhalb des Bereichs
+        double outOfRangeFrequency = 250.0; // Out of range
+        double inRangeFrequency = 150.0;  // Within range
 
-        // Frequenz zuerst im Bereich
+        // First, set frequency within range
         noteContainer.setFrequencyToHandle(inRangeFrequency);
         noteContainer.run();
+        Thread.sleep(1000); // Wait for scheduler
 
-        // Frequenz verlässt den Bereich
+        // Then set frequency out of range
         noteContainer.setFrequencyToHandle(outOfRangeFrequency);
 
         // Act
-        noteContainer.run(); // Run aufrufen, um in den Else-Zweig zu gehen
-        Thread.sleep(200); // Auf Scheduler warten
+        noteContainer.run(); // Trigger run to enter "else" condition
+        Thread.sleep(1000); // Wait for scheduler
 
         // Assert
-        verify(mockHarpViewElement, times(1)).update(anyDouble()); // Update wurde zuerst aufgerufen
-        verify(mockHarpViewElement, times(1)).clear(); // Clear einmalig aufgerufen
+        verify(mockHarpViewElement, times(1)).update(anyDouble()); // Update called first
+        verify(mockHarpViewElement, times(1)).clear(); // Clear called once
     }
 
     @Test
     void testClearNotCalled_WhenFrequencyRemainsOutOfRange() throws InterruptedException {
         // Arrange
-        double outOfRangeFrequency = 250.0; // Frequenz außerhalb
+        double outOfRangeFrequency = 250.0; // Frequency out of range
 
-        // Frequenz außerhalb setzen
+        // Set frequency out of range
         noteContainer.setFrequencyToHandle(outOfRangeFrequency);
 
         // Act
-        noteContainer.run(); // Erster Run
-        noteContainer.run(); // Wiederholter Run
-        Thread.sleep(200); // Auf Scheduler warten
+        noteContainer.run(); // First run
+        Thread.sleep(1000); // Wait for scheduler
 
         // Assert
-        verify(mockHarpViewElement, times(0)).clear(); // Clear nur einmalig
+        verify(mockHarpViewElement, times(0)).clear(); // Clear not called again
     }
 
     @Test
     void testUpdateCalledAgain_WhenFrequencyBackInRange() {
         // Arrange
-        double outOfRangeFrequency = 250.0; // Außerhalb des Bereichs
-        double inRangeFrequency = 150.0;   // Innerhalb des Bereichs
+        double outOfRangeFrequency = 250.0; // Out of range
+        double inRangeFrequency = 150.0;   // Within range
 
-        // Frequenz außerhalb setzen
+        // Set frequency out of range
         noteContainer.setFrequencyToHandle(outOfRangeFrequency);
         noteContainer.run();
 
-        // Frequenz zurück in den Bereich setzen
+        // Set frequency back in range
         noteContainer.setFrequencyToHandle(inRangeFrequency);
 
         // Act
         noteContainer.run();
 
         // Assert
-        verify(mockHarpViewElement, times(0)).clear(); // Clear nicht aufgerufen
-        verify(mockHarpViewElement, times(1)).update(anyDouble()); // Update wieder aufgerufen
+        verify(mockHarpViewElement, times(0)).clear(); // Clear not called
+        verify(mockHarpViewElement, times(1)).update(anyDouble()); // Update called again
+    }
+
+    @Test
+    void testNegativeCentsWhenInverseHandlingTrue() {
+        // Arrange
+        double validFrequency = 150.0; // Within range
+        Harmonica mockHarmonicaWithInverse = mock(Harmonica.class);
+        HarpView mockHarpViewWithInverse = mock(HarpView.class);
+        HarpViewNoteElement mockHarpViewElementWithInverse = mock(HarpViewNoteElement.class);
+
+        when(mockHarmonicaWithInverse.getNoteFrequencyMinimum(CHANNEL, NOTE)).thenReturn(MIN_FREQUENCY);
+        when(mockHarmonicaWithInverse.getNoteFrequencyMaximum(CHANNEL, NOTE)).thenReturn(MAX_FREQUENCY);
+        when(mockHarpViewWithInverse.getHarpViewElement(CHANNEL, NOTE)).thenReturn(mockHarpViewElementWithInverse);
+        when(mockHarmonicaWithInverse.getCentsNote(CHANNEL, NOTE, validFrequency)).thenReturn(50.0);
+
+        NoteContainer inverseNoteContainer = new NoteContainer(
+                CHANNEL, NOTE, NOTE_NAME, mockHarmonicaWithInverse, mockHarpViewWithInverse, true
+        );
+
+        inverseNoteContainer.setFrequencyToHandle(validFrequency);
+
+        // Act
+        inverseNoteContainer.run();
+
+        // Assert
+        verify(mockHarpViewElementWithInverse, times(1)).update(-50.0);
+        verify(mockHarpViewElementWithInverse, never()).clear();
+    }
+
+    @Test
+    void testSetFrequencyToHandleUpdatesFrequency() {
+        // Arrange
+        double expectedFrequency = 123.4;
+
+        // Act
+        noteContainer.setFrequencyToHandle(expectedFrequency);
+
+        // Assert
+        noteContainer.run();
+        assertEquals(expectedFrequency, noteContainer.frequencyToHandle);
+    }
+
+
+    @Test
+    void testNoUpdateOrClearCalledForInvalidFrequency() {
+        // Arrange
+        double invalidFrequency = 300.0; // Out of range
+
+        noteContainer.setFrequencyToHandle(invalidFrequency);
+
+        // Act
+        noteContainer.run();
+
+        // Assert
+        verify(mockHarpViewElement, never()).update(anyDouble());
+        verify(mockHarpViewElement, never()).clear();
     }
 }

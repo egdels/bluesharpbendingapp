@@ -70,7 +70,7 @@ class MainModelTest {
     void testCreateFromStringEmptyString() {
         MainModel newMainModel = MainModel.createFromString("");
         assertEquals(0, newMainModel.getStoredMicrophoneIndex());
-        assertEquals(1, newMainModel.getStoredAlgorithmIndex());
+        assertEquals(0, newMainModel.getStoredAlgorithmIndex());
         assertEquals(4, newMainModel.getStoredKeyIndex());
         assertEquals(11, newMainModel.getStoredConcertPitchIndex());
         assertEquals(6, newMainModel.getStoredTuneIndex());
@@ -83,7 +83,7 @@ class MainModelTest {
     void testCreateFromStringInvalidString() {
         MainModel newMainModel = MainModel.createFromString("invalid:data, other:data");
         assertEquals(0, newMainModel.getStoredMicrophoneIndex());
-        assertEquals(1, newMainModel.getStoredAlgorithmIndex());
+        assertEquals(0, newMainModel.getStoredAlgorithmIndex());
         assertEquals(4, newMainModel.getStoredKeyIndex());
         assertEquals(11, newMainModel.getStoredConcertPitchIndex());
         assertEquals(6, newMainModel.getStoredTuneIndex());
