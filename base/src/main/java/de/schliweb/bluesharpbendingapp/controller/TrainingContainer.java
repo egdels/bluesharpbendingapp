@@ -51,7 +51,7 @@ public class TrainingContainer implements Runnable {
      * This is primarily used to manage thread states in a synchronized manner
      * within the TrainingContainer class.
      */
-    private static boolean lockAllThreads = false;
+    protected static boolean lockAllThreads = false;
     /**
      * A ScheduledThreadPoolExecutor instance used to schedule and execute tasks with a single-threaded execution policy.
      * This executor ensures that tasks are executed sequentially in a dedicated thread, providing thread safety for
@@ -89,13 +89,13 @@ public class TrainingContainer implements Runnable {
      * Uses an atomic boolean for thread-safe operations to ensure consistent state
      * across multiple threads within the TrainingContainer.
      */
-    private final AtomicBoolean toNextNote = new AtomicBoolean(false);
+    protected final AtomicBoolean toNextNote = new AtomicBoolean(false);
     /**
      * Represents a flag indicating whether a certain operation or state within the
      * TrainingContainer should be cleared or reset. This is a thread-safe indicator
      * managed through an AtomicBoolean to allow concurrent access and modification.
      */
-    private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
+    protected final AtomicBoolean toBeCleared = new AtomicBoolean(false);
     private final String cacheKey;
     /**
      * Represents the frequency currently being handled by the TrainingContainer.

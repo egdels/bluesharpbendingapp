@@ -178,7 +178,7 @@ class PitchDetectionUtilTest {
         }
 
         double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
-        assertEquals(frequency, detectedPitch, 2.1, "Detected pitch should match the input sine wave frequency");
+        assertEquals(frequency, detectedPitch, 1, "Detected pitch should match the input sine wave frequency");
     }
 
     /**
@@ -241,7 +241,7 @@ class PitchDetectionUtilTest {
         }
 
         double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
-        assertEquals(frequency, detectedPitch, 5, "Detected pitch should match the high-frequency sine wave");
+        assertEquals(frequency, detectedPitch, 3, "Detected pitch should match the high-frequency sine wave");
     }
 
     /**

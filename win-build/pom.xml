@@ -36,6 +36,24 @@
 
     <artifactId>win-build</artifactId>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <normalized.version>${project.version}</normalized.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>snapshot</id>
+            <properties>
+                <normalized.version>1.0.0</normalized.version>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>de.schliweb.bluesharpbendingapp</groupId>
@@ -103,7 +121,7 @@
                                 <argument>--name</argument>
                                 <argument>bluesharpbendingapp</argument>
                                 <argument>--app-version</argument>
-                                <argument>${project.version}</argument>
+                                <argument>${normalized.version}</argument>
                                 <argument>--main-jar</argument>
                                 <argument>bluesharpbendingapp-${project.version}-all.jar</argument>
                                 <argument>--input</argument>

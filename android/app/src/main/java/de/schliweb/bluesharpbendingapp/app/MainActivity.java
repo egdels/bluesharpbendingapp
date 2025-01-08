@@ -633,4 +633,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
             getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
+
+    protected boolean isAppBarHidden() {
+        return isAppBarHidden;
+    }
 }

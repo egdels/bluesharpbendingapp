@@ -51,7 +51,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
     /**
      * The Binding.
      */
-    private FragmentSettingsBinding binding;
+    protected FragmentSettingsBinding binding;
     /**
      * The Harp settings view handler.
      */
@@ -167,7 +167,10 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setKeys(String[] keys) {
-
+        // Safeguard in case keys is null
+        if (keys == null) {
+            keys = new String[0]; // Use an empty array
+        }
         Spinner spinner = binding.settingsKeyList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, keys);
         adapter.setDropDownViewResource(R.layout.spinner_list);
@@ -215,7 +218,10 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setTunes(String[] tunes) {
-
+        // Safeguard in case keys is null
+        if (tunes == null) {
+            tunes = new String[0]; // Use an empty array
+        }
         Spinner spinner = binding.settingsTuneList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, tunes);
         adapter.setDropDownViewResource(R.layout.spinner_list);
@@ -241,6 +247,10 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setAlgorithms(String[] algorithms) {
+        // Safeguard in case algorithms is null
+        if (algorithms == null) {
+            algorithms = new String[0]; // Use an empty array
+        }
         Spinner spinner = binding.settingsAlgoList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, algorithms);
         adapter.setDropDownViewResource(R.layout.spinner_list);
@@ -326,7 +336,10 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      */
     @Override
     public void setConcertPitches(String[] pitches) {
-
+        // Safeguard in case pitches is null
+        if (pitches == null) {
+            pitches = new String[0]; // Use an empty array
+        }
         Spinner spinner = binding.settingsPitchesList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, pitches);
         adapter.setDropDownViewResource(R.layout.spinner_list);

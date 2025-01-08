@@ -225,13 +225,20 @@ public class MicrophoneDesktop implements Microphone {
     public String[] getSupportedMicrophones() {
         Info[] mixerInfos = AudioSystem.getMixerInfo();
         ArrayList<String> microphones = new ArrayList<>();
+        DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, getAudioFormat());
         for (Info mixerInfo : mixerInfos) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);
-            if (mixer.isLineSupported(new DataLine.Info(TargetDataLine.class, getAudioFormat()))) {
+            if (mixer.isLineSupported(dataLineInfo)) {
                 LOGGER.debug("Mixer.getLineInfo(): " + mixer.getLineInfo().toString());
+                try {
+                    TargetDataLine targetDataLine = (TargetDataLine) mixer.getLine(dataLineInfo);
+                    targetDataLine.open();
+                    targetDataLine.close();
+                } catch (LineUnavailableException e) {
+                    LOGGER.error("No supported microphone: " + e.getMessage());
+                    continue;
+                }
                 microphones.add(mixer.getMixerInfo().getName());
-            } else {
-                LOGGER.debug("No supported microphone: " + mixer.getLineInfo().toString());
             }
         }
         return microphones.toArray(String[]::new);

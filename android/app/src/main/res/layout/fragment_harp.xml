@@ -44,7 +44,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -55,7 +55,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -66,7 +66,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -77,7 +77,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -88,7 +88,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -99,7 +99,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -110,7 +110,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -121,7 +121,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -132,7 +132,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -143,7 +143,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -161,7 +161,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -172,7 +172,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -183,7 +183,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -194,7 +194,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -205,7 +205,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -216,7 +216,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -227,7 +227,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -238,7 +238,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -249,7 +249,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -260,7 +260,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -278,7 +278,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -289,7 +289,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -300,7 +300,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -311,7 +311,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -322,7 +322,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -333,7 +333,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -344,7 +344,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -355,7 +355,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -366,7 +366,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -377,7 +377,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_blow"
-                android:textColor="?attr/blowTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -395,7 +395,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -406,7 +406,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -417,7 +417,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -428,7 +428,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -439,7 +439,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -450,7 +450,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -461,7 +461,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -472,7 +472,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -483,7 +483,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -494,7 +494,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:visibility="invisible"/>
@@ -626,7 +626,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -638,7 +638,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -650,7 +650,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -662,7 +662,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -674,7 +674,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -686,7 +686,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -698,7 +698,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -710,7 +710,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -722,7 +722,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -734,7 +734,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_channel"
-                android:textColor="?attr/channelTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -752,7 +752,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -764,7 +764,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -776,7 +776,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -788,7 +788,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -800,7 +800,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -812,7 +812,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -824,7 +824,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -836,7 +836,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -848,7 +848,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -860,7 +860,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -878,7 +878,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -891,7 +891,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -903,7 +903,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -915,7 +915,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -927,7 +927,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -939,7 +939,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -951,7 +951,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -963,7 +963,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -975,7 +975,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -987,7 +987,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1005,7 +1005,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1017,7 +1017,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1029,7 +1029,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1041,7 +1041,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1053,7 +1053,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1065,7 +1065,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1077,7 +1077,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1089,7 +1089,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1101,7 +1101,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 
@@ -1113,7 +1113,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/note_draw"
-                android:textColor="?attr/drawTextColor"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
 

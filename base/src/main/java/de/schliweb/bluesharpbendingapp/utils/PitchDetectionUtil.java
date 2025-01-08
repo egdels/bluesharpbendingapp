@@ -145,7 +145,7 @@ public class PitchDetectionUtil {
         // Step 2: Find peaks in the NSDF
         List<Integer> candidatePeaks = new ArrayList<>();
         for (int lag = 1; lag < maxLag - 1; lag++) {
-            if (nsdf[lag] > nsdf[lag - 1] && nsdf[lag] > nsdf[lag + 1] && nsdf[lag] > 0.5) {
+            if (nsdf[lag] > nsdf[lag - 1] && nsdf[lag] > nsdf[lag + 1] && nsdf[lag] > 0.7) {
                 candidatePeaks.add(lag);
             }
         }
