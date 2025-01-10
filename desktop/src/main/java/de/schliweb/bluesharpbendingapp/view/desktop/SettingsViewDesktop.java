@@ -114,7 +114,7 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
      * This component allows users to choose from a list of musical keys to configure
      * settings related to key selection in the application.
      */
-    private JComboBox<String> comboKeys;
+    protected JComboBox<String> comboKeys;
     /**
      * Represents a JLabel component in the `SettingsViewDesktop` class,
      * specifically used to display the label for selecting or displaying tunes.
@@ -131,7 +131,7 @@ public class SettingsViewDesktop implements HarpSettingsView, MicrophoneSettings
      * their preferred tuning setup within the application. Its contents and behavior can be
      * programmatically updated or modified through appropriate methods in the corresponding class.
      */
-    private JComboBox<String> comboTunes;
+    protected JComboBox<String> comboTunes;
     /**
      * Represents the panel container for the graphical user interface of the
      * SettingsViewDesktop class. This panel serves as the root component for

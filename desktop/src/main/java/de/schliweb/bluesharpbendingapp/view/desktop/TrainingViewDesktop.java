@@ -113,7 +113,7 @@ public class TrainingViewDesktop implements TrainingView {
      * within the TrainingViewDesktop. This component dynamically updates to show
      * progress completion as a percentage.
      */
-    private JProgressBar progressBar;
+    protected JProgressBar progressBar;
     /**
      * The JLabel instance used to display the precision level of the selected training or operation.
      * This label provides a representation or description of the precision option currently active
