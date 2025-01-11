@@ -27,23 +27,124 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility class for pitch detection and signal analysis.
- * Provides static methods for detecting pitch using different algorithms
- * and for calculating signal properties.
+ * Utility class for pitch detection and audio analysis.
+ * Provides methods to detect pitch using different algorithms such as YIN and MPM
+ * and to analyze key audio features like RMS (Root Mean Square).
  */
 public class PitchDetectionUtil {
 
+
     /**
-     * Detects pitch using the YIN algorithm.
+     * Detects the pitch of an audio signal using the YIN algorithm.
      *
-     * @param audioData  the normalized audio data as an array of doubles
-     * @param sampleRate the sampling rate of the audio data (Hz)
-     * @return detected pitch frequency in Hertz (Hz), or -1 if no pitch is detected
+     * @param audioData an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return the detected pitch in Hz, or -1 if no pitch is detected.
      */
     public static double detectPitchWithYIN(double[] audioData, int sampleRate) {
         int bufferSize = audioData.length;
 
-        // Step 1: Difference function
+        // Step 1: Compute the difference function
+        double[] difference = computeDifferenceFunction(audioData, bufferSize);
+
+        // Step 2: Compute the cumulative mean normalized difference function
+        double[] cmndf = computeCMNDF(difference);
+
+        // Step 3: Find the first minimum below a threshold
+        int tauEstimate = findFirstMinimum(cmndf, 0.1);
+
+        // Step 4: Use parabolic interpolation for more precise tau estimation
+        if (tauEstimate != -1) {
+            double refinedTau = parabolicInterpolation(cmndf, tauEstimate);
+            return (double) sampleRate / refinedTau;
+        }
+
+        return -1; // No pitch detected
+    }
+
+    /**
+     * Refines the estimate of the lag value `tau` using parabolic interpolation
+     * for improved accuracy in analyzing periodic signals.
+     *
+     * @param cmndf an array of double values representing the cumulative mean normalized difference function (CMNDF)
+     * @param tau an integer representing the initial lag value
+     * @return the refined lag value as a double, obtained through parabolic interpolation
+     */
+    private static double parabolicInterpolation(double[] cmndf, int tau) {
+        if (tau <= 0 || tau >= cmndf.length - 1) {
+            return tau;
+        }
+        double x0 = cmndf[tau - 1];
+        double x1 = cmndf[tau];
+        double x2 = cmndf[tau + 1];
+        return tau + (x0 - x2) / (2 * (x0 - 2 * x1 + x2)); // Parabolic refinement
+    }
+
+    /**
+     * Determines whether a specific element in an array is a local minimum.
+     * A local minimum is defined as an element that is smaller than its
+     * immediate neighbors.
+     *
+     * @param array the array of double values to evaluate
+     * @param index the index of the element to check for being a local minimum
+     * @return true if the element at the specified index is a local minimum;
+     * false otherwise
+     */
+    private static boolean isLocalMinimum(double[] array, int index) {
+        if (index <= 0 || index >= array.length - 1) {
+            return false;
+        }
+        return array[index] < array[index - 1] && array[index] < array[index + 1];
+    }
+
+
+    /**
+     * Finds the first index in the given cumulative mean normalized difference function (CMNDF)
+     * array where the value is below a specified threshold and is a local minimum.
+     *
+     * @param cmndf an array of double values representing the cumulative mean normalized difference function (CMNDF)
+     * @param threshold a double value representing the threshold to evaluate against
+     * @return the index of the first local minimum in the CMNDF array that is below the threshold,
+     *         or -1 if no such local minimum is found
+     */
+    private static int findFirstMinimum(double[] cmndf, double threshold) {
+        for (int tau = 2; tau < cmndf.length - 1; tau++) {
+            if (cmndf[tau] < threshold && isLocalMinimum(cmndf, tau)) {
+                return tau;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Computes the Cumulative Mean Normalized Difference Function (CMNDF) for a given difference function.
+     * The CMNDF is used in pitch detection algorithms to evaluate the periodicity of signals.
+     *
+     * @param difference an array of double values representing the difference function
+     *                    of a signal, typically derived from a pitch detection process.
+     * @return an array of double values representing the CMNDF, where each value indicates
+     *         the normalized difference for a potential periodicity.
+     */
+    private static double[] computeCMNDF(double[] difference) {
+        double[] cmndf = new double[difference.length];
+        cmndf[0] = 1; // First value is always 1
+        double cumulativeSum = 0;
+        for (int tau = 1; tau < difference.length; tau++) {
+            cumulativeSum += difference[tau];
+            cmndf[tau] = difference[tau] / ((cumulativeSum / tau) + 1e-10); // Avoid division by zero
+        }
+        return cmndf;
+    }
+
+    /**
+     * Computes the difference function of the given audio data for use in pitch detection algorithms.
+     * The difference function calculates the squared difference between signal values at various time lags.
+     *
+     * @param audioData an array of double values representing the audio signal
+     * @param bufferSize the size of the buffer to be used for the computation, representing the length of the audio segment
+     * @return an array of double values representing the computed difference function
+     */
+    private static double[] computeDifferenceFunction(double[] audioData, int bufferSize) {
         double[] difference = new double[bufferSize / 2];
         for (int tau = 0; tau < difference.length; tau++) {
             double sum = 0;
@@ -53,76 +154,17 @@ public class PitchDetectionUtil {
             }
             difference[tau] = sum;
         }
-
-        // Step 2: Cumulative mean normalized difference function
-        double[] cmndf = new double[difference.length];
-        cmndf[0] = 1; // First value always 1
-        double runningSum = 0;
-        for (int tau = 1; tau < difference.length; tau++) {
-            runningSum += difference[tau];
-            cmndf[tau] = difference[tau] / ((runningSum / tau) + 1e-10); // Avoid division by zero
-        }
-
-        // Step 3: Find the first minimum below a threshold
-        int tauEstimate = -1;
-        double threshold = 0.1; // Default YIN threshold (adjustable)
-        for (int tau = 2; tau < cmndf.length; tau++) { // Start at 2 to skip smallest lags
-            if (cmndf[tau] < threshold && isLocalMinimum(cmndf, tau)) {
-                tauEstimate = tau;
-                break;
-            }
-        }
-
-
-        // Step 4: Parabolic interpolation for more precise estimation
-        double tauEstimateAfterInterpolation; // Ändere Datentyp zu double
-        if (tauEstimate != -1) {
-            tauEstimateAfterInterpolation = parabolicInterpolation(cmndf, tauEstimate);
-            return (double) sampleRate / tauEstimateAfterInterpolation;
-        } else {
-            return -1; // No pitch detected
-        }
-    }
-
-    /**
-     * Helper function to check if the given index is a local minimum.
-     *
-     * @param array the array of values
-     * @param index the index to check
-     * @return true if the index is a local minimum
-     */
-    private static boolean isLocalMinimum(double[] array, int index) {
-        if (index <= 0 || index >= array.length - 1) {
-            return false;
-        }
-        return array[index] < array[index - 1] && array[index] < array[index + 1];
-    }
-
-    /**
-     * Parabolic interpolation to refine tau estimate for higher pitch accuracy.
-     *
-     * @param cmndf the values of the cumulative mean normalized difference function
-     * @param tau   the initial tau estimate
-     * @return refined tau estimate
-     */
-    private static double parabolicInterpolation(double[] cmndf, int tau) {
-        if (tau <= 0 || tau >= cmndf.length - 1) {
-            return tau;
-        }
-        double x0 = cmndf[tau - 1];
-        double x1 = cmndf[tau];
-        double x2 = cmndf[tau + 1];
-        return tau + (x0 - x2) / (2 * (2 * x1 - x0 - x2)); // Parabolic refinement
+        return difference;
     }
 
     /**
      * Detects the pitch of an audio signal using the McLeod Pitch Method (MPM).
-     * The method analyzes the normalized square difference function (NSDF) of
-     * the audio data to estimate the fundamental frequency.
+     * This method calculates the fundamental frequency of the audio data by
+     * analyzing the normalized square difference function (NSDF).
      *
-     * @param audioData  the normalized audio data as an array of doubles
-     * @param sampleRate the sampling rate of the audio data (Hz)
-     * @return the detected pitch frequency in Hertz (Hz), or -1 if no pitch is detected
+     * @param audioData an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return the detected pitch in Hz, or -1 if no pitch is detected.
      */
     public static double detectPitchWithMPM(double[] audioData, int sampleRate) {
         int n = audioData.length;
@@ -177,10 +219,13 @@ public class PitchDetectionUtil {
     }
 
     /**
-     * Calculates the RMS (Root Mean Square) to measure signal amplitude.
+     * Calculates the Root Mean Square (RMS) value of an audio signal.
+     * RMS is a measure of the magnitude of a varying quantity and is
+     * commonly used in audio processing to determine signal energy.
      *
-     * @param audioData the normalized audio data
-     * @return RMS value
+     * @param audioData an array of double values representing the audio signal
+     *                  for which the RMS is to be calculated.
+     * @return the RMS value of the audio signal as a double, scaled by a factor of 100.
      */
     public static double calcRMS(double[] audioData) {
         double sum = 0;
@@ -189,6 +234,5 @@ public class PitchDetectionUtil {
         }
         return Math.sqrt(sum / audioData.length) * 100;
     }
-
 
 }
