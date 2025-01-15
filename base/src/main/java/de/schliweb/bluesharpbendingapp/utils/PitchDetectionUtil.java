@@ -33,11 +33,27 @@ import java.util.List;
  */
 public class PitchDetectionUtil {
 
+    /**
+     * A constant representing the absence of a detected pitch in pitch detection algorithms.
+     * When a pitch detection method fails to identify a fundamental frequency within
+     * the audio signal, this value is returned to indicate no pitch was detected.
+     */
+    public static final double NO_DETECTED_PITCH = -1;
+    /**
+     * Represents the minimum threshold value used in the YIN pitch detection algorithm.
+     * This threshold is applied to the cumulative mean normalized difference function (CMNDF)
+     * to identify potential pitch candidates. Values in the CMNDF below this threshold
+     * are considered for determining the fundamental frequency of an audio signal.
+     * <p>
+     * The threshold ensures that only significant periodicities are evaluated, helping
+     * to discriminate noise or irrelevant fluctuations from valid pitch candidates.
+     */
+    private static final double YIN_MINIMUM_THRESHOLD = 0.4;
 
     /**
      * Detects the pitch of an audio signal using the YIN algorithm.
      *
-     * @param audioData an array of double values representing the audio signal.
+     * @param audioData  an array of double values representing the audio signal.
      * @param sampleRate the sample rate of the audio signal in Hz.
      * @return the detected pitch in Hz, or -1 if no pitch is detected.
      */
@@ -51,15 +67,16 @@ public class PitchDetectionUtil {
         double[] cmndf = computeCMNDF(difference);
 
         // Step 3: Find the first minimum below a threshold
-        int tauEstimate = findFirstMinimum(cmndf, 0.1);
+        int tauEstimate = findFirstMinimum(cmndf, YIN_MINIMUM_THRESHOLD);
 
         // Step 4: Use parabolic interpolation for more precise tau estimation
         if (tauEstimate != -1) {
             double refinedTau = parabolicInterpolation(cmndf, tauEstimate);
-            return (double) sampleRate / refinedTau;
+            if (refinedTau > 0.0) {
+                return (double) sampleRate / refinedTau;
+            }
         }
-
-        return -1; // No pitch detected
+        return NO_DETECTED_PITCH;
     }
 
     /**
@@ -67,7 +84,7 @@ public class PitchDetectionUtil {
      * for improved accuracy in analyzing periodic signals.
      *
      * @param cmndf an array of double values representing the cumulative mean normalized difference function (CMNDF)
-     * @param tau an integer representing the initial lag value
+     * @param tau   an integer representing the initial lag value
      * @return the refined lag value as a double, obtained through parabolic interpolation
      */
     private static double parabolicInterpolation(double[] cmndf, int tau) {
@@ -102,10 +119,10 @@ public class PitchDetectionUtil {
      * Finds the first index in the given cumulative mean normalized difference function (CMNDF)
      * array where the value is below a specified threshold and is a local minimum.
      *
-     * @param cmndf an array of double values representing the cumulative mean normalized difference function (CMNDF)
+     * @param cmndf     an array of double values representing the cumulative mean normalized difference function (CMNDF)
      * @param threshold a double value representing the threshold to evaluate against
      * @return the index of the first local minimum in the CMNDF array that is below the threshold,
-     *         or -1 if no such local minimum is found
+     * or -1 if no such local minimum is found
      */
     private static int findFirstMinimum(double[] cmndf, double threshold) {
         for (int tau = 2; tau < cmndf.length - 1; tau++) {
@@ -121,9 +138,9 @@ public class PitchDetectionUtil {
      * The CMNDF is used in pitch detection algorithms to evaluate the periodicity of signals.
      *
      * @param difference an array of double values representing the difference function
-     *                    of a signal, typically derived from a pitch detection process.
+     *                   of a signal, typically derived from a pitch detection process.
      * @return an array of double values representing the CMNDF, where each value indicates
-     *         the normalized difference for a potential periodicity.
+     * the normalized difference for a potential periodicity.
      */
     private static double[] computeCMNDF(double[] difference) {
         double[] cmndf = new double[difference.length];
@@ -140,7 +157,7 @@ public class PitchDetectionUtil {
      * Computes the difference function of the given audio data for use in pitch detection algorithms.
      * The difference function calculates the squared difference between signal values at various time lags.
      *
-     * @param audioData an array of double values representing the audio signal
+     * @param audioData  an array of double values representing the audio signal
      * @param bufferSize the size of the buffer to be used for the computation, representing the length of the audio segment
      * @return an array of double values representing the computed difference function
      */
@@ -162,7 +179,7 @@ public class PitchDetectionUtil {
      * This method calculates the fundamental frequency of the audio data by
      * analyzing the normalized square difference function (NSDF).
      *
-     * @param audioData an array of double values representing the audio signal.
+     * @param audioData  an array of double values representing the audio signal.
      * @param sampleRate the sample rate of the audio signal in Hz.
      * @return the detected pitch in Hz, or -1 if no pitch is detected.
      */
@@ -215,7 +232,7 @@ public class PitchDetectionUtil {
             return (double) sampleRate / peakIndex;
         }
 
-        return -1; // No pitch detected
+        return NO_DETECTED_PITCH; // No pitch detected
     }
 
     /**
