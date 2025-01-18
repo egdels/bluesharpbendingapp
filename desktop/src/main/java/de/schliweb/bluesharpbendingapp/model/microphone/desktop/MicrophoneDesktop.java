@@ -155,6 +155,17 @@ public class MicrophoneDesktop implements Microphone {
     private String algorithm = "YIN"; // Default algorithm
 
     /**
+     * Represents the confidence level used by the microphone implementation to determine
+     * the reliability or accuracy of certain operations, such as pitch detection or audio
+     * feature analysis. This value typically serves as a threshold or metric for handling
+     * results or triggering specific behaviors in the application.
+     * <p>
+     * The default confidence value is set to 0.95, indicating a high level of reliability.
+     * It can be used or modified based on the application's sensitivity requirements.
+     */
+    private double confidence = 0.95;
+
+    /**
      * Retrieves the audio format configuration used by the application.
      * The audio format is specified with a sample rate, bit depth, channel count,
      * and endianness, which are required for capturing or processing audio data.
@@ -203,6 +214,20 @@ public class MicrophoneDesktop implements Microphone {
     }
 
     @Override
+    public String getConfidence() {
+        return Double.toString(confidence);
+    }
+
+    @Override
+    public void setConfidence(int confidenceIndex) {
+        try {
+            confidence = Double.parseDouble(getSupportedConfidences()[confidenceIndex]);
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
+            LOGGER.error(exception.getMessage());
+        }
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -242,6 +267,11 @@ public class MicrophoneDesktop implements Microphone {
             }
         }
         return microphones.toArray(String[]::new);
+    }
+
+    @Override
+    public String[] getSupportedConfidences() {
+        return new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
     }
 
     /**
@@ -398,13 +428,22 @@ public class MicrophoneDesktop implements Microphone {
     protected void processAudioData(byte[] buffer, int bytesRead) {
         double[] audioData = convertToDouble(buffer, bytesRead);
         double pitch = -1;
+        double conf = 0;
+        PitchDetectionUtil.PitchDetectionResult result;
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
-            pitch = PitchDetectionUtil.detectPitchWithYIN(audioData, SAMPLE_RATE);
+            result = PitchDetectionUtil.detectPitchWithYIN(audioData, SAMPLE_RATE);
+            pitch = result.getPitch();
+            conf = result.getConfidence();
         } else if ("MPM".equals(getAlgorithm())) {
-            pitch = PitchDetectionUtil.detectPitchWithMPM(audioData, SAMPLE_RATE);
+            result = PitchDetectionUtil.detectPitchWithMPM(audioData, SAMPLE_RATE);
+            pitch = result.getPitch();
+            conf = result.getConfidence();
         }
+        if (conf < confidence)
+            pitch = -1;
+
         if (microphoneHandler != null) {
             microphoneHandler.handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
         }

@@ -26,7 +26,8 @@ class PitchDetectionUtilTest {
             audioData[i] = (audioData[i] >= 0) ? amplitude : -amplitude; // Zero-crossing behavior
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch(); // Assuming getPitch() retrieves the required pitch as a double
         assertEquals(frequency, detectedPitch, 1, "Detected pitch should match the sine wave frequency with zero crossing behavior");
     }
 
@@ -44,7 +45,8 @@ class PitchDetectionUtilTest {
             audioData[i] *= amplitude; // Skaliere auf hohe Amplitude
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 2, "Detected pitch should match the sine wave frequency even with high amplitude");
     }
 
@@ -63,7 +65,8 @@ class PitchDetectionUtilTest {
             audioData[i] += 0.3 * harmonic[i]; // Harmonik hinzufügen
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the synthesized waveform's base frequency");
     }
 
@@ -82,7 +85,8 @@ class PitchDetectionUtilTest {
             audioData[i] = i / (double) samples;
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for a linearly increasing signal");
     }
 
@@ -101,7 +105,8 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.random() * 2 - 1; // Random values between -1 and 1
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for non-periodic signals");
     }
 
@@ -122,7 +127,8 @@ class PitchDetectionUtilTest {
             audioData[i] = amplitude * Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 1, "Detected pitch should match the sine wave frequency despite varying amplitude");
     }
 
@@ -140,7 +146,8 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 1, "Detected pitch should match the sine wave frequency");
     }
 
@@ -159,7 +166,8 @@ class PitchDetectionUtilTest {
                     (Math.random() * 0.3 - 0.15); // Adding random noise
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 1, "Detected pitch should match the sine wave frequency despite noise");
     }
 
@@ -178,7 +186,8 @@ class PitchDetectionUtilTest {
             audioData[i] = amplitude * Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 1, "Detected pitch should match the sine wave frequency even at low amplitude");
     }
 
@@ -197,7 +206,8 @@ class PitchDetectionUtilTest {
             audioData[i] = (Math.sin(2 * Math.PI * frequency * i / sampleRate) >= 0) ? amplitude : -amplitude;
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the sine wave frequency with zero crossing behavior");
     }
 
@@ -216,7 +226,8 @@ class PitchDetectionUtilTest {
             audioData[i] = amplitude * Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the sine wave frequency even with high amplitude");
     }
 
@@ -235,7 +246,8 @@ class PitchDetectionUtilTest {
                     + 0.3 * Math.sin(2 * Math.PI * 2 * frequency * i / sampleRate); // Adding a harmonic
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the synthesized waveform's base frequency");
     }
 
@@ -254,7 +266,8 @@ class PitchDetectionUtilTest {
             audioData[i] = i / (double) samples;
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for a linearly increasing signal");
     }
 
@@ -273,7 +286,8 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.random() * 2 - 1; // Random values between -1 and 1
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = result.getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for non-periodic signals");
     }
 
@@ -294,7 +308,7 @@ class PitchDetectionUtilTest {
             audioData[i] = amplitude * Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the sine wave frequency despite varying amplitude");
     }
 
@@ -313,7 +327,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.2, "Detected pitch should match the input sine wave frequency");
     }
 
@@ -325,7 +339,7 @@ class PitchDetectionUtilTest {
         int sampleRate = 44100;
         double[] audioData = new double[1000];
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for silence");
     }
 
@@ -340,7 +354,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.random() * 2 - 1; // Random noise between -1 and 1
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for noise");
     }
 
@@ -369,7 +383,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.random() * 0.1 - 0.05; // Low variance
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for low-variance noise");
     }
 
@@ -387,7 +401,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.003, "Detected pitch should match the low-frequency sine wave");
     }
 
@@ -406,7 +420,7 @@ class PitchDetectionUtilTest {
             audioData[i] += 0.5 * harmonicData[i]; // Adding harmonic
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.02, "Detected pitch should match the fundamental frequency");
     }
 
@@ -425,7 +439,7 @@ class PitchDetectionUtilTest {
             audioData[i] = amplitude * Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.02, "Detected pitch should match the sine wave frequency even at low amplitude");
     }
 
@@ -443,7 +457,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.02, "Detected pitch should match the sine wave frequency with large buffer size");
     }
 
@@ -461,7 +475,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 3, "Detected pitch should match the high-frequency sine wave");
     }
 
@@ -480,7 +494,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.05, "Detected pitch should match the sine wave frequency");
     }
 
@@ -499,7 +513,7 @@ class PitchDetectionUtilTest {
                     (Math.random() * 0.3 - 0.15); // Adding random noise
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the sine wave frequency despite noise");
     }
 
@@ -517,7 +531,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.01, "Detected pitch should match the low-frequency sine wave");
     }
 
@@ -540,7 +554,7 @@ class PitchDetectionUtilTest {
                 audioData[j] = Math.sin(2 * Math.PI * frequency * j / sampleRate);
             }
 
-            double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+            double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
             assertEquals(frequency, detectedPitch, tolerances[i], "Pitch detection tolerance should match sample rate precision");
         }
     }
@@ -557,7 +571,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertTrue(detectedPitch > 0, "Detected pitch should be a positive number for simple input");
     }
 
@@ -576,7 +590,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 1, "Detected pitch should match the input sine wave frequency");
     }
 
@@ -588,7 +602,7 @@ class PitchDetectionUtilTest {
         int sampleRate = 44100;
         double[] audioData = new double[1000];
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate).getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for silence");
     }
 
@@ -603,7 +617,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.random() * 2 - 1; // Random noise between -1 and 1
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate).getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for noise");
     }
 
@@ -617,7 +631,7 @@ class PitchDetectionUtilTest {
         double duration = 1.0;
         double[] audioData = generateSineWave(frequency, sampleRate, duration);
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.1, "Detected pitch should match the low-frequency sine wave");
     }
 
@@ -635,7 +649,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 3, "Detected pitch should match the high-frequency sine wave");
     }
 
@@ -651,7 +665,7 @@ class PitchDetectionUtilTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithMPM(audioData, sampleRate).getPitch();
         assertTrue(detectedPitch > 0, "Detected pitch should be a positive number for simple input");
     }
 
@@ -692,7 +706,7 @@ class PitchDetectionUtilTest {
         double[] sineWave = generateSineWave(frequency, sampleRate, duration);
 
         // ACT
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate).getPitch();
 
         // ASSERT
         assertEquals(frequency, detectedPitch, 1.0, "The detected frequency should be F5 (698.46 Hz).");
@@ -726,7 +740,7 @@ class PitchDetectionUtilTest {
         double[] sineWave = generateSineWave(frequency, sampleRate, duration);
 
         // ACT
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate).getPitch();
 
         // ASSERT
         assertEquals(frequency, detectedPitch, 1.0, "The detected frequency should be F6 (1396.91 Hz).");
@@ -755,7 +769,7 @@ class PitchDetectionUtilTest {
         }
 
         // ACT
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(noise, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(noise, sampleRate).getPitch();
 
         // ASSERT
         assertEquals(-1, detectedPitch, "The method should return -1 when no discernible frequency is present.");
@@ -807,10 +821,329 @@ class PitchDetectionUtilTest {
         double[] sineWave = generateOverlappingSineWave(frequencyF5, amplitudeF5, frequencyF6, amplitudeF6, sampleRate, duration);
 
         // ACT
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate);
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate).getPitch();
 
         // ASSERT
         assertEquals(frequencyF6, detectedPitch, 12.5, "The detected frequency should be F6 (1396.91 Hz) because F6 has the higher amplitude.");
     }
 
+    @Test
+    public void testDetectPitchWithYIN_OverlappingA3andA3Sharp_A3Dominant() {
+        // ARRANGE
+        double frequencyA3Sharp = 233.082;
+        double amplitudeA3Sharp = 0.5;
+        double frequencyA3 = 220.0;
+        double amplitudeA3 = 1.0;
+        int sampleRate = 44100;
+        double duration = 1.0;
+
+        // Generate the overlapping sine wave
+        double[] sineWave = generateOverlappingSineWave(frequencyA3Sharp, amplitudeA3Sharp, frequencyA3, amplitudeA3, sampleRate, duration);
+
+        // ACT
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate).getPitch();
+
+        // ASSERT
+        assertEquals(frequencyA3, detectedPitch, 3, "The detected frequency should be A3 (220 Hz) because A3 has the higher amplitude.");
+    }
+
+
+    @Test
+    public void testDetectPitchWithYIN_A3_PureSineWave() {
+        int sampleRate = 44100;
+        double frequency = 220.0; // A3
+        double duration = 1.0;
+
+        double[] sineWave = generateSineWave(frequency, sampleRate, duration);
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the frequency of the input sine wave (A3).");
+    }
+    /**
+     * Tests detectPitchWithYIN for a sine wave with noise at the note A3 (220 Hz).
+     */
+    @Test
+    public void testDetectPitchWithYIN_A3_SineWithNoise() {
+        int sampleRate = 44100;
+        double frequency = 220.0; // A3
+        double duration = 1.0;
+        int samples = (int) (sampleRate * duration);
+        double[] audioData = new double[samples];
+        for (int i = 0; i < samples; i++) {
+            audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate) + (Math.random() * 0.1 - 0.05);
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match A3 despite added noise.");
+    }
+    /**
+     * Tests detectPitchWithYIN for overlapping frequencies where A3 (220 Hz) is dominant.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A3_OverlappingFrequencies() {
+        double frequencyA3 = 220.0;
+        double amplitudeA3 = 1.0; // Dominant amplitude of A3
+        double frequencyOther = 440.0; // Overlapping frequency
+        double amplitudeOther = 0.3; // Lower amplitude
+        int sampleRate = 44100;
+        double duration = 1.0;
+
+        double[] audioData = generateOverlappingSineWave(frequencyA3, amplitudeA3, frequencyOther, amplitudeOther, sampleRate, duration);
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequencyA3, detectedPitch, 0.5, "Detected pitch should be A3 (220 Hz), the dominant frequency.");
+    }
+    /**
+     * Tests detectPitchWithYIN for a low amplitude sine wave at the note A3 (220 Hz).
+     */
+    @Test
+    public void testDetectPitchWithYIN_A3_LowAmplitude() {
+        int sampleRate = 44100;
+        double frequency = 220.0; // A3
+        double amplitude = 0.01; // Very low amplitude
+        double duration = 1.0;
+
+        double[] audioData = generateSineWave(frequency, sampleRate, duration);
+        for (int i = 0; i < audioData.length; i++) {
+            audioData[i] *= amplitude;
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match frequency of A3 despite low amplitude.");
+    }
+    /**
+     * Tests detectPitchWithYIN for a non-periodic signal for A3 (220 Hz).
+     */
+    @Test
+    public void testDetectPitchWithYIN_A3_NonPeriodicSignal() {
+        int sampleRate = 44100;
+        double duration = 1.0;
+        int samples = (int) (sampleRate * duration);
+        double[] audioData = new double[samples];
+
+        for (int i = 0; i < samples; i++) {
+            audioData[i] = Math.random() * 2 - 1; // Random noise
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(-1, detectedPitch, "The method should return -1 for random noise signals.");
+    }
+    /**
+     * Tests detectPitchWithYIN for a square wave signal at A3 (220 Hz).
+     */
+    @Test
+    public void testDetectPitchWithYIN_A3_SquareWave() {
+        int sampleRate = 44100;
+        double frequency = 220.0; // A3
+        double duration = 1.0;
+        int samples = (int) (sampleRate * duration);
+        double[] audioData = new double[samples];
+        for (int i = 0; i < samples; i++) {
+            audioData[i] = (Math.sin(2 * Math.PI * frequency * i / sampleRate) >= 0) ? 0.5 : -0.5;
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the frequency of the square wave (A3).");
+    }
+    /**
+     * Tests detectPitchWithYIN for A3 signals layered with low noise.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A3_WithNoiseOverlay() {
+        int sampleRate = 44100;
+        double frequency = 220.0; // A3
+        double duration = 1.0;
+        double[] audioData = generateSineWave(frequency, sampleRate, duration);
+        for (int i = 0; i < audioData.length; i++) {
+            audioData[i] += Math.random() * 0.05 - 0.025;
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match A3 despite low noise overlay.");
+    }
+    /**
+     * Tests detectPitchWithYIN for silence or an inaudible signal when A3 is expected.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A3_Silence() {
+        int sampleRate = 44100;
+        double[] audioData = new double[44100]; // Silence for 1 second
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(-1, detectedPitch, "Detected pitch should be -1 for silence or inaudible signals.");
+    }
+
+    @Test
+    public void testDetectPitchWithYIN_A2_PureSineWave() {
+        int sampleRate = 44100;
+        double frequency = 110.0; // A2
+        double duration = 1.0;
+
+        double[] sineWave = generateSineWave(frequency, sampleRate, duration);
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the frequency of the input sine wave (A2).");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for a sine wave with noise at the note A2 (110 Hz).
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_SineWithNoise() {
+        int sampleRate = 44100;
+        double frequency = 110.0; // A2
+        double duration = 1.0;
+        int samples = (int) (sampleRate * duration);
+        double[] audioData = new double[samples];
+        for (int i = 0; i < samples; i++) {
+            audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate) + (Math.random() * 0.1 - 0.05);
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match A2 despite added noise.");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for overlapping frequencies where A2 (110 Hz) is dominant.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_OverlappingFrequencies() {
+        double frequencyA2 = 110.0;
+        double amplitudeA2 = 1.0; // Dominant amplitude of A2
+        double frequencyOther = 220.0; // Overlapping frequency
+        double amplitudeOther = 0.3; // Lower amplitude
+        int sampleRate = 44100;
+        double duration = 1.0;
+
+        double[] audioData = generateOverlappingSineWave(frequencyA2, amplitudeA2, frequencyOther, amplitudeOther, sampleRate, duration);
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequencyA2, detectedPitch, 0.5, "Detected pitch should be A2 (110 Hz), the dominant frequency.");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for a low amplitude sine wave at the note A2 (110 Hz).
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_LowAmplitude() {
+        int sampleRate = 44100;
+        double frequency = 110.0; // A2
+        double amplitude = 0.01; // Very low amplitude
+        double duration = 1.0;
+
+        double[] audioData = generateSineWave(frequency, sampleRate, duration);
+        for (int i = 0; i < audioData.length; i++) {
+            audioData[i] *= amplitude;
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match frequency of A2 despite low amplitude.");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for a sine wave at A2 (110 Hz) with high frequency deviation.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_HighFrequencyDeviation() {
+        int sampleRate = 44100;
+        double frequency = 110.0; // A2
+        double duration = 1.0;
+        double deviation = 2.0; // Variation in frequency
+        int samples = (int) (sampleRate * duration);
+
+        double[] audioData = new double[samples];
+        for (int i = 0; i < samples; i++) {
+            double currentFrequency = frequency + Math.sin(2 * Math.PI * i / sampleRate) * deviation;
+            audioData[i] = Math.sin(2 * Math.PI * currentFrequency * i / sampleRate);
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the base frequency of A2 (110 Hz).");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for non-periodic signals for which no pitch is expected.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_NonPeriodicSignal() {
+        int sampleRate = 44100;
+        double duration = 1.0;
+        int samples = (int) (sampleRate * duration);
+        double[] audioData = new double[samples];
+
+        for (int i = 0; i < samples; i++) {
+            audioData[i] = Math.random() * 2 - 1; // Random noise
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(-1, detectedPitch, "The method should return -1 for non-periodic signals.");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for a square wave with the main frequency of A2 (110 Hz).
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_SquareWave() {
+        int sampleRate = 44100;
+        double frequency = 110.0; // A2
+        double duration = 1.0;
+        int samples = (int) (sampleRate * duration);
+
+        double[] audioData = new double[samples];
+        for (int i = 0; i < samples; i++) {
+            audioData[i] = (Math.sin(2 * Math.PI * frequency * i / sampleRate) >= 0) ? 0.5 : -0.5;
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match the frequency of the square wave (A2).");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for the harmonic of a lower frequency signal near A2.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_Harmonic() {
+        int sampleRate = 44100;
+        double frequency = 110.0; // Fundamental frequency (A2)
+        double harmonic = 220.0; // Second harmonic (A3)
+        double duration = 1.0;
+
+        double[] audioData = generateSineWave(frequency, sampleRate, duration);
+        double[] harmonicData = generateSineWave(harmonic, sampleRate, duration);
+        for (int i = 0; i < audioData.length; i++) {
+            audioData[i] += 0.5 * harmonicData[i]; // Adding harmonic
+        }
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.02, "Detected pitch should match the fundamental frequency");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for silence when no pitch is discernible.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_Silence() {
+        int sampleRate = 44100;
+        double[] audioData = new double[44100]; // Silence for 1 second
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(-1, detectedPitch, "Detected pitch should be -1 for silence.");
+    }
+
+    /**
+     * Tests detectPitchWithYIN for overlapping low-frequency signals and noise with A2 dominance.
+     */
+    @Test
+    public void testDetectPitchWithYIN_A2_LowFreqWithNoiseOverlay() {
+        int sampleRate = 44100;
+        double frequency = 110.0; // A2
+        double duration = 1.0;
+
+        double[] audioData = generateSineWave(frequency, sampleRate, duration);
+        for (int i = 0; i < audioData.length; i++) {
+            audioData[i] += Math.random() * 0.05 - 0.025; // Overlay noise
+        }
+
+        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
+        assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match A2 despite noise overlay.");
+    }
 }

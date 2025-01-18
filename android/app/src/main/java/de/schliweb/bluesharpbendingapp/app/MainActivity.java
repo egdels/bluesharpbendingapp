@@ -196,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         Microphone microphone = new MicrophoneAndroid();
         model.setMicrophone(microphone);
         model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
+        microphone.setConfidence(model.getStoredConfidenceIndex());
 
         // check permission
         permissionGranted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
@@ -218,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
                 settingsFragment.getHarpSettingsViewHandler().initKeyList();
                 settingsFragment.getMicrophoneSettingsViewHandler().initAlgorithmList();
                 settingsFragment.getMicrophoneSettingsViewHandler().initMicrophoneList();
+                settingsFragment.getMicrophoneSettingsViewHandler().initConfidenceList();
                 settingsFragment.getNoteSettingsViewHandler().initConcertPitchList();
                 settingsFragment.initScreenLock(model.getStoredLockScreenIndex());
 

@@ -82,6 +82,24 @@ public interface Microphone {
     String[] getSupportedMicrophones();
 
     /**
+     * Sets the confidence level for the microphone based on the given index.
+     * The index corresponds to a pre-defined list of confidence levels
+     * supported by the microphone.
+     *
+     * @param confidenceIndex the index of the confidence level to be set
+     */
+    void setConfidence(int confidenceIndex);
+
+    /**
+     * Retrieves the confidence levels supported by the microphone.
+     * These confidence levels represent predefined values that can be used
+     * to configure the microphone's operational accuracy or sensitivity.
+     *
+     * @return an array of doubles where each value represents a supported confidence level
+     */
+    String[] getSupportedConfidences ();
+
+    /**
      * Opens the microphone for audio input.
      * This method is used to initialize the microphone and allocate necessary
      * resources for capturing audio data. It should be called after configuring
@@ -98,4 +116,10 @@ public interface Microphone {
      */
     void setMicrophoneHandler(MicrophoneHandler handler);
 
+    /**
+     * Retrieves the current confidence level set for the microphone.
+     *
+     * @return the currently selected confidence level as a String
+     */
+    String getConfidence();
 }

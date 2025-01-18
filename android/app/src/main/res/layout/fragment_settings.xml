@@ -55,6 +55,29 @@
 
     </TableRow>
 
+    <TableRow
+        android:layout_width="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/settings_conf_label"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/settings_conf_label"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <Spinner
+            android:id="@+id/settings_conf_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginEnd="50dp"
+            android:spinnerMode="dropdown"/>
+
+    </TableRow>
 
     <TableRow
             android:layout_width="0dp"

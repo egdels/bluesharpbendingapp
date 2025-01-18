@@ -45,6 +45,20 @@ public interface MicrophoneSettingsView {
     void setFrequency(double frequency);
 
     /**
+     * Sets the index of the selected confidence level from a list of available confidence levels.
+     *
+     * @param confidenceIndex the index of the confidence level to be selected, represented as an integer
+     */
+    void setSelectedConfidence(int confidenceIndex);
+
+    /**
+     * Sets the available confidence levels to be used in the microphone settings.
+     *
+     * @param confidences an array of strings representing the confidence levels to be set
+     */
+    void setConfidences(String[] confidences);
+
+    /**
      * Sets the list of available microphones to be used in the application.
      *
      * @param microphones an array of strings representing the names or identifiers of the microphones

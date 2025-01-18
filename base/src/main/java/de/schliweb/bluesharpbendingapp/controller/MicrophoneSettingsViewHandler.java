@@ -57,4 +57,18 @@ public interface MicrophoneSettingsViewHandler {
      * selected in the application.
      */
     void initMicrophoneList();
+
+    /**
+     * Initializes the list of available confidence levels. This method is responsible
+     * for setting up and preparing the confidence options that can be used or selected
+     * in the application.
+     */
+    void initConfidenceList();
+
+    /**
+     * Handles the selection of a specific confidence level based on the provided index.
+     *
+     * @param confidenceIndex the index of the confidence level to be selected
+     */
+    void handleConfidenceSelection(int confidenceIndex);
 }

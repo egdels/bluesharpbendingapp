@@ -145,6 +145,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
             setSelectedKey(model.getStoredKeyIndex());
             setSelectedTune(model.getStoredTuneIndex());
             setSelectedAlgorithm(model.getStoredAlgorithmIndex());
+            setSelectedConfidence(model.getStoredConfidenceIndex());
             initScreenLock(model.getStoredLockScreenIndex());
         });
 
@@ -276,6 +277,36 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
     @Override
     public void setFrequency(double frequency) {
         // on android do nothing
+    }
+
+    @Override
+    public void setSelectedConfidence(int i) {
+        Spinner spinner = binding.settingsConfList;
+        spinner.setSelection(i);
+    }
+
+    @Override
+    public void setConfidences(String[] confidences ) {
+        // Safeguard in case keys is null
+        if (confidences == null) {
+            confidences = new String[0]; // Use an empty array
+        }
+        Spinner spinner = binding.settingsConfList;
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, confidences);
+        adapter.setDropDownViewResource(R.layout.spinner_list);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        microphoneSettingsViewHandler.handleConfidenceSelection((int) id);
+                    }
+
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        // no need
+                    }
+                }
+        );
+
     }
 
     /**

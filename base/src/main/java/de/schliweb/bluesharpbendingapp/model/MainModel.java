@@ -131,6 +131,14 @@ public class MainModel {
     private int storedPrecisionIndex;
 
     /**
+     * Represents the stored confidence index for a specific operation or state.
+     * This variable is used to track or measure the level of confidence.
+     * It is initialized to a default value of 0 and can be updated based
+     * on application logic or requirements.
+     */
+    private int storedConfidenceIndex = 0;
+
+    /**
      * Creates a new instance of {@code MainModel} by parsing a provided string.
      * <p>
      * The input string is expected to follow a specific format where key-value pairs
@@ -560,4 +568,48 @@ public class MainModel {
         this.storedPrecisionIndex = storedPrecisionIndex;
     }
 
+    /**
+     * Retrieves the index of the selected confidence level from the list of available confidence levels.
+     * The selected confidence level is determined based on the microphone's current confidence setting.
+     *
+     * @return the index of the selected confidence level in the array of confidence levels
+     */
+    public int getSelectedConfidenceIndex() {
+        String[] confidences = getConfidences();
+        int index = 0;
+        for (int i = 0; i < confidences.length; i++) {
+            if (confidences[i].equals(microphone.getConfidence())) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * Retrieves the supported confidence levels from the microphone device.
+     *
+     * @return an array of strings representing the supported confidence levels.
+     */
+    public String[] getConfidences() {
+        return microphone.getSupportedConfidences();
+    }
+
+    /**
+     * Retrieves the stored confidence index value.
+     *
+     * @return the stored confidence index as an integer.
+     */
+    public int getStoredConfidenceIndex() {
+        return storedConfidenceIndex;
+    }
+
+    /**
+     * Sets the stored confidence index value.
+     *
+     * @param storedConfidenceIndex the confidence index to be stored
+     */
+    public void setStoredConfidenceIndex(int storedConfidenceIndex) {
+        this.storedConfidenceIndex = storedConfidenceIndex;
+    }
 }

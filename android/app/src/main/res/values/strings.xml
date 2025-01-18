@@ -49,4 +49,5 @@
     <string name="training_trainings_label">Trainings</string>
     <string name="training_precision_label">Precision</string>
     <string name="training_progress_label">Progress</string>
+    <string name="settings_conf_label">Confidences</string>
 </resources>

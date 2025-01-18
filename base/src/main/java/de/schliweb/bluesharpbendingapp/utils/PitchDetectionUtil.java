@@ -55,9 +55,9 @@ public class PitchDetectionUtil {
      *
      * @param audioData  an array of double values representing the audio signal.
      * @param sampleRate the sample rate of the audio signal in Hz.
-     * @return the detected pitch in Hz, or -1 if no pitch is detected.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and a confidence value, or -1 and 0 if no pitch is detected.
      */
-    public static double detectPitchWithYIN(double[] audioData, int sampleRate) {
+    public static PitchDetectionResult detectPitchWithYIN(double[] audioData, int sampleRate) {
         int bufferSize = audioData.length;
 
         // Step 1: Compute the difference function
@@ -68,15 +68,18 @@ public class PitchDetectionUtil {
 
         // Step 3: Find the first minimum below a threshold
         int tauEstimate = findFirstMinimum(cmndf, YIN_MINIMUM_THRESHOLD);
+        double confidence = 0.0;
 
         // Step 4: Use parabolic interpolation for more precise tau estimation
         if (tauEstimate != -1) {
+            confidence = Math.max(0, 1 - (cmndf[tauEstimate] / YIN_MINIMUM_THRESHOLD));
             double refinedTau = parabolicInterpolation(cmndf, tauEstimate);
             if (refinedTau > 0.0) {
-                return (double) sampleRate / refinedTau;
+                double pitch = (double) sampleRate / refinedTau;
+                return new PitchDetectionResult(pitch, confidence);
             }
         }
-        return NO_DETECTED_PITCH;
+        return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
     }
 
     /**
@@ -181,9 +184,9 @@ public class PitchDetectionUtil {
      *
      * @param audioData  an array of double values representing the audio signal.
      * @param sampleRate the sample rate of the audio signal in Hz.
-     * @return the detected pitch in Hz, or -1 if no pitch is detected.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value (0 to 1).
      */
-    public static double detectPitchWithMPM(double[] audioData, int sampleRate) {
+    public static PitchDetectionResult detectPitchWithMPM(double[] audioData, int sampleRate) {
         int n = audioData.length;
         double[] nsdf = new double[n];
         int maxLag = n / 2;
@@ -218,21 +221,24 @@ public class PitchDetectionUtil {
                 }
             }
         }
+        double confidence = 0;
 
         // Step 3: Parabolic interpolation for more accurate peak detection
         if (peakIndex > 0 && peakIndex < maxLag - 1) {
             double x0 = nsdf[peakIndex - 1];
             double x1 = nsdf[peakIndex];
             double x2 = nsdf[peakIndex + 1];
+            confidence = x1; // Confidence as the highest NSDF value at peakIndex
             peakIndex = peakIndex + (int) (0.5 * (x0 - x2) / (x0 - 2 * x1 + x2));
         }
 
         // Step 4: Convert lag to frequency
         if (peakIndex > 0) {
-            return (double) sampleRate / peakIndex;
+            double pitch = (double) sampleRate / peakIndex;
+            return new PitchDetectionResult(pitch, confidence);
         }
 
-        return NO_DETECTED_PITCH; // No pitch detected
+        return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0); // No pitch detected
     }
 
     /**
@@ -250,6 +256,60 @@ public class PitchDetectionUtil {
             sum += sample * sample;
         }
         return Math.sqrt(sum / audioData.length) * 100;
+    }
+
+    /**
+     * Represents the result of a pitch detection operation.
+     * This class stores the detected pitch frequency in Hz
+     * and a confidence score indicating the reliability of the detection.
+     */
+    public static class PitchDetectionResult {
+        /**
+         * Represents the detected pitch frequency in Hertz (Hz).
+         * This value indicates the frequency of the detected sound,
+         * measured as cycles per second.
+         * It is a final variable, meaning its value is immutable
+         * after being set during instantiation of the associated object.
+         */
+        public final double pitch;
+        /**
+         * Represents the confidence score of a pitch detection result.
+         * This value indicates the reliability of the detected pitch and is typically
+         * represented as a decimal number between 0 and 1, where a higher value signifies
+         * greater confidence in the accuracy of the detected pitch.
+         */
+        public final double confidence;
+
+
+        /**
+         * Constructs a new instance of {@code PitchDetectionResult} with the specified pitch and confidence values.
+         *
+         * @param pitch      the detected pitch frequency in hertz
+         * @param confidence the confidence score of the pitch detection, typically between 0.0 and 1.0
+         */
+        public PitchDetectionResult(double pitch, double confidence) {
+            this.pitch = pitch;
+            this.confidence = confidence;
+        }
+
+        /**
+         * Retrieves the detected pitch value.
+         *
+         * @return the pitch frequency in Hz as a double
+         */
+        public double getPitch() {
+            return pitch;
+        }
+
+        /**
+         * Retrieves the confidence score indicating the reliability of the pitch detection.
+         *
+         * @return the confidence score, a double value typically between 0 and 1,
+         * where higher values represent greater confidence in the detected pitch.
+         */
+        public double getConfidence() {
+            return confidence;
+        }
     }
 
 }

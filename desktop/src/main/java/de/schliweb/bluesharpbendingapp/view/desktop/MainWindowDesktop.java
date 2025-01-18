@@ -233,6 +233,7 @@ public class MainWindowDesktop extends JFrame implements MainWindow {
                 super.componentShown(e);
                 microphoneSettingsViewHandler.initMicrophoneList();
                 microphoneSettingsViewHandler.initAlgorithmList();
+                microphoneSettingsViewHandler.initConfidenceList();
                 harpSettingsViewHandler.initKeyList();
                 harpSettingsViewHandler.initTuneList();
                 noteSettingsViewHandler.initConcertPitchList();

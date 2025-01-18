@@ -53,6 +53,11 @@ class AndroidModelTest {
             0,
             model.storedLockScreenIndex.toLong()
         )
+        Assert.assertEquals(
+            "The storedConfidenceIndex should remain at its default value",
+            0,
+            model.storedConfidenceIndex.toLong()
+        )
     }
 
     /**

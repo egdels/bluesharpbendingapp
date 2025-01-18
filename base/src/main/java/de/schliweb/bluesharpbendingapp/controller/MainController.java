@@ -123,6 +123,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         Microphone microphone = model.getMicrophone();
         microphone.setAlgorithm(model.getStoredAlgorithmIndex());
         microphone.setName(model.getStoredMicrophoneIndex());
+        microphone.setConfidence(model.getStoredConfidenceIndex());
         this.model.setMicrophone(microphone);
         this.window.setMicrophoneSettingsViewHandler(this);
         this.window.setHarpSettingsViewHandler(this);
@@ -215,6 +216,22 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     }
 
     @Override
+    public void initConfidenceList() {
+        if (window.isMicrophoneSettingsViewActive()) {
+            MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
+            microphoneSettingsView.setConfidences(model.getConfidences());
+            microphoneSettingsView.setSelectedConfidence(model.getSelectedConfidenceIndex());
+        }
+    }
+
+    @Override
+    public void handleConfidenceSelection(int confidenceIndex) {
+        this.model.setStoredConfidenceIndex(confidenceIndex);
+        Microphone microphone = model.getMicrophone();
+        microphone.setConfidence(confidenceIndex);
+    }
+
+    @Override
     public void initNotes() {
         if (window.isHarpViewActive()) {
             ArrayList<NoteContainer> notesList = new ArrayList<>();
@@ -264,7 +281,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
                 }
             }
             this.noteContainers = Arrays.copyOf(notesList.toArray(), notesList.toArray().length, NoteContainer[].class);
-            harpView.initNotes(Arrays.copyOf(notesList.toArray(), notesList.toArray().length, NoteContainer[].class));
+            harpView.initNotes(noteContainers);
         }
     }
 

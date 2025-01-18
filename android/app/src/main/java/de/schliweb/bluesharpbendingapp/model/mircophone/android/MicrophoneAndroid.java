@@ -160,6 +160,20 @@ public class MicrophoneAndroid implements Microphone {
      * resources when the microphone is closed or the application is terminated.
      */
     private ExecutorService processingExecutor;
+    /**
+     * The confidence level associated with a result or prediction.
+     * <p>
+     * This value represents the degree of certainty or reliability
+     * in the correctness of a prediction or the validity of a
+     * calculated result.  It is typically expressed as a value
+     * between 0 and 1, where a higher number indicates greater
+     * confidence.
+     * </p>
+     * <p>
+     * The default value is 0.95.
+     * </p>
+     */
+    private double confidence=0.95;
 
     /**
      * Initializes and starts recording audio using the device's microphone.
@@ -271,6 +285,20 @@ public class MicrophoneAndroid implements Microphone {
     }
 
     @Override
+    public void setConfidence(int confidenceIndex) {
+        try {
+            confidence = Double.parseDouble(getSupportedConfidences()[confidenceIndex]);
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
+            logger.error(exception.getMessage());
+        }
+    }
+
+    @Override
+    public String[] getSupportedConfidences() {
+        return new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
+    }
+
+    @Override
     public String getAlgorithm() {
         return algorithm;
     }
@@ -289,6 +317,11 @@ public class MicrophoneAndroid implements Microphone {
     }
 
     @Override
+    public String getConfidence() {
+        return Double.toString(confidence);
+    }
+
+    @Override
     public String getName() {
         return "";
     }
@@ -300,27 +333,46 @@ public class MicrophoneAndroid implements Microphone {
 
 
     /**
-     * Processes audio data by analyzing the input buffer to detect pitch and compute RMS values.
-     * The method converts the input float buffer to a double array, applies
-     * pitch detection based on the configured algorithm, and invokes a handler
-     * with the detected pitch and RMS values if available.
+     * Processes the raw audio data from the microphone buffer to detect pitch and calculate RMS.
      *
-     * @param buffer    The audio data buffer containing raw sampled data as float values.
-     * @param bytesRead The number of valid bytes read from the audio stream and contained in the buffer.
+     * <p>This method takes a buffer of raw audio data and the number of bytes read from the buffer,
+     * converts it to a double array, and then uses a pitch detection algorithm to estimate the
+     * fundamental frequency (pitch) and confidence level of the detected pitch. It also calculates
+     * the Root Mean Square (RMS) of the audio data.</p>
+     *
+     * <p>The specific pitch detection algorithm used (YIN or MPM) is determined by the result of
+     * {@link #getAlgorithm()}.</p>
+     *
+     * <p>If the confidence level is below a threshold specified by {@link #confidence}, the
+     * detected pitch is discarded (set to -1).</p>
+     *
+     * <p>Finally, if a {@link #microphoneHandler} is set, it will be called with the detected
+     * pitch and the calculated RMS.</p>
+     *
+     * @param buffer The raw audio data buffer.
+     * @param bytesRead The number of bytes read from the buffer.
      */
     private void processAudioData(float[] buffer, int bytesRead) {
         double[] audioData = new double[bytesRead];
         for (int i = 0; i < bytesRead; i++) {
             audioData[i] = buffer[i];
         }
+        double conf = 0;
         double pitch = -1;
+        PitchDetectionUtil.PitchDetectionResult result;
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
-            pitch = PitchDetectionUtil.detectPitchWithYIN(audioData, SAMPLE_RATE);
+            result = PitchDetectionUtil.detectPitchWithYIN(audioData, SAMPLE_RATE);
+            pitch = result.getPitch();
+            conf = result.getConfidence();
         } else if ("MPM".equals(getAlgorithm())) {
-            pitch = PitchDetectionUtil.detectPitchWithMPM(audioData, SAMPLE_RATE);
+            result = PitchDetectionUtil.detectPitchWithMPM(audioData, SAMPLE_RATE);
+            pitch = result.getPitch();
+            conf = result.getConfidence();
         }
+        if (conf < confidence)
+            pitch = -1;
         if (microphoneHandler != null) {
             microphoneHandler.handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
         }
