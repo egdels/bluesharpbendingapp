@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+plugins {
+    // Enables the Java plugin for basic configuration of Java projects
+    id 'java'
+}
+
+allprojects {
+    // Defines the group ID used for all projects
+    group = 'de.schliweb.bluesharpbendingapp'
+    // Sets the version of the project, matching ${revision}
+    version = '2.0.0'
+
+    repositories {
+        // Specifies the Maven Central repository
+        mavenCentral()
+        // Adds the JetBrains repository for IntelliJ releases
+        maven {
+            url 'https://www.jetbrains.com/intellij-repository/releases'
+        }
+        // Adds a cache-redirector repository for IntelliJ dependencies
+        maven {
+            url 'https://cache-redirector.jetbrains.com/intellij-dependencies'
+        }
+    }
+}
+
+subprojects {
+    // Applies the Java plugin to all subprojects
+    apply plugin: 'java'
+
+    java {
+        // Specifies the Java version to be used for source and target compatibility
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    dependencies {
+        // Adds dependencies for Mockito, a library used for mocking in tests
+        testImplementation 'org.mockito:mockito-core:5.14.2'
+        // Adds the JUnit BOM (Bill of Materials) platform for consistent JUnit versions
+        testImplementation platform('org.junit:junit-bom:5.9.3')
+        // Adds JUnit Jupiter for unit testing
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+    }
+}
+
+
+

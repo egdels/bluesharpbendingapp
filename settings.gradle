@@ -1,0 +1,6 @@
+// settings.gradle
+rootProject.name = 'bluesharpbendingapp'
+
+include 'base'
+include 'desktop'
+include 'webapp'
