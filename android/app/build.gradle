@@ -34,8 +34,8 @@ android {
         applicationId "de.schliweb.bluesharpbendingapp"
         minSdk 28
         targetSdk 35
-        versionCode 38
-        versionName "1.9.7"
+        versionCode 39
+        versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -73,7 +73,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.5'
     implementation 'androidx.core:core-splashscreen:1.0.1'
-    implementation 'de.schliweb.bluesharpbendingapp:base:1.9.7'
+    implementation project(':base')
     implementation 'androidx.core:core-ktx:1.15.0'
     testImplementation 'junit:junit:4.13.2'
     debugImplementation "androidx.fragment:fragment-testing:1.8.5"

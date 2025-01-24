@@ -32,8 +32,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        mavenLocal()
     }
 }
 rootProject.name = "BluesHarpBendingApp"
-include ':app'
+include ':app', ':base'
+project(':base').projectDir = file('../base')
+
