@@ -272,6 +272,12 @@ public abstract class AbstractTraining implements Training {
          */
         MAJOR_SCALE,
 
+        /**
+         * Represents a placeholder training mode within the available types of training.
+         * This training type may be used for testing, fallback scenarios, or undefined behaviors
+         * in the harmonica training application. It does not correspond to a specific training
+         * goal or skill.
+         */
         DUMMY,
         /**
          * Octave leaps training.

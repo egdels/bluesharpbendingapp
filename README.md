@@ -64,6 +64,11 @@ The project is divided into several subprojects to keep development modular and 
   - Automatically displays content in *English* or *German* based on browser settings.
 - The app is linked to this website via the *Amazon App Store* and *Google Play Store*.
 
+### 5. **Tuner** ([tuner](tuner))
+
+The **Tuner** subproject serves as an example of pitch detection and can be used as a tuning tool.
+
+
 ---
 
 ## Build Instructions

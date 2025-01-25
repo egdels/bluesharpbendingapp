@@ -1,6 +1,7 @@
 // settings.gradle
 rootProject.name = 'bluesharpbendingapp'
 
-include 'base'
-include 'desktop'
-include 'webapp'
+include ':base'
+include ':desktop'
+include ':webapp'
+include ':tuner'

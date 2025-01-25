@@ -22,91 +22,60 @@
  *
  */
 plugins {
-    // Enables the Java plugin for basic configuration of Java projects
-    id 'java'
-    // Adds the 'org.beryx.runtime' plugin for creating runtime packages (e.g., jpackage for user distributions)
+    id 'application'
     id 'org.beryx.runtime' version '1.12.7'
 }
 
 dependencies {
     // Adds dependency on the 'base' module
     implementation project(':base')
-
+    implementation project(':desktop')
     // IntelliJ GUI Forms runtime library, required for running GUI components
     implementation 'com.jetbrains.intellij.java:java-gui-forms-rt:242.22855.106'
-
     // FlatLaf themes for the application's user interface (similar to IntelliJ themes)
     implementation 'com.formdev:flatlaf-intellij-themes:3.5.2'
     implementation 'com.formdev:flatlaf:3.5.2' // Main library for the FlatLaf framework
+
 }
 
 application {
-    // Defines the main class of the application, containing the `main()` method
-    mainClass = 'de.schliweb.bluesharpbendingapp.app.MainDesktop'
-    // Sets the name of the application
-    applicationName = 'BluesHarpBendingApp'
-}
-
-jar {
-    manifest {
-        // Adds a version entry in the `MANIFEST.MF` file, which can later be accessed (e.g., using getImplementationVersion())
-        attributes(
-                'Implementation-Version': version
-        )
-    }
+    mainClass = 'de.schliweb.tuner.TunerApp'
+    applicationName = 'TunerApp'
 }
 
 runtime {
-    // Configures runtime environment optimizations
-    options = [
-            '--strip-debug', // Removes debugging information to reduce runtime size
-            '--compress', '2', // Compresses the runtime image (level 2)
-            '--no-header-files', // Removes header files that are not necessary for end users
-            '--no-man-pages' // Removes manual pages
-    ]
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
 
     launcher {
-        // Sets up a launcher without console output
         noConsole = true
     }
 
     jpackage {
-        // Defines platform-specific options for building installation packages
-        def currentOs = org.gradle.internal.os.OperatingSystem.current() // Detects the current operating system
 
-        // Determines the correct icon format based on the operating system
+        def currentOs = org.gradle.internal.os.OperatingSystem.current()
         def imgType = currentOs.windows ? 'ico' : currentOs.macOsX ? 'icns' : 'png'
-
-        // Adds an application icon based on the operating system
-        imageOptions += ['--icon', "src/main/resources/ic_launcher_round.$imgType"]
-
-        imageName = 'bluesharpbendingapp'
-        installerName = 'bluesharpbendingapp'
-
-        // Includes additional resources from the "src/main/resources" directory
+        imageOptions += ['--icon', "src/main/resources/tunerapp.$imgType"]
         installerOptions += ['--resource-dir', "src/main/resources"]
-
         // Defines the application's vendor/creator
         installerOptions += ['--vendor', 'letsbend.de']
 
-        // Passes an argument to the application
-        args = ['donationware']
-
+        imageName = 'tuner'
+        installerName = 'tuner'
         // Platform-specific installer options:
         if (currentOs.windows) {
             // For Windows: Enables per-user installation, directory chooser, and Start Menu/Desktop shortcuts
             installerOptions += ['--win-per-user-install', '--win-dir-chooser', '--win-menu', '--win-shortcut']
         } else if (currentOs.linux) {
             // For Linux: Creates a `.deb` package with proper settings, including shortcuts
-            installerOptions += ['--type', 'deb', '--linux-package-name', 'bluesharpbendingapp', '--linux-app-release', version ,'--linux-deb-maintainer', 'christian.kierdorf@schliweb.de', '--linux-shortcut']
+            installerOptions += ['--type', 'deb', '--linux-package-name', 'tuner', '--linux-app-release', version, '--linux-deb-maintainer', 'christian.kierdorf@schliweb.de', '--linux-shortcut']
         } else if (currentOs.macOsX) {
             // For macOS: Specifies the package name for Mac
-            installerOptions += ['--mac-package-name', 'BluesharpBendingApp', '--mac-package-identifier', 'BluesharpBendingApp']
+            installerOptions += ['--mac-package-name', 'tuner', '--mac-package-identifier', 'tuner']
         }
     }
 }
 
 test {
-    // Enables the use of JUnit 5 (JUnit Platform) for testing
     useJUnitPlatform()
 }
+
