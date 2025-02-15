@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2023 Christian Kierdorf
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the Software
+    is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<GridPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="de.schliweb.bluesharpbendingapp.view.desktop.HarpViewDesktopFXController"
+          hgap="10" vgap="10"
+          maxHeight="Infinity"
+          maxWidth="Infinity"
+          VBox.vgrow="ALWAYS">
+    <fx:define>
+        <VBox>
+            <VBox.vgrow>
+                <Priority fx:constant="ALWAYS"/>
+            </VBox.vgrow>
+        </VBox>
+    </fx:define>
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <!-- 10 Spalten -->
+    <columnConstraints>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+        <ColumnConstraints percentWidth="10" hgrow="ALWAYS"/>
+    </columnConstraints>
+
+    <!-- 9 Zeilen -->
+    <rowConstraints>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+        <RowConstraints percentHeight="11.11" vgrow="ALWAYS"/>
+    </rowConstraints>
+
+    <!-- Zeile M3 -->
+    <Pane fx:id="channel1NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="0" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel2NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="1" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel3NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+          GridPane.columnIndex="2" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel4NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="3" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel5NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="4" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel6NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="5" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel7NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="6" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel8NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="7" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel9NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="8" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel10NoteM3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="9" GridPane.rowIndex="0">
+        <Label/>
+        <Line/>
+    </Pane>
+
+    <!-- Zeile M2 -->
+    <Pane fx:id="channel1NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel2NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel3NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="2" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel4NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="3" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel5NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="4" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel6NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="5" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel7NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="6" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel8NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="7" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel9NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="8" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel10NoteM2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="9" GridPane.rowIndex="1">
+        <Label/>
+        <Line/>
+    </Pane>
+
+    <!-- Zeile M1 -->
+    <Pane fx:id="channel1NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel2NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel3NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="2" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel4NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="3" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel5NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="4" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel6NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="5" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel7NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="6" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel8NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="7" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel9NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="8" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel10NoteM1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+           GridPane.columnIndex="9" GridPane.rowIndex="2">
+        <Label/>
+        <Line/>
+    </Pane>
+
+    <!-- Zeile 0 -->
+    <Pane fx:id="channel1Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="0"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel2Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="1"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel3Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="2"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel4Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="3"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel5Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="4"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel6Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="5"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel7Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="6"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel8Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="7"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel9Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote" GridPane.columnIndex="8"
+          GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel10Note0" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowNote"
+          GridPane.columnIndex="9" GridPane.rowIndex="3">
+        <Label/>
+        <Line/>
+    </Pane>
+
+    <!-- Zeile Channel -->
+    <StackPane fx:id="channel1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="0"
+          GridPane.rowIndex="4">
+        <Label text="1"/>
+    </StackPane>
+    <StackPane fx:id="channel2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="1"
+          GridPane.rowIndex="4">
+        <Label text="2"/>
+    </StackPane>
+    <StackPane fx:id="channel3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="2"
+          GridPane.rowIndex="4">
+        <Label text="3"/>
+    </StackPane>
+    <StackPane fx:id="channel4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="3"
+          GridPane.rowIndex="4">
+        <Label text="4"/>
+    </StackPane>
+    <StackPane fx:id="channel5" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="4"
+          GridPane.rowIndex="4">
+        <Label text="5"/>
+    </StackPane>
+    <StackPane fx:id="channel6" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="5"
+          GridPane.rowIndex="4">
+        <Label text="6"/>
+    </StackPane>
+    <StackPane fx:id="channel7" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="6"
+          GridPane.rowIndex="4">
+        <Label text="7"/>
+    </StackPane>
+    <StackPane fx:id="channel8" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="7"
+          GridPane.rowIndex="4">
+        <Label text="8"/>
+    </StackPane>
+    <StackPane fx:id="channel9" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="8"
+          GridPane.rowIndex="4">
+        <Label text="9"/>
+    </StackPane>
+    <StackPane fx:id="channel10" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, channel" GridPane.columnIndex="9"
+          GridPane.rowIndex="4">
+        <Label text="10"/>
+    </StackPane>
+
+    <!-- Zeile 1 -->
+    <Pane fx:id="channel1Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="0"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel2Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="1"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel3Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="2"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel4Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="3"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel5Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="4"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel6Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="5"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel7Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="6"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel8Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="7"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel9Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote" GridPane.columnIndex="8"
+          GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel10Note1" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawNote"
+          GridPane.columnIndex="9" GridPane.rowIndex="5">
+        <Label/>
+        <Line/>
+    </Pane>
+
+    <!-- Zeile 2 -->
+    <Pane fx:id="channel1Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="0"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel2Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="1"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel3Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="2"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel4Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="3"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel5Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="4"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel6Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="5"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel7Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="6"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel8Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="7"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel9Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="8"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel10Note2" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="9"
+          GridPane.rowIndex="6">
+        <Label/>
+        <Line/>
+    </Pane>
+
+    <!-- Zeile 3 -->
+    <Pane fx:id="channel1Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="0"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel2Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="1"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel3Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="2"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel4Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="3"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel5Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="4"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel6Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="5"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel7Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="6"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel8Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="7"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel9Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="8"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel10Note3" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="9"
+          GridPane.rowIndex="7">
+        <Label/>
+        <Line/>
+    </Pane>
+
+    <!-- Zeile 4 -->
+    <Pane fx:id="channel1Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="0"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel2Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="1"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel3Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="2"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel4Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="3"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel5Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="4"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel6Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="5"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel7Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="6"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel8Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="7"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel9Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="8"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+    <Pane fx:id="channel10Note4" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, drawBendNote" GridPane.columnIndex="9"
+          GridPane.rowIndex="8">
+        <Label/>
+        <Line/>
+    </Pane>
+
+</GridPane>

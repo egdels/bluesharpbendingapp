@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2023 Christian Kierdorf
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the Software
+    is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+-->
+
+<?import de.schliweb.bluesharpbendingapp.view.desktop.TuningMeterFX?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            xmlns="http://javafx.com/javafx"
+            fx:controller="de.schliweb.bluesharpbendingapp.view.desktop.SettingsViewDesktopFXController"
+            VBox.vgrow="ALWAYS"
+>
+
+
+    <center>
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Spalten-Constraints: Erste Spalte statisch, zweite dynamisch -->
+            <columnConstraints>
+                <ColumnConstraints minWidth="150" halignment="LEFT"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <!-- GridPane-Elemente -->
+            <Label text="Algorithms" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboAlgorithms" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Microphones" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboMicrophones" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Confidences" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboConfidences" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Note" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <Label fx:id="valueNote" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Tuner" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <TuningMeterFX fx:id="tuningMeter"
+                           prefWidth="200"
+                           prefHeight="120"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1"
+            />
+
+            <Label text="Frequency" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <Label fx:id="valueFrequency" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <Label text="Volume" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <Label fx:id="valueVolume" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+            <Label text="Keys" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboKeys" GridPane.rowIndex="7" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Tunes" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboTunes" GridPane.rowIndex="8" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Concert Pitch (Hz)" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboConcertPitches" GridPane.rowIndex="9" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+        </GridPane>
+    </center>
+
+    <!-- Footer mit Reset-Button -->
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="footer">
+            <padding>
+                <Insets top="10" right="20" bottom="20" left="20"/>
+            </padding>
+            <Button text="Reset" onAction="#handleResetButton"/>
+        </HBox>
+    </bottom>
+</BorderPane>

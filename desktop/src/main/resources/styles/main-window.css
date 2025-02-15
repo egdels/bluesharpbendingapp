@@ -1,0 +1,198 @@
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+/* General styling for the application's main window */
+.main-window {
+    -fx-pref-width: 800; /* Set the preferred width */
+    -fx-pref-height: 600; /* Set the preferred height */
+    -fx-background-color: #313540; /* Background color */
+}
+
+/* Default label styling */
+Label {
+    -fx-text-fill: #CCD5DE; /* Text color */
+}
+
+/* Styling for Hyperlinks */
+Hyperlink {
+    -fx-text-fill: #CCD5DE; /* Default text color */
+    -fx-font-weight: bold; /* Bold font */
+    -fx-underline: true; /* Enable underline */
+    -fx-font-size: 14px; /* Font size */
+    -fx-font-family: Arial, sans-serif; /* Font family */
+}
+
+/* Hover state for Hyperlinks */
+Hyperlink:hover {
+    -fx-text-fill: #FE6E21; /* Change text color on hover */
+    -fx-underline: true; /* Keep underline on hover */
+}
+
+/* Visited state for Hyperlinks */
+Hyperlink:visited {
+    -fx-text-fill: #CCD5DE; /* Retain original color for visited hyperlinks */
+}
+
+/* Toolbar Menu styles */
+.menu-toolbar {
+    -fx-background-color: transparent; /* Transparent background */
+}
+
+/* Styling for buttons in the menu */
+.menu-button {
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-text-fill: white; /* White text color */
+    -fx-border-color: transparent; /* No border color */
+    -fx-cursor: hand; /* Change cursor to pointer (hand) */
+    -fx-background-radius: 0; /* No background radius */
+    -fx-border-radius: 0; /* No border radius */
+}
+
+/* Hover effect for menu buttons */
+.menu-button:hover {
+    -fx-background-color: #444A5B; /* Gray background on hover */
+}
+
+/* Pressed state for menu buttons */
+.menu-button:pressed {
+    -fx-background-color: #FE6E21; /* Orange background on press */
+}
+
+/* HarpView cell panel styles */
+.cell-pane {
+    -fx-border-color: black; /* Black border for cells */
+    -fx-border-width: 1px; /* Border thickness */
+}
+
+/* Styling labels inside the cell pane */
+.cell-pane > Label {
+    -fx-text-fill: black; /* Black text color */
+    -fx-font-size: 15px; /* Font size */
+    -fx-font-weight: bold; /* Bold text */
+}
+
+/* Channel styling */
+.channel {
+    -fx-border-color: transparent; /* Transparent border */
+}
+
+/* Labels within the channel */
+.channel > Label {
+    -fx-text-fill: #CCD5DE; /* Text color for channel labels */
+}
+
+/* Notes styling */
+/* Styling for blow notes */
+.blowNote {
+    -fx-background-color: #9c9ba1; /* Gray background */
+}
+
+/* Styling for draw notes */
+.drawNote {
+    -fx-background-color: #9c9ba1; /* Gray background */
+}
+
+/* Styling for draw bend notes */
+.drawBendNote {
+    -fx-background-color: #6efdfd; /* Light blue background */
+}
+
+/* Styling for blow bend notes */
+.blowBendNote {
+    -fx-background-color: #ff9800; /* Orange background */
+}
+
+/* Styling for overblow notes */
+.overBlowNote {
+    -fx-background-color: #ff00ff; /* Pink background */
+}
+
+/* Styling for overdraw notes */
+.overDrawNote {
+    -fx-background-color: #ff00ff; /* Pink background */
+}
+
+/* ComboBox styles */
+.combo-box {
+    -fx-background-color: #313540; /* Dark background for the ComboBox */
+    -fx-text-fill: white; /* White text color */
+    -fx-border-color: #444A5B; /* Gray border color */
+    -fx-border-width: 1; /* Border thickness */
+}
+
+/* Styling for list cells in the ComboBox */
+.combo-box .list-cell {
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-text-fill: #CCD5DE; /* Light gray text color */
+}
+
+/* Styling for the ComboBox list view */
+.combo-box .list-view {
+    -fx-background-color: #313540; /* Dark background */
+    -fx-border-color: #444A5B; /* Gray border */
+}
+
+/* Hover effect for list cells in the ComboBox */
+.combo-box .list-cell:hover {
+    -fx-background-color: #444A5B; /* Gray background on hover */
+}
+
+/* Styling for the ComboBox arrow button */
+.combo-box .arrow-button {
+    -fx-background-color: transparent; /* Transparent background */
+}
+
+/* Styling for the arrow inside the arrow button */
+.combo-box .arrow {
+    -fx-background-color: #CCD5DE; /* Light gray arrow color */
+}
+
+/* Footer styles */
+.footer {
+    -fx-background-color: #313540; /* Dark background for footer */
+    -fx-border-width: 1 0 0 0; /* Border at the top */
+    -fx-border-color: #444A5B; /* Gray border color */
+}
+
+/* Button styling inside the footer */
+.footer .button {
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-text-fill: #CCD5DE; /* Text color */
+    -fx-border-color: #444A5B; /* Gray border */
+    -fx-border-width: 1; /* Border thickness */
+    -fx-cursor: hand; /* Pointer cursor */
+    -fx-padding: 5 15 5 15; /* Padding for buttons */
+}
+
+/* Hover effect for footer buttons */
+.footer .button:hover {
+    -fx-background-color: #444A5B; /* Gray background on hover */
+    -fx-text-fill: white; /* White text color */
+}
+
+/* Pressed state for footer buttons */
+.footer .button:pressed {
+    -fx-background-color: #FE6E21; /* Orange background when pressed */
+    -fx-border-color: #FE6E21; /* Match border color to background */
+    -fx-text-fill: white; /* White text color */
+}

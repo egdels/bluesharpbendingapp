@@ -1,4 +1,4 @@
-package de.schliweb.bluesharpbendingapp.view.desktop;
+package de.schliweb.tuner;
 
 import javax.swing.*;
 import java.awt.*;

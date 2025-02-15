@@ -26,18 +26,23 @@ plugins {
     id 'java'
     // Adds the 'org.beryx.runtime' plugin for creating runtime packages (e.g., jpackage for user distributions)
     id 'org.beryx.runtime' version '1.12.7'
+    id 'org.openjfx.javafxplugin' version '0.0.13'  // JavaFX Plugin
+}
+
+javafx {
+    version = '21.0.6'  // Wählen Sie die passende Version
+    modules = [
+            'javafx.controls',
+            'javafx.fxml',
+            'javafx.graphics'
+    ]
 }
 
 dependencies {
     // Adds dependency on the 'base' module
     implementation project(':base')
-
-    // IntelliJ GUI Forms runtime library, required for running GUI components
-    implementation 'com.jetbrains.intellij.java:java-gui-forms-rt:242.22855.106'
-
-    // FlatLaf themes for the application's user interface (similar to IntelliJ themes)
-    implementation 'com.formdev:flatlaf-intellij-themes:3.5.2'
-    implementation 'com.formdev:flatlaf:3.5.2' // Main library for the FlatLaf framework
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
 }
 
 application {
@@ -57,6 +62,11 @@ jar {
 }
 
 runtime {
+    modules = [
+            'javafx.controls',
+            'javafx.fxml',
+            'javafx.graphics'
+    ]
     // Configures runtime environment optimizations
     options = [
             '--strip-debug', // Removes debugging information to reduce runtime size

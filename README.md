@@ -47,7 +47,7 @@ The project is divided into several subprojects to keep development modular and 
 - Microphone data is not persisted; instead, the following is computed in real-time:
   - Frequency,
   - Volume.
-- User interfaces are created using the [IntelliJ GUI Designer](https://www.jetbrains.com/help/idea/creating-and-opening-forms.html).
+- User interfaces are implemented using JavaFX, providing a modern, platform-independent GUI framework.
 
 ### 3. **Android** ([android](android))
 

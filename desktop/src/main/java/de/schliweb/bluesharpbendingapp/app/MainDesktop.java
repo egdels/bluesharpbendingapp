@@ -23,144 +23,118 @@ package de.schliweb.bluesharpbendingapp.app;
  *
  */
 
-import com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme;
-import com.formdev.flatlaf.util.SystemInfo;
 import de.schliweb.bluesharpbendingapp.controller.MainController;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.desktop.MicrophoneDesktop;
 import de.schliweb.bluesharpbendingapp.utils.Logger;
-import de.schliweb.bluesharpbendingapp.view.MainWindow;
-import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktop;
+import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystems;
+import java.util.Objects;
 import java.util.Scanner;
 
+
 /**
- * The MainDesktop class serves as the entry point and main controller for the
- * desktop application. It handles application settings initialization,
- * version management, and model persistence. This class defines static variables
- * and methods to configure the application behavior, manage resources, and
- * communicate between different system components.
+ * The MainDesktop class represents the entry point for a JavaFX desktop application.
+ * It serves as the main application class responsible for initializing the application,
+ * managing its lifecycle, and handling essential tasks such as loading data, interacting
+ * with the GUI controller, and shutting down.
  */
-public class MainDesktop {
+public class MainDesktop extends Application {
+
 
     /**
-     * A Logger instance for logging messages specifically related to the MainDesktop class.
-     * This logger provides contextual logging capabilities, using the MainDesktop class
-     * as a reference for the source of logged messages. It supports different logging levels
-     * such as debug, info, and error to aid in tracing application behavior and troubleshooting.
+     * A logger instance for the {@link MainDesktop} class, providing logging
+     * capabilities such as debug, info, and error messages with contextual
+     * information related to the class and calling methods. This logger
+     * is statically initialized as a final field to be used across the
+     * MainDesktop class for consistent logging output.
      */
     private static final Logger LOGGER = new Logger(MainDesktop.class);
 
     /**
-     * A constant representing the directory path for temporary files used by the application.
+     * The constant TEMP_DIR represents the directory path where temporary files are stored
+     * for the application. It is constructed dynamically using the user's home directory
+     * and a predefined subdirectory specific to the application.
      * <p>
-     * This path is automatically generated based on the user's home directory and a predefined
-     * folder structure specific to the application. The directory is intended to store temporary files
-     * and data that may be created or used during the application's runtime.
+     * Key Characteristics:
+     * - Utilizes the user's home directory as the base path.
+     * - Appends a specific temporary folder named "BluesHarpBendingApp.tmp".
+     * - Ensures platform-independent file path construction by leveraging the default
+     *   file system separator.
      * <p>
-     * The directory path includes:
-     * - The user's home directory (retrieved using the "user.home" system property).
-     * - A folder named "BluesHarpBendingApp.tmp" for organizational purposes.
-     * <p>
-     * The use of `FileSystems.getDefault().getSeparator()` ensures that the generated path
-     * conforms to the file system and platform-specific directory separator.
-     * <p>
-     * This field is defined as `private` for encapsulation, `static` to allow shared usage across
-     * the class, and `final` to prevent modification after initialization.
+     * Usage:
+     * TEMP_DIR is used internally to define a consistent temporary storage location
+     * for the application's runtime operations.
      */
     private static final String TEMP_DIR = System.getProperty("user.home") + FileSystems.getDefault().getSeparator() + "BluesHarpBendingApp.tmp" + FileSystems.getDefault().getSeparator();
 
     /**
-     * Represents the name of the temporary file used for storing serialized data of the application's model.
-     * This is a constant value that specifies the file name where the model will be saved or read during
-     * operations within the MainDesktop class.
+     * Represents the name of the temporary file used by the application.
+     * This file is utilized for storing intermediate or temporary data,
+     * particularly related to the main model of the application.
      * <p>
-     * The file is expected to be located in the application's designated temporary directory.
+     * TEMP_FILE is a constant holding the file name "Model.tmp", which may
+     * be used in operations such as saving, reading, or managing model data.
+     * <p>
+     * It is defined as a static final variable, meaning its value cannot
+     * be modified during application runtime.
      */
     private static final String TEMP_FILE = "Model.tmp";
 
     /**
-     * Represents a cached version string retrieved from the host system or server.
-     * This static field is intended to store the version information temporarily,
-     * allowing it to be accessed by other methods or components within the application.
-     * <p>
-     * This variable is initially set to null and is expected to be populated through
-     * interactions with the host, such as through network communications or file I/O.
-     * It may be used for version checks or other operations requiring the application
-     * to verify the version information of the host.
+     * A static variable that stores the version information of the application retrieved from the host.
+     * This variable is initially set to null and is updated as needed during runtime to reflect the
+     * version details fetched from an external source.
      */
     private static String versionFromHost = null;
 
     /**
-     * A static reference to the main controller instance used within the application.
-     * This controller serves as a central point for managing the application's primary operations.
-     * <p>
-     * It is used across the application to coordinate tasks, manage state, and provide
-     * a single access point for key functionalities implemented in the system.
+     * A static instance of the MainController used to manage the primary
+     * interactions and operations of the MainDesktop application.
+     * The controller facilitates communication and control between
+     * different components of the application.
      */
     private static MainController controller;
 
     /**
-     * Represents the static instance of the MainModel used as the primary data model
-     * within the MainDesktop application. This is shared across the application's context
-     * to maintain consistency and synchronization of data.
+     * The main model instance used across the application to store and manage
+     * the core data or state encapsulated by the {@code MainModel} class.
+     * This static field acts as a shared resource within the {@code MainDesktop}
+     * class and its operations.
+     * <p>
+     * This field is initialized and manipulated by specific methods within the
+     * {@code MainDesktop} class, ensuring centralized control over the model's
+     * lifecycle and integrity. Modifications to this model should adhere to
+     * the imposed access restrictions and lifecycle management of the enclosing class.
      */
     private static MainModel mainModel;
 
     /**
-     * The main entry point of the application. This method initializes application configurations,
-     * sets up a graphical user interface, and starts the main controller.
+     * The main entry point for the application. This method initializes the logging settings,
+     * configures the microphone, retrieves the main model, and starts the application.
      *
-     * @param args an array of command-line arguments. Recognized arguments include:
-     *             - "debug": enables debug-level logging.
-     *             - "info": enables informational logging.
-     *             - "donationware": enables application operation in donationware mode.
+     * @param args the command-line arguments passed to the application. Supported arguments:
+     *             - "debug": Enables debug-level logging and informational logging.
+     *             - "info": Enables informational logging.
      */
     public static void main(String[] args) {
         Logger.setInfo(true);
 
         Logger.setDebug(false);
 
-        if (SystemInfo.isMacOS) {
-            // enable screen menu bar
-            // (moves menu bar from JFrame window to top of screen)
-            System.setProperty("apple.laf.useScreenMenuBar", "false");
-
-            // application name used in screen menu bar
-            // (in first menu after the "apple" menu)
-            System.setProperty("apple.awt.application.name", "Let's Bend");
-
-            // appearance of window title bars
-            // possible values:
-            //   - "system": use current macOS appearance (light or dark)
-            //   - "NSAppearanceNameAqua": use light appearance
-            //   - "NSAppearanceNameDarkAqua": use dark appearance
-            // (must be set on main thread and before AWT/Swing is initialized;
-            //  setting it on AWT thread does not work)
-            System.setProperty("apple.awt.application.appearance", "system");
-        }
-
-        System.setProperty("flatlaf.menuBarEmbedded", "true");
-        System.setProperty("flatlaf.useWindowDecorations", "true");
-        FlatArcDarkOrangeIJTheme.setup();
-
-        if (SystemInfo.isLinux) {
-            // enable custom window decorations
-            JFrame.setDefaultLookAndFeelDecorated(true);
-            JDialog.setDefaultLookAndFeelDecorated(true);
-        }
-
         checkVersionFromHost();
         Logger.setInfo(false);
-        boolean isDonationWare = false;
         for (String arg : args) {
             if ("debug".equals(arg)) {
                 Logger.setDebug(true);
@@ -169,33 +143,24 @@ public class MainDesktop {
             if ("info".equals(arg)) {
                 Logger.setInfo(true);
             }
-            if ("donationware".equals(arg)) {
-                isDonationWare = true;
-            }
         }
         Microphone microphone = new MicrophoneDesktop();
         microphone.setName(0);
-
-        MainWindow mainWindow = new MainWindowDesktop(isDonationWare);
-
 
         mainModel = readModel();
         mainModel.setMicrophone(microphone);
         microphone.setAlgorithm(mainModel.getStoredAlgorithmIndex());
         microphone.setName(mainModel.getStoredMicrophoneIndex());
-        controller = new MainController(mainWindow, mainModel);
-        controller.start();
+        launch(args);
     }
 
     /**
-     * Stores the provided MainModel instance to a temporary file within the application's
-     * designated temporary directory. If the temporary directory or file does not exist,
-     * it will attempt to create them. The content of the model is written as a string
-     * to the file.
+     * Stores the provided model object into a file within a temporary directory.
+     * Ensures the directory exists and handles the creation of the file if it does not already exist.
+     * Writes the string representation of the model to the file.
+     * Logs any errors encountered during the process.
      *
-     * @param model the MainModel instance to be stored. It must provide a valid string
-     *              representation through the getString() method, which will be written
-     *              to the file.
+     * @param model the {@link MainModel} object to be stored in the file
      */
     private static void storeModel(MainModel model) {
 
@@ -218,13 +183,13 @@ public class MainDesktop {
     }
 
     /**
-     * Reads a MainModel instance from a temporary file in the designated temporary directory.
-     * If the temporary directory does not exist, it attempts to create it. If the temporary file
-     * exists, its content is read and used to construct a MainModel instance. If the file is absent
-     * or an error occurs during the process, a new MainModel instance is returned.
+     * Reads the model object from a temporary directory file if it exists.
+     * If the directory or file is not present, it initializes with a default MainModel object.
+     * The method enforces directory creation if missing, reads the file,
+     * and constructs the model from a string representation in the file content.
+     * Logs debug and error messages appropriately during execution.
      *
-     * @return a MainModel instance. If the file exists and is readable, the model is constructed
-     * from its content. Otherwise, a default instance is returned.
+     * @return the {@link MainModel} object read from the file or a default instance if the file does not exist.
      */
     private static MainModel readModel() {
 
@@ -249,16 +214,19 @@ public class MainDesktop {
     }
 
     /**
-     * Checks the version of the application from a remote host by accessing a specified URL.
-     * Retrieves the version information from the content, trims it, and logs the result.
-     * If an error occurs during the process, logs the error message.
+     * Checks the latest version information available on a remote host and logs related details.
+     * Connects to a predefined URL to fetch the version information, reads the response content,
+     * and updates the application's version information if available.
      * <p>
-     * This method connects to the remote host using HTTPS, reads the content from the response,
-     * and stores the version information in the class-level variable `versionFromHost`.
-     * The HTTP response is validated before processing the content.
+     * The method performs the following steps:
+     * - Creates a connection to the specified URL.
+     * - Sends a GET request to the server and checks the HTTP response code.
+     * - If the response code is HTTP 200 (OK), fetches the content of the response.
+     * - Reads the version string from the response and trims it to remove extra spaces if needed.
+     * - Logs the retrieved version string or error details in case of failures.
      * <p>
-     * Exceptions caught include `IOException` for network-related issues and `URISyntaxException`
-     * for invalid URI syntax.
+     * Any exceptions such as URI syntax errors or IO-related issues during the connection or
+     * data retrieval process are caught and handled by logging the error message.
      */
     private static void checkVersionFromHost() {
         URL url;
@@ -284,12 +252,11 @@ public class MainDesktop {
     }
 
     /**
-     * Retrieves the version information of the application from a remote host.
-     * If the version has already been fetched, it returns the cached version.
-     * Otherwise, it triggers a check to fetch the version from the host.
+     * Retrieves the latest application version from a remote host.
+     * If the version information has already been fetched and cached, it returns the cached value.
+     * Otherwise, it fetches the version from the host by invoking the {@code checkVersionFromHost()} method.
      *
-     * @return the version of the application as a String. If the version could not be fetched,
-     * it may return null or an empty string.
+     * @return the latest version as a {@code String}, or {@code null} if the version could not be fetched.
      */
     public static String getVersionFromHost() {
         if (versionFromHost != null) return versionFromHost;
@@ -298,16 +265,17 @@ public class MainDesktop {
     }
 
     /**
-     * Terminates the application by performing necessary cleanup operations and shutting down.
+     * Gracefully shuts down the application by performing the following steps:
      * <p>
-     * This method executes the following tasks in order:
-     * 1. Logs an informational message indicating the application is shutting down.
-     * 2. Stops the main controller, ensuring that all essential components and resources
-     * are properly released, including audio input devices and any ongoing
-     * asynchronous operations.
-     * 3. Saves the current state of the main application model to a designated temporary
-     * file, allowing recovery or storage of application data.
-     * 4. Exits the application with a termination status of 0, signaling a successful shutdown.
+     * 1. Logs a shutdown information message using the application's logger.
+     * 2. Stops the application controller, ensuring all essential resources and
+     *    processes are properly terminated.
+     * 3. Stores the state of the main application model to a file for possible recovery
+     *    or future use.
+     * 4. Exits the application with a system-level termination call.
+     * <p>
+     * This method ensures a proper and clean shutdown sequence, avoiding potential
+     * resource leaks or incomplete data handling.
      */
     public static void close() {
         LOGGER.info("Shutting down");
@@ -315,4 +283,37 @@ public class MainDesktop {
         storeModel(mainModel);
         System.exit(0);
     }
+
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            // Load the FXML file for the main window
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main-window.fxml"));
+
+            // Create the scene and apply the stylesheet
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/main-window.css")).toExternalForm());
+
+            // Access the controller of the FXML file
+            MainWindowDesktopFXController mainWindowDesktopFXController = loader.getController();
+
+            // Initialize the main application controller with the view-controller and application model
+            controller = new MainController(mainWindowDesktopFXController, mainModel);
+            controller.start();
+
+            // Set the scene and show the stage
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Let's Bend - Desktop");
+            primaryStage.show();
+        } catch (Exception e) {
+            // Log an error if something goes wrong during application startup
+            LOGGER.error("Error while starting the application: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void stop() {
+        close();
+    }
+
 }
