@@ -30,7 +30,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * HarpViewNoteElementDesktopFX is a concrete implementation of the HarpViewNoteElement interface,
@@ -73,6 +75,15 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
     private final Label label;
 
     /**
+     * Represents the initial set of CSS classes assigned to the note pane.
+     * This list is used to store the default CSS styles that define the
+     * visual appearance of the note pane upon initialization. It ensures
+     * that the default styling can be restored when needed.
+     */
+    private final List<String> initialCssClasses;
+
+
+    /**
      * Constructs an instance of the HarpViewNoteElementDesktopFX with the specified Pane.
      * This constructor initializes the provided Pane, retrieves its child components,
      * and dynamically centers a label element within the Pane.
@@ -97,6 +108,9 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
 
         // Vertical centering: bind the label's Y position to the pane's height minus the label's height, divided by 2
         label.layoutYProperty().bind(notePane.heightProperty().subtract(label.heightProperty()).divide(2));
+
+        initialCssClasses = new ArrayList<>(notePane.getStyleClass());
+
     }
 
 
@@ -172,5 +186,40 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      */
     public void setNoteName(String noteName) {
         label.setText(noteName);
+    }
+
+    /**
+     * Updates the style of the note pane to reflect an "overdraw" state.
+     * This method adds the "overDrawNote" CSS class to the note pane and
+     * removes the "drawNote" CSS class if it is present. The applied CSS
+     * classes determine the visual representation of the note pane when
+     * the "overdraw" state is active.
+     */
+    public void setOverdraw() {
+        notePane.getStyleClass().add("overDrawNote");
+        notePane.getStyleClass().remove("drawNote");
+    }
+
+    /**
+     * Updates the style of the note pane to reflect an "overblow" state.
+     * This method adds the "overBlowNote" CSS class to the note pane and
+     * removes the "blowNote" CSS class if it is present. The applied CSS
+     * classes influence the visual representation of the note pane to
+     * indicate the "overblow" state.
+     */
+    public void setOverblow() {
+        notePane.getStyleClass().add("overBlowNote");
+        notePane.getStyleClass().remove("blowNote");
+    }
+
+    /**
+     * Initializes the style of the note pane by clearing all existing CSS classes
+     * and reapplying the initial set of CSS classes. This method ensures that the
+     * note pane returns to its default visual state as defined by the initial CSS
+     * configuration.
+     */
+    public void init() {
+        notePane.getStyleClass().clear(); 
+        notePane.getStyleClass().addAll(initialCssClasses);
     }
 }

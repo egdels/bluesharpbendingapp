@@ -615,12 +615,13 @@ public class HarpViewDesktopFXController implements HarpView {
             pane.setVisible(true);
             HarpViewNoteElementDesktopFX harpViewNoteElementDesktopFX = HarpViewNoteElementDesktopFX.getInstance(pane);
 
-            if (noteContainer.isOverblow()) {
-                pane.getStyleClass().add("overBlowNote");
-            }
-            if (noteContainer.isOverdraw()) {
-                pane.getStyleClass().add("overDrawNote");
-            }
+            harpViewNoteElementDesktopFX.init();
+
+            if(noteContainer.isOverblow())
+                harpViewNoteElementDesktopFX.setOverblow();
+            if(noteContainer.isOverdraw())
+                harpViewNoteElementDesktopFX.setOverdraw();
+
             harpViewNoteElementDesktopFX.setNoteName(noteContainer.getNoteName());
             harpViewNoteElementDesktopFX.clear();
         }
