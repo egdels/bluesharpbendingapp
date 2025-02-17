@@ -27,6 +27,13 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
 }
 
 .container {
@@ -35,13 +42,16 @@ body {
     padding: 0 20px;
 }
 
-main div.container div:last-child {
-    padding-bottom: 100px;
-}
-
 .rtl {
     unicode-bidi: bidi-override;
     direction: rtl;
+}
+
+
+/* Debug */
+#result {
+    display: none;
+    visibility: hidden;
 }
 
 /* ---------------- Start Header-Style --------------------------- */
@@ -120,74 +130,12 @@ nav {
 footer {
     background-color: #6efdfd;
     color: black;
-    padding: 10px 0;
     text-align: center;
-    position: fixed;
-    left: 0;
-    bottom: 0;
+    margin-top: auto;
     width: 100%;
 }
 
 /* ---------------- Ende Footer ---------------- */
-
-/* Media Queries für Handy- oder Tablet-Modus */
-@media screen and (max-width: 768px) {
-    header {
-        width: 100%;
-    }
-
-    .container {
-        padding: 0 10px;
-    }
-
-    main div.container div:last-child {
-        padding-bottom: 100px;
-    }
-
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .logo img {
-        max-width: 85px;
-    }
-
-    .menu ul {
-        display: none;
-    }
-
-    .menu ul li {
-        margin-right: 0;
-    }
-
-    .menu li a {
-        padding: 0 0;
-    }
-
-    .navbar-toggler {
-        display: block;
-    }
-
-    .navbar-toggler span {
-        width: 20px;
-        height: 2px;
-        margin-bottom: 4px;
-        background-color: #333;
-    }
-
-    .menu.open {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .menu.open ul {
-        margin-top: 10px;
-        display: block;
-    }
-}
-
 /** Download-Tabelle **/
 .downloadTable tr:nth-child(even) {
     background: #f4f4f4;
@@ -237,3 +185,157 @@ footer {
     hyphens: auto;
 
 }
+
+/** Harp */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(9, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    height: 100%;  /* Statt 100vh */
+    padding: 10px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.grid-cell {
+    position: relative;
+    border: 1px solid black;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;  /* Das könnte ein Problem sein */
+    box-sizing: border-box; /* Dies ist wichtig */
+    overflow: hidden;
+}
+
+.grid-cell:has(span:empty) {
+    visibility: hidden;
+}
+
+.line {
+    left: 0;
+    right: 0;
+    height: 5px;
+    background-color: green; /* oder die gewünschte Farbe */
+    position: absolute;
+    z-index: 1;
+}
+
+.channel {
+    border: 0;
+}
+
+.blow-bend-note {
+    background-color: #ff9800;
+}
+
+.blow-note {
+    background-color: #9c9ba1;
+}
+
+.draw-note {
+    background-color: #9c9ba1;
+}
+
+.draw-bend-note {
+    background-color: #6efdfd;
+}
+
+.overblow-note {
+    background-color: magenta;
+}
+
+.overdraw-note {
+    background-color: magenta;
+}
+
+.highlight {
+    background-color: yellow;
+}
+
+label {
+    margin: 0; /* Reset des Margins */
+    padding: 0; /* Reset des Paddings */
+}
+
+.select-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-control {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 200px;
+}
+
+
+/* Media Queries für Handy- oder Tablet-Modus */
+@media screen and (max-width: 768px) {
+    header {
+        width: 100%;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo img {
+        max-width: 85px;
+    }
+
+    .menu ul {
+        display: none;
+    }
+
+    .menu ul li {
+        margin-right: 0;
+    }
+
+    .menu li a {
+        padding: 0 0;
+    }
+
+    .navbar-toggler {
+        display: block;
+    }
+
+    .navbar-toggler span {
+        width: 20px;
+        height: 2px;
+        margin-bottom: 4px;
+        background-color: #333;
+    }
+
+    .menu.open {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu.open ul {
+        margin-top: 10px;
+        display: block;
+    }
+
+    .grid-cell {
+        min-height: 10px;  /* Das könnte ein Problem sein */
+    }
+
+    .grid-container {
+        gap: 5px;
+        padding: 5px;
+    }
+}
+

@@ -65,6 +65,8 @@ public interface Harmonica {
      */
     String getKeyName();
 
+    String getNoteName(int channel, int note);
+
     /**
      * Retrieves the frequency of a specific note on a given channel of the harmonica.
      *

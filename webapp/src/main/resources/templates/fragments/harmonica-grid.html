@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Define the fragment -->
+<div th:fragment="harmonicaGrid">
+    <div class="container-fluid p-2" th:if="${harmonica != null}">
+        <div class="grid-container">
+            <!-- Zeile M3 (Reihe 0) -->
+            <div id="channel1NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(1,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel2NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(2,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel3NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(3,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel4NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(4,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel5NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(5,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel6NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(6,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel7NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(7,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel8NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(8,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel9NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(9,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel10NoteM3" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(10,-3)}"></span></label>
+                <div class="line"></div>
+            </div>
+
+            <!-- Zeile M2 (Reihe 1) -->
+            <div id="channel1NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(1,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel2NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(2,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel3NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(3,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel4NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(4,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel5NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(5,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel6NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(6,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel7NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(7,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel8NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(8,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel9NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(9,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel10NoteM2" class="grid-cell blow-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(10,-2)}"></span></label>
+                <div class="line"></div>
+            </div>
+
+            <!-- Zeile M1 (Reihe 2) -->
+            <div id="channel1NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(1,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(1,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel2NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(2,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(2,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel3NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(3,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(3,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel4NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(4,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(4,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel5NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(5,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(5,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel6NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(6,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(6,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel7NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(7,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(7,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel8NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(8,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(8,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel9NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(9,-1) ? ' overblow-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(9,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel10NoteM1"
+                 th:class="${'grid-cell blow-bend-note' + (harmonica.isOverblow(10,-1) ? ' overblow-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(10,-1)}"></span></label>
+                <div class="line"></div>
+            </div>
+
+            <!-- Zeile 0 (Reihe 3) -->
+            <div id="channel1Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(1,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel2Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(2,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel3Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(3,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel4Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(4,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel5Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(5,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel6Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(6,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel7Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(7,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel8Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(8,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel9Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(9,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel10Note0" class="grid-cell blow-note"><label><span
+                    th:text="${harmonica.getNoteName(10,0)}"></span></label>
+                <div class="line"></div>
+            </div>
+
+            <div id="channel1" class="grid-cell channel"><label>1</label></div>
+            <div id="channel2" class="grid-cell channel"><label>2</label></div>
+            <div id="channel3" class="grid-cell channel"><label>3</label></div>
+            <div id="channel4" class="grid-cell channel"><label>4</label></div>
+            <div id="channel5" class="grid-cell channel"><label>5</label></div>
+            <div id="channel6" class="grid-cell channel"><label>6</label></div>
+            <div id="channel7" class="grid-cell channel"><label>7</label></div>
+            <div id="channel8" class="grid-cell channel"><label>8</label></div>
+            <div id="channel9" class="grid-cell channel"><label>9</label></div>
+            <div id="channel10" class="grid-cell channel"><label>10</label></div>
+
+            <!-- Zeile 1 (Reihe 4) -->
+            <div id="channel1Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(1,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel2Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(2,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel3Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(3,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel4Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(4,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel5Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(5,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel6Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(6,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel7Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(7,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel8Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(8,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel9Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(9,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel10Note1" class="grid-cell draw-note"><label><span
+                    th:text="${harmonica.getNoteName(10,1)}"></span></label>
+                <div class="line"></div>
+            </div>
+
+            <!-- Zeile 2 (Reihe 5) -->
+            <div id="channel1Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(1,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(1,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel2Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(2,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(2,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel3Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(3,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(3,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel4Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(4,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(4,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel5Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(5,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(5,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel6Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(6,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(6,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel7Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(7,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(7,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel8Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(8,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(8,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel9Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(9,2) ? ' overdraw-note' : '')}">
+                <label><span th:text="${harmonica.getNoteName(9,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel10Note2"
+                 th:class="${'grid-cell draw-bend-note' + (harmonica.isOverdraw(10,2) ? ' overdraw-note' : '')}"><label><span
+                    th:text="${harmonica.getNoteName(10,2)}"></span></label>
+                <div class="line"></div>
+            </div>
+
+            <!-- Zeile 3 (Reihe 6) -->
+            <div id="channel1Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(1,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel2Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(2,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel3Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(3,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel4Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(4,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel5Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(5,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel6Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(6,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel7Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(7,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel8Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(8,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel9Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(9,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel10Note3" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(10,3)}"></span></label>
+                <div class="line"></div>
+            </div>
+
+            <!-- Zeile 4 (Reihe 7) -->
+            <div id="channel1Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(1,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel2Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(2,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel3Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(3,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel4Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(4,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel5Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(5,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel6Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(6,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel7Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(7,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel8Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(8,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel9Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(9,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+            <div id="channel10Note4" class="grid-cell draw-bend-note"><label><span
+                    th:text="${harmonica.getNoteName(10,4)}"></span></label>
+                <div class="line"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -215,6 +215,12 @@ public abstract class AbstractHarmonica implements Harmonica {
         return NoteUtils.round(value);
     }
 
+    public static Harmonica create(String selectedKey, String selectedTune) {
+          KEY key = KEY.valueOf(selectedKey);
+          TUNE tune = TUNE.valueOf(selectedTune);
+          return create(key, tune);
+    }
+
     @Override
     public int getBlowBendingTonesCount(int channel) {
         int count = getHalfTonesOut()[channel] - getHalfTonesIn()[channel] - 1;
@@ -294,6 +300,23 @@ public abstract class AbstractHarmonica implements Harmonica {
             }
         }
         return name;
+    }
+
+    @Override
+    public String getNoteName(int channel, int note) {
+        if ((note >= 0 && note <= 1) ||
+                // DrawBends
+                (note > 1 && note <= getDrawBendingTonesCount(channel)+1) ||
+                // BlowBends
+                (note < 0 && Math.abs(note) <= getBlowBendingTonesCount(channel))||
+                // OverBlows
+                (note==2 && hasInverseCentsHandling(channel)) ||
+                // OverDraws
+                (note==-1 && !hasInverseCentsHandling(channel))
+        ) {
+            return NoteLookup.getNoteName(getNoteFrequency(channel, note));
+        }
+        return null;
     }
 
     @Override

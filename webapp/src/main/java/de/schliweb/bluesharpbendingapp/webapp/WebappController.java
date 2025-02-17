@@ -23,6 +23,9 @@ package de.schliweb.bluesharpbendingapp.webapp;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
+import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
@@ -255,8 +258,7 @@ public class WebappController {
         // Convert the FileTime to LocalDateTime
         LocalDateTime ldt = LocalDateTime.ofInstant(fileTime.toInstant(), ZoneId.systemDefault());
 
-        return ldt.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-                .withLocale(locale));
+        return ldt.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withLocale(locale));
     }
 
     /**
@@ -269,5 +271,32 @@ public class WebappController {
         Locale locale = LocaleContextHolder.getLocale();
         NumberFormat numberFormat = NumberFormat.getInstance(locale);
         return numberFormat.format(number);
+    }
+
+    /**
+     * Handles the request to display the audio stream page. This method initializes
+     * the harmonica object in the session if it is not already present and adds necessary
+     * data to the ModelAndView for rendering the audio stream page.
+     *
+     * @param session the HTTP session used to retrieve or save the harmonica instance
+     * @return a ModelAndView object containing the view name and the required data for
+     * rendering the audio stream page
+     */
+    @GetMapping("/letsbend.html")
+    public ModelAndView getAudioStreamPage(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+
+        Harmonica harmonica = (Harmonica) session.getAttribute("harmonica");
+
+        if (harmonica == null) {
+            harmonica = AbstractHarmonica.create(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER);
+        }
+        modelAndView.addObject("harmonica", harmonica);
+
+
+        modelAndView.setViewName("letsbend");
+        modelAndView.addObject("supportedTunes", AbstractHarmonica.getSupportedTunes());
+        modelAndView.addObject("supportedKeys", AbstractHarmonica.getSupporterKeys());
+        return modelAndView;
     }
 }

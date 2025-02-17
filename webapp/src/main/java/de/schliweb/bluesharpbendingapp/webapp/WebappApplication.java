@@ -23,6 +23,7 @@ package de.schliweb.bluesharpbendingapp.webapp;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -39,6 +40,7 @@ public class WebappApplication extends SpringBootServletInitializer {
      * @param args the input arguments
      */
     public static void main(String[] args) {
+        NoteLookup.setConcertPitch(442);
         SpringApplication.run(WebappApplication.class, args);
     }
 
