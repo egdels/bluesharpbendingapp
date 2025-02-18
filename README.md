@@ -59,10 +59,13 @@ The project is divided into several subprojects to keep development modular and 
 
 - A **Spring Boot**-based responsive website accompanying the app.
 - Key functionalities:
-  - Hosting the required privacy policy for the Android app.
-  - Language switching based on the `AcceptHeaderLocaleResolver`.
-  - Automatically displays content in *English* or *German* based on browser settings.
-- The app is linked to this website via the *Amazon App Store* and *Google Play Store*.
+    - Hosting the required privacy policy for the Android app.
+    - Language switching based on the `AcceptHeaderLocaleResolver`.
+    - Automatically displays content in *English* or *German* based on browser settings.
+    - **WebVersion**: Includes a web-based version of the application, allowing users to practice bending notes on harmonicas directly in their browser without requiring any installation. This version features:
+        - Real-time microphone access for frequency detection.
+        - Temporary analysis of audio data without storing it, ensuring privacy.
+        - Support for understanding and improving note bending techniques.
 
 ### 5. **Tuner** ([tuner](tuner))
 
