@@ -28,7 +28,9 @@
                 </option>
             </select>
         </div>
-        <!--<div>
+        <button id="start">Start</button>
+        <button disabled id="stop">Stop</button>
+        <div id="resultHarmonica" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
             <p th:if="${harmonica != null}">
                 Key: <span  id="harmonicaKey"
                             th:text="${harmonica.getKeyName()}"></span> <br />
@@ -38,9 +40,7 @@
             <p th:if="${harmonica == null}">
                 Keine Harmonica in der Session vorhanden.
             </p>
-        </div>-->
-        <button id="start">Start</button>
-        <button disabled id="stop">Stop</button>
+        </div>
         <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
             Ergebnis wird hier angezeigt...
         </div>
@@ -50,121 +50,20 @@
 
 <footer th:replace="~{fragments/general :: footer}"></footer>
 
-<script th:inline="javascript">
-    /**
-     * Handles the selection change for the dropdowns and sends the selected values to the server.
-     */
-    function handleSelectionChange() {
-        const key = document.querySelector('#supportedKeys').value;
-        const tune = document.querySelector('#supportedTunes').value;
+<script th:inline="javascript" type="module">
+    import PitchDetectionUtil from './scripts/PitchDetectionUtil.js';
+    import NoteLookup from './scripts/NoteLookup.js';
+    import NoteUtils from './scripts/NoteUtils.js';
 
-        // Only send data if both dropdowns have a valid selection
-        if (key && tune) {
-            fetch('/selection/send', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // Send data as JSON
-                },
-                body: JSON.stringify({supportedKey: key, supportedTune: tune}) // Selection data
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error updating the selection');
-                    }
-                    return response.json(); // The updated Harmonica object
-                })
-                .then(harmonica => {
-                    console.log('Updated Harmonica object:', harmonica);
-
-                    // Use the updated Harmonica object or adjust the UI accordingly
-                    updateInterfaceWithHarmonica(harmonica); // Example function
-                })
-                .catch(error => console.error('Error:', error)); // Error handling
-        }
-    }
-
-    /**
-     * Updates the interface based on the updated Harmonica object.
-     * Currently reloads the page but can be expanded to dynamically update displayed values.
-     */
-    function updateInterfaceWithHarmonica(harmonica) {
-        // Reload the page
-        window.location.reload();
-
-        /* TODO
-        // Dynamically update the UI with the new Harmonica values
-        document.querySelector('#harmonicaKey').textContent = harmonica.keyName;
-        document.querySelector('#harmonicaTune').textContent = harmonica.tuneName;
-
-        console.log('Interface updated with new Harmonica values.');
-        */
-    }
-
-    // Define WebSocket variables and server configuration
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const host = window.location.host; // e.g., "localhost:8080" or "example.com"
-    const socketPath = "/audio-stream-socket";
+    NoteLookup.concertPitch=442;
 
     const precision = 0.7;
 
-    const serverUrl = `${protocol}://${host}${socketPath}`;
-
     let resultDiv;
-    let socket;
+
     let mediaStream;
     let audioContext;
     let processorNode;
-
-
-    function handleChange(data) {
-        // Select all span elements within elements that have the class "grid-cell"
-        const spans = document.querySelectorAll('.grid-cell span');
-
-        // Iterate through each span to find the one with text matching data.noteName
-        spans.forEach(span => {
-
-            const lineElement = span.parentElement.parentElement.querySelector('.line');
-            lineElement.style.visibility = 'hidden';
-
-            // Check if the text content of the span equals data.noteName
-            if (data.confidence >= precision && span.textContent.trim() === data.noteName) {
-                console.log("Matching cell found:", span.parentElement.parentElement);
-
-                // Retrieve the value from data.cents
-                const centsValue = data.cents; // Value from your object
-
-                // Define the limits for calculation
-                const minCents = -50; // Top (upper boundary)
-                const maxCents = 50;  // Bottom (lower boundary)
-
-                // Normalize the value from -50 to 50 into a range between 0 and 1
-                const normalized = (centsValue - minCents) / (maxCents - minCents);
-
-                // Interpolate color from green (center) to red (top and bottom)
-                const red = Math.abs(2 * normalized - 1) * 255; // Red intensity increases away from the center
-                const green = (1 - Math.abs(2 * normalized - 1)) * 255; // Green intensity decreases away from the center
-
-                // Create the dynamic color
-                const color = `rgb(${Math.round(red)}, ${Math.round(green)}, 0)`;
-
-                // Calculate the dynamic top position in percentage
-                const minPercent = 0; // 0% = Top edge
-                const maxPercent = 100; // 100% = Bottom edge
-                const normalizedTop = normalized * (maxPercent - minPercent) + minPercent;
-
-                // Set the dynamic top position in percentage
-                lineElement.style.top = `${normalizedTop}%`; // Value in percent
-                lineElement.style.visibility = 'visible';
-
-                // Set the dynamic color of the line
-                lineElement.style.backgroundColor = color;
-
-                console.log(`Cents: ${centsValue}, Normalized: ${normalized}, Color: ${color}`);
-            }
-
-        });
-    }
-
 
     /**
      * Initializes the WebSocket and audio processing once the DOM content is fully loaded.
@@ -174,53 +73,12 @@
         document.querySelectorAll('.line').forEach(line => line.style.visibility = 'hidden');
         resultDiv = document.getElementById('result'); // The <div> where results will be displayed
 
+
         // Start button event handler
         document.getElementById('start').addEventListener('click', async () => {
             // Disable the start button and enable the stop button
             document.getElementById('start').disabled = true;
             document.getElementById('stop').disabled = false;
-
-            // Establish WebSocket connection
-            socket = new WebSocket(serverUrl);
-
-            socket.onopen = () => {
-                console.log("WebSocket connected!");
-                // Optionally update the UI
-                resultDiv.innerHTML = "WebSocket connected!";
-            };
-
-            socket.onmessage = (event) => {
-                try {
-                    // Parse the incoming data as JSON
-                    const data = JSON.parse(event.data);
-
-                    console.log("Recognized cents:", data.cents);
-                    console.log("Recognized note:", data.noteName);
-
-                    handleChange(data);
-
-                    // Update the resultDiv content dynamically
-                    resultDiv.innerHTML = `Raw data received: ${event.data}`;
-
-                } catch (error) {
-                    // Handle invalid JSON if the data isn't properly formatted
-                    console.error("Error parsing JSON:", error);
-                    console.error("Raw message data:", event.data);
-
-                    // Display raw data as a fallback
-                    resultDiv.innerHTML = `Raw data received: ${event.data}`;
-                }
-            };
-
-            socket.onerror = (error) => {
-                console.error("WebSocket error:", error);
-                resultDiv.innerHTML = "WebSocket error: " + error;
-            };
-
-            socket.onclose = () => {
-                console.log("WebSocket connection closed.");
-                resultDiv.innerHTML = "WebSocket connection closed.";
-            };
 
             try {
                 // Request microphone access
@@ -239,9 +97,19 @@
                 processorNode.onaudioprocess = (e) => {
                     const audioData = e.inputBuffer.getChannelData(0); // Channel 0 (mono data)
 
-                    if (socket.readyState === WebSocket.OPEN) {
-                        socket.send(audioData.buffer); // Send audio data as binary to the server
+                    const result = PitchDetectionUtil.detectPitchWithYIN(audioData, audioContext.sampleRate);
+                    const noteName = NoteLookup.getNoteName(result.pitch);
+                    if(noteName) {
+                        const noteFrequency = NoteLookup.getFrequency(noteName);
+                        const cents = NoteUtils.getCents(noteFrequency, result.pitch);
+                        const data = {
+                            noteName: noteName,
+                            cents: cents,
+                            confidence: result.confidence,
+                        };
+                        handleChange(data, precision);
                     }
+
                 };
 
             } catch (err) {
@@ -259,7 +127,6 @@
             if (mediaStream) {
                 mediaStream.getTracks().forEach(track => track.stop());
             }
-            if (socket) socket.close();
 
             console.log("Streaming stopped");
             resultDiv.innerHTML = "Streaming stopped.";
@@ -270,6 +137,5 @@
         });
     });
 </script>
-
 </body>
 </html>

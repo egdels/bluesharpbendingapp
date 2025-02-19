@@ -49,7 +49,7 @@ main {
 
 
 /* Debug */
-#result {
+#result, #resultHarmonica {
     display: none;
     visibility: hidden;
 }
