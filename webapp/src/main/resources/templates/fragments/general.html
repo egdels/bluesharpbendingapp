@@ -37,8 +37,8 @@
     <link href="/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
     <link href="/images/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
     <link href="/site.webmanifest" rel="manifest">
-    <link href="/styles/style.css" rel="stylesheet">
-    <script src="/scripts/script.js"></script>
+    <link th:href="${'/styles/style.css?v=' + @environment.getProperty('spring.application.version')}" rel="stylesheet">
+    <script th:src="${'/scripts/script.js?v=' + @environment.getProperty('spring.application.version')}" ></script>
 </head>
 <body>
 
@@ -79,6 +79,7 @@
 <footer th:fragment="footer">
     <div class="container">
         <p data-th-utext="#{footer.rights}"></p>
+        <p class="version">Version: <span th:text="${@environment.getProperty('spring.application.version')}"></span></p>
     </div>
 </footer>
 </body>

@@ -47,15 +47,17 @@ function handleSelectionChange() {
 
     const key = document.querySelector('#supportedKeys').value;
     const tune = document.querySelector('#supportedTunes').value;
+    const concertPitch = document.querySelector('#supportedConcertPitches').value;
+    const confidence = document.querySelector('#supportedConfidences').value;
 
-    // Only send data if both dropdowns have a valid selection
-    if (key && tune) {
+    // Only send data if all dropdowns have a valid selection
+    if (key && tune && concertPitch && confidence) {
         fetch('/selection/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' // Send data as JSON
             },
-            body: JSON.stringify({supportedKey: key, supportedTune: tune}) // Selection data
+            body: JSON.stringify({selectedKey: key, selectedTune: tune, selectedConcertPitch: concertPitch, selectedConfidence: confidence}) // Selection data
         })
             .then(response => {
                 if (!response.ok) {
@@ -120,7 +122,7 @@ function handleChange(data, precision = 0.7) {
 
         // Check if the text content of the span equals data.noteName
         if (data.confidence >= precision && span.textContent.trim() === data.noteName) {
-            console.log("Matching cell found:", span.parentElement.parentElement);
+            // console.log("Matching cell found:", span.parentElement.parentElement);
 
             // Retrieve the value from data.cents
             const centsValue = data.cents; // Value from your object
@@ -156,3 +158,5 @@ function handleChange(data, precision = 0.7) {
 
     });
 }
+
+

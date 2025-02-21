@@ -30,20 +30,22 @@ public class SelectionController {
      * @return a ResponseEntity containing the created Harmonica object.
      */
     @PostMapping("/send")
-    public ResponseEntity<Harmonica> ajaxVerarbeiteAuswahl(@RequestBody Map<String, String> selection, HttpSession session) {
+    public ResponseEntity<Harmonica> ajaxProcessSelection (@RequestBody Map<String, String> selection, HttpSession session) {
         // Retrieve the selected key and tune from the request body
-        String selectedKey = selection.get("supportedKey");
-        String selectedTune = selection.get("supportedTune");
-
-        // Processing the received values (e.g., logging, applying logic, or saving them)
-        System.out.println("Key: " + selectedKey);
-        System.out.println("Tune: " + selectedTune);
+        String selectedKey = selection.get("selectedKey");
+        String selectedTune = selection.get("selectedTune");
 
         // Create a new Harmonica instance based on the selected key and tune
         Harmonica harmonica = AbstractHarmonica.create(selectedKey, selectedTune);
 
         // Save the Harmonica object in the user's session
         session.setAttribute("harmonica", harmonica);
+
+        String selectedConcertPitch = selection.get("selectedConcertPitch");
+        session.setAttribute("selectedConcertPitch", selectedConcertPitch);
+
+        String selectedConfidence = selection.get("selectedConfidence");
+        session.setAttribute("selectedConfidence", selectedConfidence);
 
         // Return the Harmonica object as a success response
         return ResponseEntity.ok(harmonica);

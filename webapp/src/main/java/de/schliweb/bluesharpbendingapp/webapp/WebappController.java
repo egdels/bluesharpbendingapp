@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.webapp;
 
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
+import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -292,11 +293,34 @@ public class WebappController {
             harmonica = AbstractHarmonica.create(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER);
         }
         modelAndView.addObject("harmonica", harmonica);
-
-
-        modelAndView.setViewName("letsbend");
         modelAndView.addObject("supportedTunes", AbstractHarmonica.getSupportedTunes());
         modelAndView.addObject("supportedKeys", AbstractHarmonica.getSupporterKeys());
+
+        Object supportedConcertPitches = session.getAttribute("supportedConcertPitches");
+        if(supportedConcertPitches==null) {
+            supportedConcertPitches = NoteLookup.getSupportedConcertPitches();
+        }
+        modelAndView.addObject("supportedConcertPitches", supportedConcertPitches);
+
+        Object selectedConcertPitch = session.getAttribute("selectedConcertPitch");
+        if(selectedConcertPitch==null) {
+            selectedConcertPitch = "442";
+        }
+        modelAndView.addObject("selectedConcertPitch", selectedConcertPitch);
+
+        Object supportedConfidences = session.getAttribute("supportedConfidences");
+        if(supportedConfidences==null) {
+            supportedConfidences = new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
+        }
+        modelAndView.addObject("supportedConfidences", supportedConfidences);
+
+        Object selectedConfidence = session.getAttribute("selectedConfidence");
+        if(selectedConfidence==null) {
+            selectedConfidence = "0.7";
+        }
+        modelAndView.addObject("selectedConfidence", selectedConfidence);
+
+        modelAndView.setViewName("letsbend");
         return modelAndView;
     }
 }

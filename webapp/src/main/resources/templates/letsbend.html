@@ -9,8 +9,11 @@
     <div class="container">
         <h2>Let's Bend</h2>
         <div class="select-container">
+            <div class="select-group">
+
+            <label for="supportedKeys">Key:</label>
             <select class="form-control" id="supportedKeys" onchange="handleSelectionChange()"
-                    th:name="supportedKeys">
+                                                       th:name="supportedKeys">
                 <option disabled selected th:if="${harmonica == null}" value="">Bitte wählen...</option>
                 <option th:each="key : ${supportedKeys}"
                         th:selected="${key == harmonica.getKeyName()}"
@@ -18,8 +21,11 @@
                         th:value="${key}">
                 </option>
             </select>
+            </div>
+            <div class="select-group">
+            <label for="supportedTunes">Tune:</label>
             <select class="form-control" id="supportedTunes" onchange="handleSelectionChange()"
-                    th:name="supportedTunes">
+                                                        th:name="supportedTunes">
                 <option disabled selected th:if="${harmonica == null}" value="">Bitte wählen...</option>
                 <option th:each="tune : ${supportedTunes}"
                         th:selected="${tune == harmonica.getTuneName()}"
@@ -27,9 +33,36 @@
                         th:value="${tune}">
                 </option>
             </select>
+            </div>
+            <div class="select-group">
+            <label for="supportedConcertPitches">Concert Pitch:</label>
+            <select class="form-control" id="supportedConcertPitches" onchange="handleSelectionChange()"
+                                                                 th:name="supportedConcertPitches">
+                <option disabled selected th:if="${selectedConcertPitch == null}" value="">Bitte wählen...</option>
+                <option th:each="concertPitch : ${supportedConcertPitches}"
+                        th:selected="${concertPitch == selectedConcertPitch}"
+                        th:text="${concertPitch}"
+                        th:value="${concertPitch}">
+                </option>
+            </select>
+            </div>
+            <div class="select-group">
+            <label for="supportedConfidences">Confidence:</label>
+            <select class="form-control" id="supportedConfidences" onchange="handleSelectionChange()"
+                    th:name="supportedConfidences">
+                <option disabled selected th:if="${selectedConfidence == null}" value="">Bitte wählen...</option>
+                <option th:each="confidence : ${supportedConfidences}"
+                        th:selected="${confidence == selectedConfidence}"
+                        th:text="${confidence}"
+                        th:value="${confidence}">
+                </option>
+            </select>
+            </div>
         </div>
-        <button id="start">Start</button>
-        <button disabled id="stop">Stop</button>
+        <div class="button-container">
+            <button id="start">Start</button>
+            <button disabled id="stop">Stop</button>
+        </div>
         <div id="resultHarmonica" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
             <p th:if="${harmonica != null}">
                 Key: <span  id="harmonicaKey"
@@ -55,9 +88,11 @@
     import NoteLookup from './scripts/NoteLookup.js';
     import NoteUtils from './scripts/NoteUtils.js';
 
-    NoteLookup.concertPitch=442;
 
-    const precision = 0.7;
+
+    let confidence = 0.7;
+
+    let concertPitch = 442;
 
     let resultDiv;
 
@@ -71,8 +106,8 @@
      */
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.line').forEach(line => line.style.visibility = 'hidden');
-        resultDiv = document.getElementById('result'); // The <div> where results will be displayed
 
+        resultDiv = document.getElementById('result'); // The <div> where results will be displayed
 
         // Start button event handler
         document.getElementById('start').addEventListener('click', async () => {
@@ -80,10 +115,21 @@
             document.getElementById('start').disabled = true;
             document.getElementById('stop').disabled = false;
 
+            // Set selected Concert Pitch
+            concertPitch = document.getElementById('supportedConcertPitches').value;
+            console.log("Concert Pitch: " + concertPitch);
+
+            NoteLookup.concertPitch=concertPitch;
+
+            confidence = document.getElementById('supportedConfidences').value;
+            console.log("Selected Confidence: " + confidence);
+
             try {
                 // Request microphone access
                 mediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
-                audioContext = new AudioContext({sampleRate: 44100});
+                const audioContext = new AudioContext();
+                console.log(audioContext.sampleRate);
+
 
                 // Create an audio source from the media stream
                 const source = audioContext.createMediaStreamSource(mediaStream);
@@ -107,13 +153,17 @@
                             cents: cents,
                             confidence: result.confidence,
                         };
-                        handleChange(data, precision);
+                        resultDiv.innerHTML = "noteName: " + noteName + ", cents: " + cents + ", confidence: " + result.confidence;
+                        handleChange(data, confidence);
                     }
 
                 };
 
             } catch (err) {
                 console.error("Error accessing the microphone:", err);
+                resultDiv.style.visibility = 'visible';
+                resultDiv.style.display = 'block';
+                resultDiv.style.backgroundColor = 'red';
                 resultDiv.innerHTML = "Error accessing the microphone: " + err.message;
                 document.getElementById('start').disabled = false;
                 document.getElementById('stop').disabled = true;
