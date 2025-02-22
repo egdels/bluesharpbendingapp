@@ -1,3 +1,28 @@
+<!--
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+-->
 <!DOCTYPE html>
 <html th:lang="#{language}" th:xmllang="#{language}" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
@@ -11,52 +36,52 @@
         <div class="select-container">
             <div class="select-group">
 
-            <label for="supportedKeys">Key:</label>
-            <select class="form-control" id="supportedKeys" onchange="handleSelectionChange()"
-                                                       th:name="supportedKeys">
-                <option disabled selected th:if="${harmonica == null}" value="">Bitte wählen...</option>
-                <option th:each="key : ${supportedKeys}"
-                        th:selected="${key == harmonica.getKeyName()}"
-                        th:text="${key}"
-                        th:value="${key}">
-                </option>
-            </select>
+                <label for="supportedKeys">Key:</label>
+                <select class="form-control" id="supportedKeys" onchange="handleSelectionChange()"
+                        th:name="supportedKeys">
+                    <option disabled selected th:if="${harmonica == null}" value="">Bitte wählen...</option>
+                    <option th:each="key : ${supportedKeys}"
+                            th:selected="${key == harmonica.getKeyName()}"
+                            th:text="${key}"
+                            th:value="${key}">
+                    </option>
+                </select>
             </div>
             <div class="select-group">
-            <label for="supportedTunes">Tune:</label>
-            <select class="form-control" id="supportedTunes" onchange="handleSelectionChange()"
-                                                        th:name="supportedTunes">
-                <option disabled selected th:if="${harmonica == null}" value="">Bitte wählen...</option>
-                <option th:each="tune : ${supportedTunes}"
-                        th:selected="${tune == harmonica.getTuneName()}"
-                        th:text="${tune}"
-                        th:value="${tune}">
-                </option>
-            </select>
+                <label for="supportedTunes">Tune:</label>
+                <select class="form-control" id="supportedTunes" onchange="handleSelectionChange()"
+                        th:name="supportedTunes">
+                    <option disabled selected th:if="${harmonica == null}" value="">Bitte wählen...</option>
+                    <option th:each="tune : ${supportedTunes}"
+                            th:selected="${tune == harmonica.getTuneName()}"
+                            th:text="${tune}"
+                            th:value="${tune}">
+                    </option>
+                </select>
             </div>
             <div class="select-group">
-            <label for="supportedConcertPitches">Concert Pitch:</label>
-            <select class="form-control" id="supportedConcertPitches" onchange="handleSelectionChange()"
-                                                                 th:name="supportedConcertPitches">
-                <option disabled selected th:if="${selectedConcertPitch == null}" value="">Bitte wählen...</option>
-                <option th:each="concertPitch : ${supportedConcertPitches}"
-                        th:selected="${concertPitch == selectedConcertPitch}"
-                        th:text="${concertPitch}"
-                        th:value="${concertPitch}">
-                </option>
-            </select>
+                <label for="supportedConcertPitches">Concert Pitch:</label>
+                <select class="form-control" id="supportedConcertPitches" onchange="handleSelectionChange()"
+                        th:name="supportedConcertPitches">
+                    <option disabled selected th:if="${selectedConcertPitch == null}" value="">Bitte wählen...</option>
+                    <option th:each="concertPitch : ${supportedConcertPitches}"
+                            th:selected="${concertPitch == selectedConcertPitch}"
+                            th:text="${concertPitch}"
+                            th:value="${concertPitch}">
+                    </option>
+                </select>
             </div>
             <div class="select-group">
-            <label for="supportedConfidences">Confidence:</label>
-            <select class="form-control" id="supportedConfidences" onchange="handleSelectionChange()"
-                    th:name="supportedConfidences">
-                <option disabled selected th:if="${selectedConfidence == null}" value="">Bitte wählen...</option>
-                <option th:each="confidence : ${supportedConfidences}"
-                        th:selected="${confidence == selectedConfidence}"
-                        th:text="${confidence}"
-                        th:value="${confidence}">
-                </option>
-            </select>
+                <label for="supportedConfidences">Confidence:</label>
+                <select class="form-control" id="supportedConfidences" onchange="handleSelectionChange()"
+                        th:name="supportedConfidences">
+                    <option disabled selected th:if="${selectedConfidence == null}" value="">Bitte wählen...</option>
+                    <option th:each="confidence : ${supportedConfidences}"
+                            th:selected="${confidence == selectedConfidence}"
+                            th:text="${confidence}"
+                            th:value="${confidence}">
+                    </option>
+                </select>
             </div>
         </div>
         <div class="button-container">
@@ -65,8 +90,8 @@
         </div>
         <div id="resultHarmonica" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
             <p th:if="${harmonica != null}">
-                Key: <span  id="harmonicaKey"
-                            th:text="${harmonica.getKeyName()}"></span> <br />
+                Key: <span id="harmonicaKey"
+                           th:text="${harmonica.getKeyName()}"></span> <br/>
                 Tune: <span id="harmonicaTune"
                             th:text="${harmonica.getTuneName()}"></span>
             </p>
@@ -88,100 +113,270 @@
     import NoteLookup from './scripts/NoteLookup.js';
     import NoteUtils from './scripts/NoteUtils.js';
 
-
-
+    /**
+     * Represents the confidence level as a numerical value.
+     * This variable can be used to indicate the degree of certainty or trust
+     * in a specific outcome, prediction, or measurement.
+     *
+     * The value is typically a floating-point number between 0 and 1,
+     * where 0 represents no confidence and 1 represents full confidence.
+     *
+     * In this case, the confidence level is set to 0.7, which indicates
+     * a relatively high degree of certainty.
+     */
     let confidence = 0.7;
-
+    /**
+     * Represents the standard pitch commonly used as a reference for tuning musical instruments.
+     *
+     * The `concertPitch` variable defines the frequency of the A4 note in Hertz, which serves
+     * as the standard tuning frequency. This value is typically set to 440 Hz but can vary,
+     * depending on the context or regional preferences in music performance.
+     *
+     * In this instance, `concertPitch` is set to 442 Hz, which is sometimes used in classical
+     * and orchestral music to produce a brighter timbre.
+     *
+     * This value is used as a reference point for tuning other notes relative to it.
+     *
+     * Type: Number
+     */
     let concertPitch = 442;
-
+    /**
+     * A variable that represents the HTML element where results or output will be displayed.
+     * It is expected to be associated with a DOM element, typically a div container,
+     * that serves as a placeholder for dynamically inserted content.
+     */
     let resultDiv;
-
+    /**
+     * Represents a MediaStream object which is used to handle audio and video data streams.
+     * The MediaStream may contain multiple tracks, such as audio tracks and video tracks.
+     * It is commonly used for working with media captured from hardware devices such as cameras and microphones
+     * or for handling media in WebRTC applications.
+     *
+     * Key features:
+     * - Provides access to and control of tracks (e.g., audio and video) it contains.
+     * - Allows you to add, remove, or manipulate tracks dynamically.
+     * - Can be used as a source for various media elements like audio and video players.
+     */
     let mediaStream;
+    /**
+     * Represents an instance of `AudioContext`, which is a part of the Web Audio API.
+     * It provides an interface for managing, controlling, and playing audio within web applications.
+     * The `audioContext` variable is typically used to create, configure, and connect audio nodes in
+     * an audio processing graph, allowing developers to perform operations like audio playback, mixing,
+     * and processing.
+     *
+     * Key features include:
+     * - Creating audio sources such as oscillators, buffers, or media streams.
+     * - Connecting multiple audio nodes to build an audio graph.
+     * - Controlling audio properties such as gain, frequency, and playback rate.
+     * - Starting, stopping, and scheduling audio playback.
+     * - Supporting spatial audio, effects, and more.
+     */
     let audioContext;
-    let processorNode;
+    /**
+     * Represents a processing node in a system or application workflow.
+     *
+     * Typically utilized in systems involving pipelines, workflows, or
+     * data processing where each node handles specific operations.
+     *
+     * The processingNode may include logic or metadata relevant to
+     * the stage it represents within a larger process.
+     *
+     * @type {Object}
+     */
+    let processingNode;
 
     /**
-     * Initializes the WebSocket and audio processing once the DOM content is fully loaded.
-     * Also sets up the event handlers for start and stop buttons.
+     * Checks if the AudioWorklet API is supported in the current browser environment.
+     *
+     * @return {boolean} Returns true if the AudioWorklet API is supported, otherwise false.
      */
+    function isAudioWorkletSupported() {
+        return 'audioWorklet' in AudioContext.prototype;
+    }
+
+    /**
+     * Handles changes to dynamically update the visual representation of elements within a grid based on data input.
+     * It adjusts the position and color of a line element related to a specific grid cell, based on the input's confidence and cents value.
+     *
+     * @param {Object} data - The input data containing information for updating elements.
+     * @param {string} data.noteName - The name of the note to match.
+     * @param {number} data.cents - The cents value used to calculate position and color.
+     * @param {number} data.confidence - A confidence level used to determine if updates should be applied.
+     * @param {number} [precision=0.7] - The minimum confidence threshold required to apply updates.
+     *
+     * @return {void} This function does not return a value.
+     */
+    function handleChange(data, precision = 0.7) {
+        // Select all span elements within elements that have the class "grid-cell"
+        const spans = document.querySelectorAll('.grid-cell span');
+
+        // Iterate through each span to find the one with text matching data.noteName
+        spans.forEach(span => {
+
+            const lineElement = span.parentElement.parentElement.querySelector('.line');
+            lineElement.style.visibility = 'hidden';
+
+            // Check if the text content of the span equals data.noteName
+            if (data.confidence >= precision && span.textContent.trim() === data.noteName) {
+                // console.log("Matching cell found:", span.parentElement.parentElement);
+
+                // Retrieve the value from data.cents
+                const centsValue = data.cents; // Value from your object
+
+                // Define the limits for calculation
+                const minCents = -50; // Top (upper boundary)
+                const maxCents = 50;  // Bottom (lower boundary)
+
+                // Normalize the value from -50 to 50 into a range between 0 and 1
+                const normalized = (centsValue - minCents) / (maxCents - minCents);
+
+                // Interpolate color from green (center) to red (top and bottom)
+                const red = Math.abs(2 * normalized - 1) * 255; // Red intensity increases away from the center
+                const green = (1 - Math.abs(2 * normalized - 1)) * 255; // Green intensity decreases away from the center
+
+                // Create the dynamic color
+                const color = `rgb(${Math.round(red)}, ${Math.round(green)}, 0)`;
+
+                // Calculate the dynamic top position in percentage
+                const minPercent = 0; // 0% = Top edge
+                const maxPercent = 100; // 100% = Bottom edge
+                const normalizedTop = normalized * (maxPercent - minPercent) + minPercent;
+
+                // Set the dynamic top position in percentage
+                lineElement.style.top = `${normalizedTop}%`; // Value in percent
+                lineElement.style.visibility = 'visible';
+
+                // Set the dynamic color of the line
+                lineElement.style.backgroundColor = color;
+
+                console.log(`Cents: ${centsValue}, Normalized: ${normalized}, Color: ${color}`);
+            }
+
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.line').forEach(line => line.style.visibility = 'hidden');
+        resultDiv = document.getElementById('result');
 
-        resultDiv = document.getElementById('result'); // The <div> where results will be displayed
+        // Warning for unsupported browsers
+        if (!isAudioWorkletSupported()) {
+            resultDiv.style.visibility = 'visible';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Your browser does not support modern audio processing. Please use an updated browser.';
+        }
 
-        // Start button event handler
         document.getElementById('start').addEventListener('click', async () => {
-            // Disable the start button and enable the stop button
             document.getElementById('start').disabled = true;
             document.getElementById('stop').disabled = false;
 
-            // Set selected Concert Pitch
-            concertPitch = document.getElementById('supportedConcertPitches').value;
-            console.log("Concert Pitch: " + concertPitch);
+            resultDiv.style.visibility = 'hidden';
+            resultDiv.style.display = 'none';
 
-            NoteLookup.concertPitch=concertPitch;
+            concertPitch = document.getElementById('supportedConcertPitches').value;
+            NoteLookup.concertPitch = concertPitch;
 
             confidence = document.getElementById('supportedConfidences').value;
-            console.log("Selected Confidence: " + confidence);
 
             try {
-                // Request microphone access
                 mediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
-                const audioContext = new AudioContext();
-                console.log(audioContext.sampleRate);
+                audioContext = new AudioContext();
 
+                // Feature-based processing
+                if (isAudioWorkletSupported()) {
+                    // Modern approach with AudioWorkletNode
+                    await audioContext.audioWorklet.addModule('./scripts/pitchProcessor.js');
 
-                // Create an audio source from the media stream
+                    processingNode = new AudioWorkletNode(audioContext, 'pitch-processor', {
+                        numberOfInputs: 1,
+                        numberOfOutputs: 1,
+                        processorOptions: {
+                            sampleRate: audioContext.sampleRate
+                        }
+                    });
+
+                    processingNode.port.onmessage = (event) => {
+                        processAudioResult(event.data);
+                    };
+                } else {
+                    // Fallback to the old ScriptProcessorNode
+                    processingNode = audioContext.createScriptProcessor(4096, 1, 1);
+
+                    processingNode.onaudioprocess = (e) => {
+                        const audioData = e.inputBuffer.getChannelData(0);
+                        const result = PitchDetectionUtil.detectPitchWithYIN(audioData, audioContext.sampleRate);
+                        processAudioResult(result);
+                    };
+                }
+
                 const source = audioContext.createMediaStreamSource(mediaStream);
-
-                // Set up audio processor
-                processorNode = audioContext.createScriptProcessor(4096, 1, 1);
-                source.connect(processorNode);
-                processorNode.connect(audioContext.destination);
-
-                // Process audio data in real time and send it to the server
-                processorNode.onaudioprocess = (e) => {
-                    const audioData = e.inputBuffer.getChannelData(0); // Channel 0 (mono data)
-
-                    const result = PitchDetectionUtil.detectPitchWithYIN(audioData, audioContext.sampleRate);
-                    const noteName = NoteLookup.getNoteName(result.pitch);
-                    if(noteName) {
-                        const noteFrequency = NoteLookup.getFrequency(noteName);
-                        const cents = NoteUtils.getCents(noteFrequency, result.pitch);
-                        const data = {
-                            noteName: noteName,
-                            cents: cents,
-                            confidence: result.confidence,
-                        };
-                        resultDiv.innerHTML = "noteName: " + noteName + ", cents: " + cents + ", confidence: " + result.confidence;
-                        handleChange(data, confidence);
-                    }
-
-                };
+                source.connect(processingNode);
+                processingNode.connect(audioContext.destination);
 
             } catch (err) {
-                console.error("Error accessing the microphone:", err);
-                resultDiv.style.visibility = 'visible';
-                resultDiv.style.display = 'block';
-                resultDiv.style.backgroundColor = 'red';
-                resultDiv.innerHTML = "Error accessing the microphone: " + err.message;
-                document.getElementById('start').disabled = false;
-                document.getElementById('stop').disabled = true;
+                handleError(err);
             }
         });
 
-        // Stop button event handler
+
+        /**
+         * Processes the audio result by analyzing pitch, determining the note name, calculating cents deviation,
+         * and updating the provided results and handling changes accordingly.
+         *
+         * @param {Object} result - The audio processing result object.
+         * @param {number} result.pitch - The detected pitch from the audio analysis.
+         * @param {number} result.confidence - The confidence level of the pitch detection.
+         * @return {void} The function does not return a value.
+         */
+        function processAudioResult(result) {
+            if (result.pitch) {
+                const noteName = NoteLookup.getNoteName(result.pitch);
+                if (noteName) {
+                    const noteFrequency = NoteLookup.getFrequency(noteName);
+                    const cents = NoteUtils.getCents(noteFrequency, result.pitch);
+                    const data = {
+                        noteName: noteName,
+                        cents: cents,
+                        confidence: result.confidence,
+                    };
+
+                    resultDiv.innerHTML = `noteName: ${noteName}, cents: ${cents}, confidence: ${result.confidence}`;
+                    handleChange(data, confidence);
+                }
+            }
+        }
+
+        // Function for handling errors
+        /**
+         * Handles errors related to microphone access and updates the UI accordingly.
+         *
+         * @param {Error} err - The error object representing the issue encountered.
+         * @return {void} This function does not return a value.
+         */
+        function handleError(err) {
+            console.error("Error accessing the microphone:", err);
+            resultDiv.style.visibility = 'visible';
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = 'red';
+            resultDiv.innerHTML = "Error accessing the microphone: " + err.message;
+            document.getElementById('start').disabled = false;
+            document.getElementById('stop').disabled = true;
+        }
+
+        // Stop button handler
         document.getElementById('stop').addEventListener('click', () => {
-            // Stop audio processing and close the stream
-            if (processorNode) processorNode.disconnect();
+            if (processingNode) {
+                processingNode.disconnect();
+            }
             if (mediaStream) {
                 mediaStream.getTracks().forEach(track => track.stop());
             }
+            if (audioContext) {
+                audioContext.close();
+            }
 
-            console.log("Streaming stopped");
             resultDiv.innerHTML = "Streaming stopped.";
-
-            // Reset UI
             document.getElementById('start').disabled = false;
             document.getElementById('stop').disabled = true;
         });

@@ -197,7 +197,7 @@ footer {
     grid-template-rows: repeat(9, minmax(0, 1fr));
     gap: 10px;
     width: 100%;
-    height: 100%;  /* Statt 100vh */
+    height: 100%; /* Statt 100vh */
     padding: 10px;
     background-color: #ffffff;
     box-sizing: border-box;
@@ -211,7 +211,7 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 50px;  /* Das könnte ein Problem sein */
+    min-height: 50px; /* Das könnte ein Problem sein */
     box-sizing: border-box; /* Dies ist wichtig */
     overflow: hidden;
 }
@@ -294,13 +294,13 @@ footer {
 .button-container {
     display: flex;
     justify-content: space-between;
-    max-width: 800px;  /* Gleiche Breite wie select-container */
+    max-width: 800px; /* Gleiche Breite wie select-container */
     margin: 15px auto;
-    gap: 10px;  /* Gleicher Abstand wie bei select-container */
+    gap: 10px; /* Gleicher Abstand wie bei select-container */
 }
 
 .button-container button {
-    flex: 1 1 calc(50% - 10px);  /* Gleiche Breite wie select-groups */
+    flex: 1 1 calc(50% - 10px); /* Gleiche Breite wie select-groups */
 }
 
 
@@ -358,7 +358,7 @@ footer {
     }
 
     .grid-cell {
-        min-height: 10px;  /* Das könnte ein Problem sein */
+        min-height: 10px; /* Das könnte ein Problem sein */
     }
 
     .grid-container {

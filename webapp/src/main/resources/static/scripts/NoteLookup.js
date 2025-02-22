@@ -1,3 +1,26 @@
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
 /**
  * A utility class for looking up musical note names and their corresponding frequencies.
  * Provides methods to calculate note names for given frequencies and to calculate frequencies for given note names.
@@ -40,20 +63,18 @@ class NoteLookup {
      */
     static getNoteName(frequency) {
         if (frequency <= 0) {
-            return null; // Ungültige Frequenzen ignorieren
+            return null; // Ignore invalid frequencies
         }
 
-        // MIDI-Nummer des Tones berechnen
-        const midiNumber = Math.round(
-            69 + (12 * Math.log2(frequency / NoteLookup.concertPitch))
-        );
+        // Calculate the MIDI number of the tone
+        const midiNumber = Math.round(69 + (12 * Math.log2(frequency / NoteLookup.concertPitch)));
 
-        // Überprüfen, ob der MIDI-Wert innerhalb des gültigen Bereichs liegt (MIDI-Werte reichen typischerweise von 0 bis 127)
+        // Check if the MIDI value lies within the valid range (MIDI values typically range from 0 to 127)
         if (midiNumber < 0 || midiNumber > 127) {
             return null;
         }
 
-        // Notenindex und Oktave berechnen
+        // Calculate the note index and octave
         const noteIndex = midiNumber % 12;
         const octave = Math.floor(midiNumber / 12) - 1;
 
@@ -70,22 +91,22 @@ class NoteLookup {
     static getFrequency(noteName) {
         const match = noteName.match(/^([A-G]#?|[A-G]b?)(-?\d+)$/);
         if (!match) {
-            return null; // Ungültige Eingabe ignorieren
+            return null; // Ignore invalid input
         }
 
         const note = match[1];
         const octave = parseInt(match[2], 10);
 
-        // Notenindex im chromatischen Array finden
+        // Find the note index in the chromatic array
         const noteIndex = NoteLookup.NOTE_NAMES.indexOf(note);
         if (noteIndex === -1) {
             return null;
         }
 
-        // MIDI-Nummer basierend auf der Note und der Oktave berechnen
+        // Calculate the MIDI number based on the note and the octave
         const midiNumber = noteIndex + (octave + 1) * 12;
 
-        // Frequenz basierend auf der MIDI-Nummer berechnen
+        // Calculate the frequency based on the MIDI number
         return NoteLookup.concertPitch * Math.pow(2, (midiNumber - 69) / 12);
     }
 }
