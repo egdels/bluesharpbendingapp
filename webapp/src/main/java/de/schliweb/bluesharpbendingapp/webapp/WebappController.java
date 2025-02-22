@@ -320,6 +320,19 @@ public class WebappController {
         }
         modelAndView.addObject("selectedConfidence", selectedConfidence);
 
+        Object supportedAlgorithms = session.getAttribute("supportedAlgorithms");
+        if(supportedAlgorithms==null) {
+            supportedAlgorithms = new String[]{"YIN", "MPM"};
+        }
+        modelAndView.addObject("supportedAlgorithms", supportedAlgorithms);
+
+        Object selectedAlgorithm = session.getAttribute("selectedAlgorithm");
+        if(selectedAlgorithm==null) {
+            selectedAlgorithm= "YIN";
+        }
+        modelAndView.addObject("selectedAlgorithm", selectedAlgorithm);
+
+
         modelAndView.setViewName("letsbend");
         return modelAndView;
     }

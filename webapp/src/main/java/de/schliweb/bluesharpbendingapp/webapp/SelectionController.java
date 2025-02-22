@@ -47,6 +47,9 @@ public class SelectionController {
         String selectedConfidence = selection.get("selectedConfidence");
         session.setAttribute("selectedConfidence", selectedConfidence);
 
+        String selectedAlgorithm = selection.get("selectedAlgorithm");
+        session.setAttribute("selectedAlgorithm", selectedAlgorithm);
+
         // Return the Harmonica object as a success response
         return ResponseEntity.ok(harmonica);
     }

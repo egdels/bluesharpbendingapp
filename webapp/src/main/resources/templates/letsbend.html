@@ -83,6 +83,18 @@
                     </option>
                 </select>
             </div>
+            <div class="select-group single-select">
+                <label for="supportedAlgorithms">Algorithm:</label>
+                <select class="form-control" id="supportedAlgorithms" onchange="handleSelectionChange()"
+                        th:name="supportedAlgorithms">
+                    <option disabled selected th:if="${selectedAlgorithm == null}" value="">Bitte wählen...</option>
+                    <option th:each="algorithm : ${supportedAlgorithms}"
+                            th:selected="${algorithm == selectedAlgorithm}"
+                            th:text="${algorithm}"
+                            th:value="${algorithm}">
+                    </option>
+                </select>
+            </div>
         </div>
         <div class="button-container">
             <button id="start">Start</button>
@@ -187,6 +199,16 @@
     let processingNode;
 
     /**
+     * Represents the algorithm name used for processing.
+     *
+     * The value of this variable is set to 'YIN', which signifies the usage
+     * of the YIN algorithm. YIN is typically employed in the context of pitch
+     * detection or pitch tracking systems to estimate the fundamental frequency
+     * of a signal.
+     */
+    let algorithm = 'YIN';
+
+    /**
      * Checks if the AudioWorklet API is supported in the current browser environment.
      *
      * @return {boolean} Returns true if the AudioWorklet API is supported, otherwise false.
@@ -194,6 +216,19 @@
     function isAudioWorkletSupported() {
         return 'audioWorklet' in AudioContext.prototype;
     }
+
+    /**
+     * Represents an array of spans.
+     * Each span can be an object or a value that defines a segment or section of content or data.
+     * This array is designed to store such segments for further processing or display.
+     */
+    let spans = [];
+    document.querySelectorAll('.grid-cell span').forEach(span => {
+        if (span.textContent.trim() !== '') {
+            spans.push(span);
+        }
+    });
+
 
     /**
      * Handles changes to dynamically update the visual representation of elements within a grid based on data input.
@@ -208,21 +243,26 @@
      * @return {void} This function does not return a value.
      */
     function handleChange(data, precision = 0.7) {
-        // Select all span elements within elements that have the class "grid-cell"
-        const spans = document.querySelectorAll('.grid-cell span');
-
         // Iterate through each span to find the one with text matching data.noteName
         spans.forEach(span => {
 
             const lineElement = span.parentElement.parentElement.querySelector('.line');
             lineElement.style.visibility = 'hidden';
 
+            if(span.parentElement.parentElement.classList.contains('expanded')) {
+                span.parentElement.parentElement.setAttribute('cents-border-text','Cents: --');
+            }
+
             // Check if the text content of the span equals data.noteName
             if (data.confidence >= precision && span.textContent.trim() === data.noteName) {
                 // console.log("Matching cell found:", span.parentElement.parentElement);
 
                 // Retrieve the value from data.cents
-                const centsValue = data.cents; // Value from your object
+                const centsValue = Math.round(data.cents);
+
+                if(span.parentElement.parentElement.classList.contains('expanded')) {
+                    span.parentElement.parentElement.setAttribute('cents-border-text', 'Cents: ' +  centsValue);
+                }
 
                 // Define the limits for calculation
                 const minCents = -50; // Top (upper boundary)
@@ -243,18 +283,61 @@
                 const maxPercent = 100; // 100% = Bottom edge
                 const normalizedTop = normalized * (maxPercent - minPercent) + minPercent;
 
+                const lineHeight = lineElement.offsetHeight;
+
                 // Set the dynamic top position in percentage
-                lineElement.style.top = `${normalizedTop}%`; // Value in percent
+                lineElement.style.top = `calc(${normalizedTop}% - ${lineHeight / 2}px)`; // Mitte des Elements berücksichtigen
                 lineElement.style.visibility = 'visible';
 
                 // Set the dynamic color of the line
                 lineElement.style.backgroundColor = color;
 
-                console.log(`Cents: ${centsValue}, Normalized: ${normalized}, Color: ${color}`);
+                // console.log(`Cents: ${centsValue}, Normalized: ${normalized}, Color: ${color}`);
             }
 
         });
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.querySelector('.grid-container');
+        let currentCopy = null; // Tracks the current copy (if one exists)
+
+        container.addEventListener('click', (event) => {
+            // Check if an element with the class "grid-cell" was clicked (or a child element within a cell)
+            const cell = event.target.closest('.grid-cell');
+
+            if (!cell || !container.contains(cell)) return; // If no "grid-cell" is found or the cell is not within the container, exit
+
+            if (cell.classList.contains('channel')) return; // Ignore clicks on elements with the "channel" class
+
+            // Check if the cell is a copy (by checking a CSS class)
+            const isCopy = cell.classList.contains('expanded');
+
+            if (isCopy) {
+                // If the cell is a copy, remove it
+                cell.remove();
+                const spanToRemove = currentCopy.querySelector('span');
+                spans = spans.filter(span => span !== spanToRemove);
+                currentCopy = null;
+            } else {
+                if (!currentCopy) {
+                    // Otherwise, create a copy and add it to the grid
+                    const copy = cell.cloneNode(true);
+                    copy.classList.add('expanded'); // Mark it as a copy, so it can be removed later
+                    copy.id = "" + Math.random(); // Assign a unique ID to the copy
+                    const spanInCopy = copy.querySelector('span');
+                    spans.push(spanInCopy);
+
+                    const borderText = ''; // Leave the border text blank by default
+                    copy.setAttribute('cents-border-text', borderText); // Store the text in an attribute
+
+                    // Append the copy of the cell into the container
+                    container.appendChild(copy);
+                    currentCopy = copy;
+                }
+            }
+        });
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.line').forEach(line => line.style.visibility = 'hidden');
@@ -279,6 +362,8 @@
 
             confidence = document.getElementById('supportedConfidences').value;
 
+            algorithm = document.getElementById('supportedAlgorithms').value;
+
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
                 audioContext = new AudioContext();
@@ -286,14 +371,15 @@
                 // Feature-based processing
                 if (isAudioWorkletSupported()) {
                     // Modern approach with AudioWorkletNode
-                    await audioContext.audioWorklet.addModule('./scripts/pitchProcessor.js');
+                    await audioContext.audioWorklet.addModule('./scripts/PitchProcessor.js');
 
                     processingNode = new AudioWorkletNode(audioContext, 'pitch-processor', {
                         numberOfInputs: 1,
                         numberOfOutputs: 1,
                         processorOptions: {
-                            sampleRate: audioContext.sampleRate
-                        }
+                            sampleRate: audioContext.sampleRate,
+                            algorithm: algorithm
+                        },
                     });
 
                     processingNode.port.onmessage = (event) => {
@@ -347,7 +433,6 @@
             }
         }
 
-        // Function for handling errors
         /**
          * Handles errors related to microphone access and updates the UI accordingly.
          *

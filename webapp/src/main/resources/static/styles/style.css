@@ -19,9 +19,9 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- *
  */
-/* Allgemeine Style */
+
+/* General Styles */
 body {
     margin: 0;
     padding: 0;
@@ -47,14 +47,13 @@ main {
     direction: rtl;
 }
 
-
-/* Debug */
+/* Debug Styles (hidden by default) */
 #result, #resultHarmonica {
     display: none;
     visibility: hidden;
 }
 
-/* ---------------- Start Header-Style --------------------------- */
+/* ---------------- Start Header Styles --------------------------- */
 header {
     background-color: #ff9800;
     padding: 20px 0 20px 0;
@@ -72,7 +71,7 @@ nav {
 }
 
 .menu ul {
-    /* list-style: none; */
+    /* Removes bullet points from list */
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -91,6 +90,7 @@ nav {
     text-decoration: none;
 }
 
+/* Hidden by default, for responsive menus */
 .navbar-toggler {
     display: none;
     cursor: pointer;
@@ -104,12 +104,12 @@ nav {
     margin-bottom: 4px;
 }
 
-/* ---------------- Ende Header-Style --------------------------- */
+/* ---------------- End Header Styles --------------------------- */
 
-/* ---------------- Start Main-Style --------------------------- */
+/* ---------------- Start Main Content Styles --------------------------- */
 .video-container {
     position: relative;
-    padding-bottom: 56.25%;
+    padding-bottom: 56.25%; /* Maintain 16:9 aspect ratio */
 }
 
 .video-container iframe {
@@ -124,9 +124,9 @@ nav {
     width: 100%;
 }
 
-/* ---------------- Ende Main-Style --------------------------- */
+/* ---------------- End Main Content Styles --------------------------- */
 
-/* ---------------- Start Footer ---------------- */
+/* ---------------- Start Footer Styles ---------------- */
 footer {
     background-color: #6efdfd;
     color: black;
@@ -139,10 +139,11 @@ footer {
     font-size: 0.8em;
 }
 
-/* ---------------- Ende Footer ---------------- */
-/** Download-Tabelle **/
+/* ---------------- End Footer Styles ---------------- */
+
+/* Styles for the download table */
 .downloadTable tr:nth-child(even) {
-    background: #f4f4f4;
+    background: #f4f4f4; /* For alternating row colors */
 }
 
 .downloadTable th, td {
@@ -169,40 +170,35 @@ footer {
     color: #e33;
 }
 
-/* Siehe: https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/ */
+/* Prevents long words or URLs from breaking layout containers */
 .dont-break-out {
-
-    /* These are technically the same, but use both */
     overflow-wrap: break-word;
     word-wrap: break-word;
-
     -ms-word-break: break-all;
-    /* This is the dangerous one in WebKit, as it breaks things wherever */
-    word-break: break-all;
-    /* Instead use this non-standard one: */
-    word-break: break-word;
-
-    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    word-break: break-all; /* Be cautious: breaks in unexpected areas */
+    word-break: break-word; /* Use this where supported */
     -ms-hyphens: auto;
     -moz-hyphens: auto;
     -webkit-hyphens: auto;
-    hyphens: auto;
-
+    hyphens: auto; /* Adds a hyphenation when breaking */
 }
 
-/** Harp */
+/* Harp - Grid container styles */
 .grid-container {
+    position: relative;
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(9, minmax(0, 1fr));
+    grid-template-columns: repeat(10, 1fr); /* 10 evenly spaced columns */
+    grid-template-rows: repeat(9, minmax(0, 1fr)); /* 9 rows with minimum height */
     gap: 10px;
     width: 100%;
-    height: 100%; /* Statt 100vh */
+    height: 40vh; /* Container height grows dynamically */
+    min-height: 350px;
     padding: 10px;
     background-color: #ffffff;
     box-sizing: border-box;
 }
 
+/* Individual grid cell styles */
 .grid-cell {
     position: relative;
     border: 1px solid black;
@@ -211,22 +207,63 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 50px; /* Das könnte ein Problem sein */
-    box-sizing: border-box; /* Dies ist wichtig */
+    box-sizing: border-box; /* Padding and border included in size */
     overflow: hidden;
 }
 
 .grid-cell:has(span:empty) {
-    visibility: hidden;
+    visibility: hidden; /* Hides cells if span inside is empty */
 }
 
-.line {
+/* Expanded styles for specific elements */
+.grid-cell.expanded {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 60%; /* Height adapts proportionally based on parent */
+    aspect-ratio: 1 / 1; /* Ensures a square */
+    z-index: 10;
+    padding: 0;
+    font-size: 2rem;
+}
+
+.grid-cell.expanded::after {
+    content: attr(cents-border-text); /* Displays border text if set */
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 5px;
+    font-size: 0.9rem;
+}
+
+/* Label styles for alignment */
+.right-aligned-label {
+    left: 0;
+    text-align: right;
+    color: #555;
+    font-size: 0.9rem;
+    padding-left: 10px; /* Adds spacing for content */
+}
+
+
+/*
+.grid-cell.hidden {
+    display: none;
+    visibility: hidden;
+}*/
+
+.grid-cell .line {
     left: 0;
     right: 0;
     height: 5px;
     background-color: green; /* oder die gewünschte Farbe */
     position: absolute;
     z-index: 1;
+}
+
+.grid-cell.expanded .line {
+    height: 20px;
 }
 
 .channel {
@@ -282,6 +319,11 @@ footer {
     flex-direction: column;
 }
 
+.select-group.single-select {
+    flex: 0 0 auto; /* Kein flexibler Wachstum, passt sich an den Inhalt an */
+    width: auto; /* Passt die Breite an den Inhalt (Selectbox) an */
+}
+
 .select-group label {
     font-size: 0.75rem;
     margin-bottom: 2px;
@@ -303,8 +345,7 @@ footer {
     flex: 1 1 calc(50% - 10px); /* Gleiche Breite wie select-groups */
 }
 
-
-/* Media Queries für Handy- oder Tablet-Modus */
+/* Responsive adjustments for smaller screens */
 @media screen and (max-width: 768px) {
     header {
         width: 100%;
@@ -366,4 +407,3 @@ footer {
         padding: 5px;
     }
 }
-

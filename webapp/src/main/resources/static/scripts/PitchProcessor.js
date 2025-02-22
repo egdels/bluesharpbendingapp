@@ -42,6 +42,7 @@ class PitchProcessor extends AudioWorkletProcessor {
         super();
         this.bufferSize = 4096;
         this.sampleRate = options.processorOptions.sampleRate;
+        this.algorithm = options.processorOptions.algorithm;
         this.buffer = new Float32Array(this.bufferSize);
         this.bufferIndex = 0;
     }
@@ -66,8 +67,16 @@ class PitchProcessor extends AudioWorkletProcessor {
 
             if (this.bufferIndex >= this.bufferSize) {
                 // Buffer is full, perform pitch detection
-                const result = PitchDetectionUtil.detectPitchWithYIN(this.buffer, this.sampleRate);
-
+                let result = {};
+                if (this.algorithm === 'YIN') {
+                    // console.log("YIN");
+                    result = PitchDetectionUtil.detectPitchWithYIN(this.buffer, this.sampleRate);
+                }
+                else if (this.algorithm === 'MPM') {
+                    // console.log("MPM");
+                    result = PitchDetectionUtil.detectPitchWithMPM(this.buffer, this.sampleRate);
+                }
+                // console.log(result);
                 // Send the result back to the main thread
                 this.port.postMessage(result);
 

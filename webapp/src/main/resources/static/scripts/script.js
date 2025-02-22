@@ -50,9 +50,10 @@ function handleSelectionChange() {
     const tune = document.querySelector('#supportedTunes').value;
     const concertPitch = document.querySelector('#supportedConcertPitches').value;
     const confidence = document.querySelector('#supportedConfidences').value;
+    const algorithm = document.querySelector('#supportedAlgorithms').value;
 
     // Only send data if all dropdowns have a valid selection
-    if (key && tune && concertPitch && confidence) {
+    if (key && tune && concertPitch && confidence && algorithm) {
         fetch('/selection/send', {
             method: 'POST',
             headers: {
@@ -62,7 +63,8 @@ function handleSelectionChange() {
                 selectedKey: key,
                 selectedTune: tune,
                 selectedConcertPitch: concertPitch,
-                selectedConfidence: confidence
+                selectedConfidence: confidence,
+                selectedAlgorithm: algorithm
             }) // Selection data
         })
             .then(response => {

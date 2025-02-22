@@ -119,6 +119,81 @@ class PitchDetectionUtil {
         }
         return array[index] < array[index - 1] && array[index] < array[index + 1];
     }
+
+    /**
+     * Detects the pitch of an audio signal using the McLeod Pitch Method (MPM).
+     * This method calculates the fundamental frequency of the audio data by
+     * analyzing the normalized square difference function (NSDF).
+     *
+     * @param {Float32Array} audioData - An array of audio signal data.
+     * @param {number} sampleRate - The sample rate of the audio signal in Hz.
+     * @returns {Object} An object containing the detected pitch in Hz and confidence value (0 to 1).
+     */
+    static detectPitchWithMPM(audioData, sampleRate) {
+        const n = audioData.length;
+        const nsdf = new Array(n).fill(0);
+        const maxLag = Math.floor(n / 2);
+        let peakIndex = -1;
+        let confidence = 0;
+
+        // Step 1: Calculate the NSDF (Normalized Square Difference Function)
+        for (let lag = 0; lag < maxLag; lag++) {
+            let numerator = 0;
+            let denominator = 0;
+            for (let i = 0; i < n - lag; i++) {
+                numerator += audioData[i] * audioData[i + lag];
+                denominator += audioData[i] * audioData[i] + audioData[i + lag] * audioData[i + lag];
+            }
+            if (denominator !== 0) {
+                nsdf[lag] = (2 * numerator) / denominator; // Normalized Autocorrelation
+            } else {
+                nsdf[lag] = 0;
+            }
+        }
+
+        // Step 2: Find peaks in the NSDF
+        const candidatePeaks = [];
+        for (let lag = 1; lag < maxLag - 1; lag++) {
+            if (
+                nsdf[lag] > nsdf[lag - 1] &&
+                nsdf[lag] > nsdf[lag + 1] &&
+                nsdf[lag] > 0.7 // Threshold for confidence
+            ) {
+                candidatePeaks.push(lag);
+            }
+        }
+
+        // Step 3: Filter peaks for harmonics
+        if (candidatePeaks.length > 0) {
+            for (let i = 1; i < candidatePeaks.length; i++) {
+                if (candidatePeaks[i] / candidatePeaks[0] >= 2.0) {
+                    peakIndex = candidatePeaks[0]; // Fundamental frequency
+                    break;
+                }
+            }
+        }
+
+        // Step 4: Parabolic interpolation for more accurate peak detection
+        if (peakIndex > 0 && peakIndex < maxLag - 1) {
+            const x0 = nsdf[peakIndex - 1];
+            const x1 = nsdf[peakIndex];
+            const x2 = nsdf[peakIndex + 1];
+
+            confidence = x1; // Confidence as the highest NSDF value at peakIndex
+            peakIndex = Math.round(
+                peakIndex + 0.5 * (x0 - x2) / (x0 - 2 * x1 + x2)
+            );
+        }
+
+        // Step 5: Convert lag to frequency
+        if (peakIndex > 0) {
+            const pitch = sampleRate / peakIndex;
+            return { pitch, confidence };
+        }
+
+        return { pitch: this.NO_DETECTED_PITCH, confidence: 0.0 }; // No pitch detected
+    }
+
 }
 
 export default PitchDetectionUtil;
