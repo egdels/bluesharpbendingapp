@@ -51,6 +51,7 @@ function handleSelectionChange() {
     const concertPitch = document.querySelector('#supportedConcertPitches').value;
     const confidence = document.querySelector('#supportedConfidences').value;
     const algorithm = document.querySelector('#supportedAlgorithms').value;
+    const expertMode = !!document.querySelector('#expertMode').checked;
 
     // Only send data if all dropdowns have a valid selection
     if (key && tune && concertPitch && confidence && algorithm) {
@@ -64,7 +65,8 @@ function handleSelectionChange() {
                 selectedTune: tune,
                 selectedConcertPitch: concertPitch,
                 selectedConfidence: confidence,
-                selectedAlgorithm: algorithm
+                selectedAlgorithm: algorithm,
+                expertMode: expertMode
             }) // Selection data
         })
             .then(response => {

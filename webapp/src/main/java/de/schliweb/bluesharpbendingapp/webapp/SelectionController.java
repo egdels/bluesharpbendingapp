@@ -50,6 +50,9 @@ public class SelectionController {
         String selectedAlgorithm = selection.get("selectedAlgorithm");
         session.setAttribute("selectedAlgorithm", selectedAlgorithm);
 
+        String expertMode = selection.get("expertMode");
+        session.setAttribute("expertMode", expertMode);
+
         // Return the Harmonica object as a success response
         return ResponseEntity.ok(harmonica);
     }

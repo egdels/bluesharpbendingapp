@@ -332,6 +332,12 @@ public class WebappController {
         }
         modelAndView.addObject("selectedAlgorithm", selectedAlgorithm);
 
+        Object expertMode = session.getAttribute("expertMode");
+        if(expertMode==null) {
+            expertMode = false;
+        }
+        modelAndView.addObject("expertMode", expertMode);
+
 
         modelAndView.setViewName("letsbend");
         return modelAndView;

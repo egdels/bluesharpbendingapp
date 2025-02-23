@@ -35,7 +35,6 @@
         <h2>Let's Bend</h2>
         <div class="select-container">
             <div class="select-group">
-
                 <label for="supportedKeys">Key:</label>
                 <select class="form-control" id="supportedKeys" onchange="handleSelectionChange()"
                         th:name="supportedKeys">
@@ -59,31 +58,17 @@
                     </option>
                 </select>
             </div>
-            <div class="select-group">
-                <label for="supportedConcertPitches">Concert Pitch:</label>
-                <select class="form-control" id="supportedConcertPitches" onchange="handleSelectionChange()"
-                        th:name="supportedConcertPitches">
-                    <option disabled selected th:if="${selectedConcertPitch == null}" value="">Bitte wählen...</option>
-                    <option th:each="concertPitch : ${supportedConcertPitches}"
-                            th:selected="${concertPitch == selectedConcertPitch}"
-                            th:text="${concertPitch}"
-                            th:value="${concertPitch}">
-                    </option>
-                </select>
+            <div class="select-group checkbox-group" th:classappend="${expertMode != null and expertMode} ? '' : 'single-select'">
+            <label class="invisible">Expert</label> <!-- unsichtbares Label für gleichmäßige Ausrichtung -->
+                <div class="form-check checkbox-container">
+                    <input class="form-check-input" type="checkbox" id="expertMode" name="expertMode"
+                           th:checked="${expertMode}" onchange="handleSelectionChange()">
+                    <label class="form-check-label" for="expertMode">
+                        Expert
+                    </label>
+                </div>
             </div>
-            <div class="select-group">
-                <label for="supportedConfidences">Confidence:</label>
-                <select class="form-control" id="supportedConfidences" onchange="handleSelectionChange()"
-                        th:name="supportedConfidences">
-                    <option disabled selected th:if="${selectedConfidence == null}" value="">Bitte wählen...</option>
-                    <option th:each="confidence : ${supportedConfidences}"
-                            th:selected="${confidence == selectedConfidence}"
-                            th:text="${confidence}"
-                            th:value="${confidence}">
-                    </option>
-                </select>
-            </div>
-            <div class="select-group single-select">
+            <div class="select-group" th:classappend="${expertMode} ? '' : 'expert-mode-hidden'">
                 <label for="supportedAlgorithms">Algorithm:</label>
                 <select class="form-control" id="supportedAlgorithms" onchange="handleSelectionChange()"
                         th:name="supportedAlgorithms">
@@ -95,21 +80,36 @@
                     </option>
                 </select>
             </div>
-        </div>
-        <div class="button-container">
-            <button id="start">Start</button>
-            <button disabled id="stop">Stop</button>
-        </div>
-        <div id="resultHarmonica" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
-            <p th:if="${harmonica != null}">
-                Key: <span id="harmonicaKey"
-                           th:text="${harmonica.getKeyName()}"></span> <br/>
-                Tune: <span id="harmonicaTune"
-                            th:text="${harmonica.getTuneName()}"></span>
-            </p>
-            <p th:if="${harmonica == null}">
-                Keine Harmonica in der Session vorhanden.
-            </p>
+            <div class="select-group" th:classappend="${expertMode} ? '' : 'expert-mode-hidden'">
+                <label for="supportedConcertPitches">Concert Pitch:</label>
+                <select class="form-control" id="supportedConcertPitches" onchange="handleSelectionChange()"
+                        th:name="supportedConcertPitches">
+                    <option disabled selected th:if="${selectedConcertPitch == null}" value="">Bitte wählen...</option>
+                    <option th:each="concertPitch : ${supportedConcertPitches}"
+                            th:selected="${concertPitch == selectedConcertPitch}"
+                            th:text="${concertPitch}"
+                            th:value="${concertPitch}">
+                    </option>
+                </select>
+            </div>
+            <div class="select-group" th:classappend="${expertMode} ? '' : 'expert-mode-hidden'">
+                <label for="supportedConfidences">Confidence:</label>
+                <select class="form-control" id="supportedConfidences" onchange="handleSelectionChange()"
+                        th:name="supportedConfidences">
+                    <option disabled selected th:if="${selectedConfidence == null}" value="">Bitte wählen...</option>
+                    <option th:each="confidence : ${supportedConfidences}"
+                            th:selected="${confidence == selectedConfidence}"
+                            th:text="${confidence}"
+                            th:value="${confidence}">
+                    </option>
+                </select>
+            </div>
+            <div class="select-group button-group single-select">
+                <div class="form-check button-container">
+                    <button id="start">Start</button>
+                    <button disabled id="stop">Stop</button>
+                </div>
+            </div>
         </div>
         <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
             Ergebnis wird hier angezeigt...

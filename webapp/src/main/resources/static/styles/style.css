@@ -48,7 +48,7 @@ main {
 }
 
 /* Debug Styles (hidden by default) */
-#result, #resultHarmonica {
+#result {
     display: none;
     visibility: hidden;
 }
@@ -174,8 +174,6 @@ footer {
 .dont-break-out {
     overflow-wrap: break-word;
     word-wrap: break-word;
-    -ms-word-break: break-all;
-    word-break: break-all; /* Be cautious: breaks in unexpected areas */
     word-break: break-word; /* Use this where supported */
     -ms-hyphens: auto;
     -moz-hyphens: auto;
@@ -191,7 +189,7 @@ footer {
     grid-template-rows: repeat(9, minmax(0, 1fr)); /* 9 rows with minimum height */
     gap: 10px;
     width: 100%;
-    height: 40vh; /* Container height grows dynamically */
+    height: 100vh; /* Container height grows dynamically */
     min-height: 350px;
     padding: 10px;
     background-color: #ffffff;
@@ -320,7 +318,7 @@ footer {
 }
 
 .select-group.single-select {
-    flex: 0 0 auto; /* Kein flexibler Wachstum, passt sich an den Inhalt an */
+    flex-basis: 100% !important;
     width: auto; /* Passt die Breite an den Inhalt (Selectbox) an */
 }
 
@@ -329,20 +327,17 @@ footer {
     margin-bottom: 2px;
 }
 
+.select-group .invisible {
+    visibility: hidden;
+}
+
 .form-control {
     margin-top: 2px;
 }
 
-.button-container {
-    display: flex;
-    justify-content: space-between;
-    max-width: 800px; /* Gleiche Breite wie select-container */
-    margin: 15px auto;
-    gap: 10px; /* Gleicher Abstand wie bei select-container */
-}
-
-.button-container button {
-    flex: 1 1 calc(50% - 10px); /* Gleiche Breite wie select-groups */
+.expert-mode-hidden {
+    display: none;
+    visibility: hidden;
 }
 
 /* Responsive adjustments for smaller screens */
@@ -406,4 +401,5 @@ footer {
         gap: 5px;
         padding: 5px;
     }
+
 }
