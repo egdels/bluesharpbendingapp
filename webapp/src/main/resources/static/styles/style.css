@@ -189,7 +189,7 @@ footer {
     grid-template-rows: repeat(9, minmax(0, 1fr)); /* 9 rows with minimum height */
     gap: 10px;
     width: 100%;
-    height: 100vh; /* Container height grows dynamically */
+    height: 50vh; /* Container height grows dynamically */
     min-height: 350px;
     padding: 10px;
     background-color: #ffffff;
@@ -236,21 +236,6 @@ footer {
 }
 
 /* Label styles for alignment */
-.right-aligned-label {
-    left: 0;
-    text-align: right;
-    color: #555;
-    font-size: 0.9rem;
-    padding-left: 10px; /* Adds spacing for content */
-}
-
-
-/*
-.grid-cell.hidden {
-    display: none;
-    visibility: hidden;
-}*/
-
 .grid-cell .line {
     left: 0;
     right: 0;

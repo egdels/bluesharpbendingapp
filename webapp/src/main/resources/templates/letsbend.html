@@ -217,6 +217,13 @@
         return 'audioWorklet' in AudioContext.prototype;
     }
 
+    function isSafari() {
+        return !!navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+            navigator.userAgent.indexOf('CriOS') === -1 &&
+            navigator.userAgent.indexOf('FxiOS') === -1;
+    }
+
+
     /**
      * Represents an array of spans.
      * Each span can be an object or a value that defines a segment or section of content or data.
@@ -344,7 +351,7 @@
         resultDiv = document.getElementById('result');
 
         // Warning for unsupported browsers
-        if (!isAudioWorkletSupported()) {
+        if (!isAudioWorkletSupported() || isSafari()) {
             resultDiv.style.visibility = 'visible';
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = 'Your browser does not support modern audio processing. Please use an updated browser.';
@@ -369,7 +376,7 @@
                 audioContext = new AudioContext();
 
                 // Feature-based processing
-                if (isAudioWorkletSupported()) {
+                if (isAudioWorkletSupported() && !isSafari()) {
                     // Modern approach with AudioWorkletNode
                     await audioContext.audioWorklet.addModule('./scripts/PitchProcessor.js');
 
