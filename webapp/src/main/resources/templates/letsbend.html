@@ -398,7 +398,13 @@
 
                     processingNode.onaudioprocess = (e) => {
                         const audioData = e.inputBuffer.getChannelData(0);
-                        const result = PitchDetectionUtil.detectPitchWithYIN(audioData, audioContext.sampleRate);
+                        let result;
+                        if(algorithm === 'YIN') {
+                            result = PitchDetectionUtil.detectPitchWithYIN(audioData, audioContext.sampleRate);
+                        }
+                        if(algorithm === 'MPM') {
+                            result = PitchDetectionUtil.detectPitchWithMPM(audioData, audioContext.sampleRate);
+                        }
                         processAudioResult(result);
                     };
                 }
