@@ -23,100 +23,42 @@ package de.schliweb.tuner;
  *
  */
 
-import com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme;
-import com.formdev.flatlaf.util.SystemInfo;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import javax.swing.*;
+public class TunerApp extends Application {
 
+    private RealTimeTuner controller;
 
-/**
- * The TunerApp class serves as the entry point for the tuner application. It handles
- * initialization of platform-specific system properties and look-and-feel settings,
- * and starts the real-time tuning process.
- * <p>
- * This class is responsible for:
- * - Configuring system properties specific to macOS and Linux for UI adjustments.
- * - Setting up the look-and-feel theme for the application's user interface.
- * - Instantiating and managing the lifecycle of the RealTimeTuner.
- */
-public class TunerApp {
-
-    /**
-     * A static variable representing the instance of {@code RealTimeTuner} used for managing
-     * the application's real-time tuning functionality. This object is responsible for
-     * handling tuning processes during the application's lifecycle.
-     * <p>
-     * The {@code realTimeTuner} is initialized during the application's startup and is used
-     * to start and stop tuning as part of the application's primary operations.
-     * <p>
-     * It is statically managed to ensure that only one instance exists throughout the
-     * application's lifecycle.
-     */
-    private static RealTimeTuner realTimeTuner;
-
-
-    /**
-     * The main method serves as the application's entry point, initializing platform-specific
-     * configurations, setting up the application's look-and-feel, and starting the real-time
-     * tuning process.
-     * <p>
-     * The method performs the following tasks:
-     * - Configures macOS-specific properties for menu bar behavior, application name, and window appearance.
-     * - Enables custom window decorations for Linux platforms.
-     * - Sets various UI properties related to the FlatLaf theme.
-     * - Instantiates the RealTimeTuner object and starts the tuning process.
-     *
-     * @param args Command-line arguments passed when the application is executed.
-     */
     public static void main(String[] args) {
-        if (SystemInfo.isMacOS) {
-            // enable screen menu bar
-            // (moves menu bar from JFrame window to top of screen)
-            System.setProperty("apple.laf.useScreenMenuBar", "false");
-
-            // application name used in screen menu bar
-            // (in first menu after the "apple" menu)
-            System.setProperty("apple.awt.application.name", "Tuner");
-
-            // appearance of window title bars
-            // possible values:
-            //   - "system": use current macOS appearance (light or dark)
-            //   - "NSAppearanceNameAqua": use light appearance
-            //   - "NSAppearanceNameDarkAqua": use dark appearance
-            // (must be set on main thread and before AWT/Swing is initialized;
-            //  setting it on AWT thread does not work)
-            System.setProperty("apple.awt.application.appearance", "system");
-        }
-
-        System.setProperty("flatlaf.menuBarEmbedded", "true");
-        System.setProperty("flatlaf.useWindowDecorations", "true");
-        FlatArcDarkOrangeIJTheme.setup();
-
-        if (SystemInfo.isLinux) {
-            // enable custom window decorations
-            JFrame.setDefaultLookAndFeelDecorated(true);
-            JDialog.setDefaultLookAndFeelDecorated(true);
-        }
-        realTimeTuner = new RealTimeTuner(new TunerFrame());
-        realTimeTuner.startTuning();
+        launch(args);
     }
 
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/tunerapp.fxml"));
+        Parent root = loader.load();
 
-    /**
-     * Shuts down the application.
-     * <p>
-     * This method stops the real-time tuning process and terminates the application.
-     * <p>
-     * Responsibilities:
-     * - Invokes the `stopTuning` method on the `realTimeTuner` instance to safely halt real-time tuning operations.
-     * - Exits the application by calling `System.exit(0)`.
-     * <p>
-     * Usage Context:
-     * Typically called when the user exits the application to ensure all resources are released and
-     * the application is properly terminated.
-     */
-    public static void close() {
-        realTimeTuner.stopTuning();
+        controller = loader.getController();
+
+        Scene scene = new Scene(root);
+        primaryStage.setTitle("Tuning Meter");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+        controller.startTuning();
+    }
+
+    @Override
+    public void stop() {
+        if (controller != null) {
+            controller.stopTuning();
+        }
         System.exit(0);
     }
+
+
 }

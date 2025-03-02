@@ -232,7 +232,7 @@ public class MainDesktop extends Application {
         URL url;
         HttpURLConnection huc;
         try {
-            url = new URI("https://www.letsbend.de/download/version.txt").toURL();
+            url = new URI("https://letsbend.de/download/version.txt").toURL();
             huc = (HttpURLConnection) url.openConnection();
             int responseCode = huc.getResponseCode();
 

@@ -122,8 +122,14 @@ public class AboutViewDesktopFXController implements AboutView {
 
         // Set the application version in the label
         // The version is retrieved from the package implementation details and compared with the latest version from the host
-        versionLabel.setText("Version " + getClass().getPackage().getImplementationVersion() +
-                " (Latest: " + MainDesktop.getVersionFromHost() + ")");
+        String latestVersion = MainDesktop.getVersionFromHost();
+        if (latestVersion != null) {
+            versionLabel.setText("Version " + getClass().getPackage().getImplementationVersion() +
+                    " (Latest: " + MainDesktop.getVersionFromHost() + ")");
+        }
+        else {
+            versionLabel.setText("Version " + getClass().getPackage().getImplementationVersion());
+        }
     }
 
     /**
