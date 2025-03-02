@@ -27,8 +27,15 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
+import javafx.animation.ScaleTransition;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 
 /**
  * The HarpViewDesktopFXController class provides functionalities for managing and interacting
@@ -67,7 +74,8 @@ public class HarpViewDesktopFXController implements HarpView {
 
     @FXML
     public Pane channel5;
-
+    @FXML
+    public GridPane harpGrid;
     @FXML
     private Pane channel1NoteM3;
     @FXML
@@ -88,7 +96,6 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane channel9NoteM3;
     @FXML
     private Pane channel10NoteM3;
-
     @FXML
     private Pane channel1NoteM2;
     @FXML
@@ -109,7 +116,6 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane channel9NoteM2;
     @FXML
     private Pane channel10NoteM2;
-
     @FXML
     private Pane channel1NoteM1;
     @FXML
@@ -130,7 +136,6 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane channel9NoteM1;
     @FXML
     private Pane channel10NoteM1;
-
     @FXML
     private Pane channel1Note0;
     @FXML
@@ -151,7 +156,6 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane channel9Note0;
     @FXML
     private Pane channel10Note0;
-
     @FXML
     private Pane channel1Note1;
     @FXML
@@ -172,7 +176,6 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane channel9Note1;
     @FXML
     private Pane channel10Note1;
-
     @FXML
     private Pane channel1Note2;
     @FXML
@@ -193,7 +196,6 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane channel9Note2;
     @FXML
     private Pane channel10Note2;
-
     @FXML
     private Pane channel1Note3;
     @FXML
@@ -214,7 +216,6 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane channel9Note3;
     @FXML
     private Pane channel10Note3;
-
     @FXML
     private Pane channel1Note4;
     @FXML
@@ -235,13 +236,154 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane channel9Note4;
     @FXML
     private Pane channel10Note4;
+    /**
+     * The `overlayContainer` is an AnchorPane that serves as a container for overlay elements
+     * displayed dynamically on the harp view interface.
+     * <p>
+     * This pane is designed to adjust its dimensions based on the size of the `harpGrid`,
+     * ensuring that any overlay content it holds aligns correctly with the underlying layout.
+     * The pane is primarily utilized for visual enhancements and user interactions in the
+     * harp view interface, such as highlighting or displaying additional information.
+     * <p>
+     * The `overlayContainer` is configured and updated during the initialization process in
+     * the `initialize` method.
+     */
+    @FXML
+    private AnchorPane overlayContainer;
+    /**
+     * A Pane element within the HarpViewDesktopFXController that displays an
+     * enlarged version of a selected harp view element.
+     * <p>
+     * The enlargedPane is dynamically shown and manipulated during the interaction
+     * with specific notes or elements within the harp grid. It is used to provide
+     * a focused view of a selected component and can be closed when clicked.
+     * <p>
+     * This variable is managed and initialized as part of the controller's layout
+     * setup and event handling logic.
+     */
+    @FXML
+    private Pane enlargedPane;
 
+    /**
+     * Initializes the layout and event handlers for the harp view controller.
+     * <p>
+     * This method configures the user interface elements within the harp view,
+     * ensuring that the sizes of the overlay container are dynamically bound to
+     * the dimensions of the harp grid. It also sets up mouse click event handlers
+     * for individual panes within the harp grid to manage user interactions.
+     * <p>
+     * Specifically:
+     * - The `overlayContainer` is dynamically resized to match the dimensions of
+     *   the `harpGrid` by binding its width and height properties to those of the grid.
+     * - Event handlers are attached to certain panes within the `harpGrid` to
+     *   detect mouse clicks, excluding panes that have the `channel` style class.
+     *   Clicking on such panes triggers a call to the `handlePaneClick` method for further processing.
+     * - A click event is also attached to the `enlargedPane` to close it when it is clicked.
+     */
+    @FXML
+    public void initialize() {
+        overlayContainer.prefWidthProperty().bind(harpGrid.widthProperty());
+        overlayContainer.prefHeightProperty().bind(harpGrid.heightProperty());
+
+        harpGrid.getChildren().stream().filter(node -> node instanceof Pane).filter(node -> !node.getStyleClass().contains("channel")).forEach(pane -> pane.setOnMouseClicked(this::handlePaneClick));
+
+        enlargedPane.setOnMouseClicked(e -> closeEnlargedPane());
+    }
+
+    /**
+     * Handles the mouse click event on a Pane within the harp grid.
+     * If the overlay container is visible, it closes the enlarged pane.
+     * Otherwise, it shows the enlarged pane corresponding to the clicked Pane.
+     *
+     * @param event the MouseEvent triggered by clicking on the Pane
+     */
+    private void handlePaneClick(MouseEvent event) {
+        Pane clickedPane = (Pane) event.getSource();
+        if (overlayContainer.isVisible()) {
+            closeEnlargedPane();
+            return;
+        }
+        showEnlargedPane(clickedPane);
+    }
+
+    /**
+     * Displays an enlarged representation of a given Pane within the overlay container.
+     * This method adjusts the size and position of the enlarged pane to be proportional
+     * to the dimensions of the harp grid, making it dynamically responsive while centering
+     * it within the overlay container.
+     *
+     * @param originalPane the Pane from the harp grid that is being enlarged and displayed.
+     */
+    private void showEnlargedPane(Pane originalPane) {
+
+        HarpViewNoteElementDesktopFX originalInstance = HarpViewNoteElementDesktopFX.getInstance(originalPane);
+        originalInstance.setEnlargedPane(enlargedPane);
+
+        enlargedPane.setUserData(originalPane);
+
+        DoubleBinding size = Bindings.createDoubleBinding(() -> Math.min(harpGrid.getWidth(), harpGrid.getHeight()) * 0.6, harpGrid.widthProperty(), harpGrid.heightProperty());
+
+        enlargedPane.prefWidthProperty().unbind();
+        enlargedPane.prefHeightProperty().unbind();
+
+        enlargedPane.prefWidthProperty().bind(size);
+        enlargedPane.prefHeightProperty().bind(size);
+
+        enlargedPane.translateXProperty().bind(Bindings.createDoubleBinding(() -> (overlayContainer.getWidth() - enlargedPane.getWidth()) / 2, overlayContainer.widthProperty(), enlargedPane.widthProperty()));
+        enlargedPane.translateYProperty().bind(Bindings.createDoubleBinding(() -> (overlayContainer.getHeight() - enlargedPane.getHeight()) / 2, overlayContainer.heightProperty(), enlargedPane.heightProperty()));
+
+        overlayContainer.setVisible(true);
+        enlargedPane.setVisible(true);
+        animateEnlargedPane(enlargedPane);
+    }
+
+    /**
+     * Animates the enlargement of a specified Pane using a scaling animation.
+     * The Pane is scaled up from a smaller size to its full size over a specified duration.
+     *
+     * @param pane the Pane to be animated with the enlargement effect
+     */
+    private void animateEnlargedPane(Pane pane) {
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), pane);
+        scaleTransition.setFromX(0.1);
+        scaleTransition.setFromY(0.1);
+        scaleTransition.setToX(1.0);
+        scaleTransition.setToY(1.0);
+        scaleTransition.play();
+    }
+
+    /**
+     * Closes the enlarged pane within the overlay container, if visible, using a scaling animation.
+     * <p>
+     * This method checks if the `overlayContainer` is currently visible. If it is:
+     * - A scaling animation is applied to the `enlargedPane`, reducing its size to minimal proportions.
+     * - Once the animation completes, the visibility of the `enlargedPane` is set to false.
+     * - If the `enlargedPane`'s user data contains a reference to another pane, it resets the
+     *   enlarged pane reference for that specific pane.
+     * - Finally, the visibility of the `overlayContainer` is set to false.
+     * <p>
+     * The animation duration is set to 200 milliseconds, creating a smooth shrinking effect.
+     */
+    private void closeEnlargedPane() {
+        if (overlayContainer.isVisible()) {
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(200), enlargedPane);
+            scaleTransition.setToX(0.1);
+            scaleTransition.setToY(0.1);
+            scaleTransition.setOnFinished(e -> {
+                enlargedPane.setVisible(false);
+                if (enlargedPane.getUserData() instanceof Pane)
+                    HarpViewNoteElementDesktopFX.getInstance((Pane) enlargedPane.getUserData()).setEnlargedPane(null);
+                overlayContainer.setVisible(false);
+            });
+            scaleTransition.play();
+        }
+    }
 
     /**
      * Retrieves the pane corresponding to the specified channel and note.
      *
      * @param channel the channel number (1-10) for which the Pane is to be retrieved
-     * @param note the note value (-3 to 4) for which the Pane is to be retrieved
+     * @param note    the note value (-3 to 4) for which the Pane is to be retrieved
      * @return the Pane associated with the specified channel and note
      */
     private Pane getNotePanel(int channel, int note) {
@@ -617,10 +759,8 @@ public class HarpViewDesktopFXController implements HarpView {
 
             harpViewNoteElementDesktopFX.init();
 
-            if(noteContainer.isOverblow())
-                harpViewNoteElementDesktopFX.setOverblow();
-            if(noteContainer.isOverdraw())
-                harpViewNoteElementDesktopFX.setOverdraw();
+            if (noteContainer.isOverblow()) harpViewNoteElementDesktopFX.setOverblow();
+            if (noteContainer.isOverdraw()) harpViewNoteElementDesktopFX.setOverdraw();
 
             harpViewNoteElementDesktopFX.setNoteName(noteContainer.getNoteName());
             harpViewNoteElementDesktopFX.clear();

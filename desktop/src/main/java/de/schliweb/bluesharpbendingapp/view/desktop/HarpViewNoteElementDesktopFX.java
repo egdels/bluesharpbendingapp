@@ -59,28 +59,25 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
     private final Pane notePane;
 
     /**
-     * Represents a graphical line component used as part of the visual
-     * representation for the harp view note element in a desktop JavaFX application.
-     * This line is likely associated with the graphical rendering or layout
-     * within the harp note pane.
-     */
-    private final Line line;
-
-    /**
-     * Represents a graphical label element within the HarpViewNoteElementDesktopFX class.
-     * This label is likely used to display textual information, such as the name or
-     * description of a musical note or other relevant information related to the harp view.
-     * The label is immutable and encapsulated as a final instance variable.
-     */
-    private final Label label;
-
-    /**
      * Represents the initial set of CSS classes assigned to the note pane.
      * This list is used to store the default CSS styles that define the
      * visual appearance of the note pane upon initialization. It ensures
      * that the default styling can be restored when needed.
      */
     private final List<String> initialCssClasses;
+
+
+    /**
+     * Represents a pane used to display an enlarged view of a note element within the
+     * context of the harp visualization interface. This pane is dynamically styled
+     * and configured to hold a specific structure, typically including a Label
+     * element and a Line element, among other components. It visually enhances the
+     * presentation of the note element, offering a more detailed or magnified view.
+     * <p>
+     * This field is managed within the lifecycle of the containing class and is updated
+     * through defined methods to reflect the state or interactions related to the note element.
+     */
+    private Pane enlargedPane;
 
 
     /**
@@ -95,24 +92,10 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
     private HarpViewNoteElementDesktopFX(Pane notePane) {
         // Initialize the notePane
         this.notePane = notePane;
-
-        // Retrieve and store the line element (assumes it's the second child in the pane)
-        line = (Line) notePane.getChildren().get(1);
-
-        // Retrieve and store the label element (assumes it's the first child in the pane)
-        label = (Label) notePane.getChildren().get(0);
-
-        // Dynamically center the label within the pane
-        // Horizontal centering: bind the label's X position to the pane's width minus the label's width, divided by 2
-        label.layoutXProperty().bind(notePane.widthProperty().subtract(label.widthProperty()).divide(2));
-
-        // Vertical centering: bind the label's Y position to the pane's height minus the label's height, divided by 2
-        label.layoutYProperty().bind(notePane.heightProperty().subtract(label.heightProperty()).divide(2));
-
+        bindLabelToPane(notePane);
         initialCssClasses = new ArrayList<>(notePane.getStyleClass());
 
     }
-
 
     /**
      * Retrieves an instance of {@code HarpViewNoteElementDesktopFX} associated with the given {@code Pane}.
@@ -126,19 +109,62 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
         return instances.computeIfAbsent(notePane, HarpViewNoteElementDesktopFX::new);
     }
 
-    @Override
-    public void clear() {
-        Platform.runLater(() -> line.setVisible(false));
+    /**
+     * Binds a Label element within the provided Pane to be centered dynamically as the Pane's size changes.
+     * The method assumes that the Pane contains a Label as its first child, and it sets up bindings on the
+     * Label's layoutX and layoutY properties to keep it centered within the Pane.
+     *
+     * @param pane The Pane containing the Label to be centered. The Pane is expected to have a specific
+     *             structure where the first child is a Label element.
+     */
+    private void bindLabelToPane(Pane pane) {
+        Label label = (Label) pane.getChildren().get(0);
+        label.layoutXProperty().unbind();
+        label.layoutYProperty().unbind();
+        label.layoutXProperty().bind(pane.widthProperty().subtract(label.widthProperty()).divide(2));
+        label.layoutYProperty().bind(pane.heightProperty().subtract(label.heightProperty()).divide(2));
     }
 
+    /**
+     * Clears the specified {@code Pane} by making its second child,
+     * which is expected to be a {@code Line}, invisible.
+     * This operation is scheduled to run on the JavaFX Application Thread.
+     *
+     * @param pane The {@code Pane} to be cleared. It is expected to have
+     *             a specific structure where the second child is a {@code Line}.
+     */
+    private void clearPane(Pane pane) {
+        Platform.runLater(() -> {
+            Line line = (Line) pane.getChildren().get(1);
+            line.setVisible(false);
+        });
+    }
 
     @Override
-    public void update(double cents) {
+    public void clear() {
+        /*if(enlargedPane != null) {
+            clearPane(enlargedPane);
+        }*/
+        clearPane(notePane);
+    }
+
+    /**
+     * Updates the display properties of the given {@code Pane} based on the provided cents value.
+     * This method adjusts the appearance and position of visual elements in the pane, such as a line
+     * and label, to reflect the specified cents input. The function ensures that the updates
+     * are performed on the JavaFX Application Thread.
+     *
+     * @param pane  The {@code Pane} to be updated. It is expected to contain a specific structure:
+     *              the second child is a {@code Line} element, and the third child (if present) is a {@code Label}.
+     * @param cents The value representing the pitch offset in cents, clamped between -50 and 50. This value
+     *              determines the line's position, thickness, and color as well as the text displayed in the label.
+     */
+    private void updatePane(Pane pane, double cents) {
         final int PADDING = 1; // Padding to account for the border of the pane
 
         javafx.application.Platform.runLater(() -> {
             // Get the height of the parent pane
-            double height = notePane.getHeight();
+            double height = pane.getHeight();
 
             // Clamp the cents value between -50 and 50 to ensure valid input
             double clampedCents = Math.max(-50, Math.min(50, cents));
@@ -154,12 +180,17 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
             // Calculate the color of the line
             // The color transitions between red and green based on the absolute value of `cents`
             double absValue = Math.abs(cents / 50.0);
-            Color lineColor = Color.rgb(
-                    (int) (250.0 * absValue),          // Red component increases with abs value of cents
+            Color lineColor = Color.rgb((int) (250.0 * absValue),          // Red component increases with abs value of cents
                     (int) (250.0 * (1.0 - absValue)),  // Green component decreases with abs value of cents
                     0                                  // Blue component is always 0
             );
 
+            if (pane.getChildren().size() > 2) {
+                Label label = (Label) pane.getChildren().get(2);
+                label.setText(String.format("Cents: %+3d", (int) cents));
+            }
+
+            Line line = (Line) pane.getChildren().get(1);
             // Set the line thickness
             line.setStrokeWidth(lineHeight);
 
@@ -168,7 +199,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
 
             // Bind the start and end X-coordinates of the line to fit within the pane, considering the stroke width and padding
             line.startXProperty().bind(line.strokeWidthProperty().divide(2).add(PADDING));
-            line.endXProperty().bind(notePane.widthProperty().subtract(PADDING).subtract(line.strokeWidthProperty().divide(2)));
+            line.endXProperty().bind(pane.widthProperty().subtract(PADDING).subtract(line.strokeWidthProperty().divide(2)));
 
             // Set the calculated Y-position of the line for proper vertical alignment
             line.setTranslateY(yPosition);
@@ -178,6 +209,14 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
         });
     }
 
+    @Override
+    public void update(double cents) {
+        if (enlargedPane != null) {
+            updatePane(enlargedPane, cents);
+        }
+        updatePane(notePane, cents);
+    }
+
 
     /**
      * Sets the name of the note and updates the text display of the associated label.
@@ -185,6 +224,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      * @param noteName The name of the note to be displayed on the label.
      */
     public void setNoteName(String noteName) {
+        Label label = (Label) notePane.getChildren().get(0);
         label.setText(noteName);
     }
 
@@ -219,7 +259,36 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      * configuration.
      */
     public void init() {
-        notePane.getStyleClass().clear(); 
+        notePane.getStyleClass().clear();
         notePane.getStyleClass().addAll(initialCssClasses);
+    }
+
+    /**
+     * Sets the given Pane as the enlarged pane and updates its style, content, and bindings.
+     * This method initializes the provided pane with the necessary visual and functional
+     * adjustments to display an enlarged version of a note element.
+     *
+     * @param pane The Pane to be set as the enlarged pane. It is expected to have a specific
+     *             structure, where the first child is a Label, the second child is a Line,
+     *             and subsequent children may include other necessary components.
+     */
+    public void setEnlargedPane(Pane pane) {
+        this.enlargedPane = pane;
+        if (enlargedPane != null) {
+            enlargedPane.getStyleClass().clear();
+            enlargedPane.getStyleClass().addAll(notePane.getStyleClass());
+            enlargedPane.getStyleClass().add("enlarged-cell");
+            enlargedPane.setStyle(notePane.getStyle());
+
+            Label label = (Label) notePane.getChildren().get(0);
+            Label noteLabel = (Label) enlargedPane.getChildren().get(0);
+            noteLabel.setText(label.getText());
+
+            bindLabelToPane(enlargedPane);
+            Line line = (Line) enlargedPane.getChildren().get(1);
+            line.setVisible(false);
+            Label centsLabel = (Label) enlargedPane.getChildren().get(2);
+            centsLabel.setText("Cents: ---");
+        }
     }
 }
