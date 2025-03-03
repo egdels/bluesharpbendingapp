@@ -29,6 +29,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -57,6 +59,22 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     private HarpViewHandler harpViewHandler;
 
     /**
+     * Indicates whether a note is currently enlarged in the view.
+     * This variable is used to manage the state of note enlargement, ensuring
+     * that only one note can be enlarged at a time. It is updated when a note is
+     * shown or hidden in its enlarged form.
+     */
+    private boolean isNoteEnlarged = false;
+    /**
+     * Represents a reference to the currently enlarged TextView in the harp interface.
+     * This variable is used to track the TextView that is displayed in an enlarged state
+     * when a note is emphasized. It is updated when a note is shown or hidden in its enlarged view.
+     * The value is set to null when no TextView is enlarged.
+     */
+    private TextView enlargedTextView = null;
+
+
+    /**
      * On create view view.
      *
      * @param inflater           the inflater
@@ -65,15 +83,63 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * @return the view
      */
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHarpBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
+
+    /**
+     * Displays an enlarged version of the specified note in a provided overlay view.
+     * Copies the text from the original note to an overlay TextView, makes the overlay visible,
+     * and updates the state to track the enlarged view.
+     *
+     * @param note        the original TextView representing the note to be enlarged
+     * @param overlayNote the overlay TextView used to display the enlarged version of the note
+     */
+    private void showEnlargedTextView(TextView note, TextView overlayNote) {
+        // Early return if a note is already enlarged
+        if (isNoteEnlarged) return;
+
+        // Copy the text from the original note to the overlay view
+        overlayNote.setText(note.getText());
+
+        // Make the overlay note visible
+        overlayNote.setVisibility(View.VISIBLE);
+
+        // Get the original note element and link it with the enlarged view
+        HarpViewNoteElementAndroid originalElement = HarpViewNoteElementAndroid.getInstance(note);
+        originalElement.setEnlargedTextView(overlayNote);
+
+        // Update state to track the enlarged view
+        isNoteEnlarged = true;
+        enlargedTextView = note;
+    }
+
+    /**
+     * Hides the enlarged overlay TextView and resets the state tracking the enlarged view.
+     *
+     * @param overlayNote the overlay TextView that displays the enlarged version of the note
+     */
+    private void hideEnlargedTextView(TextView overlayNote) {
+        // Early return if no note is currently enlarged
+        if (!isNoteEnlarged) return;
+
+        // Get the original note element associated with the enlarged view
+        HarpViewNoteElementAndroid originalElement = HarpViewNoteElementAndroid.getInstance(enlargedTextView);
+
+        // Remove the reference to enlarged view in the original element
+        originalElement.setEnlargedTextView(null);
+
+        // Hide the overlay note view
+        overlayNote.setVisibility(View.GONE);
+
+        // Reset enlarged view state
+        isNoteEnlarged = false;
+        enlargedTextView = null;
+    }
+
 
     /**
      * On view created.
@@ -85,9 +151,48 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Get reference to the main table layout and overlay note TextView
+        TableLayout tableLayout = view.findViewById(R.id.harp_table);
+        TextView overlayNote = view.findViewById(R.id.overlay_note);
+
+        // Set click listener to hide enlarged view when overlay is clicked
+        overlayNote.setOnClickListener(v -> hideEnlargedTextView(overlayNote));
+
+        // Iterate through all rows in the table
+        for (int i = 0; i < tableLayout.getChildCount(); i++) {
+            View row = tableLayout.getChildAt(i);
+            if (row instanceof TableRow tableRow) {
+                // Iterate through all cells in the current row
+                for (int j = 0; j < tableRow.getChildCount(); j++) {
+                    View noteView = tableRow.getChildAt(j);
+                    if (noteView instanceof TextView) {
+                        // Skip channel identifier TextViews (1-10)
+                        if (noteView.getId() == R.id.channel_1) continue;
+                        if (noteView.getId() == R.id.channel_2) continue;
+                        if (noteView.getId() == R.id.channel_3) continue;
+                        if (noteView.getId() == R.id.channel_4) continue;
+                        if (noteView.getId() == R.id.channel_5) continue;
+                        if (noteView.getId() == R.id.channel_6) continue;
+                        if (noteView.getId() == R.id.channel_7) continue;
+                        if (noteView.getId() == R.id.channel_8) continue;
+                        if (noteView.getId() == R.id.channel_9) continue;
+                        if (noteView.getId() == R.id.channel_10) continue;
+
+                        // Add click listener to each note TextView
+                        // Shows enlarged view when clicked, but only if no note is currently enlarged
+                        noteView.setOnClickListener(v -> {
+                            TextView note = (TextView) v;
+                            if (!isNoteEnlarged) {
+                                showEnlargedTextView(note, overlayNote);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
         FragmentViewModel viewModel = new ViewModelProvider(requireActivity()).get(FragmentViewModel.class);
         viewModel.selectFragmentView(this);
-
     }
 
     /**

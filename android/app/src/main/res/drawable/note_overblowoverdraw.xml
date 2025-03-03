@@ -35,7 +35,7 @@
             <corners android:radius="4dp"/>
         </shape>
     </item>
-    <item>
+    <item android:left="0dp" android:right="0dp">
         <shape android:shape="line">
             <stroke/>
         </shape>
