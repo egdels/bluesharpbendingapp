@@ -25,10 +25,13 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,7 +121,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      *             structure where the first child is a Label element.
      */
     private void bindLabelToPane(Pane pane) {
-        Label label = (Label) pane.getChildren().get(0);
+        Label label = (Label) pane.getChildren().get(1);
         label.layoutXProperty().unbind();
         label.layoutYProperty().unbind();
         label.layoutXProperty().bind(pane.widthProperty().subtract(label.widthProperty()).divide(2));
@@ -135,16 +138,16 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      */
     private void clearPane(Pane pane) {
         Platform.runLater(() -> {
-            Line line = (Line) pane.getChildren().get(1);
+            Line line = (Line) pane.getChildren().get(0);
             line.setVisible(false);
         });
     }
 
     @Override
     public void clear() {
-        /*if(enlargedPane != null) {
+        if(enlargedPane != null) {
             clearPane(enlargedPane);
-        }*/
+        }
         clearPane(notePane);
     }
 
@@ -186,12 +189,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
                     0                                  // Blue component is always 0
             );
 
-            if (pane.getChildren().size() > 2) {
-                Label label = (Label) pane.getChildren().get(2);
-                label.setText(String.format("Cents: %+3d", (int) cents));
-            }
-
-            Line line = (Line) pane.getChildren().get(1);
+            Line line = (Line) pane.getChildren().get(0);
             // Set the line thickness
             line.setStrokeWidth(lineHeight);
 
@@ -204,6 +202,10 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
 
             // Set the calculated Y-position of the line for proper vertical alignment
             line.setTranslateY(yPosition);
+
+            if(pane.equals(enlargedPane)) {
+                updateEnlargedLabelCent(cents);
+            }
 
             // Make the line visible
             line.setVisible(true);
@@ -225,7 +227,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      * @param noteName The name of the note to be displayed on the label.
      */
     public void setNoteName(String noteName) {
-        Label label = (Label) notePane.getChildren().get(0);
+        Label label = (Label) notePane.getChildren().get(1);
         label.setText(noteName);
     }
 
@@ -280,16 +282,56 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
             enlargedPane.getStyleClass().addAll(notePane.getStyleClass());
             enlargedPane.getStyleClass().add("enlarged-cell");
             enlargedPane.setStyle(notePane.getStyle());
-
-            Label label = (Label) notePane.getChildren().get(0);
-            Label noteLabel = (Label) enlargedPane.getChildren().get(0);
-            noteLabel.setText(label.getText());
-
+            updateEnlargedLabelCent(0);
             bindLabelToPane(enlargedPane);
-            Line line = (Line) enlargedPane.getChildren().get(1);
-            line.setVisible(false);
-            Label centsLabel = (Label) enlargedPane.getChildren().get(2);
-            centsLabel.setText("Cents: ---");
+            clearPane(enlargedPane);
         }
+    }
+
+    /**
+     * Updates the graphical content of the enlarged label to display the note name and the pitch offset in cents.
+     * The method formats the display to include the note name in bold font and the offset in monospaced font,
+     * ensuring proper alignment and scaling of the content.
+     *
+     * @param cents The pitch offset to be displayed, expressed in cents. Positive values indicate a sharper pitch,
+     *              while negative values represent a flatter pitch.
+     */
+    private void updateEnlargedLabelCent(double cents) {
+        // Create a new Text object that displays the note name.
+        // The note name is retrieved from the second child (index 1) of the notePane.
+        // The text is styled with bold font and a font size of 40.
+        Text noteTextNode = new Text(((Label)notePane.getChildren().get(1)).getText());
+        noteTextNode.setFont(Font.font(null, FontWeight.BOLD, 40));
+
+        // Add a new line to separate the note name from the cents display.
+        Text newLine = new Text("\n");
+
+        // Format the cents value as a string in the format "Cents:+/-xxx".
+        // The "+" or "-" sign indicates whether the pitch is sharper or flatter.
+        String centsString = String.format("Cents:%+3d", (int)cents);
+        Text centsTextNode = new Text(centsString);
+        centsTextNode.setFont(Font.font("Monospace", 18)); // Use monospaced font for clarity.
+
+        // Combine the note name, new line, and cents value into a single TextFlow element.
+        // This layout ensures proper alignment and structure for displaying the text elements.
+        TextFlow textFlow = new TextFlow(noteTextNode, newLine, centsTextNode);
+        textFlow.setTextAlignment(TextAlignment.CENTER); // Center-align the contents horizontally.
+        textFlow.setMinWidth(100); // Set a minimum width to ensure consistent layout.
+
+        // Retrieve the Label element from the enlargedPane,
+        // which is responsible for displaying the graphical representation of the note.
+        Label label = (Label) enlargedPane.getChildren().get(1);
+
+        // Bind the width of the TextFlow to the width of the Label,
+        // ensuring the layout adapts to the Label's size dynamically.
+        textFlow.prefWidthProperty().bind(label.widthProperty());
+
+        // Set the TextFlow as the graphical content of the Label.
+        // This replaces any existing content with the combined note and cents display.
+        label.setGraphic(textFlow);
+
+        // Center the Label's alignment and its graphical content both vertically and horizontally.
+        label.setAlignment(Pos.CENTER);
+        label.setContentDisplay(ContentDisplay.CENTER);
     }
 }

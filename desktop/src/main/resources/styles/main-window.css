@@ -137,18 +137,6 @@ Hyperlink:visited {
     -fx-mouse-transparent: true;
 }
 
-.enlarged-cell > Label {
-    -fx-font-size: 40px;
-}
-
-.enlarged-cents-label {
-    -fx-position: absolute;
-    -fx-top: 0;
-    -fx-left: 0;
-    -fx-padding: 5 0 0 5; /* top right bottom left */
-    -fx-font-size: 14px; /* Standard-Größe */
-}
-
 /* ComboBox styles */
 .combo-box {
     -fx-background-color: #313540; /* Dark background for the ComboBox */

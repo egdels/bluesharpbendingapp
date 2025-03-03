@@ -240,14 +240,14 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
         // Make the note text bold (first part only)
         spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Increase size of note text by factor 5.0
-        spannableString.setSpan(new RelativeSizeSpan(5.0f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // Increase size of note text by factor 2.0
+        spannableString.setSpan(new RelativeSizeSpan(2.0f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Apply monospace font to the cents part (including "Cents:")
         spannableString.setSpan(new TypefaceSpan("monospace"), noteText.length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Make cents part 2.5 times larger than normal text
-        spannableString.setSpan(new RelativeSizeSpan(2.5f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // Make cents part 1.5 times larger than normal text
+        spannableString.setSpan(new RelativeSizeSpan(1.5f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Set the final formatted text to the TextView
         textView.setText(spannableString);

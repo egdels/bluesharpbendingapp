@@ -65,8 +65,8 @@
             </padding>
             <Pane fx:id="trainingNote" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
                   VBox.vgrow="ALWAYS">
-                <Label/>
                 <Line/>
+                <Label/>
             </Pane>
         </VBox>
     </center>

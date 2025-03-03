@@ -154,7 +154,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         // Get reference to the main table layout and overlay note TextView
         TableLayout tableLayout = view.findViewById(R.id.harp_table);
         TextView overlayNote = view.findViewById(R.id.overlay_note);
-
+        hideEnlargedTextView(overlayNote);
         // Set click listener to hide enlarged view when overlay is clicked
         overlayNote.setOnClickListener(v -> hideEnlargedTextView(overlayNote));
 
