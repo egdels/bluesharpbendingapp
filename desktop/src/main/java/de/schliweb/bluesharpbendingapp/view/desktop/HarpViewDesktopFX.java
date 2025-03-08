@@ -23,10 +23,10 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -37,16 +37,8 @@ import java.io.IOException;
  * controller class to handle user interactions and events.
  */
 @Getter
+@Slf4j
 public class HarpViewDesktopFX {
-
-    /**
-     * A constant Logger instance used for logging messages in the HarpViewDesktopFX class.
-     * This Logger is specifically associated with the HarpViewDesktopFX class to provide
-     * contextual information in log messages, such as the class name and method name.
-     * It supports logging messages at various severity levels, including debug, info, and error.
-     */
-    private static final Logger LOGGER = new Logger(HarpViewDesktopFX.class);
-
 
     /**
      * Represents the controller instance responsible for handling the behavior and user interactions
@@ -104,7 +96,7 @@ public class HarpViewDesktopFX {
             root.setVisible(true);
         } catch (IOException e) {
             // Log an error if there is an issue while loading the FXML file
-            LOGGER.error("Error while loading the FXML: " + e.getMessage());
+            log.error("Error while loading the FXML: " + e.getMessage());
 
             // Throw a runtime exception to indicate failure in loading the FXML
             throw new RuntimeException("Failed to load FXML", e);

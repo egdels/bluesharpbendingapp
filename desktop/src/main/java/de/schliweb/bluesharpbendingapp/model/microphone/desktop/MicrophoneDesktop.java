@@ -26,8 +26,8 @@ package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
 
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sound.sampled.*;
 import javax.sound.sampled.Mixer.Info;
@@ -47,6 +47,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * This class interacts with audio hardware and uses multi-threading for efficient data processing. It also
  * allows selecting different microphones and algorithms, ensuring flexibility in audio applications.
  */
+@Slf4j
 public class MicrophoneDesktop implements Microphone {
 
     /**
@@ -78,14 +79,7 @@ public class MicrophoneDesktop implements Microphone {
      * and manage sample-related computations.
      */
     private static final int BYTES_PER_SAMPLE = BITS_PER_SAMPLE / 8;
-    /**
-     * The LOGGER is a static final instance of the Logger class, associated with the
-     * MicrophoneDesktop class for contextual logging of messages. It is used to log
-     * debug, informational, and error messages with details about the current class
-     * and method, aiding in application diagnostics and development debugging.
-     */
-    private static final Logger LOGGER = new Logger(MicrophoneDesktop.class);
-    /**
+     /**
      * A reusable buffer for storing normalized audio sample data. The array is
      * sized proportionally to the audio buffer size and the number of bytes per sample,
      * ensuring efficient reuse during audio processing tasks.
@@ -223,7 +217,7 @@ public class MicrophoneDesktop implements Microphone {
         try {
             confidence = Double.parseDouble(getSupportedConfidences()[confidenceIndex]);
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
-            LOGGER.error(exception.getMessage());
+            log.error(exception.getMessage());
         }
     }
 
@@ -237,7 +231,7 @@ public class MicrophoneDesktop implements Microphone {
         try {
             name = getSupportedMicrophones()[microphoneIndex];
         } catch (ArrayIndexOutOfBoundsException exception) {
-            LOGGER.error(exception.getMessage());
+            log.error(exception.getMessage());
         }
     }
 
@@ -254,13 +248,13 @@ public class MicrophoneDesktop implements Microphone {
         for (Info mixerInfo : mixerInfos) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);
             if (mixer.isLineSupported(dataLineInfo)) {
-                LOGGER.debug("Mixer.getLineInfo(): " + mixer.getLineInfo().toString());
+                log.debug("Mixer.getLineInfo(): " + mixer.getLineInfo().toString());
                 try {
                     TargetDataLine targetDataLine = (TargetDataLine) mixer.getLine(dataLineInfo);
                     targetDataLine.open();
                     targetDataLine.close();
                 } catch (LineUnavailableException e) {
-                    LOGGER.error("No supported microphone: " + e.getMessage());
+                    log.error("No supported microphone: " + e.getMessage());
                     continue;
                 }
                 microphones.add(mixer.getMixerInfo().getName());
@@ -294,12 +288,12 @@ public class MicrophoneDesktop implements Microphone {
                 try {
                     targetDataLine = (TargetDataLine) mixer.getLine(dataLineInfo);
                 } catch (LineUnavailableException e) {
-                    LOGGER.error(e.getMessage());
+                    log.error(e.getMessage());
                 }
             }
         }
         if (targetDataLine == null) {
-            LOGGER.error("No matching mixer found for name: " + name + ".");
+            log.error("No matching mixer found for name: " + name + ".");
         }
         return targetDataLine;
     }
@@ -368,13 +362,14 @@ public class MicrophoneDesktop implements Microphone {
                             System.arraycopy(buffer, 0, dataCopy, 0, bytesRead);
 
                             // Offer the data to the BlockingQueue
-                            audioDataQueue.offer(dataCopy);
+                            boolean offer = audioDataQueue.offer(dataCopy);
+                            log.debug("Audio data queue offer status: " + offer);
                         }
                     }
                     line.close();
                 }
             } catch (LineUnavailableException e) {
-                LOGGER.error("Error opening microphone: " + e.getMessage());
+                log.error("Error opening microphone: " + e.getMessage());
             }
         });
 
@@ -390,7 +385,7 @@ public class MicrophoneDesktop implements Microphone {
 
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    LOGGER.info("Processing thread interrupted.");
+                    log.info("Processing thread interrupted.");
                 }
             }
         });

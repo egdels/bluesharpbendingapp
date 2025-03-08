@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.view.android;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.text.Spannable;
@@ -33,69 +34,108 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.widget.TextView;
-import androidx.fragment.app.FragmentActivity;
-import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
-import android.graphics.Typeface;
 
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.HashMap;
 
+import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
+
+
 /**
- * The type Harp view note element android.
+ * A class representing a note element in a harp view for Android platform.
+ * This class is responsible for managing the UI updates of note elements,
+ * including color and layout changes, based on input pitch offset values (cents).
+ * It also supports dynamically managing enlarged text views for better visualization.
+ * <p>
+ * Implements {@link HarpViewNoteElement}, providing definitions for methods
+ * to update and clear note-related visual properties.
  */
 public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
 
+
     /**
-     * The constant instances.
+     * A static map associating TextView objects with their respective
+     * HarpViewNoteElementAndroid instances. Ensures that each TextView
+     * has a unique corresponding instance of HarpViewNoteElementAndroid.
+     * Used to manage and retrieve instances efficiently.
      */
     private static final HashMap<TextView, HarpViewNoteElementAndroid> instances = new HashMap<>();
 
+
     /**
-     * The Text view.
+     * A `TextView` instance used to display note-related information,
+     * including graphical and textual updates representing musical notes
+     * and their associated properties like pitch variations (cents).
+     * <p>
+     * `noteTextView` serves as the core text rendering component within
+     * the system. It interacts with various internal methods to dynamically
+     * update its appearance and content based on musical note adjustments.
+     * <p>
+     * Key functionalities tied to this variable include:
+     * - Integration with UI elements, such as background and dynamic visuals.
+     * - Setting formatted textual content, including note names and pitch offsets.
+     * - Visual styling like bold text, font scaling, and line drawing.
+     * - Being manipulated on the main UI thread for smooth real-time updates.
+     * <p>
+     * This variable is used throughout the class to manage and render note
+     * representation consistently. It is designed to adapt for both regular
+     * and enlarged views, enabling an enhanced experience for various display
+     * contexts.
      */
     private final TextView noteTextView;
 
+
     /**
-     * The Activity.
+     * Represents the activity context associated with the current note element.
+     * Used to execute operations on the UI thread or retrieve additional resources
+     * related to the activity context.
+     * <p>
+     * This variable is initialized as the context of the provided TextView when the
+     * HarpViewNoteElementAndroid is instantiated. It ensures proper interaction
+     * with Android framework UI components.
      */
     private final FragmentActivity activity;
+
     /**
-     * Represents the TextView used for displaying an enlarged note representation.
-     * This TextView is visually distinct and shares synchronized properties
-     * with the regular note TextView, such as layout and styling, but is used
-     * specifically for enhanced visibility.
+     * Represents a specialized TextView element that is visually emphasized
+     * and utilized for displaying enlarged note and cent information.
      * <p>
-     * It may be updated dynamically, cleared of content or background, or
-     * set to reflect specific note and cent information based on user interactions
-     * or system behavior within the HarpViewNoteElementAndroid class.
+     * This field is specifically designed to react to updates in musical note pitch values
+     * and provides an enhanced display by applying formatting, such as size augmentation
+     * and style adjustments, to the text content.
+     * <p>
+     * It is updated and modified dynamically within the user interface thread, and is
+     * cleared or reset to a default state when necessary, to ensure consistency
+     * and proper interaction with the underlying logic of pitching and cent display.
      */
     private TextView enlargedTextView;
 
+
     /**
-     * Instantiates a new Harp view note element android.
+     * Constructs a new HarpViewNoteElementAndroid instance with the specified TextView.
+     * Initializes the associated note display and context for further usage.
      *
-     * @param textView the text view
+     * @param textView the TextView that will be linked to this HarpViewNoteElementAndroid instance.
      */
     private HarpViewNoteElementAndroid(TextView textView) {
         this.noteTextView = textView;
         this.activity = (FragmentActivity) textView.getContext();
     }
 
+
     /**
-     * Gets instance.
+     * Retrieves an existing instance of {@code HarpViewNoteElementAndroid} associated with the specified
+     * {@code TextView}, or creates a new one if no such instance exists.
      *
-     * @param textView the text view
-     * @return the instance
+     * @param textView the {@code TextView} linked to the desired {@code HarpViewNoteElementAndroid} instance.
+     * @return the {@code HarpViewNoteElementAndroid} instance associated with the specified {@code TextView}.
      */
     public static HarpViewNoteElementAndroid getInstance(TextView textView) {
         return instances.computeIfAbsent(textView, HarpViewNoteElementAndroid::new);
     }
 
-    /**
-     * Update.
-     *
-     * @param cents the cents
-     */
+
     @Override
     public void update(double cents) {
         if (enlargedTextView != null) {
@@ -104,13 +144,15 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
         updateTextView(noteTextView, cents);
     }
 
+
     /**
-     * Updates the specified TextView's graphical and visual elements based on the given cents value.
-     * This includes modifying the gradient line's alpha and stroke properties, adjusting its bounds,
-     * and synchronizing additional visual elements for an enlarged view when applicable.
+     * Updates the appearance and position of a graphic line on the given TextView's background,
+     * based on the provided cents value. This method modifies the visual representation of
+     * pitch deviation and, if the TextView is an enlarged view, updates its displayed cents value.
      *
-     * @param textView the TextView whose background elements are to be updated.
-     * @param cents    the cents value used to determine the visual adjustments to the line and its position.
+     * @param textView the TextView whose appearance will be updated
+     * @param cents the pitch deviation value in cents; ranges from -44 to 44
+     *              with values clamped within this range for graphical rendering
      */
     private void updateTextView(TextView textView, double cents) {
         activity.runOnUiThread(() -> {
@@ -153,9 +195,7 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
         });
     }
 
-    /**
-     * Clear.
-     */
+
     @Override
     public void clear() {
         if (enlargedTextView != null) {
@@ -164,12 +204,14 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
         clearTextView(noteTextView);
     }
 
+
     /**
-     * Clears the specified TextView by resetting its background layer and, if applicable,
-     * resetting its cents display to 0.
+     * Clears the visual elements associated with the specified TextView. This method modifies
+     * the background of the TextView to make specific layers transparent and resets any
+     * additional display elements if applicable. The operation is performed on the UI thread
+     * to ensure safe manipulation of the user interface.
      *
-     * @param textView the TextView to be cleared, whose background will be reset
-     *                 and content updated accordingly
+     * @param textView the TextView whose background and display settings will be cleared
      */
     private void clearTextView(TextView textView) {
         // Execute on UI thread since we're modifying UI elements
@@ -188,13 +230,14 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
         });
     }
 
+
     /**
-     * Sets the TextView to be displayed as the enlarged note representation.
-     * This method also synchronizes certain visual properties of the enlarged TextView
-     * with the note TextView, including background color, and clears its text content.
+     * Sets the specified TextView as the enlarged view for this instance. The method adjusts
+     * the background color of the enlarged TextView to match the background of the associated
+     * note TextView and clears any existing text in the enlarged TextView.
      *
-     * @param textView the TextView to be used as the enlarged note representation
-     *                 or null to unset the current enlarged TextView.
+     * @param textView the TextView to be set as the enlarged view. If null, the operation
+     *                 is skipped.
      */
     public void setEnlargedTextView(TextView textView) {
         // Store the reference to the enlarged TextView
@@ -218,13 +261,16 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
         }
     }
 
+
     /**
-     * Updates the provided TextView with formatted note and cent information.
-     * The note part is displayed in bold with a larger font size, and the cents part is
-     * displayed in monospace font with a relative size adjustment.
+     * Updates the text and style of a given TextView to display a formatted
+     * representation of note text and pitch deviation in cents.
+     * The method applies various styles to enhance the visual distinction
+     * between the note text and the cents text.
      *
-     * @param textView the TextView to update with the formatted information
-     * @param cents    the cent value to display, formatted with leading spaces and sign (+/-)
+     * @param textView the TextView to be updated with the formatted note and cents text
+     * @param cents the pitch deviation value in cents; positive values represent upward
+     *              deviation, while negative values represent downward deviation
      */
     private void updateTextViewCent(TextView textView, double cents) {
         // Get the existing note text from the TextView

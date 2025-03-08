@@ -29,7 +29,9 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
 import de.schliweb.bluesharpbendingapp.model.training.Training;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,97 +47,42 @@ import java.util.ArrayList;
  * representation and accessing supported attributes like algorithms, keys, tunes,
  * and concert pitches.
  */
+@Setter
+@Slf4j
 public class MainModel {
 
-    /**
-     * The LOGGER is a static, final instance of the Logger class, specific to the MainModel class.
-     * It is used for logging debug, error, and info messages to aid in monitoring and troubleshooting the execution flow of the application.
-     */
-    private static final Logger LOGGER = new Logger(MainModel.class);
-
-    /**
-     * Represents the currently selected or managed harmonica in the model.
-     * It can be used to configure, store, or retrieve data related to a harmonica.
-     */
+    @Getter
     private Harmonica harmonica;
 
-    /**
-     * Represents the training being used in the MainModel class.
-     * This variable holds the current training instance and provides access
-     * to training-related functionalities such as managing notes, controlling
-     * the state, and tracking progress.
-     * <p>
-     * The Training interface is a blueprint that offers methods for handling
-     * different aspects of training, like retrieving notes, moving through
-     * the training sequence, starting or stopping the process, and checking
-     * the training status.
-     * <p>
-     * This variable may be set or retrieved to interact with the active training
-     * instance, enabling the use of training-specific operations in the main model.
-     */
+
+    @Getter
     private Training training;
 
-    /**
-     * Represents a private field of type Microphone used in the MainModel class.
-     * Stores the currently selected or active microphone instance for handling audio input.
-     */
+
+    @Getter
     private Microphone microphone;
 
-    /**
-     * Represents the stored index of the selected algorithm in the system.
-     * This value is used to persist and retrieve the currently selected algorithm
-     * state across different executions or sessions.
-     */
+    @Getter
     private int storedAlgorithmIndex = 0;
 
-    /**
-     * Represents the stored index for the selected key in the main model.
-     * This index corresponds to the stored key within the application state,
-     * allowing retrieval or modification of the current key setting.
-     */
+    @Getter
     private int storedKeyIndex = 4;
 
-    /**
-     * Represents the index of the microphone that is stored in the application settings.
-     * This value is used to remember and retrieve the user's previously selected microphone.
-     */
+    @Getter
     private int storedMicrophoneIndex = 0;
 
-    /**
-     * Stores the index of the selected tune for the application.
-     * This index is used to persist the user's tune selection between sessions
-     * or to share information between components of the application.
-     * Defaults to 6 if not explicitly set.
-     */
+    @Getter
     private int storedTuneIndex = 6;
 
-    /**
-     * Holds the index value representing the stored concert pitch setting.
-     * This value is used to persist and retrieve the selected concert pitch
-     * from a predefined list of concert pitches.
-     */
+    @Getter
     private int storedConcertPitchIndex = 11;
 
-    /**
-     * Represents the index of the stored training within the model.
-     * This variable is initialized to a default value of 0, indicating
-     * that no specific training selection is stored by default.
-     * It can be set or retrieved using the respective getter and setter methods.
-     */
+    @Getter
     private int storedTrainingIndex = 0;
 
-    /**
-     * Represents the index of the stored precision value within the application's internal configuration.
-     * This value is used to persist and retrieve the currently selected precision setting.
-     */
     private int storedPrecisionIndex;
 
-    /**
-     * Represents the stored confidence index for a specific operation or state.
-     * This variable is used to track or measure the level of confidence.
-     * It is initialized to a default value of 0 and can be updated based
-     * on application logic or requirements.
-     */
+    @Getter
     private int storedConfidenceIndex = 0;
 
     /**
@@ -167,7 +114,7 @@ public class MainModel {
                         try {
                             method.invoke(model, Integer.parseInt(p));
                         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                            LOGGER.error(e.getMessage());
+                            log.error(e.getMessage());
                         }
                     }
                 }
@@ -186,48 +133,12 @@ public class MainModel {
     }
 
     /**
-     * Retrieves the current Harmonica instance associated with this MainModel.
-     *
-     * @return the current Harmonica instance
-     */
-    public Harmonica getHarmonica() {
-        return this.harmonica;
-    }
-
-    /**
-     * Sets the current Harmonica instance associated with this MainModel.
-     *
-     * @param harmonica the Harmonica instance to associate with this MainModel
-     */
-    public void setHarmonica(Harmonica harmonica) {
-        this.harmonica = harmonica;
-    }
-
-    /**
      * Retrieves the list of supported keys for the harmonica.
      *
      * @return an array of strings representing the supported keys
      */
     public String[] getKeys() {
         return AbstractHarmonica.getSupporterKeys();
-    }
-
-    /**
-     * Retrieves the current Microphone instance associated with this MainModel.
-     *
-     * @return the current Microphone instance
-     */
-    public Microphone getMicrophone() {
-        return microphone;
-    }
-
-    /**
-     * Sets the current Microphone instance for this MainModel.
-     *
-     * @param microphone the Microphone instance to be set
-     */
-    public void setMicrophone(Microphone microphone) {
-        this.microphone = microphone;
     }
 
     /**
@@ -355,96 +266,6 @@ public class MainModel {
     }
 
     /**
-     * Retrieves the stored algorithm index.
-     *
-     * @return the stored algorithm index as an integer
-     */
-    public int getStoredAlgorithmIndex() {
-        return storedAlgorithmIndex;
-    }
-
-    /**
-     * Sets the stored algorithm index for this MainModel.
-     *
-     * @param algorithmIndex the index of the algorithm to be stored
-     */
-    public void setStoredAlgorithmIndex(int algorithmIndex) {
-        this.storedAlgorithmIndex = algorithmIndex;
-    }
-
-    /**
-     * Retrieves the stored key index.
-     *
-     * @return the stored key index as an integer
-     */
-    public int getStoredKeyIndex() {
-        return storedKeyIndex;
-    }
-
-    /**
-     * Sets the stored key index for this MainModel.
-     *
-     * @param keyIndex the index of the key to be stored
-     */
-    public void setStoredKeyIndex(int keyIndex) {
-        this.storedKeyIndex = keyIndex;
-    }
-
-    /**
-     * Retrieves the stored microphone index for this MainModel.
-     *
-     * @return the stored microphone index as an integer
-     */
-    public int getStoredMicrophoneIndex() {
-        return storedMicrophoneIndex;
-    }
-
-    /**
-     * Sets the index of the microphone to be stored in the model.
-     *
-     * @param microphoneIndex the index of the microphone to be stored
-     */
-    public void setStoredMicrophoneIndex(int microphoneIndex) {
-        this.storedMicrophoneIndex = microphoneIndex;
-    }
-
-    /**
-     * Retrieves the stored tune index for this MainModel.
-     *
-     * @return the stored tune index as an integer
-     */
-    public int getStoredTuneIndex() {
-        return storedTuneIndex;
-    }
-
-    /**
-     * Sets the stored tune index for this MainModel.
-     *
-     * @param storedTuneIndex the index of the tune to be stored
-     */
-    public void setStoredTuneIndex(int storedTuneIndex) {
-        this.storedTuneIndex = storedTuneIndex;
-    }
-
-    /**
-     * Retrieves the stored concert pitch index for this MainModel.
-     *
-     * @return the stored concert pitch index as an integer
-     */
-    public int getStoredConcertPitchIndex() {
-        return storedConcertPitchIndex;
-    }
-
-    /**
-     * Sets the stored concert pitch index for this MainModel.
-     *
-     * @param storedConcertPitchIndex the index of the concert pitch to be stored
-     */
-    public void setStoredConcertPitchIndex(int storedConcertPitchIndex) {
-        this.storedConcertPitchIndex = storedConcertPitchIndex;
-    }
-
-    /**
      * Retrieves the list of supported tunes for the harmonica.
      *
      * @return an array of strings representing the supported tunes
@@ -472,7 +293,7 @@ public class MainModel {
                 try {
                     stringList.add(m.getName() + ":" + m.invoke(this));
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    LOGGER.error(e.getMessage());
+                    log.error(e.getMessage());
                 }
             }
         }
@@ -506,42 +327,6 @@ public class MainModel {
     }
 
     /**
-     * Retrieves the stored training index for this MainModel.
-     *
-     * @return the stored training index as an integer
-     */
-    public int getStoredTrainingIndex() {
-        return storedTrainingIndex;
-    }
-
-    /**
-     * Sets the stored training index to the specified value.
-     *
-     * @param trainingIndex the new value for the stored training index
-     */
-    public void setStoredTrainingIndex(int trainingIndex) {
-        this.storedTrainingIndex = trainingIndex;
-    }
-
-    /**
-     * Retrieves the training instance associated with this object.
-     *
-     * @return the Training instance
-     */
-    public Training getTraining() {
-        return training;
-    }
-
-    /**
-     * Sets the training object for this instance.
-     *
-     * @param training the Training object to be assigned
-     */
-    public void setTraining(Training training) {
-        this.training = training;
-    }
-
-    /**
      * Retrieves the supported precisions for the training model.
      *
      * @return an array of strings representing the supported precisions.
@@ -557,15 +342,6 @@ public class MainModel {
      */
     public int getSelectedPrecisionIndex() {
         return this.storedPrecisionIndex;
-    }
-
-    /**
-     * Sets the stored precision index to the specified value.
-     *
-     * @param storedPrecisionIndex the precision index to be stored
-     */
-    public void setStoredPrecisionIndex(int storedPrecisionIndex) {
-        this.storedPrecisionIndex = storedPrecisionIndex;
     }
 
     /**
@@ -595,21 +371,4 @@ public class MainModel {
         return microphone.getSupportedConfidences();
     }
 
-    /**
-     * Retrieves the stored confidence index value.
-     *
-     * @return the stored confidence index as an integer.
-     */
-    public int getStoredConfidenceIndex() {
-        return storedConfidenceIndex;
-    }
-
-    /**
-     * Sets the stored confidence index value.
-     *
-     * @param storedConfidenceIndex the confidence index to be stored
-     */
-    public void setStoredConfidenceIndex(int storedConfidenceIndex) {
-        this.storedConfidenceIndex = storedConfidenceIndex;
-    }
 }

@@ -32,56 +32,89 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentHarpBinding;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
+import lombok.Getter;
+import lombok.Setter;
 
 
 /**
- * The type Harp fragment.
+ * The HarpFragment class represents a fragment responsible for visualizing and interacting
+ * with a virtual harp layout in the application. This class is primarily responsible
+ * for rendering the notes of the harp, handling user interactions such as touch events
+ * on the notes, and updating the UI accordingly.
+ * <p>
+ * HarpFragment integrates with other components, specifically via the HarpView
+ * and FragmentView interfaces, and interacts with a ViewModel for sharing state
+ * and data between fragments.
+ * <p>
+ * Key functionality includes:
+ * - Rendering a grid of notes represented as TextViews.
+ * - Enlarging a pressed note for better visibility and reverting it back upon overlay click.
+ * - Initializing and updating note properties such as text and background color.
+ * - Managing visibility states for UI elements tied to note interactions.
+ * <p>
+ * This class also includes lifecycle methods such as onCreateView and onDestroyView
+ * to manage view-related operations, cleaning up resources and binding references when necessary.
+ * <p>
+ * Implements:
+ * - HarpView: For interacting with the harp's data model and updating the UI.
+ * - FragmentView: For integrating with ViewModel to manage fragment-specific state and behaviors.
  */
 public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
-    /**
-     * The Binding.
-     */
-    private FragmentHarpBinding binding;
-    /**
-     * The Harp view handler.
-     */
-    private HarpViewHandler harpViewHandler;
 
     /**
-     * Indicates whether a note is currently enlarged in the view.
-     * This variable is used to manage the state of note enlargement, ensuring
-     * that only one note can be enlarged at a time. It is updated when a note is
-     * shown or hidden in its enlarged form.
+     * Represents the binding for the HarpFragment layout, enabling access to UI elements defined in the corresponding XML layout file.
+     * The binding provides an abstraction to access and manipulate views without directly interacting with `findViewById`.
+     * It is used to manage and interact with the UI components within the fragment more efficiently.
+     */
+    private FragmentHarpBinding binding;
+
+    /**
+     * Represents the handler responsible for managing the visual representation
+     * and interactions of the harp view within the HarpFragment. The HarpViewHandler
+     * facilitates the operations related to note initialization, color assignment,
+     * and enlarged view states for notes in the harp diagram.
+     * <p>
+     * This field allows interactions between the fragment's UI elements and their
+     * corresponding data logic by delegating visual updates and user interactions
+     * to the HarpViewHandler.
+     */
+    @Setter
+    @Getter
+    private HarpViewHandler harpViewHandler;
+
+
+    /**
+     * Tracks whether a musical note is currently enlarged in the UI.
+     * <p>
+     * This variable is toggled to true when a note is displayed in its enlarged state
+     * (e.g., via an overlay or other highlighting mechanism) and toggled back to false
+     * when the enlarged state is removed. It plays a central role in controlling the
+     * visibility and interaction of the note enlargement feature.
      */
     private boolean isNoteEnlarged = false;
+
     /**
-     * Represents a reference to the currently enlarged TextView in the harp interface.
-     * This variable is used to track the TextView that is displayed in an enlarged state
-     * when a note is emphasized. It is updated when a note is shown or hidden in its enlarged view.
-     * The value is set to null when no TextView is enlarged.
+     * Stores a reference to the currently enlarged TextView element in the harp view.
+     * This field is used to track the state of the note that is visually highlighted or emphasized.
+     * It is updated when a note is shown or hidden in the enlarged view.
+     * A null value indicates that no note is currently enlarged.
      */
     private TextView enlargedTextView = null;
 
 
-    /**
-     * On create view view.
-     *
-     * @param inflater           the inflater
-     * @param container          the container
-     * @param savedInstanceState the saved instance state
-     * @return the view
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -90,13 +123,15 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
     }
 
+
     /**
-     * Displays an enlarged version of the specified note in a provided overlay view.
-     * Copies the text from the original note to an overlay TextView, makes the overlay visible,
-     * and updates the state to track the enlarged view.
+     * Displays an enlarged view of the given note in the overlay note TextView.
+     * Copies the text from the original note and displays it in the overlay view.
+     * Updates the state to track the enlarged note and associates it with the overlay.
+     * If a note is already enlarged, the method will return without any operations.
      *
-     * @param note        the original TextView representing the note to be enlarged
-     * @param overlayNote the overlay TextView used to display the enlarged version of the note
+     * @param note         The TextView representing the original note to be enlarged.
+     * @param overlayNote  The TextView that acts as the overlay for displaying the enlarged note.
      */
     private void showEnlargedTextView(TextView note, TextView overlayNote) {
         // Early return if a note is already enlarged
@@ -117,10 +152,12 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         enlargedTextView = note;
     }
 
+
     /**
-     * Hides the enlarged overlay TextView and resets the state tracking the enlarged view.
+     * Hides the enlarged view of a note displayed in the overlay TextView.
+     * Resets the state, clears references, and hides the overlay view.
      *
-     * @param overlayNote the overlay TextView that displays the enlarged version of the note
+     * @param overlayNote The TextView that displays the overlay view of the enlarged note.
      */
     private void hideEnlargedTextView(TextView overlayNote) {
         // Early return if no note is currently enlarged
@@ -142,10 +179,13 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
 
     /**
-     * On view created.
+     * Called after the fragment's view has been created. This method initializes the UI elements
+     * within the harp table, sets up click listeners for note interactions, and handles the state
+     * of the enlarged view when notes are selected. The method also establishes a connection with
+     * the ViewModel for fragment interaction.
      *
-     * @param view               the view
-     * @param savedInstanceState the saved instance state
+     * @param view           The root view of the fragment's layout.
+     * @param savedInstanceState A Bundle containing any saved state information for the fragment.
      */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -195,20 +235,14 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         viewModel.selectFragmentView(this);
     }
 
-    /**
-     * On destroy view.
-     */
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    /**
-     * Init notes.
-     *
-     * @param notes the notes
-     */
+
     @Override
     public void initNotes(NoteContainer[] notes) {
         for (NoteContainer note : notes) {
@@ -220,23 +254,30 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         }
     }
 
+
     /**
-     * Sets note color.
+     * Updates the background color of a specified note in the harp UI.
+     * This method retrieves the corresponding TextView for the note based
+     * on the given channel and note index, and applies a specific drawable
+     * resource as its background.
      *
-     * @param channel the channel
-     * @param note    the note
+     * @param channel The channel of the note to be updated (1-based index).
+     * @param note    The note's position within the channel (-3 to 4, where 0 represents the central note).
      */
     private void setNoteColor(int channel, int note) {
         TextView textView = getNote(channel, note);
         textView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.note_overblowoverdraw, requireContext().getTheme()));
     }
 
+
     /**
-     * Init note.
+     * Initializes and displays a note on the UI by setting the provided name
+     * and making the note visible. It also modifies the note's background
+     * appearance.
      *
-     * @param channel  the channel
-     * @param note     the note
-     * @param noteName the note name
+     * @param channel  The channel identifier for the note (1-based index).
+     * @param note     The position of the note within the channel (-3 to 4, where 0 is the central note position).
+     * @param noteName The name to be displayed on the note.
      */
     private void initNote(int channel, int note, String noteName) {
         TextView textView = getNote(channel, note);
@@ -248,12 +289,13 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         line.setAlpha(0); // hide line
     }
 
+
     /**
-     * Gets note.
+     * Retrieves the TextView corresponding to the specified channel and note.
      *
-     * @param channel the channel
-     * @param note    the note
-     * @return the note
+     * @param channel The channel number from which to retrieve the note (1-based index).
+     * @param note    The position of the note within the channel (-3 to 4, where 0 is the central note position).
+     * @return The TextView that represents the specified note in the specified channel.
      */
     private TextView getNote(int channel, int note) {
         TextView[][] textViews = new TextView[10][8];
@@ -351,41 +393,12 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     }
 
 
-    /**
-     * Gets instance.
-     *
-     * @return the instance
-     */
     @Override
     public Object getInstance() {
         return this;
     }
 
-    /**
-     * Gets harp view handler.
-     *
-     * @return the harp view handler
-     */
-    public HarpViewHandler getHarpViewHandler() {
-        return this.harpViewHandler;
-    }
 
-    /**
-     * Sets harp view handler.
-     *
-     * @param harpViewHandler the harp view handler
-     */
-    public void setHarpViewHandler(HarpViewHandler harpViewHandler) {
-        this.harpViewHandler = harpViewHandler;
-    }
-
-    /**
-     * Gets harp view element.
-     *
-     * @param channel the channel
-     * @param note    the note
-     * @return the harp view element
-     */
     @Override
     public HarpViewNoteElement getHarpViewElement(int channel, int note) {
         return HarpViewNoteElementAndroid.getInstance(getNote(channel, note));

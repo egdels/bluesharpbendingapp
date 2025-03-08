@@ -24,117 +24,258 @@ package de.schliweb.bluesharpbendingapp.app;
  */
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import de.schliweb.bluesharpbendingapp.R;
-import de.schliweb.bluesharpbendingapp.controller.*;
+import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.MainController;
+import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.ActivityMainBinding;
 import de.schliweb.bluesharpbendingapp.model.AndroidModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.mircophone.android.MicrophoneAndroid;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
-import de.schliweb.bluesharpbendingapp.view.*;
-import de.schliweb.bluesharpbendingapp.view.android.*;
-
-import java.io.*;
+import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
+import de.schliweb.bluesharpbendingapp.view.HarpView;
+import de.schliweb.bluesharpbendingapp.view.MainWindow;
+import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
+import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
+import de.schliweb.bluesharpbendingapp.view.TrainingView;
+import de.schliweb.bluesharpbendingapp.view.android.AboutFragment;
+import de.schliweb.bluesharpbendingapp.view.android.AndroidSettingsHandler;
+import de.schliweb.bluesharpbendingapp.view.android.FragmentView;
+import de.schliweb.bluesharpbendingapp.view.android.FragmentViewModel;
+import de.schliweb.bluesharpbendingapp.view.android.HarpFragment;
+import de.schliweb.bluesharpbendingapp.view.android.SettingsFragment;
+import de.schliweb.bluesharpbendingapp.view.android.TrainingFragment;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
- * The type Main activity.
+ * MainActivity is the primary Activity for the application. It handles the main business logic and user interface
+ * interactions. This class extends AppCompatActivity and implements interfaces MainWindow and AndroidSettingsHandler
+ * for enhanced functionality.
+ * <p>
+ * Responsibilities:
+ * - Manages and initializes necessary components such as microphone, model, and controllers.
+ * - Handles Android activity lifecycle events and permissions.
+ * - Provides fragment navigation using Navigation Component.
+ * - Configures and handles behavior for both app bar visibility and screen locking.
+ * - Persists and restores the application's model state across sessions.
+ * <p>
+ * Key Functionalities:
+ * - Permission Request: Ensures proper handling of RECORD_AUDIO permission for microphone functionality.
+ * - Fragment Interaction: Observes and configures behaviors for various fragments such as SettingsFragment,
+ *   HarpFragment, AboutFragment, and TrainingFragment.
+ * - Model Persistence: Reads and saves the application model state to local storage.
+ * - Training, Settings, and UI Management: Provides specific handlers for UI elements like training views,
+ *   settings, and other configuration parameters.
+ * - App Bar Control: Provides methods to dynamically show and hide the app bar based on user interactions
+ *   and conditions.
+ * <p>
+ * Implements:
+ * - MainWindow: Facilitates communication with the Main Controller.
+ * - AndroidSettingsHandler: Allows interaction for dynamic settings updates specific to Android requirements.
+ * <p>
+ * Activity Lifecycle:
+ * - onCreate(Bundle savedInstanceState): Initializes the Activity and sets up the components.
+ * - onOptionsItemSelected(MenuItem item): Handles user selections from the options menu and navigates to
+ *   respective fragments or functionalities.
+ * - onTouchEvent(MotionEvent e): Handles touch interactions, toggling app bar visibility under certain conditions.
+ * <p>
+ * Permission Validation:
+ * - Checks for RECORD_AUDIO permissions required for the app's microphone-based functionalities and requests
+ *   them if not granted.
+ * <p>
+ * Navigation:
+ * - Configured using the Navigation UI library to allow smooth transitions between different fragments.
  */
+@Slf4j
 public class MainActivity extends AppCompatActivity implements MainWindow, AndroidSettingsHandler {
 
-    /**
-     * The constant LOGGER.
-     */
-    private static final Logger LOGGER = new Logger(MainActivity.class);
-    /**
-     * The constant TEMP_FILE.
-     */
-    private static final String TEMP_FILE = "Model.tmp";
-    /**
-     * The Permission granted.
-     */
-    private boolean permissionGranted = false;
-    /**
-     * The App bar configuration.
-     */
-    private AppBarConfiguration appBarConfiguration;
-    /**
-     * The Selected fragment view.
-     */
-    private FragmentView selectedFragmentView;
-    /**
-     * The Harp settings view handler.
-     */
-    private HarpSettingsViewHandler harpSettingsViewHandler;
-    /**
-     * The Harp view handler.
-     */
-    private HarpViewHandler harpViewHandler;
-    /**
-     * The Microphone settings view handler.
-     */
-    private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
-    /**
-     * The Android model.
-     */
-    private AndroidModel model;
-    /**
-     * The Request permission launcher.
-     */
-    protected final ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                permissionGranted = isGranted;
-                if (!permissionGranted) {
-                    showPermissionInformation();
-                }
-                Microphone microphone = model.getMicrophone();
-                if (permissionGranted && microphone != null) {
-                    model.getMicrophone().open();
-                }
-            });
-    /**
-     * The Is paused.
-     */
-    private boolean isPaused = false;
-    /**
-     * The Main controller.
-     */
-    private MainController mainController;
-    /**
-     * The Is app bar hidden.
-     */
-    private boolean isAppBarHidden = false;
-    /**
-     * The Note settings view handler.
-     */
-    private NoteSettingsViewHandler noteSettingsViewHandler;
-    /**
-     * The Training view handler.
-     */
-    private TrainingViewHandler trainingViewHandler;
 
     /**
-     * Store model.
+     * Represents the filename used for storing and retrieving a temporary model file.
+     * This file is typically located in the application's cache directory.
+     * It is used in methods such as {@code storeModel(AndroidModel model)} and {@code readModel()}
+     * to serialize and deserialize the application's model data.
+     */
+    private static final String TEMP_FILE = "Model.tmp";
+
+    /**
+     * Indicates whether the necessary permissions have been granted.
+     * This variable is used to track the current state of required
+     * permissions within the application, which may include runtime
+     * permissions such as camera, microphone, or storage access.
+     * <p>
+     * Default value is set to false; it is updated based on the
+     * outcome of permission requests or checks at runtime.
+     */
+    private boolean permissionGranted = false;
+
+    /**
+     * Configuration object for managing the behavior of the app's AppBar.
+     * Ensures proper navigation and UI behavior within the MainActivity.
+     * Typically used to define top-level destinations and control navigation up actions.
+     */
+    private AppBarConfiguration appBarConfiguration;
+
+    /**
+     * Represents the currently selected view fragment in the application.
+     * This field is used to keep track of the active fragment displayed
+     * in the application, enabling specific behaviors and operations
+     * depending on the fragment type.
+     */
+    private FragmentView selectedFragmentView;
+
+    /**
+     * Manages the view handler for the Harp settings screen of the application.
+     * Controls the interactions and configurations related to the Harp settings UI.
+     * Responsible for displaying, updating, and handling user actions within the Harp settings view.
+     */
+    @Getter
+    @Setter
+    private HarpSettingsViewHandler harpSettingsViewHandler;
+
+    /**
+     * Manages the behavior and representation of the harp view component within the application.
+     * This variable is responsible for handling updates, interactions, and rendering related
+     * to the harp view, ensuring seamless integration within the user interface.
+     */
+    @Getter
+    @Setter
+    private HarpViewHandler harpViewHandler;
+
+    /**
+     * Manages the MicrophoneSettingsViewHandler, which handles the user interface
+     * and interactions related to the microphone settings within the application.
+     * <p>
+     * This variable serves as a link between the `MainActivity` and the
+     * `MicrophoneSettingsView` component, facilitating operations such as
+     * retrieving the microphone settings view, checking its state, and controlling
+     * its behavior.
+     */
+    @Getter
+    @Setter
+    private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
+
+    /**
+     * Represents the Android model used for managing application state and data.
+     * This variable stores an instance of the {@code AndroidModel} class.
+     * It is used across various methods of the {@code MainActivity} to persist and retrieve the
+     * state of the application, interact with views, and handle application logic.
+     */
+    private AndroidModel model;
+
+    /**
+     * Manages runtime permission requests for a specific permission and handles
+     * the result of the request action. This variable is a registered launcher using
+     * the ActivityResultContracts.RequestPermission contract.
+     * <p>
+     * When a permission is granted:
+     * - If a microphone instance is available in the model, it is opened for use.
+     * <p>
+     * When a permission is denied:
+     * - Displays an informational dialog to the user about the permission requirement.
+     * <p>
+     * This variable uses a lambda function to handle the result of the permission request.
+     * Updates the `permissionGranted` field based on whether the requested permission
+     * was granted or denied.
+     */
+    protected final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+        permissionGranted = isGranted;
+        if (!permissionGranted) {
+            showPermissionInformation();
+        }
+        Microphone microphone = model.getMicrophone();
+        if (permissionGranted && microphone != null) {
+            model.getMicrophone().open();
+        }
+    });
+
+    /**
+     * Indicates whether the application is currently in a paused state.
+     * This variable is typically used to manage or track the state of
+     * the application's main activity, ensuring appropriate behavior
+     * during pause and resume lifecycle events.
+     */
+    private boolean isPaused = false;
+
+    /**
+     * The {@code mainController} represents the primary controller
+     * responsible for managing and coordinating various views and handlers
+     * within the {@code MainActivity} class. This controller facilitates
+     * communication between the user interface components and the underlying
+     * application logic.
+     */
+    private MainController mainController;
+
+    /**
+     * Indicates whether the app bar is currently hidden.
+     * <p>
+     * This variable is used to track the visibility state of the app bar in the
+     * application. It is set to true when the app bar is hidden (e.g., via the
+     * {@code hideAppBar()} method) and false when the app bar is visible
+     * (e.g., via the {@code unHideAppBar()} method).
+     */
+    private boolean isAppBarHidden = false;
+
+    /**
+     * The NoteSettingsViewHandler instance responsible for managing
+     * and handling the behavior and interactions of the note settings
+     * view within the application.
+     */
+    @Getter
+    @Setter
+    private NoteSettingsViewHandler noteSettingsViewHandler;
+
+    /**
+     * The TrainingViewHandler instance responsible for managing and handling
+     * the training view within the MainActivity. This field provides the
+     * necessary functionality to interact with and control elements specific
+     * to the training view, such as rendering, lifecycle management, and
+     * user inputs.
+     */
+    @Getter
+    @Setter
+    private TrainingViewHandler trainingViewHandler;
+
+
+    /**
+     * Saves the provided model to a temporary file in the application's cache directory.
      *
-     * @param model the model
+     * @param model The AndroidModel instance to be stored. This is serialized into
+     *              a string format and saved to a cache file for later retrieval.
      */
     private void storeModel(AndroidModel model) {
 
@@ -142,21 +283,23 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         File file = new File(directory, TEMP_FILE);
 
 
-        try (
-                FileWriter writer = new FileWriter(file)
-        ) {
+        try (FileWriter writer = new FileWriter(file)) {
             writer.write(model.getString());
             writer.flush();
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
     }
 
     /**
-     * Read model main model.
+     * Reads and restores the AndroidModel instance from a cached file in the application's
+     * cache directory. If the file exists and is valid, it is deserialized back into an
+     * AndroidModel object. If any error occurs while reading or parsing the file,
+     * a new default AndroidModel instance is returned.
      *
-     * @return the main model
+     * @return The restored AndroidModel instance if the cache file exists and is valid,
+     *         otherwise a new default AndroidModel instance.
      */
     protected AndroidModel readModel() {
 
@@ -164,33 +307,34 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         File directory = this.getApplicationContext().getCacheDir();
         File file = new File(directory, TEMP_FILE);
 
-        try (
-                BufferedReader bw = new BufferedReader(new FileReader(file))
-        ) {
+        try (BufferedReader bw = new BufferedReader(new FileReader(file))) {
 
             String line = bw.readLine();
-            if (line != null)
-                model = AndroidModel.createFromString(line);
+            if (line != null) model = AndroidModel.createFromString(line);
 
 
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
         return model;
     }
 
+
     /**
-     * On create.
+     * Initializes the main activity, setting up the user interface, managing permissions,
+     * configuring fragments, and initializing application settings.
      *
-     * @param savedInstanceState the saved instance state
+     * @param savedInstanceState If the activity is being re-initialized after previously
+     *                           being shut down, this bundle contains the most recent data
+     *                           supplied in onSaveInstanceState. Otherwise, it is null.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Handle the splash screen transition.
+        SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        Logger.setDebug(false);
-        Logger.setInfo(false);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         model = readModel();
 
         Microphone microphone = new MicrophoneAndroid();
@@ -213,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
                 settingsFragment.setHarpSettingsViewHandler(getHarpSettingsViewHandler());
                 settingsFragment.setMicrophoneSettingsViewHandler(getMicrophoneSettingsViewHandler());
                 settingsFragment.setNoteSettingsViewHandler(getNoteSettingsViewHandler());
-                settingsFragment.setAndroidSettingsHandler(this);
+                settingsFragment.setAndroidSettingsViewHandler(this);
 
                 settingsFragment.getHarpSettingsViewHandler().initTuneList();
                 settingsFragment.getHarpSettingsViewHandler().initKeyList();
@@ -266,56 +410,19 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         }
     }
 
-    /**
-     * Gets training view handler.
-     *
-     * @return the training view handler
-     */
-    private TrainingViewHandler getTrainingViewHandler() {
-        return this.trainingViewHandler;
-    }
-
-    /**
-     * Sets training view handler.
-     *
-     * @param trainingViewHandler the training view handler
-     */
-    @Override
-    public void setTrainingViewHandler(TrainingViewHandler trainingViewHandler) {
-        this.trainingViewHandler = trainingViewHandler;
-    }
-
-    /**
-     * Gets note settings view handler.
-     *
-     * @return the note settings view handler
-     */
-    private NoteSettingsViewHandler getNoteSettingsViewHandler() {
-        return noteSettingsViewHandler;
-    }
-
-    /**
-     * Sets note settings view handler.
-     *
-     * @param noteSettingsViewHandler the note settings view handler
-     */
-    @Override
-    public void setNoteSettingsViewHandler(NoteSettingsViewHandler noteSettingsViewHandler) {
-        this.noteSettingsViewHandler = noteSettingsViewHandler;
-    }
-
-    /**
-     * Gets training view.
-     *
-     * @return the training view
-     */
     @Override
     public TrainingView getTrainingView() {
         return (TrainingView) selectedFragmentView.getInstance();
     }
 
+
     /**
-     * Hide app bar.
+     * Hides the application's primary app bar (ActionBar) if it is currently visible.
+     * <p>
+     * This method checks if the `ActionBar` instance is not null and, if so, calls
+     * the `hide()` method to make it invisible. The internal state of the activity
+     * is adjusted by setting the `isAppBarHidden` flag to true to track the visibility
+     * of the app bar. This method is typically used to create a more immersive UI experience.
      */
     protected void hideAppBar() {
         ActionBar supportActionBar = getSupportActionBar();
@@ -325,8 +432,15 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         }
     }
 
+
     /**
-     * Un hide app bar.
+     * Restores the application's primary app bar (ActionBar) visibility if it is hidden.
+     * <p>
+     * This method checks if the `ActionBar` instance is not null and, if so, calls
+     * the `show()` method to make it visible. The internal state of the activity
+     * is updated by setting the `isAppBarHidden` flag to false to reflect the current
+     * visibility of the app bar. This method is typically used to revert to a
+     * standard UI configuration after an immersive experience.
      */
     private void unHideAppBar() {
         ActionBar supportActionBar = getSupportActionBar();
@@ -336,11 +450,20 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         }
     }
 
+
     /**
-     * On touch event boolean.
+     * Handles touch events for the activity. This method toggles the visibility
+     * of the app bar based on certain conditions and the type of touch event.
+     * Specifically, it checks if the harp view or training view is active, and if the
+     * touch event corresponds to the action "MotionEvent.ACTION_UP".
+     * <p>
+     * If the app bar is currently hidden, it un-hides the app bar. Otherwise, it hides the app bar.
      *
-     * @param e the e
-     * @return the boolean
+     * @param e The MotionEvent object containing details of the touch event.
+     *          This includes information such as the type of action
+     *          (e.g., ACTION_DOWN, ACTION_UP), the position of the touch, etc.
+     * @return A boolean indicating whether the event was handled.
+     *         Always returns true in this implementation.
      */
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -354,8 +477,20 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         return true;
     }
 
+
     /**
-     * Show permission information.
+     * Displays an informational dialog to the user about specific permissions required
+     * by the application.
+     * <p>
+     * The dialog is non-cancelable and includes a message detailing the purpose of
+     * permissions, along with a title. It has a single button that allows the user
+     * to dismiss the dialog.
+     * <p>
+     * This method is typically used to inform the user when permissions are critical
+     * for the app's functionality and requires their acknowledgment.
+     * <p>
+     * The dialog's content is defined through predefined string resources for
+     * the message, title, and button label.
      */
     private void showPermissionInformation() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -371,12 +506,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         alertDialog.show();
     }
 
-    /**
-     * On create options menu boolean.
-     *
-     * @param menu the menu
-     * @return the boolean
-     */
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -384,11 +514,17 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         return true;
     }
 
+
     /**
-     * On options item selected boolean.
+     * Handles selection of action bar menu items. Based on the item selected,
+     * performs specific actions such as navigation or updating the app state.
+     * The method also ensures the current model is saved before handling any navigation.
      *
-     * @param item the item
-     * @return the boolean
+     * @param item The selected menu item from the action bar. Provides details
+     *             about the selected action including its ID.
+     * @return A boolean indicating whether the event was successfully handled.
+     *         Returns true if the action was processed, otherwise defer to
+     *         the superclass implementation.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -419,184 +555,104 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         return super.onOptionsItemSelected(item);
     }
 
+
     /**
-     * On support navigate up boolean.
+     * Handles the navigation when the "Up" button in the app bar is pressed.
+     * This method navigates up in the application's navigation hierarchy. It attempts to
+     * handle the navigation by delegating to the NavigationUI utility, passing the
+     * NavController and the app's AppBarConfiguration. If the navigation cannot be
+     * handled by the NavigationUI, it delegates the navigation behavior to the superclass.
      *
-     * @return the boolean
+     * @return A boolean indicating whether the navigation event was successfully handled.
+     *         Returns true if the navigation was handled, otherwise returns the result
+     *         of the superclass implementation.
      */
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
     }
 
-    /**
-     * Gets harp settings view.
-     *
-     * @return the harp settings view
-     */
+
     @Override
     public HarpSettingsView getHarpSettingsView() {
         return (HarpSettingsView) selectedFragmentView.getInstance();
     }
 
-    /**
-     * Gets harp view.
-     *
-     * @return the harp view
-     */
+
     @Override
     public HarpView getHarpView() {
         return (HarpView) selectedFragmentView.getInstance();
     }
 
-    /**
-     * Gets microphone settings view.
-     *
-     * @return the microphone settings view
-     */
+
     @Override
     public MicrophoneSettingsView getMicrophoneSettingsView() {
         return (MicrophoneSettingsView) selectedFragmentView.getInstance();
     }
 
-    /**
-     * Is harp settings view active boolean.
-     *
-     * @return the boolean
-     */
+
     @Override
     public boolean isHarpSettingsViewActive() {
         return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof SettingsFragment;
     }
 
-    /**
-     * Is harp view active boolean.
-     *
-     * @return the boolean
-     */
+
     @Override
     public boolean isHarpViewActive() {
         return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof HarpFragment;
     }
 
-    /**
-     * Is microphone settings view active boolean.
-     *
-     * @return the boolean
-     */
+
     @Override
     public boolean isMicrophoneSettingsViewActive() {
         return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof SettingsFragment;
     }
 
-    /**
-     * Is training view active boolean.
-     *
-     * @return the boolean
-     */
+
     @Override
     public boolean isTrainingViewActive() {
         return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof TrainingFragment;
     }
 
-    /**
-     * Open.
-     */
+
     @Override
     public void open() {
         // no need on android because mainController is not started.
     }
 
-    /**
-     * On destroy.
-     */
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         storeModel(model);
     }
 
-    /**
-     * Gets harp settings view handler.
-     *
-     * @return the harp settings view handler
-     */
-    public HarpSettingsViewHandler getHarpSettingsViewHandler() {
-        return harpSettingsViewHandler;
-    }
 
-    /**
-     * Sets harp settings view handler.
-     *
-     * @param harpSettingsViewHandler the harp settings view handler
-     */
-    @Override
-    public void setHarpSettingsViewHandler(HarpSettingsViewHandler harpSettingsViewHandler) {
-        this.harpSettingsViewHandler = harpSettingsViewHandler;
-    }
-
-    /**
-     * Gets harp view handler.
-     *
-     * @return the harp view handler
-     */
-    public HarpViewHandler getHarpViewHandler() {
-        return harpViewHandler;
-    }
-
-    /**
-     * Sets harp view handler.
-     *
-     * @param harpViewHandler the harp view handler
-     */
-    @Override
-    public void setHarpViewHandler(HarpViewHandler harpViewHandler) {
-        this.harpViewHandler = harpViewHandler;
-    }
-
-    /**
-     * Gets microphone settings view handler.
-     *
-     * @return the microphone settings view handler
-     */
-    public MicrophoneSettingsViewHandler getMicrophoneSettingsViewHandler() {
-        return microphoneSettingsViewHandler;
-    }
-
-    /**
-     * Sets microphone settings view handler.
-     *
-     * @param microphoneSettingsViewHandler the microphone settings view handler
-     */
-    @Override
-    public void setMicrophoneSettingsViewHandler(MicrophoneSettingsViewHandler microphoneSettingsViewHandler) {
-        this.microphoneSettingsViewHandler = microphoneSettingsViewHandler;
-    }
-
-    /**
-     * Is note settings view active boolean.
-     *
-     * @return the boolean
-     */
     @Override
     public boolean isNoteSettingsViewActive() {
         return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof SettingsFragment;
     }
 
-    /**
-     * Gets note settings view.
-     *
-     * @return the note settings view
-     */
+
     @Override
     public NoteSettingsView getNoteSettingsView() {
         return (NoteSettingsView) selectedFragmentView.getInstance();
     }
 
+
     /**
-     * On resume.
+     * Called when the activity transitions from the "paused" state to the "resumed" state.
+     * This method ensures that the application's microphone functionality is properly
+     * restored if certain conditions are met. It is often used to refresh or reinitialize
+     * resources that were released during the onPause state.
+     * <p>
+     * Specifically, if the activity was paused, the necessary permissions have been granted,
+     * and the microphone instance is available, the microphone is opened for use.
+     * Additionally, the `isPaused` flag is updated to reflect the current state.
+     * <p>
+     * This method should always call the superclass implementation to ensure
+     * proper functioning of the activity lifecycle.
      */
     @Override
     protected void onResume() {
@@ -608,8 +664,20 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         isPaused = false;
     }
 
+
     /**
-     * On pause.
+     * Handles the activity's transition to the "paused" state in the Android lifecycle.
+     * <p>
+     * This method is called when the activity is temporarily halted, but not yet destroyed.
+     * It is used to release resources that should not remain active while the activity
+     * is not in the foreground. Specifically:
+     * <p>
+     * - The `isPaused` flag is set to `true` to reflect the paused state of the activity.
+     * - If the microphone permission has been granted and a valid microphone instance exists,
+     *   the microphone is closed to release the resource and save battery.
+     * <p>
+     * Always calls the superclass implementation to ensure proper behavior of the activity's
+     * lifecycle.
      */
     @Override
     protected void onPause() {
@@ -621,10 +689,18 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         }
     }
 
+
     /**
-     * Handle look screen.
+     * Handles the behavior of the screen lock functionality based on the provided flag.
+     * <p>
+     * This method adjusts internal model state and screen lock behavior.
+     * If the screen is to be locked, it ensures the screen remains on by adding
+     * the {@code FLAG_KEEP_SCREEN_ON} flag to the window. When the screen is not to be locked,
+     * it clears the same flag, allowing the screen to turn off as per the system's default behavior.
      *
-     * @param isLookScreen the is look screen
+     * @param isLookScreen A boolean indicating whether the screen lock should be activated.
+     *                      {@code true} to keep the screen on (lock activated).
+     *                      {@code false} to allow the screen to turn off (lock deactivated).
      */
     @Override
     public void handleLookScreen(boolean isLookScreen) {
@@ -636,6 +712,12 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         }
     }
 
+    /**
+     * Checks whether the application's app bar (ActionBar) is currently hidden.
+     *
+     * @return A boolean value indicating the visibility state of the app bar.
+     *         Returns true if the app bar is hidden, otherwise false.
+     */
     protected boolean isAppBarHidden() {
         return isAppBarHidden;
     }

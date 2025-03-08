@@ -30,9 +30,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
@@ -42,95 +44,105 @@ import de.schliweb.bluesharpbendingapp.model.AndroidModel;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
- * The type Settings fragment.
+ * SettingsFragment is responsible for managing the UI and interactions related to the app settings.
+ * It implements various interfaces to handle specific settings functionalities, such as harp settings,
+ * microphone settings, and note settings. This fragment uses view binding to interact with the UI components
+ * and manages spinners for selecting options like concert pitch, algorithm, confidence, and more.
+ * <p>
+ * This class interacts with handlers for managing specific actions in the settings view, such as handling
+ * key, tune, and algorithm selections. It also initializes settings state based on stored values and updates
+ * corresponding UI elements accordingly.
+ * <p>
+ * Responsibilities:
+ * - Loading and initializing data into spinner components for various settings.
+ * - Handling user interactions (e.g., selections, button clicks) within the settings fragment.
+ * - Synchronizing selected values with their respective handlers and managing the app's state.
+ * - Configuring the lock screen setting as per stored configurations.
+ * <p>
+ * The fragment is tied to its associated ViewModel for fragment selection and relies on external handlers to
+ * perform updates or operations on the selected settings.
+ * <p>
+ * Lifecycle methods:
+ * - onCreateView: Inflates the fragment layout with data binding.
+ * - onViewCreated: Sets up ViewModel, resets settings on button click, initializes spinners, and links handlers to user actions.
+ * - onDestroyView: Cleans up references to the binding when the view is destroyed.
+ * <p>
+ * Implements functionalities for:
+ * - Harp settings: Keys and tunes selection.
+ * - Microphone settings: Algorithms and confidences selection.
+ * - Note settings: Concert pitch management.
+ * - General functionality: Screen lock control and instance retrieval.
  */
 public class SettingsFragment extends Fragment implements HarpSettingsView, MicrophoneSettingsView, FragmentView, NoteSettingsView {
 
+
     /**
-     * The Binding.
+     * A protected field that represents the binding object for the settings fragment.
+     * This binding provides access to the views defined in the associated layout file,
+     * enabling interaction and data manipulation for UI components.
      */
     protected FragmentSettingsBinding binding;
+
     /**
-     * The Harp settings view handler.
+     * Represents a handler for managing and interacting with harp settings within the settings view of the application.
+     * This variable encapsulates logic associated with configuring and displaying specific harp-related settings.
+     * It is part of the SettingsFragment class and works in conjunction with other settings handlers to provide a
+     * comprehensive configuration interface.
      */
+    @Setter
+    @Getter
     private HarpSettingsViewHandler harpSettingsViewHandler;
+
     /**
-     * The Microphone settings view handler.
+     * A handler for managing the view and interactions related to microphone settings in the user interface.
+     * This variable is used to interface with and control the microphone-specific settings available in the application.
      */
+    @Setter
+    @Getter
     private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
 
     /**
-     * The Note settings view handler.
+     * Handles the view logic and behaviors related to note settings within the SettingsFragment.
+     * This variable is used to manage note-specific configuration options
+     * and interactions in the user interface for customizing application behavior.
      */
+    @Setter
+    @Getter
     private NoteSettingsViewHandler noteSettingsViewHandler;
 
+
     /**
-     * The Android settings view handler.
+     * A handler for managing Android-specific settings within the SettingsFragment.
+     * This variable is responsible for controlling and configuring Android settings
+     * view behavior and interactions in the user interface. It is expected to
+     * integrate with other setting handlers and manage Android-specific
+     * configuration options.
      */
+    @Setter
     private AndroidSettingsHandler androidSettingsViewHandler;
 
-    /**
-     * Gets harp settings view handler.
-     *
-     * @return the harp settings view handler
-     */
-    public HarpSettingsViewHandler getHarpSettingsViewHandler() {
-        return harpSettingsViewHandler;
-    }
 
-    /**
-     * Sets harp settings view handler.
-     *
-     * @param harpSettingsViewHandler the harp settings view handler
-     */
-    public void setHarpSettingsViewHandler(HarpSettingsViewHandler harpSettingsViewHandler) {
-        this.harpSettingsViewHandler = harpSettingsViewHandler;
-    }
-
-    /**
-     * Gets microphone settings view handler.
-     *
-     * @return the microphone settings view handler
-     */
-    public MicrophoneSettingsViewHandler getMicrophoneSettingsViewHandler() {
-        return microphoneSettingsViewHandler;
-    }
-
-    /**
-     * Sets microphone settings view handler.
-     *
-     * @param microphoneSettingsViewHandler the microphone settings view handler
-     */
-    public void setMicrophoneSettingsViewHandler(MicrophoneSettingsViewHandler microphoneSettingsViewHandler) {
-        this.microphoneSettingsViewHandler = microphoneSettingsViewHandler;
-    }
-
-    /**
-     * On create view view.
-     *
-     * @param inflater           the inflater
-     * @param container          the container
-     * @param savedInstanceState the saved instance state
-     * @return the view
-     */
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
 
+
     /**
-     * On view created.
+     * Called after the fragment's view has been created. This method initializes the ViewModel
+     * and sets up the user interface functionality for button clicks and other actions.
      *
-     * @param view               the view
-     * @param savedInstanceState the saved instance state
+     * @param view The view returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a
+     *                           previous saved state as given here.
      */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -152,20 +164,14 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         binding.settingsScreenlock.setOnClickListener(v -> androidSettingsViewHandler.handleLookScreen(binding.settingsScreenlock.isChecked()));
     }
 
-    /**
-     * On destroy view.
-     */
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    /**
-     * Sets keys.
-     *
-     * @param keys the keys
-     */
+
     @Override
     public void setKeys(String[] keys) {
         // Safeguard in case keys is null
@@ -176,47 +182,33 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, keys);
         adapter.setDropDownViewResource(R.layout.spinner_list);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        harpSettingsViewHandler.handleKeySelection((int) id);
-                    }
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                harpSettingsViewHandler.handleKeySelection((int) id);
+            }
 
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // no need
-                    }
-                }
-        );
+            public void onNothingSelected(AdapterView<?> parent) {
+                // no need
+            }
+        });
 
     }
 
-    /**
-     * Sets selected key.
-     *
-     * @param i the
-     */
+
     @Override
     public void setSelectedKey(int i) {
         Spinner spinner = binding.settingsKeyList;
         spinner.setSelection(i);
     }
 
-    /**
-     * Sets selected tune.
-     *
-     * @param i the
-     */
+
     @Override
     public void setSelectedTune(int i) {
         Spinner spinner = binding.settingsTuneList;
         spinner.setSelection(i);
     }
 
-    /**
-     * Sets tunes.
-     *
-     * @param tunes the tunes
-     */
+
     @Override
     public void setTunes(String[] tunes) {
         // Safeguard in case keys is null
@@ -227,25 +219,19 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, tunes);
         adapter.setDropDownViewResource(R.layout.spinner_list);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        harpSettingsViewHandler.handleTuneSelection((int) id);
-                    }
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                harpSettingsViewHandler.handleTuneSelection((int) id);
+            }
 
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // no need
-                    }
-                }
-        );
+            public void onNothingSelected(AdapterView<?> parent) {
+                // no need
+            }
+        });
 
     }
 
-    /**
-     * Sets algorithms.
-     *
-     * @param algorithms the algorithms
-     */
+
     @Override
     public void setAlgorithms(String[] algorithms) {
         // Safeguard in case algorithms is null
@@ -256,24 +242,18 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, algorithms);
         adapter.setDropDownViewResource(R.layout.spinner_list);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        microphoneSettingsViewHandler.handleAlgorithmSelection(((int) id));
-                    }
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                microphoneSettingsViewHandler.handleAlgorithmSelection(((int) id));
+            }
 
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // no need
-                    }
-                }
-        );
+            public void onNothingSelected(AdapterView<?> parent) {
+                // no need
+            }
+        });
     }
 
-    /**
-     * Sets frequency.
-     *
-     * @param frequency the frequency
-     */
+
     @Override
     public void setFrequency(double frequency) {
         // on android do nothing
@@ -286,7 +266,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
     }
 
     @Override
-    public void setConfidences(String[] confidences ) {
+    public void setConfidences(String[] confidences) {
         // Safeguard in case keys is null
         if (confidences == null) {
             confidences = new String[0]; // Use an empty array
@@ -295,76 +275,50 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, confidences);
         adapter.setDropDownViewResource(R.layout.spinner_list);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        microphoneSettingsViewHandler.handleConfidenceSelection((int) id);
-                    }
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                microphoneSettingsViewHandler.handleConfidenceSelection((int) id);
+            }
 
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // no need
-                    }
-                }
-        );
+            public void onNothingSelected(AdapterView<?> parent) {
+                // no need
+            }
+        });
 
     }
 
-    /**
-     * Sets microphones.
-     *
-     * @param microphones the microphones
-     */
+
     @Override
     public void setMicrophones(String[] microphones) {
         // no need on android
     }
 
-    /**
-     * Sets selected algorithm.
-     *
-     * @param i the
-     */
+
     @Override
     public void setSelectedAlgorithm(int i) {
         Spinner spinner = binding.settingsAlgoList;
         spinner.setSelection(i);
     }
 
-    /**
-     * Sets selected microphone.
-     *
-     * @param i the
-     */
+
     @Override
     public void setSelectedMicrophone(int i) {
         // no need on android
     }
 
-    /**
-     * Sets volume.
-     *
-     * @param volume the volume
-     */
+
     @Override
     public void setVolume(double volume) {
         // on android do nothing
     }
 
-    /**
-     * Gets instance.
-     *
-     * @return the instance
-     */
+
     @Override
     public Object getInstance() {
         return this;
     }
 
-    /**
-     * Sets concert pitches.
-     *
-     * @param pitches the pitches
-     */
+
     @Override
     public void setConcertPitches(String[] pitches) {
         // Safeguard in case pitches is null
@@ -375,25 +329,19 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, pitches);
         adapter.setDropDownViewResource(R.layout.spinner_list);
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        noteSettingsViewHandler.handleConcertPitchSelection(((int) id));
-                    }
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                noteSettingsViewHandler.handleConcertPitchSelection(((int) id));
+            }
 
-                    public void onNothingSelected(AdapterView<?> parent) {
-                        // no need
-                    }
-                }
-        );
+            public void onNothingSelected(AdapterView<?> parent) {
+                // no need
+            }
+        });
 
     }
 
-    /**
-     * Sets selected concert pitch.
-     *
-     * @param i the
-     */
+
     @Override
     public void setSelectedConcertPitch(int i) {
         Spinner spinner = binding.settingsPitchesList;
@@ -401,36 +349,12 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
     }
 
     /**
-     * Gets note settings view handler.
+     * Initializes the screen lock setting based on a stored value.
+     * Resets the screen lock setting to unchecked by default and sets it to checked
+     * if the given stored index is greater than 0.
      *
-     * @return the note settings view handler
-     */
-    public NoteSettingsViewHandler getNoteSettingsViewHandler() {
-        return noteSettingsViewHandler;
-    }
-
-    /**
-     * Sets note settings view handler.
-     *
-     * @param noteSettingsViewHandler the note settings view handler
-     */
-    public void setNoteSettingsViewHandler(NoteSettingsViewHandler noteSettingsViewHandler) {
-        this.noteSettingsViewHandler = noteSettingsViewHandler;
-    }
-
-    /**
-     * Sets android settings handler.
-     *
-     * @param androidSettingsHandler the android settings handler
-     */
-    public void setAndroidSettingsHandler(AndroidSettingsHandler androidSettingsHandler) {
-        this.androidSettingsViewHandler = androidSettingsHandler;
-    }
-
-    /**
-     * Init screen lock.
-     *
-     * @param storedLockScreenIndex the stored lock screen index
+     * @param storedLockScreenIndex The stored index indicating whether the screen lock setting
+     *                              should be enabled (greater than 0) or disabled (0 or less).
      */
     public void initScreenLock(int storedLockScreenIndex) {
         binding.settingsScreenlock.setChecked(false);

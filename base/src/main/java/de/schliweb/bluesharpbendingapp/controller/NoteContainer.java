@@ -26,6 +26,8 @@ package de.schliweb.bluesharpbendingapp.controller;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,23 +53,14 @@ public class NoteContainer implements Runnable {
     // Cache for the most recently updated cents values, indexed by channel and note
     private static final Map<String, Double> centsCache = new HashMap<>();
 
-    /**
-     * Represents the musical channel associated with this NoteContainer.
-     * The channel is used to identify the specific audio channel
-     * this note is related to. It is a key parameter for managing and
-     * handling notes in multi-channel systems.
-     */
+
+    @Getter
     private final int channel;
-    /**
-     * Represents the note value associated with a musical note.
-     * This field is immutable after being set and determines the specific
-     * note being handled within the musical context of the application.
-     */
+
+    @Getter
     private final int note;
-    /**
-     * Represents the name of the note associated with this NoteContainer instance.
-     * This variable is immutable and is set during the instantiation of the object.
-     */
+
+    @Getter
     private final String noteName;
     /**
      * A scheduled thread pool executor responsible for running periodic or delayed tasks within the
@@ -92,11 +85,8 @@ public class NoteContainer implements Runnable {
      * It is immutable and uniquely represents the data within a specific NoteContainer.
      */
     private final String cacheKey;
-    /**
-     * Represents the frequency value that is to be processed or handled within the NoteContainer.
-     * This field is marked as volatile to ensure visibility and thread-safety in a concurrent environment,
-     * as it may be accessed or modified by multiple threads.
-     */
+
+    @Setter
     protected volatile double frequencyToHandle;
     /**
      * Represents a harmonica instance used within a NoteContainer.
@@ -179,33 +169,6 @@ public class NoteContainer implements Runnable {
         this.hasInverseCentsHandling = hasInverseCentsHandling;
     }
 
-    /**
-     * Retrieves the channel associated with this NoteContainer.
-     *
-     * @return the channel value as an integer
-     */
-    public int getChannel() {
-        return channel;
-    }
-
-    /**
-     * Retrieves the numerical value of the note associated with this NoteContainer.
-     *
-     * @return the numerical value of the note as an integer
-     */
-    public int getNote() {
-        return note;
-    }
-
-    /**
-     * Retrieves the name of the note associated with this NoteContainer.
-     *
-     * @return the name of the note as a string
-     */
-    public String getNoteName() {
-        return noteName;
-    }
-
     @Override
     public void run() {
         if (frequencyToHandle <= maxFrequency && minFrequency <= frequencyToHandle) {
@@ -245,15 +208,6 @@ public class NoteContainer implements Runnable {
             harpViewElement.update(hasInverseCentsHandling ? -cents : cents);
             toBeCleared.set(true);
         }
-    }
-
-    /**
-     * Sets the frequency to handle for the NoteContainer.
-     *
-     * @param frequencyToHandle the frequency value to be handled
-     */
-    public void setFrequencyToHandle(double frequencyToHandle) {
-        this.frequencyToHandle = frequencyToHandle;
     }
 
     /**

@@ -5,15 +5,16 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Process;
-import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
-import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
-import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
+import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implementation of the {@link Microphone} interface specific to the Android platform.
@@ -26,6 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * - Customizable pitch detection algorithm (e.g., YIN, MPM).
  * - Multi-threaded processing with specialized executors for audio data capture and analysis.
  */
+@Slf4j
 public class MicrophoneAndroid implements Microphone {
 
     /**
@@ -58,23 +60,6 @@ public class MicrophoneAndroid implements Microphone {
             AudioFormat.ENCODING_PCM_FLOAT
     ));
 
-
-    /**
-     * A static logger instance used for logging messages related to the {@link MicrophoneAndroid} class.
-     * <p>
-     * This logger is initialized specifically for the {@link MicrophoneAndroid} class and assists with
-     * capturing and recording debug, informational, and error messages during execution. It provides
-     * a centralized mechanism to track the behavior and state of methods and operations within the class.
-     * <p>
-     * Typical use cases include:
-     * - Logging errors that occur during microphone initialization or audio processing.
-     * - Debugging issues related to the {@code open()}, {@code close()}, and associated methods.
-     * - Capturing operational details for performance analysis or troubleshooting.
-     * <p>
-     * Being a static final instance, this logger is shared across all instances of {@link MicrophoneAndroid}
-     * and cannot be modified after initialization.
-     */
-    private static final Logger logger = new Logger(MicrophoneAndroid.class);
 
     /**
      * A volatile instance of {@link MicrophoneHandler} used for handling
@@ -173,7 +158,7 @@ public class MicrophoneAndroid implements Microphone {
      * The default value is 0.95.
      * </p>
      */
-    private double confidence=0.95;
+    private double confidence = 0.95;
 
     /**
      * Initializes and starts recording audio using the device's microphone.
@@ -209,7 +194,7 @@ public class MicrophoneAndroid implements Microphone {
             );
 
             if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-                logger.error("Failed to initialize AudioRecord.");
+                log.error("Failed to initialize AudioRecord.");
                 return;
             }
 
@@ -232,16 +217,17 @@ public class MicrophoneAndroid implements Microphone {
                             float[] dataCopy = new float[bytesRead];
                             System.arraycopy(buffer, 0, dataCopy, 0, bytesRead);
                             // add to queue
-                            audioDataQueue.offer(dataCopy);
+                            boolean offer = audioDataQueue.offer(dataCopy);
+                            log.debug("Audio data added to queue: " + offer);
                         } else if (bytesRead < 0) {
-                            logger.error("AudioRecord read error: " + bytesRead);
+                            log.error("AudioRecord read error: " + bytesRead);
                             break;
                         }
                     }
                 } finally {
                     audioRecord.stop();
                     audioRecord.release();
-                    logger.info("Audio recording thread stopped.");
+                    log.info("Audio recording thread stopped.");
                 }
             });
 
@@ -254,13 +240,13 @@ public class MicrophoneAndroid implements Microphone {
                         processAudioData(audioFrame, audioFrame.length);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        logger.info("Processing thread interrupted.");
+                        log.info("Processing thread interrupted.");
                     }
                 }
             });
 
         } catch (Exception e) {
-            logger.error("Failed to start recording: " + e.getMessage());
+            log.error("Failed to start recording: " + e.getMessage());
         }
     }
 
@@ -282,15 +268,6 @@ public class MicrophoneAndroid implements Microphone {
     @Override
     public String[] getSupportedMicrophones() {
         return new String[0];
-    }
-
-    @Override
-    public void setConfidence(int confidenceIndex) {
-        try {
-            confidence = Double.parseDouble(getSupportedConfidences()[confidenceIndex]);
-        } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
-            logger.error(exception.getMessage());
-        }
     }
 
     @Override
@@ -322,6 +299,15 @@ public class MicrophoneAndroid implements Microphone {
     }
 
     @Override
+    public void setConfidence(int confidenceIndex) {
+        try {
+            confidence = Double.parseDouble(getSupportedConfidences()[confidenceIndex]);
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
+            log.error(exception.getMessage());
+        }
+    }
+
+    @Override
     public String getName() {
         return "";
     }
@@ -349,7 +335,7 @@ public class MicrophoneAndroid implements Microphone {
      * <p>Finally, if a {@link #microphoneHandler} is set, it will be called with the detected
      * pitch and the calculated RMS.</p>
      *
-     * @param buffer The raw audio data buffer.
+     * @param buffer    The raw audio data buffer.
      * @param bytesRead The number of bytes read from the buffer.
      */
     private void processAudioData(float[] buffer, int bytesRead) {

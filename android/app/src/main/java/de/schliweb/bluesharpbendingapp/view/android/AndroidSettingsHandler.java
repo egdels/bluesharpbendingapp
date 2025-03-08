@@ -23,15 +23,18 @@ package de.schliweb.bluesharpbendingapp.view.android;
  *
  */
 
+
 /**
- * The interface Android settings handler.
+ * Interface representing a handler for managing Android settings.
+ * Provides operations for handling specific Android device settings.
  */
 public interface AndroidSettingsHandler {
 
+
     /**
-     * Handle look screen.
+     * Handles the setting for enabling or disabling the lock screen.
      *
-     * @param isLookScreen the is look screen
+     * @param isLookScreen true to enable the lock screen, false to disable it.
      */
     void handleLookScreen(boolean isLookScreen);
 

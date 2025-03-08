@@ -24,6 +24,7 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
+import lombok.Getter;
 
 /**
  * The NoteLookup class provides utility methods to perform operations related
@@ -47,14 +48,7 @@ public class NoteLookup {
      */
     private static final double DEFAULT_CONCERT_PITCH_FREQUENCY = 440.0;
 
-    /**
-     * Represents the concert pitch frequency used as a reference point
-     * for tuning musical notes. This value is initialized to the default
-     * concert pitch frequency and can be modified based on user preferences.
-     * <p>
-     * Concert pitch generally refers to the pitch standard that sets the
-     * frequency of the note A above middle C (A4), commonly at 440 Hz.
-     */
+    @Getter
     private static int concertPitch = (int) DEFAULT_CONCERT_PITCH_FREQUENCY;
 
     private NoteLookup() {
@@ -151,15 +145,6 @@ public class NoteLookup {
     public static String[] getSupportedConcertPitches() {
         return new String[]{"431", "432", "433", "434", "435", "436", "437", "438",
                 "439", "440", "441", "442", "443", "444", "445", "446"};
-    }
-
-    /**
-     * Retrieves the current concert pitch setting in hertz.
-     *
-     * @return the current concert pitch frequency in hertz
-     */
-    public static int getConcertPitch() {
-        return concertPitch;
     }
 
     /**

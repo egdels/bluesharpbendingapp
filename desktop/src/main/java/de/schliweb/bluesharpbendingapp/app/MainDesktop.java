@@ -27,12 +27,12 @@ import de.schliweb.bluesharpbendingapp.controller.MainController;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.desktop.MicrophoneDesktop;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -50,17 +50,8 @@ import java.util.Scanner;
  * managing its lifecycle, and handling essential tasks such as loading data, interacting
  * with the GUI controller, and shutting down.
  */
+@Slf4j
 public class MainDesktop extends Application {
-
-
-    /**
-     * A logger instance for the {@link MainDesktop} class, providing logging
-     * capabilities such as debug, info, and error messages with contextual
-     * information related to the class and calling methods. This logger
-     * is statically initialized as a final field to be used across the
-     * MainDesktop class for consistent logging output.
-     */
-    private static final Logger LOGGER = new Logger(MainDesktop.class);
 
     /**
      * The constant TEMP_DIR represents the directory path where temporary files are stored
@@ -129,21 +120,10 @@ public class MainDesktop extends Application {
      *             - "info": Enables informational logging.
      */
     public static void main(String[] args) {
-        Logger.setInfo(true);
 
-        Logger.setDebug(false);
 
         checkVersionFromHost();
-        Logger.setInfo(false);
-        for (String arg : args) {
-            if ("debug".equals(arg)) {
-                Logger.setDebug(true);
-                Logger.setInfo(true);
-            }
-            if ("info".equals(arg)) {
-                Logger.setInfo(true);
-            }
-        }
+
         Microphone microphone = new MicrophoneDesktop();
         microphone.setName(0);
 
@@ -167,17 +147,17 @@ public class MainDesktop extends Application {
         File directory = new File(TEMP_DIR);
         if (!directory.exists()) {
             boolean isCreated = directory.mkdirs();
-            if (isCreated) LOGGER.debug("Directory created");
+            if (isCreated) log.debug("Directory created");
         }
         File file = new File(TEMP_DIR + FileSystems.getDefault().getSeparator() + TEMP_FILE);
         try (FileOutputStream fos = new FileOutputStream(file); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
             boolean isCreated = file.createNewFile();
-            if (isCreated) LOGGER.debug("Filed created");
+            if (isCreated) log.debug("Filed created");
 
             bw.write(model.getString());
 
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
     }
@@ -197,7 +177,7 @@ public class MainDesktop extends Application {
         File directory = new File(TEMP_DIR);
         if (!directory.exists()) {
             boolean isCreated = directory.mkdirs();
-            if (isCreated) LOGGER.debug("Directory created");
+            if (isCreated) log.debug("Directory created");
         }
         File file = new File(TEMP_DIR + FileSystems.getDefault().getSeparator() + TEMP_FILE);
         if (file.exists()) {
@@ -207,7 +187,7 @@ public class MainDesktop extends Application {
                 if (line != null) model = MainModel.createFromString(line);
 
             } catch (IOException e) {
-                LOGGER.error(e.getMessage());
+                log.error(e.getMessage());
             }
         }
         return model;
@@ -237,17 +217,17 @@ public class MainDesktop extends Application {
             int responseCode = huc.getResponseCode();
 
             if (HttpURLConnection.HTTP_OK == responseCode) {
-                LOGGER.info("ok");
+                log.info("ok");
                 Scanner scanner = new Scanner((InputStream) huc.getContent());
                 versionFromHost = scanner.nextLine();
                 scanner.close();
                 if (versionFromHost != null) {
                     versionFromHost = versionFromHost.trim();
                 }
-                LOGGER.info(versionFromHost);
+                log.info(versionFromHost);
             }
         } catch (IOException | URISyntaxException e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -278,7 +258,7 @@ public class MainDesktop extends Application {
      * resource leaks or incomplete data handling.
      */
     public static void close() {
-        LOGGER.info("Shutting down");
+        log.info("Shutting down");
         controller.stop();
         storeModel(mainModel);
         System.exit(0);
@@ -307,7 +287,7 @@ public class MainDesktop extends Application {
             primaryStage.show();
         } catch (Exception e) {
             // Log an error if something goes wrong during application startup
-            LOGGER.error("Error while starting the application: " + e.getMessage());
+            log.error("Error while starting the application: " + e.getMessage());
         }
     }
 

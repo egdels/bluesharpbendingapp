@@ -39,6 +39,7 @@ import javafx.scene.text.TextAlignment;
  * movable needle indicating the deviation from perfect tuning.
  */
 public class TuningMeterFX extends Pane {
+
     private final Canvas canvas; // The canvas used for drawing the meter
     private double cents = 0.0;  // Current deviation in cents (-50 to +50)
 

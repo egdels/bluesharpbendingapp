@@ -22,10 +22,10 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -35,17 +35,9 @@ import java.io.IOException;
  * desktop "About" view within a JavaFX application. It utilizes an FXML file for
  * the layout and a corresponding controller to manage view-related logic.
  */
+@Slf4j
 @Getter
 public class AboutViewDesktopFX {
-
-    /**
-     * A static logger instance associated with the `AboutViewDesktopFX` class that provides
-     * logging capability for debugging, informational, and error messages during the operation
-     * of the "About" view in the desktop JavaFX application. This logger is primarily used for
-     * tracking application behavior and reporting issues related to loading FXML files or
-     * managing the view controller.
-     */
-    private static final Logger LOGGER = new Logger(AboutViewDesktopFX.class);
 
     /**
      * Represents the root Node of the "About" view in a JavaFX application. This node is
@@ -108,7 +100,7 @@ public class AboutViewDesktopFX {
 
         } catch (IOException e) {
             // Log an error if there is an issue while loading the FXML file
-            LOGGER.error("Error while loading the FXML: " + e.getMessage());
+            log.error("Error while loading the FXML: " + e.getMessage());
 
             // Throw a runtime exception to indicate a failure in loading the FXML
             throw new RuntimeException("Failed to load FXML", e);

@@ -24,6 +24,7 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
+import lombok.Getter;
 
 
 /**
@@ -74,6 +75,7 @@ import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
  * <a href="https://de.wikipedia.org/wiki/Frequenzen_der_gleichstufigen_Stimmung">Wikipedia</a>
  * </pre>
  */
+@Getter
 public abstract class AbstractHarmonica implements Harmonica {
 
     /**
@@ -99,11 +101,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      * within the harmonica model.
      */
     private static final int NOTE_MIN = -3;
-    /**
-     * Represents the base frequency of the musical key that the harmonica is tuned to.
-     * This value determines the starting point for calculating the frequencies
-     * of all notes in the harmonica's range.
-     */
+
     private final double keyFrequency;
 
     /**
@@ -279,15 +277,6 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return an array of integers representing the halftone intervals associated with the output notes.
      */
     abstract int[] getHalfTonesOut();
-
-    /**
-     * Returns the base frequency of the musical key that the harmonica is tuned to.
-     *
-     * @return the frequency of the key in Hertz
-     */
-    public double getKeyFrequency() {
-        return keyFrequency;
-    }
 
     @Override
     public String getKeyName() {

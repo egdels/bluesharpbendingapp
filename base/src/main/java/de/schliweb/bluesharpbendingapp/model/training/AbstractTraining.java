@@ -26,6 +26,7 @@ package de.schliweb.bluesharpbendingapp.model.training;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,11 +40,7 @@ import java.util.Arrays;
  */
 public abstract class AbstractTraining implements Training {
 
-    /**
-     * Represents the level of precision used in training-related calculations or operations.
-     * This variable is a shared static field across training instances
-     * and determines the granularity or accuracy of training evaluations.
-     */
+    @Getter
     private static int precision;
     /**
      * Represents the central frequency value associated with a key in the
@@ -148,15 +145,6 @@ public abstract class AbstractTraining implements Training {
      */
     public static String[] getSupportedPrecisions() {
         return new String[]{"5", "10", "15", "20", "25", "30", "35", "40", "45"};
-    }
-
-    /**
-     * Retrieves the current precision level for the training.
-     *
-     * @return the precision level as an integer
-     */
-    public static int getPrecision() {
-        return precision;
     }
 
     /**

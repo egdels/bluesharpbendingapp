@@ -29,6 +29,7 @@ import de.schliweb.bluesharpbendingapp.model.training.Training;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -96,12 +97,10 @@ public class TrainingContainer implements Runnable {
      * managed through an AtomicBoolean to allow concurrent access and modification.
      */
     protected final AtomicBoolean toBeCleared = new AtomicBoolean(false);
+
     private final String cacheKey;
-    /**
-     * Represents the frequency currently being handled by the TrainingContainer.
-     * This variable is volatile to ensure thread-safe operations when accessed or
-     * updated concurrently by multiple threads.
-     */
+
+    @Setter
     private volatile double frequencyToHandle;
     private final HashMap<String, Double> centsCache = new HashMap<>();
 
@@ -173,16 +172,6 @@ public class TrainingContainer implements Runnable {
         }
     }
 
-
-    /**
-     * Sets the frequency value to handle in the training process.
-     *
-     * @param frequencyToHandle the frequency value to be handled, typically used for processing
-     *                          or analysis during the training session
-     */
-    public void setFrequencyToHandle(double frequencyToHandle) {
-        this.frequencyToHandle = frequencyToHandle;
-    }
 
     /**
      * Retrieves the actual note name currently being processed or managed in the training instance.

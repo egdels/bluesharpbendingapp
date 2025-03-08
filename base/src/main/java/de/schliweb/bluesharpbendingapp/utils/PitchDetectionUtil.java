@@ -23,6 +23,8 @@ package de.schliweb.bluesharpbendingapp.utils;
  *
  */
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +69,7 @@ public class PitchDetectionUtil {
         double[] cmndf = computeCMNDF(difference);
 
         // Step 3: Find the first minimum below a threshold
-        int tauEstimate = findFirstMinimum(cmndf, YIN_MINIMUM_THRESHOLD);
+        int tauEstimate = findFirstMinimum(cmndf);
         double confidence = 0.0;
 
         // Step 4: Use parabolic interpolation for more precise tau estimation
@@ -122,14 +124,13 @@ public class PitchDetectionUtil {
      * Finds the first index in the given cumulative mean normalized difference function (CMNDF)
      * array where the value is below a specified threshold and is a local minimum.
      *
-     * @param cmndf     an array of double values representing the cumulative mean normalized difference function (CMNDF)
-     * @param threshold a double value representing the threshold to evaluate against
+     * @param cmndf an array of double values representing the cumulative mean normalized difference function (CMNDF)
      * @return the index of the first local minimum in the CMNDF array that is below the threshold,
      * or -1 if no such local minimum is found
      */
-    private static int findFirstMinimum(double[] cmndf, double threshold) {
+    private static int findFirstMinimum(double[] cmndf) {
         for (int tau = 2; tau < cmndf.length - 1; tau++) {
-            if (cmndf[tau] < threshold && isLocalMinimum(cmndf, tau)) {
+            if (cmndf[tau] < PitchDetectionUtil.YIN_MINIMUM_THRESHOLD && isLocalMinimum(cmndf, tau)) {
                 return tau;
             }
         }
@@ -263,21 +264,11 @@ public class PitchDetectionUtil {
      * This class stores the detected pitch frequency in Hz
      * and a confidence score indicating the reliability of the detection.
      */
+    @Getter
     public static class PitchDetectionResult {
-        /**
-         * Represents the detected pitch frequency in Hertz (Hz).
-         * This value indicates the frequency of the detected sound,
-         * measured as cycles per second.
-         * It is a final variable, meaning its value is immutable
-         * after being set during instantiation of the associated object.
-         */
+
         public final double pitch;
-        /**
-         * Represents the confidence score of a pitch detection result.
-         * This value indicates the reliability of the detected pitch and is typically
-         * represented as a decimal number between 0 and 1, where a higher value signifies
-         * greater confidence in the accuracy of the detected pitch.
-         */
+
         public final double confidence;
 
 
@@ -292,24 +283,6 @@ public class PitchDetectionUtil {
             this.confidence = confidence;
         }
 
-        /**
-         * Retrieves the detected pitch value.
-         *
-         * @return the pitch frequency in Hz as a double
-         */
-        public double getPitch() {
-            return pitch;
-        }
-
-        /**
-         * Retrieves the confidence score indicating the reliability of the pitch detection.
-         *
-         * @return the confidence score, a double value typically between 0 and 1,
-         * where higher values represent greater confidence in the detected pitch.
-         */
-        public double getConfidence() {
-            return confidence;
-        }
     }
 
 }

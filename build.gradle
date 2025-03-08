@@ -49,12 +49,23 @@ subprojects {
     }
 
     dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.36'
+        annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.36'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+
         // Adds dependencies for Mockito, a library used for mocking in tests
         testImplementation 'org.mockito:mockito-core:5.14.2'
         // Adds the JUnit BOM (Bill of Materials) platform for consistent JUnit versions
         testImplementation platform('org.junit:junit-bom:5.9.3')
         // Adds JUnit Jupiter for unit testing
         testImplementation 'org.junit.jupiter:junit-jupiter'
+
+        implementation 'org.slf4j:slf4j-bom:2.0.12'
+        implementation 'ch.qos.logback:logback-core:1.4.14'
+        implementation 'ch.qos.logback:logback-classic:1.4.14'
+
     }
 }
 

@@ -25,7 +25,6 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import de.schliweb.bluesharpbendingapp.controller.TrainingContainer;
 import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
 import javafx.application.Platform;
@@ -36,6 +35,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The TrainingViewDesktopFXController class is a JavaFX controller that implements
@@ -44,20 +44,8 @@ import lombok.Setter;
  * of UI elements based on training interaction and handles user actions relating
  * to training sessions.
  */
+@Slf4j
 public class TrainingViewDesktopFXController implements TrainingView {
-
-    /**
-     * A static final logger instance used for logging messages within the
-     * TrainingViewDesktopFXController class. This logger provides functionality
-     * for logging debug, error, and info messages, with contextual information
-     * such as class and method names included in the log output.
-     * <p>
-     * The logger is associated with the TrainingViewDesktopFXController class
-     * to provide class-specific contextual details for messages. It utilizes the
-     * Logger utility's features to manage and control the logging levels globally
-     * through static configuration.
-     */
-    private static final Logger LOGGER = new Logger(TrainingViewDesktopFXController.class);
 
     /**
      * Represents a visual pane component in the TrainingViewDesktopFXController class.
@@ -301,7 +289,7 @@ public class TrainingViewDesktopFXController implements TrainingView {
     private void initComboBox(ComboBox<String> combo, String[] items) {
         // Check if the ComboBox is null
         if (combo == null) {
-            LOGGER.error("ComboBox is not initialized!");
+            log.error("ComboBox is not initialized!");
             return; // Exit the method if the ComboBox is null
         }
 
@@ -326,13 +314,13 @@ public class TrainingViewDesktopFXController implements TrainingView {
     private void setSelected(int selectedIndex, ComboBox<String> combo) {
         // Check if the ComboBox is null
         if (combo == null) {
-            LOGGER.error("ComboBox is not initialized!");
+            log.error("ComboBox is not initialized!");
             return; // Exit the method if the ComboBox is null
         }
 
         // Validate whether the selected index is within the valid bounds of the ComboBox items
         if (selectedIndex < 0 || selectedIndex >= combo.getItems().size()) {
-            LOGGER.error("Invalid index: " + selectedIndex);
+            log.error("Invalid index: " + selectedIndex);
             return; // Exit the method if the index is out of range
         }
 

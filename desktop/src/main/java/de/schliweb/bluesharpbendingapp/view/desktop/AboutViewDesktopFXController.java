@@ -24,12 +24,12 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  */
 
 import de.schliweb.bluesharpbendingapp.app.MainDesktop;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.view.AboutView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.net.URI;
@@ -44,22 +44,8 @@ import java.util.Objects;
  * displaying "About" information. The controller handles user interactions, such as clicking on links
  * to download the application or make donations through provided URLs.
  */
+@Slf4j
 public class AboutViewDesktopFXController implements AboutView {
-
-
-    /**
-     * The LOGGER variable serves as a logger instance specifically for the
-     * AboutViewDesktopFXController class. It provides logging functionality
-     * with methods to output debug, informational, and error messages,
-     * helping to monitor and troubleshoot behavior within this controller.
-     * <p>
-     * The logger associates logs with the AboutViewDesktopFXController context
-     * to include the class name in the log output, aiding in identifying
-     * the source of log messages. It can capture and display logs related to
-     * events such as user interactions or application errors.
-     */
-    private static final Logger LOGGER = new Logger(AboutViewDesktopFXController.class);
-
 
     /**
      * The DOWNLOAD constant holds the URL for downloading the application from the
@@ -192,7 +178,7 @@ public class AboutViewDesktopFXController implements AboutView {
         try {
             Desktop.getDesktop().browse(new URI(uri));
         } catch (Exception ex) {
-            LOGGER.error("Error while opening the link: " + uri);
+            log.error("Error while opening the link: " + uri);
         }
     }
 

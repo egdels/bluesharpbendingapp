@@ -28,7 +28,6 @@ import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
-import de.schliweb.bluesharpbendingapp.utils.Logger;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
@@ -39,6 +38,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 
@@ -47,17 +47,8 @@ import java.util.Arrays;
  * that are part of the settings view in a desktop application. It implements the HarpSettingsView,
  * MicrophoneSettingsView, and NoteSettingsView interfaces to manage harp, microphone, and note-related settings.
  */
+@Slf4j
 public class SettingsViewDesktopFXController implements HarpSettingsView, MicrophoneSettingsView, NoteSettingsView {
-
-    /**
-     * A static final logger instance used for logging messages specific to the
-     * functionality and lifecycle of the {@code SettingsViewDesktopFXController} class.
-     * This logger provides contextual information, such as the class name, within
-     * its log messages and supports different levels of logging (e.g., debug, info, error).
-     * It is primarily used to aid in debugging, tracing execution, and reporting errors
-     * in the {@code SettingsViewDesktopFXController}.
-     */
-    private static final Logger LOGGER = new Logger(SettingsViewDesktopFXController.class);
 
     /**
      * A ComboBox element in the user interface for selecting concert pitches.
@@ -235,7 +226,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      */
     @FXML
     public void initialize() {
-        LOGGER.info("initialize()");
+        log.info("initialize()");
         for (ComboBox<String> stringComboBox : Arrays.asList(comboKeys, comboTunes, comboAlgorithms, comboMicrophones, comboConfidences, comboConcertPitches)) {
             addChangeListenerToComboBox(stringComboBox);
         }
@@ -268,13 +259,13 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     private void setSelected(int selectedIndex, ComboBox<String> combo) {
         // Check if the ComboBox is null
         if (combo == null) {
-            LOGGER.error("ComboBox is not initialized!");
+            log.error("ComboBox is not initialized!");
             return; // Exit the method as there's nothing to work with
         }
 
         // Validate the selected index is within valid bounds of the ComboBox items
         if (selectedIndex < 0 || selectedIndex >= combo.getItems().size()) {
-            LOGGER.error("Invalid index: " + selectedIndex);
+            log.error("Invalid index: " + selectedIndex);
             return; // Exit the method as the index is out of range
         }
 
@@ -296,7 +287,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     private void initComboBox(ComboBox<String> combo, String[] items) {
         // Check if the ComboBox is null
         if (combo == null) {
-            LOGGER.error("ComboBox is not initialized!");
+            log.error("ComboBox is not initialized!");
             return; // Exit the method as there's nothing to work with
         }
 
@@ -322,7 +313,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      */
     private void addChangeListenerToComboBox(ComboBox<String> combo) {
         combo.valueProperty().addListener((observable, oldValue, newValue) -> {
-            LOGGER.info("ComboBox (" + combo.getId() + ") changed from " + oldValue + " to " + newValue);
+            log.info("ComboBox (" + combo.getId() + ") changed from " + oldValue + " to " + newValue);
             if (newValue != null) {
                 if (comboKeys.getSelectionModel().getSelectedIndex() >= 0)
                     harpSettingsViewHandler.handleKeySelection(comboKeys.getSelectionModel().getSelectedIndex());
