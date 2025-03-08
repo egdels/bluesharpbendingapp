@@ -26,7 +26,7 @@ plugins {
     id 'java'
     // Adds the 'org.beryx.runtime' plugin for creating runtime packages (e.g., jpackage for user distributions)
     id 'org.beryx.runtime' version '1.12.7'
-    id 'org.openjfx.javafxplugin' version '0.0.13'  // JavaFX Plugin
+    id 'org.openjfx.javafxplugin' version '0.1.0'  // JavaFX Plugin
 }
 
 javafx {

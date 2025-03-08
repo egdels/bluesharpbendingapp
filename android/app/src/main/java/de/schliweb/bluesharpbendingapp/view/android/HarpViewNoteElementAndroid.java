@@ -30,6 +30,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
@@ -282,6 +283,9 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
 
         // Create a SpannableString combining note text and cents with a line break
         SpannableString spannableString = new SpannableString(noteText + "\n" + centsString);
+
+        // Set the color for the entire text to black
+        spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Make the note text bold (first part only)
         spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
