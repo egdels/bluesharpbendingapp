@@ -101,11 +101,7 @@ public class TrainingViewDesktopFX {
             // Set the root node visibility to true
             root.setVisible(true);
         } catch (IOException e) {
-            // Log an error if loading the FXML file fails
-            log.error("Error while loading the FXML: " + e.getMessage());
-
-            // Throw a RuntimeException to indicate failure in loading the FXML file
-            throw new RuntimeException("Failed to load FXML", e);
+            throw new FxmlLoadingException("Failed to load FXML file", e);
         }
     }
 

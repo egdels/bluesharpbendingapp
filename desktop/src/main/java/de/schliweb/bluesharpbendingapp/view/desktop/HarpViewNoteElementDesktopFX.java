@@ -178,7 +178,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
             // Calculate the adjusted Y-position for the line
             // Subtract the line thickness from the available height and position proportionally
             double effectiveHeight = height - lineHeight;
-            // double yPosition = (effectiveHeight * ((clampedCents + 50) / 100.0)) + ((double) lineHeight / 2);
+
             double yPosition = (effectiveHeight * ((-clampedCents + 50) / 100.0)) + ((double) lineHeight / 2);
 
             // Calculate the color of the line

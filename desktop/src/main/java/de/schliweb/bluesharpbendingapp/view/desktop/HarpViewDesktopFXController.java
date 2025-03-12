@@ -37,6 +37,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
+import java.util.List;
+
 /**
  * The HarpViewDesktopFXController class provides functionalities for managing and interacting
  * with the visual representation of a harp view in a desktop application using JavaFX. It extends
@@ -285,7 +287,7 @@ public class HarpViewDesktopFXController implements HarpView {
         overlayContainer.prefWidthProperty().bind(harpGrid.widthProperty());
         overlayContainer.prefHeightProperty().bind(harpGrid.heightProperty());
 
-        harpGrid.getChildren().stream().filter(node -> node instanceof Pane).filter(node -> !node.getStyleClass().contains("channel")).forEach(pane -> pane.setOnMouseClicked(this::handlePaneClick));
+        harpGrid.getChildren().stream().filter(Pane.class::isInstance).filter(node -> !node.getStyleClass().contains("channel")).forEach(pane -> pane.setOnMouseClicked(this::handlePaneClick));
 
         enlargedPane.setOnMouseClicked(e -> closeEnlargedPane());
     }
@@ -371,8 +373,12 @@ public class HarpViewDesktopFXController implements HarpView {
             scaleTransition.setToY(0.1);
             scaleTransition.setOnFinished(e -> {
                 enlargedPane.setVisible(false);
-                if (enlargedPane.getUserData() instanceof Pane)
-                    HarpViewNoteElementDesktopFX.getInstance((Pane) enlargedPane.getUserData()).setEnlargedPane(null);
+
+                // Check if userData is an instance of Pane
+                if (enlargedPane.getUserData() instanceof Pane pane) {
+                    HarpViewNoteElementDesktopFX.getInstance(pane).setEnlargedPane(null);
+                }
+
                 overlayContainer.setVisible(false);
             });
             scaleTransition.play();
@@ -387,99 +393,99 @@ public class HarpViewDesktopFXController implements HarpView {
      * @return the Pane associated with the specified channel and note
      */
     private Pane getNotePanel(int channel, int note) {
-        Pane[][] Panels = new Pane[10][8];
+        Pane[][] panes = new Pane[10][8];
 
-        Panels[0][0] = channel1NoteM3;
-        Panels[0][1] = channel1NoteM2;
-        Panels[0][2] = channel1NoteM1;
-        Panels[0][3] = channel1Note0;
-        Panels[0][4] = channel1Note1;
-        Panels[0][5] = channel1Note2;
-        Panels[0][6] = channel1Note3;
-        Panels[0][7] = channel1Note4;
+        panes[0][0] = channel1NoteM3;
+        panes[0][1] = channel1NoteM2;
+        panes[0][2] = channel1NoteM1;
+        panes[0][3] = channel1Note0;
+        panes[0][4] = channel1Note1;
+        panes[0][5] = channel1Note2;
+        panes[0][6] = channel1Note3;
+        panes[0][7] = channel1Note4;
 
-        Panels[1][0] = channel2NoteM3;
-        Panels[1][1] = channel2NoteM2;
-        Panels[1][2] = channel2NoteM1;
-        Panels[1][3] = channel2Note0;
-        Panels[1][4] = channel2Note1;
-        Panels[1][5] = channel2Note2;
-        Panels[1][6] = channel2Note3;
-        Panels[1][7] = channel2Note4;
+        panes[1][0] = channel2NoteM3;
+        panes[1][1] = channel2NoteM2;
+        panes[1][2] = channel2NoteM1;
+        panes[1][3] = channel2Note0;
+        panes[1][4] = channel2Note1;
+        panes[1][5] = channel2Note2;
+        panes[1][6] = channel2Note3;
+        panes[1][7] = channel2Note4;
 
-        Panels[2][0] = channel3NoteM3;
-        Panels[2][1] = channel3NoteM2;
-        Panels[2][2] = channel3NoteM1;
-        Panels[2][3] = channel3Note0;
-        Panels[2][4] = channel3Note1;
-        Panels[2][5] = channel3Note2;
-        Panels[2][6] = channel3Note3;
-        Panels[2][7] = channel3Note4;
+        panes[2][0] = channel3NoteM3;
+        panes[2][1] = channel3NoteM2;
+        panes[2][2] = channel3NoteM1;
+        panes[2][3] = channel3Note0;
+        panes[2][4] = channel3Note1;
+        panes[2][5] = channel3Note2;
+        panes[2][6] = channel3Note3;
+        panes[2][7] = channel3Note4;
 
-        Panels[3][0] = channel4NoteM3;
-        Panels[3][1] = channel4NoteM2;
-        Panels[3][2] = channel4NoteM1;
-        Panels[3][3] = channel4Note0;
-        Panels[3][4] = channel4Note1;
-        Panels[3][5] = channel4Note2;
-        Panels[3][6] = channel4Note3;
-        Panels[3][7] = channel4Note4;
+        panes[3][0] = channel4NoteM3;
+        panes[3][1] = channel4NoteM2;
+        panes[3][2] = channel4NoteM1;
+        panes[3][3] = channel4Note0;
+        panes[3][4] = channel4Note1;
+        panes[3][5] = channel4Note2;
+        panes[3][6] = channel4Note3;
+        panes[3][7] = channel4Note4;
 
-        Panels[4][0] = channel5NoteM3;
-        Panels[4][1] = channel5NoteM2;
-        Panels[4][2] = channel5NoteM1;
-        Panels[4][3] = channel5Note0;
-        Panels[4][4] = channel5Note1;
-        Panels[4][5] = channel5Note2;
-        Panels[4][6] = channel5Note3;
-        Panels[4][7] = channel5Note4;
+        panes[4][0] = channel5NoteM3;
+        panes[4][1] = channel5NoteM2;
+        panes[4][2] = channel5NoteM1;
+        panes[4][3] = channel5Note0;
+        panes[4][4] = channel5Note1;
+        panes[4][5] = channel5Note2;
+        panes[4][6] = channel5Note3;
+        panes[4][7] = channel5Note4;
 
-        Panels[5][0] = channel6NoteM3;
-        Panels[5][1] = channel6NoteM2;
-        Panels[5][2] = channel6NoteM1;
-        Panels[5][3] = channel6Note0;
-        Panels[5][4] = channel6Note1;
-        Panels[5][5] = channel6Note2;
-        Panels[5][6] = channel6Note3;
-        Panels[5][7] = channel6Note4;
+        panes[5][0] = channel6NoteM3;
+        panes[5][1] = channel6NoteM2;
+        panes[5][2] = channel6NoteM1;
+        panes[5][3] = channel6Note0;
+        panes[5][4] = channel6Note1;
+        panes[5][5] = channel6Note2;
+        panes[5][6] = channel6Note3;
+        panes[5][7] = channel6Note4;
 
-        Panels[6][0] = channel7NoteM3;
-        Panels[6][1] = channel7NoteM2;
-        Panels[6][2] = channel7NoteM1;
-        Panels[6][3] = channel7Note0;
-        Panels[6][4] = channel7Note1;
-        Panels[6][5] = channel7Note2;
-        Panels[6][6] = channel7Note3;
-        Panels[6][7] = channel7Note4;
+        panes[6][0] = channel7NoteM3;
+        panes[6][1] = channel7NoteM2;
+        panes[6][2] = channel7NoteM1;
+        panes[6][3] = channel7Note0;
+        panes[6][4] = channel7Note1;
+        panes[6][5] = channel7Note2;
+        panes[6][6] = channel7Note3;
+        panes[6][7] = channel7Note4;
 
-        Panels[7][0] = channel8NoteM3;
-        Panels[7][1] = channel8NoteM2;
-        Panels[7][2] = channel8NoteM1;
-        Panels[7][3] = channel8Note0;
-        Panels[7][4] = channel8Note1;
-        Panels[7][5] = channel8Note2;
-        Panels[7][6] = channel8Note3;
-        Panels[7][7] = channel8Note4;
+        panes[7][0] = channel8NoteM3;
+        panes[7][1] = channel8NoteM2;
+        panes[7][2] = channel8NoteM1;
+        panes[7][3] = channel8Note0;
+        panes[7][4] = channel8Note1;
+        panes[7][5] = channel8Note2;
+        panes[7][6] = channel8Note3;
+        panes[7][7] = channel8Note4;
 
-        Panels[8][0] = channel9NoteM3;
-        Panels[8][1] = channel9NoteM2;
-        Panels[8][2] = channel9NoteM1;
-        Panels[8][3] = channel9Note0;
-        Panels[8][4] = channel9Note1;
-        Panels[8][5] = channel9Note2;
-        Panels[8][6] = channel9Note3;
-        Panels[8][7] = channel9Note4;
+        panes[8][0] = channel9NoteM3;
+        panes[8][1] = channel9NoteM2;
+        panes[8][2] = channel9NoteM1;
+        panes[8][3] = channel9Note0;
+        panes[8][4] = channel9Note1;
+        panes[8][5] = channel9Note2;
+        panes[8][6] = channel9Note3;
+        panes[8][7] = channel9Note4;
 
-        Panels[9][0] = channel10NoteM3;
-        Panels[9][1] = channel10NoteM2;
-        Panels[9][2] = channel10NoteM1;
-        Panels[9][3] = channel10Note0;
-        Panels[9][4] = channel10Note1;
-        Panels[9][5] = channel10Note2;
-        Panels[9][6] = channel10Note3;
-        Panels[9][7] = channel10Note4;
+        panes[9][0] = channel10NoteM3;
+        panes[9][1] = channel10NoteM2;
+        panes[9][2] = channel10NoteM1;
+        panes[9][3] = channel10Note0;
+        panes[9][4] = channel10Note1;
+        panes[9][5] = channel10Note2;
+        panes[9][6] = channel10Note3;
+        panes[9][7] = channel10Note4;
 
-        return Panels[channel - 1][note + 3];
+        return panes[channel - 1][note + 3];
     }
 
     /**
@@ -492,254 +498,22 @@ public class HarpViewDesktopFXController implements HarpView {
      * respective channels and categories.
      */
     private void hideNotes() {
-
-        if (channel1NoteM3 != null) {
-            channel1NoteM3.setVisible(false);
-        }
-        if (channel2NoteM3 != null) {
-            channel2NoteM3.setVisible(false);
-        }
-        if (channel3NoteM3 != null) {
-            channel3NoteM3.setVisible(false);
-        }
-        if (channel4NoteM3 != null) {
-            channel4NoteM3.setVisible(false);
-        }
-        if (channel5NoteM3 != null) {
-            channel5NoteM3.setVisible(false);
-        }
-        if (channel6NoteM3 != null) {
-            channel6NoteM3.setVisible(false);
-        }
-        if (channel7NoteM3 != null) {
-            channel7NoteM3.setVisible(false);
-        }
-        if (channel8NoteM3 != null) {
-            channel8NoteM3.setVisible(false);
-        }
-        if (channel9NoteM3 != null) {
-            channel9NoteM3.setVisible(false);
-        }
-        if (channel10NoteM3 != null) {
-            channel10NoteM3.setVisible(false);
-        }
-
-        if (channel1NoteM2 != null) {
-            channel1NoteM2.setVisible(false);
-        }
-        if (channel2NoteM2 != null) {
-            channel2NoteM2.setVisible(false);
-        }
-        if (channel3NoteM2 != null) {
-            channel3NoteM2.setVisible(false);
-        }
-        if (channel4NoteM2 != null) {
-            channel4NoteM2.setVisible(false);
-        }
-        if (channel5NoteM2 != null) {
-            channel5NoteM2.setVisible(false);
-        }
-        if (channel6NoteM2 != null) {
-            channel6NoteM2.setVisible(false);
-        }
-        if (channel7NoteM2 != null) {
-            channel7NoteM2.setVisible(false);
-        }
-        if (channel8NoteM2 != null) {
-            channel8NoteM2.setVisible(false);
-        }
-        if (channel9NoteM2 != null) {
-            channel9NoteM2.setVisible(false);
-        }
-        if (channel10NoteM2 != null) {
-            channel10NoteM2.setVisible(false);
-        }
-
-
-        if (channel1NoteM1 != null) {
-            channel1NoteM1.setVisible(false);
-        }
-        if (channel2NoteM1 != null) {
-            channel2NoteM1.setVisible(false);
-        }
-        if (channel3NoteM1 != null) {
-            channel3NoteM1.setVisible(false);
-        }
-        if (channel4NoteM1 != null) {
-            channel4NoteM1.setVisible(false);
-        }
-        if (channel5NoteM1 != null) {
-            channel5NoteM1.setVisible(false);
-        }
-        if (channel6NoteM1 != null) {
-            channel6NoteM1.setVisible(false);
-        }
-        if (channel7NoteM1 != null) {
-            channel7NoteM1.setVisible(false);
-        }
-        if (channel8NoteM1 != null) {
-            channel8NoteM1.setVisible(false);
-        }
-        if (channel9NoteM1 != null) {
-            channel9NoteM1.setVisible(false);
-        }
-        if (channel10NoteM1 != null) {
-            channel10NoteM1.setVisible(false);
-        }
-
-        if (channel1Note0 != null) {
-            channel1Note0.setVisible(false);
-        }
-        if (channel2Note0 != null) {
-            channel2Note0.setVisible(false);
-        }
-        if (channel3Note0 != null) {
-            channel3Note0.setVisible(false);
-        }
-        if (channel4Note0 != null) {
-            channel4Note0.setVisible(false);
-        }
-        if (channel5Note0 != null) {
-            channel5Note0.setVisible(false);
-        }
-        if (channel6Note0 != null) {
-            channel6Note0.setVisible(false);
-        }
-        if (channel7Note0 != null) {
-            channel7Note0.setVisible(false);
-        }
-        if (channel8Note0 != null) {
-            channel8Note0.setVisible(false);
-        }
-        if (channel9Note0 != null) {
-            channel9Note0.setVisible(false);
-        }
-        if (channel10Note0 != null) {
-            channel10Note0.setVisible(false);
-        }
-
-        if (channel1Note1 != null) {
-            channel1Note1.setVisible(false);
-        }
-        if (channel2Note1 != null) {
-            channel2Note1.setVisible(false);
-        }
-        if (channel3Note1 != null) {
-            channel3Note1.setVisible(false);
-        }
-        if (channel4Note1 != null) {
-            channel4Note1.setVisible(false);
-        }
-        if (channel5Note1 != null) {
-            channel5Note1.setVisible(false);
-        }
-        if (channel6Note1 != null) {
-            channel6Note1.setVisible(false);
-        }
-        if (channel7Note1 != null) {
-            channel7Note1.setVisible(false);
-        }
-        if (channel8Note1 != null) {
-            channel8Note1.setVisible(false);
-        }
-        if (channel9Note1 != null) {
-            channel9Note1.setVisible(false);
-        }
-        if (channel10Note1 != null) {
-            channel10Note1.setVisible(false);
-        }
-
-        if (channel1Note2 != null) {
-            channel1Note2.setVisible(false);
-        }
-        if (channel2Note2 != null) {
-            channel2Note2.setVisible(false);
-        }
-        if (channel3Note2 != null) {
-            channel3Note2.setVisible(false);
-        }
-        if (channel4Note2 != null) {
-            channel4Note2.setVisible(false);
-        }
-        if (channel5Note2 != null) {
-            channel5Note2.setVisible(false);
-        }
-        if (channel6Note2 != null) {
-            channel6Note2.setVisible(false);
-        }
-        if (channel7Note2 != null) {
-            channel7Note2.setVisible(false);
-        }
-        if (channel8Note2 != null) {
-            channel8Note2.setVisible(false);
-        }
-        if (channel9Note2 != null) {
-            channel9Note2.setVisible(false);
-        }
-        if (channel10Note2 != null) {
-            channel10Note2.setVisible(false);
-        }
-
-        if (channel1Note3 != null) {
-            channel1Note3.setVisible(false);
-        }
-        if (channel2Note3 != null) {
-            channel2Note3.setVisible(false);
-        }
-        if (channel3Note3 != null) {
-            channel3Note3.setVisible(false);
-        }
-        if (channel4Note3 != null) {
-            channel4Note3.setVisible(false);
-        }
-        if (channel5Note3 != null) {
-            channel5Note3.setVisible(false);
-        }
-        if (channel6Note3 != null) {
-            channel6Note3.setVisible(false);
-        }
-        if (channel7Note3 != null) {
-            channel7Note3.setVisible(false);
-        }
-        if (channel8Note3 != null) {
-            channel8Note3.setVisible(false);
-        }
-        if (channel9Note3 != null) {
-            channel9Note3.setVisible(false);
-        }
-        if (channel10Note3 != null) {
-            channel10Note3.setVisible(false);
-        }
-
-        if (channel1Note4 != null) {
-            channel1Note4.setVisible(false);
-        }
-        if (channel2Note4 != null) {
-            channel2Note4.setVisible(false);
-        }
-        if (channel3Note4 != null) {
-            channel3Note4.setVisible(false);
-        }
-        if (channel4Note4 != null) {
-            channel4Note4.setVisible(false);
-        }
-        if (channel5Note4 != null) {
-            channel5Note4.setVisible(false);
-        }
-        if (channel6Note4 != null) {
-            channel6Note4.setVisible(false);
-        }
-        if (channel7Note4 != null) {
-            channel7Note4.setVisible(false);
-        }
-        if (channel8Note4 != null) {
-            channel8Note4.setVisible(false);
-        }
-        if (channel9Note4 != null) {
-            channel9Note4.setVisible(false);
-        }
-        if (channel10Note4 != null) {
-            channel10Note4.setVisible(false);
+        List<Pane[]> allNotes = List.of(
+                new Pane[]{channel1NoteM3, channel2NoteM3, channel3NoteM3, channel4NoteM3, channel5NoteM3, channel6NoteM3, channel7NoteM3, channel8NoteM3, channel9NoteM3, channel10NoteM3},
+                new Pane[]{channel1NoteM2, channel2NoteM2, channel3NoteM2, channel4NoteM2, channel5NoteM2, channel6NoteM2, channel7NoteM2, channel8NoteM2, channel9NoteM2, channel10NoteM2},
+                new Pane[]{channel1NoteM1, channel2NoteM1, channel3NoteM1, channel4NoteM1, channel5NoteM1, channel6NoteM1, channel7NoteM1, channel8NoteM1, channel9NoteM1, channel10NoteM1},
+                new Pane[]{channel1Note0, channel2Note0, channel3Note0, channel4Note0, channel5Note0, channel6Note0, channel7Note0, channel8Note0, channel9Note0, channel10Note0},
+                new Pane[]{channel1Note1, channel2Note1, channel3Note1, channel4Note1, channel5Note1, channel6Note1, channel7Note1, channel8Note1, channel9Note1, channel10Note1},
+                new Pane[]{channel1Note2, channel2Note2, channel3Note2, channel4Note2, channel5Note2, channel6Note2, channel7Note2, channel8Note2, channel9Note2, channel10Note2},
+                new Pane[]{channel1Note3, channel2Note3, channel3Note3, channel4Note3, channel5Note3, channel6Note3, channel7Note3, channel8Note3, channel9Note3, channel10Note3},
+                new Pane[]{channel1Note4, channel2Note4, channel3Note4, channel4Note4, channel5Note4, channel6Note4, channel7Note4, channel8Note4, channel9Note4, channel10Note4}
+        );
+        for (Pane[] notes : allNotes) {
+            for (Pane note : notes) {
+                if (note != null) {
+                    note.setVisible(false);
+                }
+            }
         }
     }
 

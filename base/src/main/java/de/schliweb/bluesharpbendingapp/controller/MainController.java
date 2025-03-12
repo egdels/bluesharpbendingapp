@@ -181,11 +181,19 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * @param frequency the frequency value to update the training view with
      */
     private void updateTrainingView(double frequency) {
-        if (!executorService.isShutdown())
-            if (window.isTrainingViewActive() && (this.trainingContainer != null)) {
+        if (!executorService.isShutdown() && isTrainingViewActiveAndInitialized()) {
                 trainingContainer.setFrequencyToHandle(frequency);
                 executorService.submit(trainingContainer);
-            }
+        }
+    }
+
+    /**
+     * Checks if the training view is active and the training container is initialized.
+     *
+     * @return true if the training view is active and the training container is not null; false otherwise
+     */
+    private boolean isTrainingViewActiveAndInitialized() {
+    	return window.isTrainingViewActive() && (this.trainingContainer != null);
     }
 
     @Override
@@ -326,16 +334,25 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * @param frequency the frequency value to update the harp view with
      */
     private void updateHarpView(double frequency) {
-        if (!executorService.isShutdown()) {
-            if (window.isHarpViewActive() && this.noteContainers != null) {
-                for (NoteContainer noteContainer : noteContainers) {
-                    noteContainer.setFrequencyToHandle(frequency);
-                    executorService.submit(noteContainer);
-                }
+        if (!executorService.isShutdown() && isHarpViewActiveAndInitialized()) {
+            for (NoteContainer noteContainer : noteContainers) {
+                noteContainer.setFrequencyToHandle(frequency);
+                executorService.submit(noteContainer);
             }
         }
     }
 
+    /**
+     * Checks if the harp view is active and initialized.
+     * The method verifies whether the harp view is currently active
+     * by calling the window's isHarpViewActive method and ensures
+     * the noteContainers object is not null.
+     *
+     * @return true if the harp view is active and the noteContainers are initialized; false otherwise
+     */
+    private boolean isHarpViewActiveAndInitialized() {
+        return window.isHarpViewActive() && (this.noteContainers != null);
+    }
     /**
      * Updates the microphone settings view with the specified frequency.
      * <p>

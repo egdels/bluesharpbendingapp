@@ -30,6 +30,6 @@ public class DownloadFileComperator implements java.util.Comparator<DownloadFile
 
     @Override
     public int compare(DownloadFile downloadFile1, DownloadFile downloadFile2) {
-        return downloadFile1.name.compareToIgnoreCase(downloadFile2.name);
+        return downloadFile1.getName().compareToIgnoreCase(downloadFile2.getName());
     }
 }

@@ -1,9 +1,28 @@
 package de.schliweb.bluesharpbendingapp.webapp;
-
-import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
-import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,16 +49,16 @@ public class SelectionController {
      * @return a ResponseEntity containing the created Harmonica object.
      */
     @PostMapping("/send")
-    public ResponseEntity<Harmonica> ajaxProcessSelection (@RequestBody Map<String, String> selection, HttpSession session) {
+    public ResponseEntity<HarmonicaWeb> ajaxProcessSelection (@RequestBody Map<String, String> selection, HttpSession session) {
         // Retrieve the selected key and tune from the request body
         String selectedKey = selection.get("selectedKey");
         String selectedTune = selection.get("selectedTune");
-
         // Create a new Harmonica instance based on the selected key and tune
-        Harmonica harmonica = AbstractHarmonica.create(selectedKey, selectedTune);
+        HarmonicaWeb harmonicaWeb = new HarmonicaWeb(selectedKey, selectedTune);
 
         // Save the Harmonica object in the user's session
-        session.setAttribute("harmonica", harmonica);
+        session.setAttribute("harmonica", harmonicaWeb);
+
 
         String selectedConcertPitch = selection.get("selectedConcertPitch");
         session.setAttribute("selectedConcertPitch", selectedConcertPitch);
@@ -54,33 +73,7 @@ public class SelectionController {
         session.setAttribute("expertMode", expertMode);
 
         // Return the Harmonica object as a success response
-        return ResponseEntity.ok(harmonica);
+        return ResponseEntity.ok(harmonicaWeb);
     }
-
-
-    /**
-     * Retrieves the Harmonica object from the user's session.
-     * If the object is not found, returns a 404 Not Found response.
-     * If the object is found, returns it with a 200 OK response.
-     *
-     * @param session the HTTP session from which the Harmonica object is retrieved.
-     * @return a ResponseEntity containing the Harmonica object if present in the session,
-     *         otherwise a 404 Not Found response.
-     */
-    @GetMapping("/session/harmonica")
-    public ResponseEntity<Harmonica> getHarmonicaFromSession(HttpSession session) {
-        // Retrieve the Harmonica object from the session
-        Harmonica harmonica = (Harmonica) session.getAttribute("harmonica");
-
-        // If no Harmonica object is found in the session, return a 404 Not Found response
-        if (harmonica == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        // If the Harmonica object is found, return it with a 200 OK response
-        return ResponseEntity.ok(harmonica);
-    }
-
-
 }
 

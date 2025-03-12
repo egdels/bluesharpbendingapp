@@ -38,6 +38,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.Set;
+
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
@@ -191,50 +193,83 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Get reference to the main table layout and overlay note TextView
         TableLayout tableLayout = view.findViewById(R.id.harp_table);
         TextView overlayNote = view.findViewById(R.id.overlay_note);
-        hideEnlargedTextView(overlayNote);
-        // Set click listener to hide enlarged view when overlay is clicked
-        overlayNote.setOnClickListener(v -> hideEnlargedTextView(overlayNote));
 
-        // Iterate through all rows in the table
-        for (int i = 0; i < tableLayout.getChildCount(); i++) {
-            View row = tableLayout.getChildAt(i);
-            if (row instanceof TableRow tableRow) {
-                // Iterate through all cells in the current row
-                for (int j = 0; j < tableRow.getChildCount(); j++) {
-                    View noteView = tableRow.getChildAt(j);
-                    if (noteView instanceof TextView) {
-                        // Skip channel identifier TextViews (1-10)
-                        if (noteView.getId() == R.id.channel_1) continue;
-                        if (noteView.getId() == R.id.channel_2) continue;
-                        if (noteView.getId() == R.id.channel_3) continue;
-                        if (noteView.getId() == R.id.channel_4) continue;
-                        if (noteView.getId() == R.id.channel_5) continue;
-                        if (noteView.getId() == R.id.channel_6) continue;
-                        if (noteView.getId() == R.id.channel_7) continue;
-                        if (noteView.getId() == R.id.channel_8) continue;
-                        if (noteView.getId() == R.id.channel_9) continue;
-                        if (noteView.getId() == R.id.channel_10) continue;
-
-                        // Add click listener to each note TextView
-                        // Shows enlarged view when clicked, but only if no note is currently enlarged
-                        noteView.setOnClickListener(v -> {
-                            TextView note = (TextView) v;
-                            if (!isNoteEnlarged) {
-                                showEnlargedTextView(note, overlayNote);
-                            }
-                        });
-                    }
-                }
-            }
-        }
+        configureOverlayNoteView(overlayNote);
+        configureNoteClickListeners(tableLayout, overlayNote);
 
         FragmentViewModel viewModel = new ViewModelProvider(requireActivity()).get(FragmentViewModel.class);
         viewModel.selectFragmentView(this);
     }
 
+    /**
+     * Configures the overlay note TextView by adding behavior for hiding the view
+     * when it is clicked. This method also ensures the overlay note is hidden initially.
+     *
+     * @param overlayNote The TextView used to display the overlay view for enlarged notes.
+     */
+    private void configureOverlayNoteView(TextView overlayNote) {
+        hideEnlargedTextView(overlayNote);
+        overlayNote.setOnClickListener(v -> hideEnlargedTextView(overlayNote));
+    }
+
+    /**
+     * Configures click listeners for individual notes within a TableLayout.
+     * Each note is represented as a TextView within a TableRow.
+     * When a note is clicked, it triggers the display of an enlarged view in the overlay TextView.
+     *
+     * @param tableLayout The TableLayout containing rows of notes (TextViews).
+     * @param overlayNote The TextView used as an overlay to display an enlarged view of the clicked note.
+     */
+    private void configureNoteClickListeners(TableLayout tableLayout, TextView overlayNote) {
+        for (int i = 0; i < tableLayout.getChildCount(); i++) {
+            View row = tableLayout.getChildAt(i);
+            if (row instanceof TableRow tableRow) {
+                setNoteClickListenersOnRow(tableRow, overlayNote);
+            }
+        }
+    }
+
+    /**
+     * Sets click listeners for all TextView elements within a given TableRow,
+     * allowing notes to be enlarged when clicked. If a TextView is determined
+     * to represent a note (and not a channel identifier), the method assigns
+     * a click listener that triggers the display of the note in an overlay
+     * TextView for enlarged viewing.
+     *
+     * @param tableRow   The TableRow containing child Views, including the notes as TextViews.
+     * @param overlayNote The TextView used as an overlay to display an enlarged view of a clicked note.
+     */
+    private void setNoteClickListenersOnRow(TableRow tableRow, TextView overlayNote) {
+        for (int j = 0; j < tableRow.getChildCount(); j++) {
+            View noteView = tableRow.getChildAt(j);
+            if (noteView instanceof TextView && !isChannelIdentifier(noteView.getId())) {
+                noteView.setOnClickListener(v -> {
+                    TextView note = (TextView) v;
+                    if (!isNoteEnlarged) {
+                        showEnlargedTextView(note, overlayNote);
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * Determines if the given view ID corresponds to a channel identifier.
+     *
+     * @param viewId The ID of the view to check.
+     * @return true if the view ID corresponds to a channel identifier; false otherwise.
+     */
+    private boolean isChannelIdentifier(int viewId) {
+        // Use a Set for faster lookups
+        Set<Integer> channelIds = Set.of(
+                R.id.channel_1, R.id.channel_2, R.id.channel_3, R.id.channel_4,
+                R.id.channel_5, R.id.channel_6, R.id.channel_7, R.id.channel_8,
+                R.id.channel_9, R.id.channel_10
+        );
+        return channelIds.contains(viewId);
+    }
 
     @Override
     public void onDestroyView() {

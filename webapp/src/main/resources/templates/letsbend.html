@@ -40,7 +40,7 @@
                         th:name="supportedKeys">
                     <option disabled selected th:if="${harmonica == null}" value="">Bitte wählen...</option>
                     <option th:each="key : ${supportedKeys}"
-                            th:selected="${key == harmonica.getKeyName()}"
+                            th:selected="${key == harmonica.getSelectedKey()}"
                             th:text="${key}"
                             th:value="${key}">
                     </option>
@@ -52,7 +52,7 @@
                         th:name="supportedTunes">
                     <option disabled selected th:if="${harmonica == null}" value="">Bitte wählen...</option>
                     <option th:each="tune : ${supportedTunes}"
-                            th:selected="${tune == harmonica.getTuneName()}"
+                            th:selected="${tune == harmonica.getSelectedTune()}"
                             th:text="${tune}"
                             th:value="${tune}">
                     </option>

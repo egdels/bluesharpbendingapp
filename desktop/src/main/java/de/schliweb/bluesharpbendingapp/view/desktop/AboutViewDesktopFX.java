@@ -99,11 +99,7 @@ public class AboutViewDesktopFX {
             root.setVisible(true);
 
         } catch (IOException e) {
-            // Log an error if there is an issue while loading the FXML file
-            log.error("Error while loading the FXML: " + e.getMessage());
-
-            // Throw a runtime exception to indicate a failure in loading the FXML
-            throw new RuntimeException("Failed to load FXML", e);
+            throw new FxmlLoadingException("Failed to load FXML file", e);
         }
     }
 }

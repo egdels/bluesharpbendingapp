@@ -43,7 +43,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="downloadFile: ${downloadFiles}" th:unless="${downloadFile.isOldVersion}">
+                <tr th:each="downloadFile: ${downloadFiles}" th:unless="${downloadFile.oldVersion}">
                     <td class="link">
                         <a class="dont-break-out" data-th-text="${downloadFile.name}" th:href="${downloadFile.href}"
                            th:title="${downloadFile.name}"></a>
@@ -65,7 +65,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="downloadFile: ${downloadFiles}" th:if="${downloadFile.isOldVersion}">
+                <tr th:each="downloadFile: ${downloadFiles}" th:if="${downloadFile.oldVersion}">
                     <td class="link">
                         <a class="dont-break-out" data-th-text="${downloadFile.name}" th:href="${downloadFile.href}"
                            th:title="${downloadFile.name}"></a>

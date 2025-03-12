@@ -113,20 +113,6 @@ public class MicrophoneAndroid implements Microphone {
     private ExecutorService executor;
 
     /**
-     * A thread-safe blocking queue used to store audio data buffers for processing.
-     * <p>
-     * This queue holds arrays of floating-point numbers, where each array represents
-     * a segment of raw audio data captured from the microphone. The captured audio
-     * data is enqueued by the recording thread and subsequently dequeued by a processing
-     * thread for further analysis, such as pitch detection and RMS calculation.
-     * <p>
-     * The queue ensures proper synchronization between the producer (recording thread)
-     * and the consumer (processing thread), preventing data loss or concurrent access
-     * issues. Its size and behavior are configured to balance between memory
-     * usage and processing latency.
-     */
-    private BlockingQueue<float[]> audioDataQueue;
-    /**
      * An {@link ExecutorService} used for managing the execution of audio processing tasks.
      * <p>
      * This thread pool is dedicated to handling audio data processing tasks that require
@@ -198,7 +184,7 @@ public class MicrophoneAndroid implements Microphone {
                 return;
             }
 
-            audioDataQueue = new LinkedBlockingQueue<>();
+            BlockingQueue<float[]> audioDataQueue = new LinkedBlockingQueue<>();
             processingExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
             // Reusable buffer

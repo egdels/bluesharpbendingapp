@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * The type Training test.
  */
-public class TrainingTest {
+class TrainingTest {
 
     /**
      * Test major scale.

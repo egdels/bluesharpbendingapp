@@ -102,6 +102,11 @@ public abstract class AbstractHarmonica implements Harmonica {
      */
     private static final int NOTE_MIN = -3;
 
+    /**
+     * Represents the base frequency of the musical key to which the harmonica is tuned.
+     * This value forms the foundation for calculating all other note and channel frequencies
+     * on the harmonica and plays a crucial role in determining its pitch.
+     */
     private final double keyFrequency;
 
     /**
@@ -310,32 +315,75 @@ public abstract class AbstractHarmonica implements Harmonica {
 
     @Override
     public double getNoteFrequency(int channel, int note) {
-        double frequency = 0.0;
         if (isOverblow(channel, note) || isOverdraw(channel, note)) {
-            frequency = getOverblowOverdrawFrequency(channel);
-        } else {
-            if (channel >= CHANNEL_MIN && channel <= CHANNEL_MAX) {
-                // upper channels
-                if (note == 0) {
-                    frequency = getChannelOutFrequency(channel);
-                }
-                // lower channels
-                if (note == 1) {
-                    frequency = getChannelInFrequency(channel);
-                }
-                // draw bendings
-                if (note > 1 && note <= NOTE_MAX) {
-                    frequency = getNoteFrequency(channel, note - 1); // recursion
-                    frequency = NoteUtils.addCentsToFrequency(-100.0, frequency);
-                }
-                // blow bendings
-                if (note < 0 && note >= NOTE_MIN) {
-                    frequency = getNoteFrequency(channel, note + 1); // recursion
-                    frequency = NoteUtils.addCentsToFrequency(-100.0, frequency);
-                }
-            }
+            return round(getOverblowOverdrawFrequency(channel));
         }
-        return round(frequency);
+
+        if (!isValidChannel(channel)) {
+            return 0.0;
+        }
+
+        if (note == 0) {
+            return round(getChannelOutFrequency(channel));
+        }
+
+        if (note == 1) {
+            return round(getChannelInFrequency(channel));
+        }
+
+        if (isDrawBending(note)) {
+            return round(applyHalftoneToFrequency(channel, note - 1));
+        }
+
+        if (isBlowBending(note)) {
+            return round(applyHalftoneToFrequency(channel, note + 1));
+        }
+
+        return 0.0;
+    }
+
+    /**
+     * Validates whether the given channel number is within the permissible range.
+     *
+     * @param channel the channel number to validate
+     * @return true if the channel is within the valid range defined by CHANNEL_MIN and CHANNEL_MAX, false otherwise
+     */
+    private boolean isValidChannel(int channel) {
+        return channel >= CHANNEL_MIN && channel <= CHANNEL_MAX;
+    }
+
+    /**
+     * Determines if the given note corresponds to a draw bending note on the harmonica.
+     *
+     * @param note the note number to check
+     * @return true if the note is between 2 and NOTE_MAX (inclusive), indicating a valid draw bending note; false otherwise
+     */
+    private boolean isDrawBending(int note) {
+        return note > 1 && note <= NOTE_MAX;
+    }
+
+    /**
+     * Determines if the given note corresponds to a blow bending note on the harmonica.
+     *
+     * @param note the note number to check
+     * @return true if the note is less than 0 and greater than or equal to NOTE_MIN, indicating a valid blow bending note; false otherwise
+     */
+    private boolean isBlowBending(int note) {
+        return note < 0 && note >= NOTE_MIN;
+    }
+
+    /**
+     * Applies a halftone adjustment to the frequency of a specified note for a given channel.
+     * The adjustment is performed by subtracting 100 cents from the base frequency
+     * of the specified channel and note combination.
+     *
+     * @param channel the channel number for which the halftone adjustment is to be applied
+     * @param nextNote the next note in the sequence whose frequency is to be adjusted
+     * @return the frequency of the specified note after applying the halftone adjustment, in Hertz
+     */
+    private double applyHalftoneToFrequency(int channel, int nextNote) {
+        double baseFrequency = getNoteFrequency(channel, nextNote); // recursion
+        return NoteUtils.addCentsToFrequency(-100.0, baseFrequency);
     }
 
     @Override

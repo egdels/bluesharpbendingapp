@@ -170,7 +170,7 @@ public abstract class AbstractTraining implements Training {
     public String[] getNotes() {
         ArrayList<String> notes = new ArrayList<>();
         for (int halfTone : getHalfTones()) {
-            notes.add(NoteLookup.getNoteName(NoteUtils.addCentsToFrequency(halfTone * 100, keyFrequency)));
+            notes.add(NoteLookup.getNoteName(NoteUtils.addCentsToFrequency(halfTone * 100.0, keyFrequency)));
         }
         return Arrays.copyOf(notes.toArray(), notes.toArray().length, String[].class);
     }

@@ -35,31 +35,31 @@ public class DownloadFile {
     /**
      * The Name.
      */
-    public String name;
+    private String name;
 
     /**
      * The Path.
      */
-    public String path;
+    private String path;
 
     /**
      * The Size.
      */
-    public String size;
+    private String size;
 
     /**
      * The Create date.
      */
-    public String createDate;
+    private String createDate;
 
     /**
      * The Href.
      */
-    public String href;
+    private String href;
 
     /**
      * The Is old version.
      */
-    public boolean isOldVersion = false;
+    private boolean oldVersion = false;
 }
 

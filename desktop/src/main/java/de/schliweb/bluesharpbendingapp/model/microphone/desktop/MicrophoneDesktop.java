@@ -334,8 +334,25 @@ public class MicrophoneDesktop implements Microphone {
      */
     @Override
     public void open() {
+        initializeExecutors();
 
-        // Initialize BlockingQueue and Thread Pool
+        startAudioProcessingThread();
+
+        startAudioRecordingThread();
+    }
+
+    /**
+     * Initializes the executors used for audio data processing. This includes:
+     * - A thread-safe blocking queue to store audio data.
+     * - A processing executor with a fixed thread pool size determined by the number of available processors.
+     * - A single-threaded executor service for audio processing with a custom thread configuration.
+     * <p>
+     * The single-threaded executor creates threads with the following custom settings:
+     * - The thread is named "AudioProcessingThread".
+     * - The thread is set as a daemon to prevent it from blocking the JVM shutdown.
+     * - The thread is assigned the maximum priority level.
+     */
+    private void initializeExecutors() {
         audioDataQueue = new LinkedBlockingQueue<>();
         processingExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
@@ -345,7 +362,54 @@ public class MicrophoneDesktop implements Microphone {
             thread.setPriority(Thread.MAX_PRIORITY); // Highest priority for audio processing
             return thread;
         });
+    }
 
+    /**
+     * Initializes and starts a dedicated thread for audio data processing.
+     * This thread continuously takes audio frames from the audio data queue and processes them until it is interrupted.
+     * The audio processing logic involves retrieving the audio data from the queue and invoking the processAudioData method.
+     * If the thread is interrupted, it properly handles the interruption and exits gracefully.
+     */
+    private void startAudioProcessingThread() {
+        processingExecutor.execute(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    byte[] audioFrame = audioDataQueue.take();
+                    processAudioData(audioFrame, audioFrame.length);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.info("Processing thread interrupted.");
+                }
+            }
+        });
+    }
+
+    /**
+     * Starts a thread to handle audio recording using a {@link TargetDataLine} and
+     * continuously reads audio data into a buffer. The audio data is then queued
+     * for further processing. This method leverages an {@link ExecutorService} to
+     * execute the recording logic in a separate thread.
+     * <p>
+     * The method opens the audio line, starts audio capture, and reads data into a
+     * buffer until the thread is interrupted. Captured audio data is copied into
+     * a new byte array and offered to a concurrent queue for further processing.
+     * <p>
+     * If the audio line is unavailable or cannot be opened, an error is logged.
+     * <p>
+     * Preconditions:
+     * - The {@link #getTargetDataLine(String)} method should provide a valid
+     *   {@link TargetDataLine} instance or return null.
+     * - Thread interruptions during execution will close the audio line gracefully.
+     * <p>
+     * Exceptions:
+     * - Handles {@link LineUnavailableException} if the audio line cannot be
+     *   opened and logs the error.
+     * <p>
+     * Thread-safety:
+     * - This method utilizes a threading model via an {@link ExecutorService}
+     *   for asynchronous execution.
+     */
+    private void startAudioRecordingThread() {
         executorService.execute(() -> {
             try {
                 TargetDataLine line = getTargetDataLine(name);
@@ -369,30 +433,10 @@ public class MicrophoneDesktop implements Microphone {
                     line.close();
                 }
             } catch (LineUnavailableException e) {
-                log.error("Error opening microphone: " + e.getMessage());
+                log.error("Error opening microphone: " + e.getMessage(), e);
             }
         });
-
-        // Parallel thread processing
-        processingExecutor.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    // Retrieve data from the queue
-                    byte[] audioFrame = audioDataQueue.take();
-
-                    // Process the audio data
-                    processAudioData(audioFrame, audioFrame.length);
-
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    log.info("Processing thread interrupted.");
-                }
-            }
-        });
-
-
     }
-
 
     /**
      * Converts raw audio data from bytes into normalized double values in the range [-1.0, 1.0].

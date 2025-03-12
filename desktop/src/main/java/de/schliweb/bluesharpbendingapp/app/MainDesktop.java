@@ -54,6 +54,14 @@ import java.util.Scanner;
 public class MainDesktop extends Application {
 
     /**
+     * The URL pointing to the version file of the application.
+     * This URL is used to retrieve the latest version information for the application.
+     */
+    private static final String VERSION_URL = "https://letsbend.de/download/version.txt";
+
+
+
+    /**
      * The constant TEMP_DIR represents the directory path where temporary files are stored
      * for the application. It is constructed dynamically using the user's home directory
      * and a predefined subdirectory specific to the application.
@@ -91,12 +99,12 @@ public class MainDesktop extends Application {
     private static String versionFromHost = null;
 
     /**
-     * A static instance of the MainController used to manage the primary
+     * A instance of the MainController used to manage the primary
      * interactions and operations of the MainDesktop application.
      * The controller facilitates communication and control between
      * different components of the application.
      */
-    private static MainController controller;
+    private MainController controller;
 
     /**
      * The main model instance used across the application to store and manage
@@ -212,15 +220,17 @@ public class MainDesktop extends Application {
         URL url;
         HttpURLConnection huc;
         try {
-            url = new URI("https://letsbend.de/download/version.txt").toURL();
+            // Use the constant for the URL
+            url = new URI(VERSION_URL).toURL();
             huc = (HttpURLConnection) url.openConnection();
             int responseCode = huc.getResponseCode();
 
             if (HttpURLConnection.HTTP_OK == responseCode) {
                 log.info("ok");
-                Scanner scanner = new Scanner((InputStream) huc.getContent());
-                versionFromHost = scanner.nextLine();
-                scanner.close();
+                try (Scanner scanner = new Scanner((InputStream) huc.getContent())) {
+                    versionFromHost = scanner.nextLine();
+                }
+
                 if (versionFromHost != null) {
                     versionFromHost = versionFromHost.trim();
                 }
@@ -230,6 +240,7 @@ public class MainDesktop extends Application {
             log.error(e.getMessage());
         }
     }
+
 
     /**
      * Retrieves the latest application version from a remote host.
@@ -242,26 +253,6 @@ public class MainDesktop extends Application {
         if (versionFromHost != null) return versionFromHost;
         checkVersionFromHost();
         return versionFromHost;
-    }
-
-    /**
-     * Gracefully shuts down the application by performing the following steps:
-     * <p>
-     * 1. Logs a shutdown information message using the application's logger.
-     * 2. Stops the application controller, ensuring all essential resources and
-     *    processes are properly terminated.
-     * 3. Stores the state of the main application model to a file for possible recovery
-     *    or future use.
-     * 4. Exits the application with a system-level termination call.
-     * <p>
-     * This method ensures a proper and clean shutdown sequence, avoiding potential
-     * resource leaks or incomplete data handling.
-     */
-    public static void close() {
-        log.info("Shutting down");
-        controller.stop();
-        storeModel(mainModel);
-        System.exit(0);
     }
 
     @Override
@@ -293,7 +284,10 @@ public class MainDesktop extends Application {
 
     @Override
     public void stop() {
-        close();
+        log.info("Shutting down");
+        controller.stop();
+        storeModel(mainModel);
+        System.exit(0);
     }
 
 }

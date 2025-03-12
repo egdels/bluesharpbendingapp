@@ -41,6 +41,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
+import java.util.function.IntConsumer;
 
 /**
  * The SettingsViewDesktopFXController class is responsible for managing the JavaFX UI components
@@ -314,23 +315,32 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     private void addChangeListenerToComboBox(ComboBox<String> combo) {
         combo.valueProperty().addListener((observable, oldValue, newValue) -> {
             log.info("ComboBox (" + combo.getId() + ") changed from " + oldValue + " to " + newValue);
+
             if (newValue != null) {
-                if (comboKeys.getSelectionModel().getSelectedIndex() >= 0)
-                    harpSettingsViewHandler.handleKeySelection(comboKeys.getSelectionModel().getSelectedIndex());
-                if (comboTunes.getSelectionModel().getSelectedIndex() >= 0)
-                    harpSettingsViewHandler.handleTuneSelection(comboTunes.getSelectionModel().getSelectedIndex());
-                if (comboAlgorithms.getSelectionModel().getSelectedIndex() >= 0)
-                    microphoneSettingsViewHandler.handleAlgorithmSelection(comboAlgorithms.getSelectionModel().getSelectedIndex());
-                if (comboMicrophones.getSelectionModel().getSelectedIndex() >= 0)
-                    microphoneSettingsViewHandler.handleMicrophoneSelection(comboMicrophones.getSelectionModel().getSelectedIndex());
-                if (comboConfidences.getSelectionModel().getSelectedIndex() >= 0)
-                    microphoneSettingsViewHandler.handleConfidenceSelection(comboConfidences.getSelectionModel().getSelectedIndex());
-                if (comboConcertPitches.getSelectionModel().getSelectedIndex() >= 0)
-                    noteSettingsViewHandler.handleConcertPitchSelection(comboConcertPitches.getSelectionModel().getSelectedIndex());
+                handleSelectionChange(comboKeys, harpSettingsViewHandler::handleKeySelection);
+                handleSelectionChange(comboTunes, harpSettingsViewHandler::handleTuneSelection);
+                handleSelectionChange(comboAlgorithms, microphoneSettingsViewHandler::handleAlgorithmSelection);
+                handleSelectionChange(comboMicrophones, microphoneSettingsViewHandler::handleMicrophoneSelection);
+                handleSelectionChange(comboConfidences, microphoneSettingsViewHandler::handleConfidenceSelection);
+                handleSelectionChange(comboConcertPitches, noteSettingsViewHandler::handleConcertPitchSelection);
             }
         });
     }
 
+    /**
+     * Handles a selection change event for the provided ComboBox and executes
+     * the given handler with the index of the selected item.
+     *
+     * @param comboBox the ComboBox whose selection changes are to be handled
+     * @param handler  the callback to handle the selected index; it is invoked
+     *                 with the index of the selected item if the selection is valid
+     */
+    private void handleSelectionChange(ComboBox<String> comboBox, IntConsumer handler) {
+        int selectedIndex = comboBox.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            handler.accept(selectedIndex);
+        }
+    }
 
     @Override
     public void setTunes(String[] tunes) {

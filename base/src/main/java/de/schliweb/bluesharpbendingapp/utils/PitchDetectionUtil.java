@@ -52,6 +52,8 @@ public class PitchDetectionUtil {
      */
     private static final double YIN_MINIMUM_THRESHOLD = 0.4;
 
+    private PitchDetectionUtil() {}
+
     /**
      * Detects the pitch of an audio signal using the YIN algorithm.
      *
@@ -70,14 +72,14 @@ public class PitchDetectionUtil {
 
         // Step 3: Find the first minimum below a threshold
         int tauEstimate = findFirstMinimum(cmndf);
-        double confidence = 0.0;
+        double confidence;
 
         // Step 4: Use parabolic interpolation for more precise tau estimation
         if (tauEstimate != -1) {
             confidence = Math.max(0, 1 - (cmndf[tauEstimate] / YIN_MINIMUM_THRESHOLD));
             double refinedTau = parabolicInterpolation(cmndf, tauEstimate);
             if (refinedTau > 0.0) {
-                double pitch = (double) sampleRate / refinedTau;
+                double pitch = sampleRate / refinedTau;
                 return new PitchDetectionResult(pitch, confidence);
             }
         }
@@ -189,10 +191,38 @@ public class PitchDetectionUtil {
      */
     public static PitchDetectionResult detectPitchWithMPM(double[] audioData, int sampleRate) {
         int n = audioData.length;
+        double[] nsdf = calculateNSDF(audioData, n);
+        List<Integer> candidatePeaks = findPeaks(nsdf, n / 2);
+
+        int peakIndex = selectPeak(candidatePeaks);
+        double confidence = (peakIndex > 0) ? nsdf[peakIndex] : 0;
+
+        if (peakIndex > 0) {
+            peakIndex = applyParabolicInterpolation(nsdf, peakIndex);
+        }
+
+        if (peakIndex > 0) {
+            double pitch = (double) sampleRate / peakIndex;
+            return new PitchDetectionResult(pitch, confidence);
+        }
+
+        return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0); // No pitch detected
+    }
+
+    /**
+     * Calculates the Normalized Square Difference Function (NSDF) for a given audio signal.
+     * The NSDF is commonly used in pitch detection algorithms to analyze the periodicity
+     * of the audio signal by comparing overlapping sections of the data.
+     *
+     * @param audioData an array of double values representing the audio signal to be analyzed
+     * @param n         the number of samples from the audio signal to process
+     * @return an array of double values containing the computed NSDF values, where each index
+     *         represents the normalized squared difference for a specific time lag
+     */
+    private static double[] calculateNSDF(double[] audioData, int n) {
         double[] nsdf = new double[n];
         int maxLag = n / 2;
 
-        // Step 1: Calculate the NSDF (Normalized Square Difference Function)
         for (int lag = 0; lag < maxLag; lag++) {
             double numerator = 0;
             double denominator = 0;
@@ -200,46 +230,83 @@ public class PitchDetectionUtil {
                 numerator += audioData[i] * audioData[i + lag];
                 denominator += audioData[i] * audioData[i] + audioData[i + lag] * audioData[i + lag];
             }
-            nsdf[lag] = 2 * numerator / denominator; // Normalized Autocorrelation
+
+            if (denominator == 0) {
+                nsdf[lag] = 0; // Fallback value in case the denominator is 0
+            } else {
+                nsdf[lag] = 2 * numerator / denominator;  // Normalized Autocorrelation
+            }
         }
 
-        // Step 2: Find peaks in the NSDF
-        int peakIndex = -1;
-        // Step 2: Find peaks in the NSDF
+        return nsdf;
+    }
+
+    /**
+     * Identifies the local peaks in the given Normalized Square Difference Function (NSDF) array
+     * that exceed a specified threshold and are within the provided lag range.
+     * <p>
+     * A peak is defined as a value that is greater than its immediate neighbors and satisfies the
+     * threshold condition.
+     *
+     * @param nsdf   an array of double values representing the Normalized Square Difference Function (NSDF).
+     *               Each element corresponds to a specific lag in the pitch detection process.
+     * @param maxLag an integer representing the maximum lag limit within which peaks should be identified.
+     * @return a list of integers where each integer represents the index of a detected peak
+     *         in the NSDF array that meets the specified criteria.
+     */
+    private static List<Integer> findPeaks(double[] nsdf, int maxLag) {
         List<Integer> candidatePeaks = new ArrayList<>();
+
         for (int lag = 1; lag < maxLag - 1; lag++) {
             if (nsdf[lag] > nsdf[lag - 1] && nsdf[lag] > nsdf[lag + 1] && nsdf[lag] > 0.7) {
                 candidatePeaks.add(lag);
             }
         }
 
-        // Filter peaks for harmonics
-        if (!candidatePeaks.isEmpty()) {
-            for (int i = 1; i < candidatePeaks.size(); i++) {
-                if ((double) candidatePeaks.get(i) / candidatePeaks.get(0) >= 2.0) {
-                    peakIndex = candidatePeaks.get(0); // Fundamental Frequency
-                    break;
-                }
+        return candidatePeaks;
+    }
+
+    /**
+     * Selects the primary peak from a list of candidate peaks based on certain criteria.
+     * This is used to determine the most significant peak in a pitch detection process.
+     *
+     * @param candidatePeaks a list of integers representing the indices of candidate peaks in the NSDF array.
+     *                       Each value corresponds to a potential periodicity of the audio signal.
+     * @return the index of the selected peak from the list of candidate peaks if a valid peak is found,
+     *         or -1 if no valid peak is identified.
+     */
+    private static int selectPeak(List<Integer> candidatePeaks) {
+        if (candidatePeaks.isEmpty()) {
+            return -1;
+        }
+
+        for (int i = 1; i < candidatePeaks.size(); i++) {
+            if ((double) candidatePeaks.get(i) / candidatePeaks.get(0) >= 2.0) {
+                return candidatePeaks.get(0);
             }
         }
-        double confidence = 0;
 
-        // Step 3: Parabolic interpolation for more accurate peak detection
-        if (peakIndex > 0 && peakIndex < maxLag - 1) {
+        return -1;
+    }
+
+    /**
+     * Refines the peak index using parabolic interpolation to improve accuracy in
+     * analyzing peaks in the Normalized Square Difference Function (NSDF).
+     *
+     * @param nsdf      an array of double values representing the Normalized Square Difference Function (NSDF).
+     *                  Each element corresponds to a specific lag in the pitch detection process.
+     * @param peakIndex the initial index of the detected peak in the NSDF array.
+     * @return the refined peak index as an integer, adjusted using parabolic interpolation for enhanced accuracy.
+     */
+    private static int applyParabolicInterpolation(double[] nsdf, int peakIndex) {
+        if (peakIndex > 0 && peakIndex < nsdf.length - 1) {
             double x0 = nsdf[peakIndex - 1];
             double x1 = nsdf[peakIndex];
             double x2 = nsdf[peakIndex + 1];
-            confidence = x1; // Confidence as the highest NSDF value at peakIndex
-            peakIndex = peakIndex + (int) (0.5 * (x0 - x2) / (x0 - 2 * x1 + x2));
-        }
 
-        // Step 4: Convert lag to frequency
-        if (peakIndex > 0) {
-            double pitch = (double) sampleRate / peakIndex;
-            return new PitchDetectionResult(pitch, confidence);
+            return peakIndex + (int) (0.5 * (x0 - x2) / (x0 - 2 * x1 + x2));
         }
-
-        return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0); // No pitch detected
+        return peakIndex;
     }
 
     /**

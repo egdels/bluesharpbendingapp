@@ -39,6 +39,7 @@ javafx {
 dependencies {
     // Adds dependency on the project named ':base'
     implementation project(':base')
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
 }
 
 // Application-specific configurations

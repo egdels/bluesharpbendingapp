@@ -232,15 +232,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     private boolean isPaused = false;
 
     /**
-     * The {@code mainController} represents the primary controller
-     * responsible for managing and coordinating various views and handlers
-     * within the {@code MainActivity} class. This controller facilitates
-     * communication between the user interface components and the underlying
-     * application logic.
-     */
-    private MainController mainController;
-
-    /**
      * Indicates whether the app bar is currently hidden.
      * <p>
      * This variable is used to track the visibility state of the app bar in the
@@ -303,21 +294,21 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     protected AndroidModel readModel() {
 
-        AndroidModel model = new AndroidModel();
+        AndroidModel androidModel = new AndroidModel();
         File directory = this.getApplicationContext().getCacheDir();
         File file = new File(directory, TEMP_FILE);
 
         try (BufferedReader bw = new BufferedReader(new FileReader(file))) {
 
             String line = bw.readLine();
-            if (line != null) model = AndroidModel.createFromString(line);
+            if (line != null) androidModel = AndroidModel.createFromString(line);
 
 
         } catch (IOException e) {
             log.error(e.getMessage());
         }
 
-        return model;
+        return androidModel;
     }
 
 
@@ -348,6 +339,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         if (!permissionGranted) {
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
         }
+
+        MainController mainController = new MainController(this, model);
 
         FragmentViewModel viewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
         viewModel.getSelectedFragmentView().observe(this, item -> {
@@ -388,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         });
 
 
-        mainController = new MainController(this, model);
+
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

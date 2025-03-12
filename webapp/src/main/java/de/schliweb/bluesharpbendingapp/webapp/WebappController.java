@@ -24,7 +24,6 @@ package de.schliweb.bluesharpbendingapp.webapp;
  */
 
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
-import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
@@ -202,7 +201,7 @@ public class WebappController {
      */
     private String getHrefOfFile(DownloadFile downloadFile) {
         String href = downloadHref;
-        if (downloadFile.isOldVersion) {
+        if (downloadFile.isOldVersion()) {
             href = downloadHrefOld;
         }
         if (!"/".equals(downloadHref.substring(downloadHref.length() - 1))) {
@@ -287,12 +286,13 @@ public class WebappController {
     public ModelAndView getAudioStreamPage(HttpSession session) {
         ModelAndView modelAndView = new ModelAndView();
 
-        Harmonica harmonica = (Harmonica) session.getAttribute("harmonica");
+        HarmonicaWeb harmonicaWeb = (HarmonicaWeb) session.getAttribute("harmonica");
 
-        if (harmonica == null) {
-            harmonica = AbstractHarmonica.create(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER);
+        if (harmonicaWeb == null) {
+            harmonicaWeb = new HarmonicaWeb(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER);
         }
-        modelAndView.addObject("harmonica", harmonica);
+
+        modelAndView.addObject("harmonica", harmonicaWeb);
         modelAndView.addObject("supportedTunes", AbstractHarmonica.getSupportedTunes());
         modelAndView.addObject("supportedKeys", AbstractHarmonica.getSupporterKeys());
 

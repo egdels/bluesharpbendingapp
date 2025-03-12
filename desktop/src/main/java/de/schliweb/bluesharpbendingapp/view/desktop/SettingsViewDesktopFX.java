@@ -100,11 +100,7 @@ public class SettingsViewDesktopFX {
             root.setVisible(true);
 
         } catch (IOException e) {
-            // Log an error if an issue occurs while loading the FXML file
-            log.error("Error while loading the FXML: " + e.getMessage());
-
-            // Throw a runtime exception to indicate that FXML loading has failed
-            throw new RuntimeException("Failed to load FXML", e);
+            throw new FxmlLoadingException("Failed to load FXML file", e);
         }
     }
 
