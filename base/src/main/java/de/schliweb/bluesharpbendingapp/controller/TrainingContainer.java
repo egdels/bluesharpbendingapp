@@ -46,13 +46,11 @@ public class TrainingContainer implements Runnable {
 
 
     /**
-     * A static flag indicating whether all threads should be locked.
-     * When set to true, this variable ensures that the ongoing operations
-     * in multiple threads are restricted or paused, preventing further execution.
-     * This is primarily used to manage thread states in a synchronized manner
-     * within the TrainingContainer class.
+     * Indicates whether all threads associated with the training process should be locked.
+     * This variable is marked as volatile to ensure visibility across different threads,
+     * helping to manage the synchronization of thread execution within the system.
      */
-    protected static boolean lockAllThreads = false;
+    private volatile boolean lockAllThreads = false;
     /**
      * A ScheduledThreadPoolExecutor instance used to schedule and execute tasks with a single-threaded execution policy.
      * This executor ensures that tasks are executed sequentially in a dedicated thread, providing thread safety for
@@ -98,10 +96,28 @@ public class TrainingContainer implements Runnable {
      */
     protected final AtomicBoolean toBeCleared = new AtomicBoolean(false);
 
+    /**
+     * A unique identifier used to store and retrieve cached data efficiently within the context of the
+     * TrainingContainer class. This key is designed to associate specific cache entries relevant to the
+     * internal operations of the training and view logic.
+     */
     private final String cacheKey;
 
+    /**
+     * Represents the frequency value that the system or training module needs to handle
+     * or process. This value is volatile to ensure visibility and thread safety when
+     * accessed or modified by multiple threads, as it may be updated dynamically during
+     * runtime.
+     */
     @Setter
     private volatile double frequencyToHandle;
+    /**
+     * A cache that stores precomputed frequency-to-cents mappings for efficient lookup.
+     * The keys represent specific frequency-related identifiers, and the values
+     * represent the corresponding cent values as doubles.
+     * This cache is used to optimize operations where frequent calculations
+     * of frequency-related conversions are required.
+     */
     private final HashMap<String, Double> centsCache = new HashMap<>();
 
     /**
@@ -114,20 +130,39 @@ public class TrainingContainer implements Runnable {
         this.training = training;
         this.view = trainingView;
         this.element = view.getActualHarpViewElement();
-        lockAllThreads = false;
         this.cacheKey = this.training.getActualNote();
+    }
+
+    /**
+     * Checks whether all threads are currently locked.
+     *
+     * @return true if all threads are locked, false otherwise
+     */
+    public synchronized boolean isLockAllThreads() {
+        return lockAllThreads;
+    }
+
+    /**
+     * Sets the lock state for all threads managed by the TrainingContainer.
+     *
+     * @param lockAllThreads a boolean value indicating whether all threads
+     *                        should be locked (true) or unlocked (false)
+     */
+    public synchronized void setLockAllThreads(boolean lockAllThreads) {
+        this.lockAllThreads = lockAllThreads;
     }
 
     @Override
     public void run() {
-        if (lockAllThreads) return;
+        if (isLockAllThreads()) return; // Thread-safe access
+
         if (training.isRunning() && training.isNoteActive(frequencyToHandle)) {
             handleFrequencyChange();
         } else {
             // if next note is set execute once!
             if (toNextNote.compareAndSet(true, false)) {
-                // lock all threads
-                lockAllThreads = true;
+                setLockAllThreads(true);
+
                 // mark actual note as success
                 training.success();
                 // to next Note
@@ -141,7 +176,7 @@ public class TrainingContainer implements Runnable {
                         view.toggleButton();
                     }
                     view.initTrainingContainer(this);
-                    lockAllThreads = false; // unlock again
+                    setLockAllThreads(false);
                 }, 500, TimeUnit.MILLISECONDS);
             } else {
                 // execute once

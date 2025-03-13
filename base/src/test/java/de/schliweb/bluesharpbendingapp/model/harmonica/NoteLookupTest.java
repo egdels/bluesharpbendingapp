@@ -2,6 +2,8 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,11 +22,16 @@ class NoteLookupTest {
         NoteLookup.setConcertPitch(440);
     }
 
-    @Test
-    void testGetNoteFrequencyForStandardNote() {
+
+    @ParameterizedTest
+    @CsvSource({
+            "A4, 440.0",      // Standard pitch note
+            "C8, 4186.01",    // Highest note
+            "C0, 16.35"       // Lowest note
+    })
+    void testGetNoteFrequency(String noteName, double expectedFrequency)
+    {
         // Arrange
-        String noteName = "A4"; // Standard pitch note
-        double expectedFrequency = 440.0;
 
         // Act
         double frequency = NoteLookup.getNoteFrequency(noteName);
@@ -33,31 +40,6 @@ class NoteLookupTest {
         assertEquals(expectedFrequency, frequency, 0.01);
     }
 
-    @Test
-    void testGetNoteFrequencyForHigherOctave() {
-        // Arrange
-        String noteName = "C8"; // Highest standard piano note
-        double expectedFrequency = 4186.01;
-
-        // Act
-        double frequency = NoteLookup.getNoteFrequency(noteName);
-
-        // Assert
-        assertEquals(expectedFrequency, frequency, 0.01);
-    }
-
-    @Test
-    void testGetNoteFrequencyForLowerOctave() {
-        // Arrange
-        String noteName = "C0"; // Lowest standard piano note
-        double expectedFrequency = 16.35;
-
-        // Act
-        double frequency = NoteLookup.getNoteFrequency(noteName);
-
-        // Assert
-        assertEquals(expectedFrequency, frequency, 0.01);
-    }
 
     @Test
     void testGetNoteFrequencyForDifferentConcertPitch() {

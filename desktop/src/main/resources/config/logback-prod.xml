@@ -1,0 +1,13 @@
+<configuration>
+    <property name="USER_HOME" value="${user.home}" />
+    <appender name="PROD_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${USER_HOME}/BluesHarpBendingApp.tmp/application.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="info">
+        <appender-ref ref="PROD_FILE" />
+    </root>
+</configuration>

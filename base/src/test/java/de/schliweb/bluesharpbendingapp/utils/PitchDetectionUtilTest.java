@@ -1,6 +1,8 @@
 package de.schliweb.bluesharpbendingapp.utils;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -332,12 +334,13 @@ class PitchDetectionUtilTest {
     }
 
     /**
-     * Ensures detectPitchWithYIN returns -1 for silence (no pitch detected).
+     * Ensures detectPitchWithYIN returns -1 for silence with varying audio data sizes.
      */
-    @Test
-    void testDetectPitchWithYIN_Silence() {
+    @ParameterizedTest
+    @ValueSource(ints = {1000, 2000, 4000, 8000, 16000, 44100})
+    void testDetectPitchWithYIN_Silence(int sampleSize) {
         int sampleRate = 44100;
-        double[] audioData = new double[1000];
+        double[] audioData = new double[sampleSize];
 
         double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(-1, detectedPitch, "Detected pitch should be -1 for silence");
@@ -696,7 +699,7 @@ class PitchDetectionUtilTest {
      * The test ensures the YIN implementation correctly identifies the fundamental frequency of the input signal.
      */
     @Test
-    public void testDetectPitchWithYIN_F5() {
+    void testDetectPitchWithYIN_F5() {
         // ARRANGE
         double frequency = 698.46; // F5
         int sampleRate = 44100;
@@ -730,7 +733,7 @@ class PitchDetectionUtilTest {
      * as approximately 1396.91 Hz (F6), ensuring accuracy within the defined tolerance.
      */
     @Test
-    public void testDetectPitchWithYIN_F6() {
+    void testDetectPitchWithYIN_F6() {
         // ARRANGE
         double frequency = 1396.91; // F6
         int sampleRate = 44100;
@@ -759,7 +762,7 @@ class PitchDetectionUtilTest {
      * matches the expected result (-1).
      */
     @Test
-    public void testDetectPitchWithYIN_NoPitch() {
+    void testDetectPitchWithYIN_NoPitch() {
         // ARRANGE
         int sampleRate = 44100;
         // 1 second
@@ -808,7 +811,7 @@ class PitchDetectionUtilTest {
      * as F6 is dominant due to its higher amplitude.
      */
     @Test
-    public void testDetectPitchWithYIN_OverlappingF5andF6_F6Dominant() {
+    void testDetectPitchWithYIN_OverlappingF5andF6_F6Dominant() {
         // ARRANGE
         double frequencyF5 = 698.46; // Frequency of F5
         double amplitudeF5 = 0.5;    // Amplitude of F5
@@ -828,7 +831,7 @@ class PitchDetectionUtilTest {
     }
 
     @Test
-    public void testDetectPitchWithYIN_OverlappingA3andA3Sharp_A3Dominant() {
+    void testDetectPitchWithYIN_OverlappingA3andA3Sharp_A3Dominant() {
         // ARRANGE
         double frequencyA3Sharp = 233.082;
         double amplitudeA3Sharp = 0.5;
@@ -849,7 +852,7 @@ class PitchDetectionUtilTest {
 
 
     @Test
-    public void testDetectPitchWithYIN_A3_PureSineWave() {
+    void testDetectPitchWithYIN_A3_PureSineWave() {
         int sampleRate = 44100;
         double frequency = 220.0; // A3
         double duration = 1.0;
@@ -863,7 +866,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for a sine wave with noise at the note A3 (220 Hz).
      */
     @Test
-    public void testDetectPitchWithYIN_A3_SineWithNoise() {
+    void testDetectPitchWithYIN_A3_SineWithNoise() {
         int sampleRate = 44100;
         double frequency = 220.0; // A3
         double duration = 1.0;
@@ -880,7 +883,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for overlapping frequencies where A3 (220 Hz) is dominant.
      */
     @Test
-    public void testDetectPitchWithYIN_A3_OverlappingFrequencies() {
+    void testDetectPitchWithYIN_A3_OverlappingFrequencies() {
         double frequencyA3 = 220.0;
         double amplitudeA3 = 1.0; // Dominant amplitude of A3
         double frequencyOther = 440.0; // Overlapping frequency
@@ -897,7 +900,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for a low amplitude sine wave at the note A3 (220 Hz).
      */
     @Test
-    public void testDetectPitchWithYIN_A3_LowAmplitude() {
+    void testDetectPitchWithYIN_A3_LowAmplitude() {
         int sampleRate = 44100;
         double frequency = 220.0; // A3
         double amplitude = 0.01; // Very low amplitude
@@ -915,7 +918,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for a non-periodic signal for A3 (220 Hz).
      */
     @Test
-    public void testDetectPitchWithYIN_A3_NonPeriodicSignal() {
+    void testDetectPitchWithYIN_A3_NonPeriodicSignal() {
         int sampleRate = 44100;
         double duration = 1.0;
         int samples = (int) (sampleRate * duration);
@@ -932,7 +935,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for a square wave signal at A3 (220 Hz).
      */
     @Test
-    public void testDetectPitchWithYIN_A3_SquareWave() {
+    void testDetectPitchWithYIN_A3_SquareWave() {
         int sampleRate = 44100;
         double frequency = 220.0; // A3
         double duration = 1.0;
@@ -949,7 +952,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for A3 signals layered with low noise.
      */
     @Test
-    public void testDetectPitchWithYIN_A3_WithNoiseOverlay() {
+    void testDetectPitchWithYIN_A3_WithNoiseOverlay() {
         int sampleRate = 44100;
         double frequency = 220.0; // A3
         double duration = 1.0;
@@ -961,20 +964,9 @@ class PitchDetectionUtilTest {
         double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
         assertEquals(frequency, detectedPitch, 0.5, "Detected pitch should match A3 despite low noise overlay.");
     }
-    /**
-     * Tests detectPitchWithYIN for silence or an inaudible signal when A3 is expected.
-     */
-    @Test
-    public void testDetectPitchWithYIN_A3_Silence() {
-        int sampleRate = 44100;
-        double[] audioData = new double[44100]; // Silence for 1 second
-
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
-        assertEquals(-1, detectedPitch, "Detected pitch should be -1 for silence or inaudible signals.");
-    }
 
     @Test
-    public void testDetectPitchWithYIN_A2_PureSineWave() {
+    void testDetectPitchWithYIN_A2_PureSineWave() {
         int sampleRate = 44100;
         double frequency = 110.0; // A2
         double duration = 1.0;
@@ -989,7 +981,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for a sine wave with noise at the note A2 (110 Hz).
      */
     @Test
-    public void testDetectPitchWithYIN_A2_SineWithNoise() {
+    void testDetectPitchWithYIN_A2_SineWithNoise() {
         int sampleRate = 44100;
         double frequency = 110.0; // A2
         double duration = 1.0;
@@ -1007,7 +999,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for overlapping frequencies where A2 (110 Hz) is dominant.
      */
     @Test
-    public void testDetectPitchWithYIN_A2_OverlappingFrequencies() {
+    void testDetectPitchWithYIN_A2_OverlappingFrequencies() {
         double frequencyA2 = 110.0;
         double amplitudeA2 = 1.0; // Dominant amplitude of A2
         double frequencyOther = 220.0; // Overlapping frequency
@@ -1025,7 +1017,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for a low amplitude sine wave at the note A2 (110 Hz).
      */
     @Test
-    public void testDetectPitchWithYIN_A2_LowAmplitude() {
+    void testDetectPitchWithYIN_A2_LowAmplitude() {
         int sampleRate = 44100;
         double frequency = 110.0; // A2
         double amplitude = 0.01; // Very low amplitude
@@ -1044,7 +1036,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for a sine wave at A2 (110 Hz) with high frequency deviation.
      */
     @Test
-    public void testDetectPitchWithYIN_A2_HighFrequencyDeviation() {
+   void testDetectPitchWithYIN_A2_HighFrequencyDeviation() {
         int sampleRate = 44100;
         double frequency = 110.0; // A2
         double duration = 1.0;
@@ -1065,7 +1057,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for non-periodic signals for which no pitch is expected.
      */
     @Test
-    public void testDetectPitchWithYIN_A2_NonPeriodicSignal() {
+    void testDetectPitchWithYIN_A2_NonPeriodicSignal() {
         int sampleRate = 44100;
         double duration = 1.0;
         int samples = (int) (sampleRate * duration);
@@ -1083,7 +1075,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for a square wave with the main frequency of A2 (110 Hz).
      */
     @Test
-    public void testDetectPitchWithYIN_A2_SquareWave() {
+    void testDetectPitchWithYIN_A2_SquareWave() {
         int sampleRate = 44100;
         double frequency = 110.0; // A2
         double duration = 1.0;
@@ -1102,7 +1094,7 @@ class PitchDetectionUtilTest {
      * Tests detectPitchWithYIN for the harmonic of a lower frequency signal near A2.
      */
     @Test
-    public void testDetectPitchWithYIN_A2_Harmonic() {
+    void testDetectPitchWithYIN_A2_Harmonic() {
         int sampleRate = 44100;
         double frequency = 110.0; // Fundamental frequency (A2)
         double harmonic = 220.0; // Second harmonic (A3)
@@ -1118,22 +1110,10 @@ class PitchDetectionUtilTest {
     }
 
     /**
-     * Tests detectPitchWithYIN for silence when no pitch is discernible.
-     */
-    @Test
-    public void testDetectPitchWithYIN_A2_Silence() {
-        int sampleRate = 44100;
-        double[] audioData = new double[44100]; // Silence for 1 second
-
-        double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).getPitch();
-        assertEquals(-1, detectedPitch, "Detected pitch should be -1 for silence.");
-    }
-
-    /**
      * Tests detectPitchWithYIN for overlapping low-frequency signals and noise with A2 dominance.
      */
     @Test
-    public void testDetectPitchWithYIN_A2_LowFreqWithNoiseOverlay() {
+    void testDetectPitchWithYIN_A2_LowFreqWithNoiseOverlay() {
         int sampleRate = 44100;
         double frequency = 110.0; // A2
         double duration = 1.0;

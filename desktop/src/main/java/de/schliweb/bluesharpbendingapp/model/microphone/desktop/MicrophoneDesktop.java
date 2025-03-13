@@ -36,6 +36,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -130,7 +131,8 @@ public class MicrophoneDesktop implements Microphone {
      * Used for delegating audio processing results (e.g., frequency and volume calculations)
      * to the handler implementation for further handling or display in the application.
      */
-    private volatile MicrophoneHandler microphoneHandler;
+    private final AtomicReference<MicrophoneHandler> microphoneHandler = new AtomicReference<>();
+
     /**
      * The name of the microphone instance. This variable represents the
      * user-friendly identifier for the currently selected microphone device.
@@ -204,7 +206,7 @@ public class MicrophoneDesktop implements Microphone {
 
     @Override
     public void setMicrophoneHandler(MicrophoneHandler microphoneHandler) {
-        this.microphoneHandler = microphoneHandler;
+        this.microphoneHandler.set(microphoneHandler);
     }
 
     @Override
@@ -483,8 +485,8 @@ public class MicrophoneDesktop implements Microphone {
         if (conf < confidence)
             pitch = -1;
 
-        if (microphoneHandler != null) {
-            microphoneHandler.handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
+        if (microphoneHandler.get() != null) {
+            microphoneHandler.get().handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
         }
     }
 }

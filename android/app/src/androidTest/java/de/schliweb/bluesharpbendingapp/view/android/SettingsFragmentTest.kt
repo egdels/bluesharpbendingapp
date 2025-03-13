@@ -12,22 +12,26 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SettingsFragmentTest {
     @Test
-    fun testSetKeys_withSingleKey() {
+    fun testSetKeyswithSingleKey() {
         val scenario = FragmentScenario.launchInContainer(
             SettingsFragment::class.java, null, R.style.Theme_BluesHarpBendingApp
         )
 
         val mockHandler: HarpSettingsViewHandler = object : HarpSettingsViewHandler {
             override fun handleKeySelection(id: Int) {
+                // no need
             }
 
             override fun handleTuneSelection(i: Int) {
+                // no need
             }
 
             override fun initKeyList() {
+                // no need
             }
 
             override fun initTuneList() {
+                // no need
             }
         }
 
@@ -43,22 +47,26 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun testSetKeys_withDuplicateKeys() {
+    fun testSetKeyswithDuplicateKeys() {
         val scenario = FragmentScenario.launchInContainer(
             SettingsFragment::class.java, null, R.style.Theme_BluesHarpBendingApp
         )
 
         val mockHandler: HarpSettingsViewHandler = object : HarpSettingsViewHandler {
             override fun handleKeySelection(id: Int) {
+                // no need
             }
 
             override fun handleTuneSelection(i: Int) {
+                // no need
             }
 
             override fun initKeyList() {
+                // no need
             }
 
             override fun initTuneList() {
+                // no need
             }
         }
 
@@ -76,22 +84,26 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun testSetKeys_afterInitialization() {
+    fun testSetKeysafterInitialization() {
         val scenario = FragmentScenario.launchInContainer(
             SettingsFragment::class.java, null, R.style.Theme_BluesHarpBendingApp
         )
 
         val mockHandler: HarpSettingsViewHandler = object : HarpSettingsViewHandler {
             override fun handleKeySelection(id: Int) {
+                // no need
             }
 
             override fun handleTuneSelection(i: Int) {
+                // no need
             }
 
             override fun initKeyList() {
+                // no need
             }
 
             override fun initTuneList() {
+                // no need
             }
         }
 
@@ -114,7 +126,7 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun testSetKeys_populatesSpinnerWithKeys() {
+    fun testSetKeysPopulatesSpinnerWithKeys() {
         // FragmentContext mit einfachem MaterialDesign-Theme starten
         val scenario = FragmentScenario.launchInContainer(
             SettingsFragment::class.java, null, R.style.Theme_BluesHarpBendingApp
@@ -122,15 +134,19 @@ class SettingsFragmentTest {
 
         val mockHandler: HarpSettingsViewHandler = object : HarpSettingsViewHandler {
             override fun handleKeySelection(id: Int) {
+                // no need
             }
 
             override fun handleTuneSelection(i: Int) {
+                // no need
             }
 
             override fun initKeyList() {
+                // no need
             }
 
             override fun initTuneList() {
+                // no need
             }
         }
 
@@ -153,7 +169,7 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun testSetKeys_clearsPreviousKeys() {
+    fun testSetKeysclearsPreviousKeys() {
         val scenario = FragmentScenario.launchInContainer(
             SettingsFragment::class.java, null, R.style.Theme_BluesHarpBendingApp
         )
@@ -165,12 +181,15 @@ class SettingsFragmentTest {
             }
 
             override fun handleTuneSelection(i: Int) {
+                // no need
             }
 
             override fun initKeyList() {
+                // no need
             }
 
             override fun initTuneList() {
+                // no need
             }
         }
 
@@ -203,7 +222,7 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun testSetKeys_withEmptyArray_shouldClearSpinner() {
+    fun testSetKeyswithEmptyArrayshouldClearSpinner() {
         val scenario = FragmentScenario.launchInContainer(
             SettingsFragment::class.java, null, R.style.Theme_BluesHarpBendingApp
         )
@@ -218,7 +237,7 @@ class SettingsFragmentTest {
     }
 
     @Test
-    fun testSetKeys_withNull_shouldHandleGracefully() {
+    fun testSetKeyswithNullshouldHandleGracefully() {
         val scenario = FragmentScenario.launchInContainer(
             SettingsFragment::class.java, null, R.style.Theme_BluesHarpBendingApp
         )

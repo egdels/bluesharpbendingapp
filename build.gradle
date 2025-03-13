@@ -63,6 +63,9 @@ subprojects {
         // Adds JUnit Jupiter for unit testing
         testImplementation 'org.junit.jupiter:junit-jupiter'
 
+        testImplementation 'org.awaitility:awaitility:4.3.0'
+
+
         implementation "org.slf4j:slf4j-api:2.0.16"
 
     }

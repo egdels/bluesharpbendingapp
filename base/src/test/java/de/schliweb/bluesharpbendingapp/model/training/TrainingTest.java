@@ -47,40 +47,16 @@ class TrainingTest {
     @Test
     void testOctaveLeaps() {
         Training training = AbstractTraining.create(AbstractHarmonica.KEY.C, AbstractTraining.TRAINING.OCTAVE_LEAPS);
-        String[] notes = training.getNotes();
-        assertEquals("C4", notes[0]);
-        assertEquals("C5", notes[1]);
-        assertEquals("C6", notes[2]);
-        assertEquals("C7", notes[3]);
-        assertEquals("C6", notes[4]);
-        assertEquals("C5", notes[5]);
-        assertEquals("D4", notes[6]);
-        assertEquals("D5", notes[7]);
-        assertEquals("D6", notes[8]);
-        assertEquals("D5", notes[9]);
-        assertEquals("E4", notes[10]);
-        assertEquals("E5", notes[11]);
-        assertEquals("E6", notes[12]);
-        assertEquals("E5", notes[13]);
-        assertEquals("F4", notes[14]);
-        assertEquals("F5", notes[15]);
-        assertEquals("F6", notes[16]);
-        assertEquals("F5", notes[17]);
-        assertEquals("G4", notes[18]);
-        assertEquals("G5", notes[19]);
-        assertEquals("G6", notes[20]);
-        assertEquals("G5", notes[21]);
-        assertEquals("A4", notes[22]);
-        assertEquals("A5", notes[23]);
-        assertEquals("A6", notes[24]);
-        assertEquals("A5", notes[25]);
-        assertEquals("B4", notes[26]);
-        assertEquals("B5", notes[27]);
-        assertEquals("B6", notes[28]); // Blow Bending
+        String[] expectedNotes = {
+                "C4", "C5", "C6", "C7", "C6", "C5",
+                "D4", "D5", "D6", "D5", "E4", "E5", "E6", "E5",
+                "F4", "F5", "F6", "F5", "G4", "G5", "G6", "G5",
+                "A4", "A5", "A6", "A5", "B4", "B5", "B6", "B5"
+        };
 
-
-        assertEquals("B5", notes[29]);
+        assertArrayEquals(expectedNotes, training.getNotes());
     }
+
 
     /**
      * Test major pentatonic.

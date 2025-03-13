@@ -8,6 +8,8 @@ import de.schliweb.bluesharpbendingapp.view.TrainingView;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.*;
 
 /**
@@ -29,8 +31,7 @@ class TrainingContainerTest {
 
         TrainingContainer trainingContainer = new TrainingContainer(trainingMock, viewMock);
 
-        // Set static LockAllThreads to true
-        TrainingContainer.lockAllThreads = true;
+        trainingContainer.setLockAllThreads(true);
 
         trainingContainer.run();
 
@@ -89,7 +90,8 @@ class TrainingContainerTest {
      * Tests the behavior when `toBeCleared` is true.
      */
     @Test
-    void testRunToBeClearedTrue() throws InterruptedException {
+    void testRunToBeClearedTrue() {
+        // Arrange
         Training trainingMock = mock(Training.class);
         TrainingView viewMock = mock(TrainingView.class);
 
@@ -97,19 +99,22 @@ class TrainingContainerTest {
         when(viewMock.getActualHarpViewElement()).thenReturn(harpElementMock);
 
         TrainingContainer trainingContainer = new TrainingContainer(trainingMock, viewMock);
-        trainingContainer.toBeCleared.set(true);
+        trainingContainer.toBeCleared.set(true); // Zustand festlegen
 
+        // Act
         trainingContainer.run();
 
-
-        Thread.sleep(1000); // Wait for scheduler
-
-
-        verify(harpElementMock, never()).update(anyDouble());
-        verify(harpElementMock, times(1)).clear();
-        verify(trainingMock, never()).success();
-        verify(trainingMock, never()).nextNote();
+        // Assert: Awaitility stellt sicher, dass die Mocks korrekt aufgerufen werden
+        await()
+                .atMost(1000, MILLISECONDS) // max. 1000ms warten
+                .untilAsserted(() -> {
+                    verify(harpElementMock, never()).update(anyDouble()); // update(...) nie aufgerufen
+                    verify(harpElementMock, times(1)).clear();            // clear() einmal aufgerufen
+                    verify(trainingMock, never()).success();              // success() nie aufgerufen
+                    verify(trainingMock, never()).nextNote();             // nextNote() nie aufgerufen
+                });
     }
+
 
     /**
      * Tests that `run` does not proceed when training is not running.

@@ -13,7 +13,7 @@ import java.io.IOException
 
 class MainActivityTest {
     @Test
-    fun testReadModel_FileExistsAndValidData() {
+    fun testReadModelFileExistsAndValidData() {
         // Arrange
         val context = ApplicationProvider.getApplicationContext<Context>()
         val tempDir = context.cacheDir
@@ -52,7 +52,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun testHideAppBar_AppBarHidden() {
+    fun testHideAppBarAppBarHidden() {
         // Act and Assert
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             scenario.onActivity { activity: MainActivity ->
@@ -63,7 +63,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun testHideAppBar_AlreadyHidden() {
+    fun testHideAppBarAlreadyHidden() {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             scenario.onActivity { activity: MainActivity ->
                 // Hide twice to ensure idempotency of hideAppBar()
@@ -75,7 +75,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun testReadModel_FileDoesNotExist() {
+    fun testReadModelFileDoesNotExist() {
         // Arrange
         val context = ApplicationProvider.getApplicationContext<Context>()
         val tempDir = context.cacheDir
