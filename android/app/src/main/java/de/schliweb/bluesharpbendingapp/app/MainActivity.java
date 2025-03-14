@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * Default value is set to false; it is updated based on the
      * outcome of permission requests or checks at runtime.
      */
-    private boolean permissionGranted = false;
+    private volatile boolean permissionGranted = false;
 
     /**
      * Configuration object for managing the behavior of the app's AppBar.

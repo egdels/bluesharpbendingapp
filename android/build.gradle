@@ -41,7 +41,7 @@ project(':base') {
         implementation "org.slf4j:slf4j-api:${slf4jVersion}"
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-        testImplementation platform('org.junit:junit-bom:5.9.3')
+        testImplementation platform('org.junit:junit-bom:5.11.4')
         // Adds JUnit Jupiter for unit testing
         testImplementation 'org.junit.jupiter:junit-jupiter'
         testImplementation 'org.mockito:mockito-core:5.14.2'

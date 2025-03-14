@@ -204,9 +204,9 @@ public class MicrophoneAndroid implements Microphone {
                             System.arraycopy(buffer, 0, dataCopy, 0, bytesRead);
                             // add to queue
                             boolean offer = audioDataQueue.offer(dataCopy);
-                            log.debug("Audio data added to queue: " + offer);
+                            log.debug("Audio data added to queue: {}", offer);
                         } else if (bytesRead < 0) {
-                            log.error("AudioRecord read error: " + bytesRead);
+                            log.error("AudioRecord read error: {}", bytesRead);
                             break;
                         }
                     }
@@ -232,7 +232,7 @@ public class MicrophoneAndroid implements Microphone {
             });
 
         } catch (Exception e) {
-            log.error("Failed to start recording: " + e.getMessage());
+            log.error("Failed to start recording: {}", e.getMessage());
         }
     }
 
