@@ -260,13 +260,13 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     private void setSelected(int selectedIndex, ComboBox<String> combo) {
         // Check if the ComboBox is null
         if (combo == null) {
-            log.error("ComboBox is not initialized!");
+            log.error("ComboBox is not initialized in setSelected()!");
             return; // Exit the method as there's nothing to work with
         }
 
         // Validate the selected index is within valid bounds of the ComboBox items
         if (selectedIndex < 0 || selectedIndex >= combo.getItems().size()) {
-            log.error("Invalid index: " + selectedIndex);
+            log.error("Invalid index: {} for ComboBox {} in setSelected()!", selectedIndex, combo.getId());
             return; // Exit the method as the index is out of range
         }
 
@@ -288,7 +288,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     private void initComboBox(ComboBox<String> combo, String[] items) {
         // Check if the ComboBox is null
         if (combo == null) {
-            log.error("ComboBox is not initialized!");
+            log.error("ComboBox is not initialized in initComboBox()!");
             return; // Exit the method as there's nothing to work with
         }
 
@@ -314,7 +314,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      */
     private void addChangeListenerToComboBox(ComboBox<String> combo) {
         combo.valueProperty().addListener((observable, oldValue, newValue) -> {
-            log.info("ComboBox (" + combo.getId() + ") changed from " + oldValue + " to " + newValue);
+            log.info("ComboBox ({}) changed from {} to {}", combo.getId(), oldValue, newValue);
 
             if (newValue != null) {
                 handleSelectionChange(comboKeys, harpSettingsViewHandler::handleKeySelection);

@@ -289,7 +289,7 @@ public class TrainingViewDesktopFXController implements TrainingView {
     private void initComboBox(ComboBox<String> combo, String[] items) {
         // Check if the ComboBox is null
         if (combo == null) {
-            log.error("ComboBox is not initialized!");
+            log.error("ComboBox is not initialized in initializeComboBox()!");
             return; // Exit the method if the ComboBox is null
         }
 
@@ -314,13 +314,13 @@ public class TrainingViewDesktopFXController implements TrainingView {
     private void setSelected(int selectedIndex, ComboBox<String> combo) {
         // Check if the ComboBox is null
         if (combo == null) {
-            log.error("ComboBox is not initialized!");
+            log.error("ComboBox is not initialized in setSelected()!");
             return; // Exit the method if the ComboBox is null
         }
 
         // Validate whether the selected index is within the valid bounds of the ComboBox items
         if (selectedIndex < 0 || selectedIndex >= combo.getItems().size()) {
-            log.error("Invalid index: " + selectedIndex);
+            log.error("Invalid index: {}", selectedIndex);
             return; // Exit the method if the index is out of range
         }
 

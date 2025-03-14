@@ -178,7 +178,7 @@ public class AboutViewDesktopFXController implements AboutView {
         try {
             Desktop.getDesktop().browse(new URI(uri));
         } catch (Exception ex) {
-            log.error("Error while opening the link: " + uri);
+            log.error("Error while opening the link: {}", uri);
         }
     }
 

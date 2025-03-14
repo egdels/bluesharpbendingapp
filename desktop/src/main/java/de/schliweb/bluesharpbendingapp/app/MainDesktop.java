@@ -59,8 +59,6 @@ public class MainDesktop extends Application {
      */
     private static final String VERSION_URL = "https://letsbend.de/download/version.txt";
 
-
-
     /**
      * The constant TEMP_DIR represents the directory path where temporary files are stored
      * for the application. It is constructed dynamically using the user's home directory
@@ -155,7 +153,7 @@ public class MainDesktop extends Application {
         File directory = new File(TEMP_DIR);
         if (!directory.exists()) {
             boolean isCreated = directory.mkdirs();
-            if (isCreated) log.debug("Directory created");
+            if (isCreated) log.debug("Directory created by storeModel()");
         }
         File file = new File(TEMP_DIR + FileSystems.getDefault().getSeparator() + TEMP_FILE);
         try (FileOutputStream fos = new FileOutputStream(file); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
@@ -185,7 +183,7 @@ public class MainDesktop extends Application {
         File directory = new File(TEMP_DIR);
         if (!directory.exists()) {
             boolean isCreated = directory.mkdirs();
-            if (isCreated) log.debug("Directory created");
+            if (isCreated) log.debug("Directory created by readModel()");
         }
         File file = new File(TEMP_DIR + FileSystems.getDefault().getSeparator() + TEMP_FILE);
         if (file.exists()) {
@@ -278,7 +276,7 @@ public class MainDesktop extends Application {
             primaryStage.show();
         } catch (Exception e) {
             // Log an error if something goes wrong during application startup
-            log.error("Error while starting the application: " + e.getMessage());
+            log.error("Error while starting the application: {}", e.getMessage());
         }
     }
 

@@ -429,13 +429,13 @@ public class MicrophoneDesktop implements Microphone {
 
                             // Offer the data to the BlockingQueue
                             boolean offer = audioDataQueue.offer(dataCopy);
-                            log.debug("Audio data queue offer status: " + offer);
+                            log.debug("Audio data queue offer status: {}", offer);
                         }
                     }
                     line.close();
                 }
             } catch (LineUnavailableException e) {
-                log.error("Error opening microphone: " + e.getMessage(), e);
+                log.error("Error opening microphone: {}", e.getMessage(), e);
             }
         });
     }
