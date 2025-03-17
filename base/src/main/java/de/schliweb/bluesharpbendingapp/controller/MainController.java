@@ -92,7 +92,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * such as note updates, processing input data, and managing training operations.
      * Ensures safe execution of tasks in a multithreaded environment.
      */
-    private final ExecutorService executorService;
+    private ExecutorService executorService;
     /**
      * An array of NoteContainer objects used to manage and represent musical notes within the
      * context of the application. Each NoteContainer corresponds to a specific note and its associated
@@ -595,6 +595,11 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         log.debug("Opening main application window...");
         this.window.open();
 
+        if (executorService.isShutdown()) {
+            executorService = Executors.newCachedThreadPool();
+        }
+
+
         log.info("Application started successfully.");
     }
 
@@ -612,7 +617,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         this.model.getMicrophone().close();
 
         log.debug("Shutting down executor service...");
-        executorService.shutdown();
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdownNow();
+        }
 
         log.info("Application stopped successfully.");
     }
