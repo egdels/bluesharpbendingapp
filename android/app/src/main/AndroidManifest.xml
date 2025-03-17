@@ -38,7 +38,8 @@
             android:supportsRtl="true"
             android:usesCleartextTraffic="false"
             android:allowBackup="false"
-            android:fullBackupContent="false">
+            android:fullBackupContent="false"
+            >
         <activity
                 android:name=".app.MainActivity"
                 android:exported="true"

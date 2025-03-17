@@ -397,93 +397,164 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     public void initNotes() {
         log.info("Initializing notes...");
 
-        if (window.isHarpViewActive()) {
-            log.debug("Harp view is active. Proceeding to initialize notes...");
-
-            ArrayList<NoteContainer> notesList = new ArrayList<>();
-            Harmonica harmonica = model.getHarmonica();
-            HarpView harpView = window.getHarpView();
-
-            for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX; channel++) {
-                log.debug("Processing channel {}...", channel);
-
-                // Blowing notes
-                double frequency0 = harmonica.getNoteFrequency(channel, 0);
-                boolean hasInverseCentsHandling = harmonica.hasInverseCentsHandling(channel);
-                String note0 = NoteLookup.getNoteName(frequency0);
-                if (note0 != null) {
-                    log.debug("Adding blowing note for channel {} with frequency: {} and note: {}", channel, frequency0, note0);
-                    notesList.add(new NoteContainer(channel, 0, note0, harmonica, harpView, hasInverseCentsHandling));
-                } else {
-                    log.warn("Blowing note lookup for frequency {} returned null for channel {}", frequency0, channel);
-                }
-
-                // Drawing notes
-                double frequency1 = harmonica.getNoteFrequency(channel, 1);
-                String note1 = NoteLookup.getNoteName(frequency1);
-                if (note1 != null) {
-                    log.debug("Adding drawing note for channel {} with frequency: {} and note: {}", channel, frequency1, note1);
-                    notesList.add(new NoteContainer(channel, 1, note1, harmonica, harpView, hasInverseCentsHandling));
-                } else {
-                    log.warn("Drawing note lookup for frequency {} returned null for channel {}", frequency1, channel);
-                }
-
-                // Bending notes
-                int blowBendingCount = harmonica.getBlowBendingTonesCount(channel);
-                int drawBendingCount = harmonica.getDrawBendingTonesCount(channel);
-                log.debug("Processing bending notes for channel {} with blow bending count: {}, draw bending count: {}", channel, blowBendingCount, drawBendingCount);
-                for (int note = 2; note < 2 + drawBendingCount; note++) {
-                    String noteEntry = NoteLookup.getNoteName(harmonica.getNoteFrequency(channel, note));
-                    if (noteEntry != null) {
-                        log.debug("Adding draw bending note for channel {}: {}", channel, noteEntry);
-                        notesList.add(new NoteContainer(channel, note, noteEntry, harmonica, harpView));
-                    } else {
-                        log.warn("Bending note lookup failed for channel {}, note index {}", channel, note);
-                    }
-                }
-                for (int note = -blowBendingCount; note < 0; note++) {
-                    String noteEntry = NoteLookup.getNoteName(harmonica.getNoteFrequency(channel, note));
-                    if (noteEntry != null) {
-                        log.debug("Adding blow bending note for channel {}: {}", channel, noteEntry);
-                        notesList.add(new NoteContainer(channel, note, noteEntry, harmonica, harpView, true));
-                    } else {
-                        log.warn("Bending note lookup failed for channel {}, note index {}", channel, note);
-                    }
-                }
-
-                // Overblows
-                if (!hasInverseCentsHandling) {
-                    double overblowFrequency = harmonica.getNoteFrequency(channel, -1);
-                    String noteEntry = NoteLookup.getNoteName(overblowFrequency);
-                    if (noteEntry != null) {
-                        log.debug("Adding overblow for channel {}: {}", channel, noteEntry);
-                        notesList.add(new NoteContainer(channel, -1, noteEntry, harmonica, harpView, false));
-                    } else {
-                        log.warn("Overblow note lookup failed for channel {}, frequency {}", channel, overblowFrequency);
-                    }
-                }
-
-                // Overdraws
-                if (hasInverseCentsHandling) {
-                    double overdrawFrequency = harmonica.getNoteFrequency(channel, 2);
-                    String noteEntry = NoteLookup.getNoteName(overdrawFrequency);
-                    if (noteEntry != null) {
-                        log.debug("Adding overdraw for channel {}: {}", channel, noteEntry);
-                        notesList.add(new NoteContainer(channel, 2, noteEntry, harmonica, harpView, true));
-                    } else {
-                        log.warn("Overdraw note lookup failed for channel {}, frequency {}", channel, overdrawFrequency);
-                    }
-                }
-            }
-
-            log.debug("Finished processing all channels. Total notes generated: {}", notesList.size());
-            this.noteContainers = Arrays.copyOf(notesList.toArray(), notesList.size(), NoteContainer[].class);
-
-            log.debug("Initializing notes in the harp view...");
-            harpView.initNotes(noteContainers);
-            log.info("Notes initialization completed successfully.");
-        } else {
+        if (!window.isHarpViewActive()) {
             log.warn("Notes initialization skipped. Harp view is not active.");
+            return;
+        }
+
+        log.debug("Harp view is active. Proceeding to initialize notes...");
+
+        ArrayList<NoteContainer> notesList = new ArrayList<>();
+        Harmonica harmonica = model.getHarmonica();
+        HarpView harpView = window.getHarpView();
+
+        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX; channel++) {
+            processChannelNotes(channel, harmonica, harpView, notesList);
+        }
+
+        log.debug("Finished processing all channels. Total notes generated: {}", notesList.size());
+        this.noteContainers = Arrays.copyOf(notesList.toArray(), notesList.size(), NoteContainer[].class);
+
+        log.debug("Initializing notes in the harp view...");
+        harpView.initNotes(noteContainers);
+        log.info("Notes initialization completed successfully.");
+    }
+
+    /**
+     * Processes the musical notes associated with a specific harmonica channel.
+     * This method updates the provided list of note containers by adding blowing, drawing,
+     * bending, overblow, and overdraw notes for the specified channel.
+     *
+     * @param channel the harmonica channel to process
+     * @param harmonica the Harmonica object representing the harmonica being played
+     * @param harpView the HarpView object containing information related to the visual representation of the harmonica
+     * @param notesList the list of NoteContainer objects that will be updated with the notes from the specified channel
+     */
+    private void processChannelNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+        log.debug("Processing channel {}...", channel);
+
+        addBlowingNotes(channel, harmonica, harpView, notesList);
+        addDrawingNotes(channel, harmonica, harpView, notesList);
+        addBendingNotes(channel, harmonica, harpView, notesList);
+        addOverblowNotes(channel, harmonica, harpView, notesList);
+        addOverdrawNotes(channel, harmonica, harpView, notesList);
+    }
+
+    /**
+     * Adds a blowing note for the specified channel of the harmonica to the notes list.
+     *
+     * @param channel The channel of the harmonica for which the blowing note needs to be added.
+     * @param harmonica The harmonica object providing note frequency and other properties.
+     * @param harpView The view representation of the harmonica for UI or processing purposes.
+     * @param notesList The list of note containers to which the blowing note will be added.
+     */
+    private void addBlowingNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+        double frequency = harmonica.getNoteFrequency(channel, 0);
+        boolean hasInverseCentsHandling = harmonica.hasInverseCentsHandling(channel);
+        String note = NoteLookup.getNoteName(frequency);
+
+        if (note != null) {
+            log.debug("Adding blowing note for channel {} with frequency: {} and note: {}", channel, frequency, note);
+            notesList.add(new NoteContainer(channel, 0, note, harmonica, harpView, hasInverseCentsHandling));
+        } else {
+            log.warn("Blowing note lookup for frequency {} returned null for channel {}", frequency, channel);
+        }
+    }
+
+    /**
+     * Adds drawing notes to the specified notes list based on the harmonica channel and
+     * its frequency. The method retrieves the note name from the frequency and creates
+     * a NoteContainer to store the note details.
+     *
+     * @param channel the channel number of the harmonica for which the drawing note is being added
+     * @param harmonica the harmonica object to retrieve the note frequency
+     * @param harpView the harp view object used to associate the note with its visual representation
+     * @param notesList the list to which the newly created NoteContainer will be added
+     */
+    private void addDrawingNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+        double frequency = harmonica.getNoteFrequency(channel, 1);
+        String note = NoteLookup.getNoteName(frequency);
+
+        if (note != null) {
+            log.debug("Adding drawing note for channel {} with frequency: {} and note: {}", channel, frequency, note);
+            notesList.add(new NoteContainer(channel, 1, note, harmonica, harpView));
+        } else {
+            log.warn("Drawing note lookup for frequency {} returned null for channel {}", frequency, channel);
+        }
+    }
+
+    /**
+     * Adds bending notes for a specific channel to the list of note containers.
+     * Bending notes include both drawing and blowing bending notes.
+     *
+     * @param channel the channel of the harmonica for which bending notes are to be added
+     * @param harmonica the harmonica object containing information about the instrument's configuration
+     * @param harpView the view representation of the harmonica, used for display or interaction
+     * @param notesList the list of NoteContainer objects to which the bending notes will be added
+     */
+    private void addBendingNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+        int blowBendingCount = harmonica.getBlowBendingTonesCount(channel);
+        int drawBendingCount = harmonica.getDrawBendingTonesCount(channel);
+        log.debug("Processing bending notes for channel {} with blow bending count: {}, draw bending count: {}", channel, blowBendingCount, drawBendingCount);
+
+        for (int note = 2; note < 2 + drawBendingCount; note++) {
+            addNoteToList(channel, note, harmonica, harpView, notesList, "drawing bending");
+        }
+        for (int note = -blowBendingCount; note < 0; note++) {
+            addNoteToList(channel, note, harmonica, harpView, notesList, "blow bending");
+        }
+    }
+
+    /**
+     * Adds overblow notes to the provided list of notes if the harmonica does not handle
+     * inverse cents for the specified channel.
+     *
+     * @param channel the channel number to check for inverse cents handling
+     * @param harmonica the Harmonica object that provides configuration and state
+     * @param harpView the HarpView object representing the visual representation of the harmonica
+     * @param notesList the list of NoteContainer objects to which overblow notes are added
+     */
+    private void addOverblowNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+        if (!harmonica.hasInverseCentsHandling(channel)) {
+            addNoteToList(channel, -1, harmonica, harpView, notesList, "overblow");
+        }
+    }
+
+    /**
+     * Adds overdraw notes to the provided notes list for the specified channel.
+     *
+     * @param channel The channel number for which overdraw notes are being added.
+     * @param harmonica The Harmonica object containing information about note handling.
+     * @param harpView The HarpView object used for note visualization.
+     * @param notesList The list of NoteContainer objects where the overdraw notes will be added.
+     */
+    private void addOverdrawNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+        if (harmonica.hasInverseCentsHandling(channel)) {
+            addNoteToList(channel, 2, harmonica, harpView, notesList, "overdraw");
+        }
+    }
+
+    /**
+     * Adds a note to the provided list of notes. This includes calculating the frequency and note name
+     * based on the given harmonica and channel information and then appending a new {@code NoteContainer}
+     * object to the list if the note lookup is successful.
+     *
+     * @param channel the channel number on the harmonica where the note is to be added
+     * @param noteIndex the index of the note within the specific channel
+     * @param harmonica the harmonica object used to fetch the frequency of the note
+     * @param harpView the harp view associated with the harmonica object
+     * @param notesList the list of {@code NoteContainer} objects to which the note will be added
+     * @param logMessage the log message string to be included in debug or warning logs
+     */
+    private void addNoteToList(int channel, int noteIndex, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList, String logMessage) {
+        double frequency = harmonica.getNoteFrequency(channel, noteIndex);
+        String note = NoteLookup.getNoteName(frequency);
+
+        if (note != null) {
+            log.debug("Adding {} note for channel {} with frequency: {} and note: {}", logMessage, channel, frequency, note);
+            notesList.add(new NoteContainer(channel, noteIndex, note, harmonica, harpView));
+        } else {
+            log.warn("{} note lookup failed for channel {}, frequency {}", logMessage, channel, frequency);
         }
     }
 

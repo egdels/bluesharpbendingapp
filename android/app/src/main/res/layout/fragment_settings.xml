@@ -28,8 +28,11 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:stretchColumns="*"
-             tools:context=".view.android.SettingsFragment">
+             android:shrinkColumns="1"
+             android:stretchColumns="0"
+
+
+    tools:context=".view.android.SettingsFragment">
 
     <TableRow
             android:layout_width="0dp"
@@ -39,7 +42,7 @@
                 android:id="@+id/settings_alog_label"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_algo_label"
@@ -50,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="10dp"
                 android:spinnerMode="dropdown"/>
 
     </TableRow>
@@ -63,7 +66,7 @@
             android:id="@+id/settings_conf_label"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/settings_conf_label"
@@ -74,7 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
-            android:layout_marginEnd="50dp"
+            android:layout_marginEnd="10dp"
             android:spinnerMode="dropdown"/>
 
     </TableRow>
@@ -87,7 +90,7 @@
                 android:id="@+id/settings_key_label"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_key_label"
@@ -98,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="10dp"
                 android:spinnerMode="dropdown"/>
 
     </TableRow>
@@ -111,7 +114,7 @@
                 android:id="@+id/settings_tune_label"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_tune_label"
@@ -122,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="10dp"
                 android:spinnerMode="dropdown"/>
 
     </TableRow>
@@ -135,7 +138,7 @@
                 android:id="@+id/settings_pitches_label"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_pitches_label"
@@ -146,7 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="10dp"
                 android:spinnerMode="dropdown"/>
 
     </TableRow>
@@ -159,7 +162,7 @@
                 android:id="@+id/settings_screenlock_label"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_screenlock_label"
@@ -170,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:showText="true"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="10dp"
                 android:minHeight="48dp"/>
 
     </TableRow>
@@ -183,7 +186,7 @@
                 android:id="@+id/settings_reset_label"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/settings_reset_label"
@@ -197,7 +200,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/settings_reset_button"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="10dp"
                 app:strokeColor="?attr/buttonStrokeColor"/>
     </TableRow>
 

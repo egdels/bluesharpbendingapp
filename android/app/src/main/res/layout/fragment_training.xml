@@ -30,18 +30,15 @@
     android:layout_height="match_parent"
     tools:context=".view.android.TrainingFragment">
 
-
     <LinearLayout
         android:id="@+id/linearLayoutLeft"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-
         app:layout_constraintEnd_toStartOf="@+id/tableLayoutRight"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -57,7 +54,6 @@
             android:visibility="visible" />
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/tableLayoutRight"
         android:layout_width="0dp"
@@ -67,7 +63,6 @@
         android:paddingRight="15dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/linearLayoutLeft">
 
@@ -76,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/training_trainings_label"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Spinner
             android:id="@+id/training_trainings_list"
@@ -84,15 +79,14 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:minHeight="48dp"
-            android:spinnerMode="dropdown"
-            />
+            android:spinnerMode="dropdown" />
 
         <TextView
             android:id="@+id/training_precision_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/training_precision_label"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Spinner
             android:id="@+id/training_precision_list"
@@ -107,15 +101,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/training_progress_label"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:progress="0"/>
+
 
         <Button
             android:id="@+id/training_start_button"
@@ -127,8 +123,6 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             app:strokeColor="?attr/buttonStrokeColor"/>
 
-
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

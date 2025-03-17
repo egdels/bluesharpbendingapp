@@ -24,7 +24,6 @@ package de.schliweb.bluesharpbendingapp.app;
  */
 
 import android.Manifest;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -37,6 +36,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.splashscreen.SplashScreen;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -197,31 +198,29 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     private AndroidModel model;
 
+
     /**
-     * Manages runtime permission requests for a specific permission and handles
-     * the result of the request action. This variable is a registered launcher using
-     * the ActivityResultContracts.RequestPermission contract.
+     * This launcher is used to request a single runtime permission from the user.
+     * It uses the {@link ActivityResultContracts.RequestPermission} contract to handle the permission request
+     * and receive the result in the lambda expression.
      * <p>
-     * When a permission is granted:
-     * - If a microphone instance is available in the model, it is opened for use.
+     * The result is a boolean indicating whether the permission was granted or not.
+     * This result is then stored in the {@link #permissionGranted} field.
      * <p>
-     * When a permission is denied:
-     * - Displays an informational dialog to the user about the permission requirement.
-     * <p>
-     * This variable uses a lambda function to handle the result of the permission request.
-     * Updates the `permissionGranted` field based on whether the requested permission
-     * was granted or denied.
+     * Example:
+     * <pre>
+     *     if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+     *         // Permission already granted
+     *     } else {
+     *         requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+     *     }
+     * </pre>
+     * </p>
+     * @see ActivityResultContracts.RequestPermission
+     * @see ActivityResultLauncher
+     * @see Manifest.permission
      */
-    protected final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-        permissionGranted = isGranted;
-        if (!permissionGranted) {
-            showPermissionInformation();
-        }
-        Microphone microphone = model.getMicrophone();
-        if (permissionGranted && microphone != null) {
-            model.getMicrophone().open();
-        }
-    });
+    protected final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> permissionGranted = isGranted);
 
     /**
      * Indicates whether the application is currently in a paused state.
@@ -260,6 +259,15 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Getter
     @Setter
     private TrainingViewHandler trainingViewHandler;
+
+    /**
+     * The main controller of the application.
+     * This controller is responsible for coordinating the interaction
+     * between the different parts of the application, handling user input,
+     * and updating the application's state. It acts as a central hub
+     * for application logic and manages the flow of data.
+     */
+    private MainController mainController;
 
 
     /**
@@ -311,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         return androidModel;
     }
 
-
     /**
      * Initializes the main activity, setting up the user interface, managing permissions,
      * configuring fragments, and initializing application settings.
@@ -325,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         // Handle the splash screen transition.
         SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         model = readModel();
 
         Microphone microphone = new MicrophoneAndroid();
@@ -333,14 +340,15 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
         microphone.setConfidence(model.getStoredConfidenceIndex());
 
-        // check permission
-        permissionGranted = checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
-
-        if (!permissionGranted) {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+            permissionGranted = true;
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
+            showPermissionInformation();
+        } else {
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
         }
 
-        MainController mainController = new MainController(this, model);
+        mainController = new MainController(this, model);
 
         FragmentViewModel viewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
         viewModel.getSelectedFragmentView().observe(this, item -> {
@@ -380,9 +388,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
             }
         });
 
-
-
-
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -394,12 +399,10 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        hideAppBar();
-
         handleLookScreen(model.getStoredLockScreenIndex() > 0);
 
         if (permissionGranted) {
-            microphone.open();
+            mainController.start();
         }
     }
 
@@ -460,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      */
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        if ((isHarpViewActive() || isTrainingViewActive()) && (e.getAction() == MotionEvent.ACTION_UP)) {
+        if (e.getAction() == MotionEvent.ACTION_UP) {
             if (isAppBarHidden) {
                 unHideAppBar();
             } else {
@@ -611,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
 
     @Override
     public void open() {
-        // no need on android because mainController is not started.
+        // no need on android
     }
 
 
@@ -619,6 +622,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     public void onDestroy() {
         super.onDestroy();
         storeModel(model);
+        mainController.stop();
     }
 
 
@@ -650,9 +654,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Override
     protected void onResume() {
         super.onResume();
-        Microphone microphone = model.getMicrophone();
-        if (isPaused && permissionGranted && microphone != null) {
-            model.getMicrophone().open();
+        if (isPaused && permissionGranted) {
+            mainController.start();
         }
         isPaused = false;
     }
@@ -676,9 +679,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     protected void onPause() {
         super.onPause();
         isPaused = true;
-        Microphone microphone = model.getMicrophone();
-        if (permissionGranted && microphone != null) {
-            model.getMicrophone().close();
+        if (permissionGranted) {
+           mainController.stop();
         }
     }
 

@@ -13,7 +13,7 @@ class AndroidModelTest {
         val input = "[setStoredLockScreenIndex:5]"
         val model = AndroidModel.createFromString(input)
 
-        Assert.assertNotNull("The model should not be null", model)
+        Assert.assertNotNull("The model should not be null in testCreateFromStringValidSingleEntry", model)
         Assert.assertEquals(
             "The storedLockScreenIndex should be set to 5",
             5,
@@ -30,9 +30,9 @@ class AndroidModelTest {
         val input = "[]"
         val model = AndroidModel.createFromString(input)
 
-        Assert.assertNotNull("The model should not be null", model)
+        Assert.assertNotNull("The model should not be null in testCreateFromStringEmptyInput", model)
         Assert.assertEquals(
-            "The storedLockScreenIndex should remain at its default value",
+            "The storedLockScreenIndex should remain at its default value in testCreateFromStringEmptyInput",
             0,
             model.storedLockScreenIndex.toLong()
         )
@@ -47,9 +47,9 @@ class AndroidModelTest {
         val input = "[setInvalidMethod:10]"
         val model = AndroidModel.createFromString(input)
 
-        Assert.assertNotNull("The model should not be null", model)
+        Assert.assertNotNull("The model should not be null in testCreateFromStringInvalidMethodName", model)
         Assert.assertEquals(
-            "The storedLockScreenIndex should remain at its default value",
+            "The storedLockScreenIndex should remain at its default value in testCreateFromStringInvalidMethodName",
             0,
             model.storedLockScreenIndex.toLong()
         )
@@ -69,7 +69,7 @@ class AndroidModelTest {
         val input = "[setStoredLockScreenIndex:5, setStoredLockScreenIndex:10]"
         val model = AndroidModel.createFromString(input)
 
-        Assert.assertNotNull("The model should not be null", model)
+        Assert.assertNotNull("The model should not be null in testCreateFromStringMultipleEntries", model)
         Assert.assertEquals(
             "The storedLockScreenIndex should be set to the latest provided value, 10",
             10,
@@ -86,9 +86,9 @@ class AndroidModelTest {
         val input = "invalid_format_string"
         val model = AndroidModel.createFromString(input)
 
-        Assert.assertNotNull("The model should not be null", model)
+        Assert.assertNotNull("The model should not be null in testCreateFromStringInvalidFormat", model)
         Assert.assertEquals(
-            "The storedLockScreenIndex should remain at its default value",
+            "The storedLockScreenIndex should remain at its default value in testCreateFromStringInvalidFormat",
             0,
             model.storedLockScreenIndex.toLong()
         )

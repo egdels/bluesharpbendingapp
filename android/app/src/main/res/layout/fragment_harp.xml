@@ -50,7 +50,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -61,7 +61,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -72,7 +72,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -83,7 +83,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -94,7 +94,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -105,7 +105,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -116,7 +116,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -127,7 +127,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -138,7 +138,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -149,7 +149,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
         </TableRow>
@@ -167,7 +167,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -178,7 +178,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -189,7 +189,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -200,7 +200,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -211,7 +211,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -222,7 +222,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -233,7 +233,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -244,7 +244,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -255,7 +255,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -266,7 +266,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
         </TableRow>
 
@@ -284,7 +284,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -295,7 +295,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -306,7 +306,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -317,7 +317,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -328,7 +328,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -339,7 +339,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -350,7 +350,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -361,7 +361,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -372,7 +372,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -383,7 +383,7 @@
                     android:background="@drawable/note_blow"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
         </TableRow>
@@ -401,7 +401,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -412,7 +412,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -423,7 +423,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -434,7 +434,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -445,7 +445,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -456,7 +456,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -467,7 +467,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -478,7 +478,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -489,7 +489,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
             <TextView
@@ -500,7 +500,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:visibility="invisible"/>
 
 
@@ -519,7 +519,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="1"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -529,7 +529,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="2"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -539,7 +539,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="3"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -549,7 +549,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="4"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -560,7 +560,7 @@
 
                     android:gravity="center"
                     android:text="5"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -571,7 +571,7 @@
 
                     android:gravity="center"
                     android:text="6"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -582,7 +582,7 @@
 
                     android:gravity="center"
                     android:text="7"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -593,7 +593,7 @@
 
                     android:gravity="center"
                     android:text="8"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -604,7 +604,7 @@
 
                     android:gravity="center"
                     android:text="9"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
 
             <TextView
@@ -615,7 +615,7 @@
 
                     android:gravity="center"
                     android:text="10"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     tools:ignore="HardcodedText"/>
         </TableRow>
 
@@ -632,7 +632,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -644,7 +644,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -656,7 +656,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -668,7 +668,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -680,7 +680,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -692,7 +692,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -704,7 +704,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -716,7 +716,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -728,7 +728,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -740,7 +740,7 @@
                     android:background="@drawable/note_channel"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
         </TableRow>
@@ -758,7 +758,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -770,7 +770,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -782,7 +782,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -794,7 +794,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -806,7 +806,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -818,7 +818,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -830,7 +830,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -842,7 +842,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -854,7 +854,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -866,7 +866,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
         </TableRow>
@@ -884,7 +884,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"
                     tools:ignore="TooManyViews"/>
@@ -897,7 +897,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -909,7 +909,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -921,7 +921,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -933,7 +933,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -945,7 +945,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -957,7 +957,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -969,7 +969,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -981,7 +981,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -993,7 +993,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
         </TableRow>
@@ -1011,7 +1011,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1023,7 +1023,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1035,7 +1035,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1047,7 +1047,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1059,7 +1059,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1071,7 +1071,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1083,7 +1083,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1095,7 +1095,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1107,7 +1107,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
 
@@ -1119,7 +1119,7 @@
                     android:background="@drawable/note_draw"
                     android:textColor="@color/black"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
 
                     android:visibility="invisible"/>
         </TableRow>

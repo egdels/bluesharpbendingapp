@@ -115,7 +115,7 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
     public void setTrainings(String[] trainings) {
         Spinner spinner = binding.trainingTrainingsList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, trainings);
-        adapter.setDropDownViewResource(R.layout.spinner_list);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -133,7 +133,7 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
     public void setPrecisions(String[] precisions) {
         Spinner spinner = binding.trainingPrecisionList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, precisions);
-        adapter.setDropDownViewResource(R.layout.spinner_list);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

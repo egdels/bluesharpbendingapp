@@ -180,7 +180,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         }
         Spinner spinner = binding.settingsKeyList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, keys);
-        adapter.setDropDownViewResource(R.layout.spinner_list);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -217,7 +217,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         }
         Spinner spinner = binding.settingsTuneList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, tunes);
-        adapter.setDropDownViewResource(R.layout.spinner_list);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -240,7 +240,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         }
         Spinner spinner = binding.settingsAlgoList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, algorithms);
-        adapter.setDropDownViewResource(R.layout.spinner_list);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -273,7 +273,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         }
         Spinner spinner = binding.settingsConfList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, confidences);
-        adapter.setDropDownViewResource(R.layout.spinner_list);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -327,7 +327,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         }
         Spinner spinner = binding.settingsPitchesList;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, pitches);
-        adapter.setDropDownViewResource(R.layout.spinner_list);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
