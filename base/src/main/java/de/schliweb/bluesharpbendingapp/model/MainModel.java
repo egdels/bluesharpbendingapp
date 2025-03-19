@@ -47,42 +47,31 @@ import java.util.ArrayList;
  * representation and accessing supported attributes like algorithms, keys, tunes,
  * and concert pitches.
  */
+@Getter
 @Setter
 @Slf4j
 public class MainModel {
 
-    @Getter
     private Harmonica harmonica;
 
-
-    @Getter
     private Training training;
 
-
-    @Getter
     private Microphone microphone;
 
-    @Getter
     private int storedAlgorithmIndex = 0;
 
-    @Getter
     private int storedKeyIndex = 4;
 
-    @Getter
     private int storedMicrophoneIndex = 0;
 
-    @Getter
     private int storedTuneIndex = 6;
 
-    @Getter
     private int storedConcertPitchIndex = 11;
 
-    @Getter
     private int storedTrainingIndex = 0;
 
-    private int storedPrecisionIndex;
+    private int storedPrecisionIndex=2;
 
-    @Getter
     private int storedConfidenceIndex = 0;
 
     /**

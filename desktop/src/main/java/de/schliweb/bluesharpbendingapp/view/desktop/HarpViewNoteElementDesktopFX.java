@@ -25,13 +25,9 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.text.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +78,6 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      */
     private Pane enlargedPane;
 
-
     /**
      * Constructs an instance of the HarpViewNoteElementDesktopFX with the specified Pane.
      * This constructor initializes the provided Pane, retrieves its child components,
@@ -97,7 +92,6 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
         this.notePane = notePane;
         bindLabelToPane(notePane);
         initialCssClasses = new ArrayList<>(notePane.getStyleClass());
-
     }
 
     /**
@@ -121,11 +115,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      *             structure where the first child is a Label element.
      */
     private void bindLabelToPane(Pane pane) {
-        Label label = (Label) pane.getChildren().get(1);
-        label.layoutXProperty().unbind();
-        label.layoutYProperty().unbind();
-        label.layoutXProperty().bind(pane.widthProperty().subtract(label.widthProperty()).divide(2));
-        label.layoutYProperty().bind(pane.heightProperty().subtract(label.heightProperty()).divide(2));
+        PaneUtils.bindLabelToPane(pane);
     }
 
     /**
@@ -145,70 +135,32 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
 
     @Override
     public void clear() {
-        if(enlargedPane != null) {
+        if (enlargedPane != null) {
             clearPane(enlargedPane);
         }
         clearPane(notePane);
     }
 
     /**
-     * Updates the display properties of the given {@code Pane} based on the provided cents value.
-     * This method adjusts the appearance and position of visual elements in the pane, such as a line
-     * and label, to reflect the specified cents input. The function ensures that the updates
-     * are performed on the JavaFX Application Thread.
+     * Updates the graphical representation of a given {@code Pane} based on the specified pitch offset in cents.
+     * This method schedules the update to be executed on the JavaFX Application Thread to ensure thread safety.
+     * The update involves coordinating changes to the pane and, if the pane is set as the enlarged pane,
+     * updates the associated enlarged label to reflect the new pitch offset.
      *
-     * @param pane  The {@code Pane} to be updated. It is expected to contain a specific structure:
-     *              the second child is a {@code Line} element, and the third child (if present) is a {@code Label}.
-     * @param cents The value representing the pitch offset in cents, clamped between -50 and 50. This value
-     *              determines the line's position, thickness, and color as well as the text displayed in the label.
+     * @param pane  The {@code Pane} to be updated. It is expected to have specific structural characteristics
+     *              required by the underlying utility methods invoked during the update process.
+     * @param cents The pitch offset to be applied, expressed in cents. Positive values indicate a sharper pitch,
+     *              while negative values represent a flatter pitch.
      */
     private void updatePane(Pane pane, double cents) {
-        final int PADDING = 1; // Padding to account for the border of the pane
-
         javafx.application.Platform.runLater(() -> {
-            // Get the height of the parent pane
-            double height = pane.getHeight();
 
-            // Clamp the cents value between -50 and 50 to ensure valid input
-            double clampedCents = Math.max(-50, Math.min(50, cents));
+            PaneUtils.updateLine(pane, cents);
 
-            // Calculate the line thickness, ensuring it is at least 5 pixels
-            int lineHeight = Math.max((int) (height / 10.0), 5);
-
-            // Calculate the adjusted Y-position for the line
-            // Subtract the line thickness from the available height and position proportionally
-            double effectiveHeight = height - lineHeight;
-
-            double yPosition = (effectiveHeight * ((-clampedCents + 50) / 100.0)) + ((double) lineHeight / 2);
-
-            // Calculate the color of the line
-            // The color transitions between red and green based on the absolute value of `cents`
-            double absValue = Math.abs(cents / 50.0);
-            Color lineColor = Color.rgb((int) (250.0 * absValue),          // Red component increases with abs value of cents
-                    (int) (250.0 * (1.0 - absValue)),  // Green component decreases with abs value of cents
-                    0                                  // Blue component is always 0
-            );
-
-            Line line = (Line) pane.getChildren().get(0);
-            // Set the line thickness
-            line.setStrokeWidth(lineHeight);
-
-            // Set the calculated color as the stroke color
-            line.setStroke(lineColor);
-
-            // Bind the start and end X-coordinates of the line to fit within the pane, considering the stroke width and padding
-            line.startXProperty().bind(line.strokeWidthProperty().divide(2).add(PADDING));
-            line.endXProperty().bind(pane.widthProperty().subtract(PADDING).subtract(line.strokeWidthProperty().divide(2)));
-
-            // Set the calculated Y-position of the line for proper vertical alignment
-            line.setTranslateY(yPosition);
-
-            if(pane.equals(enlargedPane)) {
+            if (pane.equals(enlargedPane)) {
                 updateEnlargedLabelCent(cents);
             }
 
-            // Make the line visible
-            line.setVisible(true);
         });
     }
 
@@ -289,49 +241,15 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
     }
 
     /**
-     * Updates the graphical content of the enlarged label to display the note name and the pitch offset in cents.
-     * The method formats the display to include the note name in bold font and the offset in monospaced font,
-     * ensuring proper alignment and scaling of the content.
+     * Updates the label text of the enlarged pane to reflect the specified pitch offset in cents.
+     * This method utilizes {@code PaneUtils.updateLabelCent()} to dynamically adjust the label
+     * text based on the provided {@code cents} value. The label to be updated is expected to be
+     * the first child within the corresponding {@code notePane}.
      *
-     * @param cents The pitch offset to be displayed, expressed in cents. Positive values indicate a sharper pitch,
-     *              while negative values represent a flatter pitch.
+     * @param cents The pitch offset to be displayed on the label, expressed in cents. Positive values
+     *              indicate a sharper pitch, while negative values represent a flatter pitch.
      */
     private void updateEnlargedLabelCent(double cents) {
-        // Create a new Text object that displays the note name.
-        // The note name is retrieved from the second child (index 1) of the notePane.
-        // The text is styled with bold font and a font size of 40.
-        Text noteTextNode = new Text(((Label)notePane.getChildren().get(1)).getText());
-        noteTextNode.setFont(Font.font(null, FontWeight.BOLD, 40));
-
-        // Add a new line to separate the note name from the cents display.
-        Text newLine = new Text("\n");
-
-        // Format the cents value as a string in the format "Cents:+/-xxx".
-        // The "+" or "-" sign indicates whether the pitch is sharper or flatter.
-        String centsString = String.format("Cents:%+3d", (int)cents);
-        Text centsTextNode = new Text(centsString);
-        centsTextNode.setFont(Font.font("Monospace", 18)); // Use monospaced font for clarity.
-
-        // Combine the note name, new line, and cents value into a single TextFlow element.
-        // This layout ensures proper alignment and structure for displaying the text elements.
-        TextFlow textFlow = new TextFlow(noteTextNode, newLine, centsTextNode);
-        textFlow.setTextAlignment(TextAlignment.CENTER); // Center-align the contents horizontally.
-        textFlow.setMinWidth(100); // Set a minimum width to ensure consistent layout.
-
-        // Retrieve the Label element from the enlargedPane,
-        // which is responsible for displaying the graphical representation of the note.
-        Label label = (Label) enlargedPane.getChildren().get(1);
-
-        // Bind the width of the TextFlow to the width of the Label,
-        // ensuring the layout adapts to the Label's size dynamically.
-        textFlow.prefWidthProperty().bind(label.widthProperty());
-
-        // Set the TextFlow as the graphical content of the Label.
-        // This replaces any existing content with the combined note and cents display.
-        label.setGraphic(textFlow);
-
-        // Center the Label's alignment and its graphical content both vertically and horizontally.
-        label.setAlignment(Pos.CENTER);
-        label.setContentDisplay(ContentDisplay.CENTER);
+        PaneUtils.updateLabelCent(enlargedPane, ((Label) notePane.getChildren().get(1)).getText(), cents);
     }
 }

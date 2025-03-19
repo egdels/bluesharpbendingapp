@@ -83,9 +83,25 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
     debugImplementation 'androidx.test:core:1.6.1'
     androidTestImplementation 'org.mockito:mockito-android:5.14.2'
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.25"))
 }
 
 android.buildTypes.release.ndk.debugSymbolLevel = 'FULL'
+
+tasks.withType(Test).configureEach {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+tasks.register("runAllTests") {
+    dependsOn "test", "connectedAndroidTest"
+}
+
+
+tasks.build {
+    dependsOn "runAllTests"
+}

@@ -163,20 +163,20 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
 
     @Override
     public HarpViewNoteElement getActualHarpViewElement() {
-        return HarpViewNoteElementAndroid.getInstance(binding.trainingNote);
+        return TrainingViewNoteElementAndroid.getInstance(binding.trainingNote);
     }
 
 
     @Override
     public void initTrainingContainer(TrainingContainer trainingContainer) {
         TextView textView = binding.trainingNote;
-        textView.setText(trainingContainer.getActualNoteName() != null ? trainingContainer.getActualNoteName() : "");
         textView.setVisibility(View.VISIBLE);
         LayerDrawable layout = (LayerDrawable) textView.getBackground();
         GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
         line.setAlpha(0); // hide line
         binding.progressBar.setProgress(trainingContainer.getProgress());
-        HarpViewNoteElementAndroid.getInstance(textView).clear();
+        TrainingViewNoteElementAndroid.getInstance(textView).setNoteName(trainingContainer.getActualNoteName()!=null ? trainingContainer.getActualNoteName() : "");
+        TrainingViewNoteElementAndroid.getInstance(textView).clear();
     }
 
 

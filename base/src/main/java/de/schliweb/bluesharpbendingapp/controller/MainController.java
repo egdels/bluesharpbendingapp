@@ -32,6 +32,7 @@ import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
 import de.schliweb.bluesharpbendingapp.model.training.Training;
 import de.schliweb.bluesharpbendingapp.view.*;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -92,6 +93,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * such as note updates, processing input data, and managing training operations.
      * Ensures safe execution of tasks in a multithreaded environment.
      */
+    @Setter
     private ExecutorService executorService;
     /**
      * An array of NoteContainer objects used to manage and represent musical notes within the

@@ -254,13 +254,13 @@ public class TrainingViewDesktopFXController implements TrainingView {
 
     @Override
     public HarpViewNoteElement getActualHarpViewElement() {
-        return HarpViewNoteElementDesktopFX.getInstance(trainingNote);
+        return TrainingViewNoteElementDesktopFX.getInstance(trainingNote);
     }
 
     @Override
     public void initTrainingContainer(TrainingContainer trainingContainer) {
         Platform.runLater(() -> {
-            HarpViewNoteElementDesktopFX actualNoteElementDesktop = HarpViewNoteElementDesktopFX.getInstance(trainingNote);
+            TrainingViewNoteElementDesktopFX actualNoteElementDesktop = TrainingViewNoteElementDesktopFX.getInstance(trainingNote);
             actualNoteElementDesktop.setNoteName(trainingContainer.getActualNoteName() != null ?
                     trainingContainer.getActualNoteName() : "");
             int progress = trainingContainer.getProgress();
