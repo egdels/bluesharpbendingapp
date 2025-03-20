@@ -1,0 +1,2 @@
+json_key_file("/Users/christian/Documents/git/bluesharpbendingapp/android/secure/fastlane-supply.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("de.schliweb.bluesharpbendingapp") # e.g. com.krausefx.app
