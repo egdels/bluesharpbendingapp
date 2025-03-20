@@ -65,7 +65,7 @@ class MainActivityLifecycleTest {
      * Fails the test if an exception occurs during any of the lifecycle transitions or recreations.
      */
     @Test
-    fun testLifecycle_NoExceptionThroughCompleteLifecycle() {
+    fun testLifecycleNoExceptionThroughCompleteLifecycle() {
         try {
             // Simulate the lifecycle transitions of the activity, starting from the CREATED state
             activityScenarioRule.scenario.moveToState(Lifecycle.State.CREATED)
