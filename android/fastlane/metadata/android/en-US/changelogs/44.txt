@@ -1,0 +1,2 @@
+* Static landscape orientation has been removed to support Android 16+
+* The layout has been adjusted and improved accordingly

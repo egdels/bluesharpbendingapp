@@ -1,0 +1,15 @@
+Let's Bend assists blues harmonica players in accurately hitting bending notes.
+
+The application is ad-free and can be used freely without individual registration. Sounds are read via the standard library MediaRecorder as a continuous data stream, converted into tones using mathematical methods and then be displayed.
+
+All common keys and special tunings of your blues harps are supported and can be set via the settings menu.
+
+Features:
+
+• Fast musical note detection
+• App is free and ad-free
+• All common keys and tunes are supported
+• Concert pitch can be set individually
+• In addition to blow and draw bends, over blows and over draws are also supported
+
+Enjoy and Let's Bend!
