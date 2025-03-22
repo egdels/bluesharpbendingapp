@@ -31,13 +31,13 @@ Runs all the tests
 
 Submit a new Beta Build to Crashlytics Beta
 
-### android build_apk
+### android clean
 
 ```sh
-[bundle exec] fastlane android build_apk
+[bundle exec] fastlane android clean
 ```
 
-Build apk
+Clean
 
 ### android deploy
 

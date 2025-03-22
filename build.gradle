@@ -25,49 +25,60 @@ plugins {
     // Enables the Java plugin for basic configuration of Java projects
     id 'java'
     id "org.sonarqube" version "6.0.1.5171"
+    // Android
+    id 'com.android.application' version '8.8.0-alpha05' apply false
+    id 'com.android.library' version '8.8.0-alpha05' apply false
+    id 'org.jetbrains.kotlin.android' version '2.1.0' apply false
+}
+
+ext {
+    slf4jVersion = "2.0.16"
+    lombokVersion = "1.18.36"
 }
 
 allprojects {
     // Defines the group ID used for all projects
     group = 'de.schliweb.bluesharpbendingapp'
     // Sets the version of the project, matching ${revision}
-    version = '2.1.7'
+    version = '2.1.8'
 
     repositories {
+        google()
         // Specifies the Maven Central repository
         mavenCentral()
     }
 }
 
 subprojects {
-    // Applies the Java plugin to all subprojects
-    apply plugin: 'java'
+    if(project.name!=project(":android").name) {
+        // Applies the Java plugin to all subprojects
+        apply plugin: 'java'
 
-    java {
-        // Specifies the Java version to be used for source and target compatibility
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
+        java {
+            // Specifies the Java version to be used for source and target compatibility
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+        }
 
-    dependencies {
-        compileOnly 'org.projectlombok:lombok:1.18.36'
-        annotationProcessor 'org.projectlombok:lombok:1.18.36'
+        dependencies {
 
-        testCompileOnly 'org.projectlombok:lombok:1.18.36'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+            // Adds dependencies for Mockito, a library used for mocking in tests
+            testImplementation 'org.mockito:mockito-core:5.14.2'
+            // Adds the JUnit BOM (Bill of Materials) platform for consistent JUnit versions
+            testImplementation platform('org.junit:junit-bom:5.11.4')
+            // Adds JUnit Jupiter for unit testing
+            testImplementation 'org.junit.jupiter:junit-jupiter'
 
-        // Adds dependencies for Mockito, a library used for mocking in tests
-        testImplementation 'org.mockito:mockito-core:5.14.2'
-        // Adds the JUnit BOM (Bill of Materials) platform for consistent JUnit versions
-        testImplementation platform('org.junit:junit-bom:5.9.3')
-        // Adds JUnit Jupiter for unit testing
-        testImplementation 'org.junit.jupiter:junit-jupiter'
+            testImplementation 'org.awaitility:awaitility:4.3.0'
 
-        testImplementation 'org.awaitility:awaitility:4.3.0'
+            implementation "org.slf4j:slf4j-api:${slf4jVersion}"
 
+            compileOnly "org.projectlombok:lombok:${lombokVersion}"
+            annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-        implementation "org.slf4j:slf4j-api:2.0.16"
-
+            testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+            testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        }
     }
 }
 

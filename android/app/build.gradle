@@ -30,12 +30,20 @@ android {
     namespace 'de.schliweb.bluesharpbendingapp'
     compileSdk 35
 
+    Properties versionProps = new Properties()
+    def versionPropsFile = file('version.properties')
+    if(versionPropsFile.exists())
+        versionProps.load(new FileInputStream(versionPropsFile))
+    def code = (versionProps['VERSION_CODE'] ?: "0").toInteger() + 1
+    versionProps['VERSION_CODE'] = code.toString()
+    versionProps.store(versionPropsFile.newWriter(), null)
+
     defaultConfig {
         applicationId "de.schliweb.bluesharpbendingapp"
         minSdk 28
         targetSdk 35
-        versionCode 44
-        versionName "2.1.7"
+        versionCode code
+        versionName project.version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -99,9 +107,4 @@ tasks.withType(Test).configureEach {
 
 tasks.register("runAllTests") {
     dependsOn "test", "connectedAndroidTest"
-}
-
-
-tasks.build {
-    dependsOn "runAllTests"
 }
