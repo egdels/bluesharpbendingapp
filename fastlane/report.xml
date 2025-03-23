@@ -5,12 +5,12 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.00015">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000132">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: clean" time="0.595232">
+      <testcase classname="fastlane.lanes" name="1: clean jpackage" time="34.276703">
         
       </testcase>
     

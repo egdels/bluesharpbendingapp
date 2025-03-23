@@ -41,3 +41,20 @@ platform :android do
     upload_to_play_store
   end
 end
+
+platform :mac do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Clean"
+  lane :clean do
+     gradle(task: "clean")
+  end
+
+  desc "Create installation package"
+  lane :package do
+    gradle(task: "clean jpackage")
+  end
+end

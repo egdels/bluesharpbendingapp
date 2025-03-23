@@ -41,7 +41,7 @@ dependencies {
     // Adds dependency on the 'base' module
     implementation project(':base')
     implementation project(':desktop')
-    implementation 'ch.qos.logback:logback-classic:1.4.14'
+    implementation 'ch.qos.logback:logback-classic:1.5.16'
 }
 
 application {

@@ -128,9 +128,7 @@ class NoteContainerTest {
         noteContainer.run();
 
         // Wait for the "update" to be called
-        await().atMost(1000, MILLISECONDS).untilAsserted(() -> {
-            verify(mockHarpViewElement, atLeastOnce()).update(anyDouble());
-        });
+        await().atMost(1000, MILLISECONDS).untilAsserted(() -> verify(mockHarpViewElement, atLeastOnce()).update(anyDouble()));
 
         // Then set frequency out of range
         noteContainer.setFrequencyToHandle(outOfRangeFrequency);

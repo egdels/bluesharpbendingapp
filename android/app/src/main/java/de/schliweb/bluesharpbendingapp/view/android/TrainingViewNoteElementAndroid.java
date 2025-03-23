@@ -1,16 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view.android;
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -91,78 +80,17 @@ public class TrainingViewNoteElementAndroid implements HarpViewNoteElement {
     public void clear() {
         // Execute on UI thread since we're modifying UI elements
         activity.runOnUiThread(() -> {
-            // Get the LayerDrawable and extract the line layer (index 1)
-            LayerDrawable layout = (LayerDrawable) noteTextView.getBackground();
-            GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-
-            // Make the line completely transparent
-            line.setAlpha(0);
-            updateTextViewCent(noteTextView, 0);
+            TextViewUtils.clearTextViewLine(noteTextView);
+            TextViewUtils.updateTextViewCent(noteTextView, noteName, 0);
         });
     }
 
     @Override
     public void update(double cents) {
         activity.runOnUiThread(() -> {
-            LayerDrawable layout = (LayerDrawable) noteTextView.getBackground();
-
-            GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-            line.setAlpha(255);
-
-            double height = noteTextView.getHeight();
-
-            int lineWidth = Math.max((int) (noteTextView.getHeight() / 10.0), 10);
-
-            line.setStroke(lineWidth, Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0));
-
-            // Limit the cents values to the range -44 to 44
-            double limitedCents = Math.max(-44.0, Math.min(44.0, cents));
-            double position = height - height * (limitedCents / 50.0);
-
-
-            line.setBounds(line.getBounds().left - lineWidth / 2,    // Move left edge further left
-                    line.getBounds().top,                   // Keep top position
-                    line.getBounds().right + lineWidth / 2,   // Move right edge further right
-                    (int) position                          // Set bottom position based on touch/movement
-            );
-            updateTextViewCent(noteTextView, cents);
+            TextViewUtils.updateEnlargedTextViewLine(noteTextView, cents);
+            TextViewUtils.updateTextViewCent(noteTextView, noteName, cents);
         });
     }
 
-    /**
-     * Updates the specified TextView to display a formatted string consisting of a note name and its corresponding cent offset.
-     * The note name is displayed in bold, with increased size and black color. The cent offset is displayed
-     * in a monospace font, also with increased size and black color.
-     *
-     * @param textView The TextView instance to be updated with the formatted note name and cent offset.
-     * @param cents    The cent offset value to be displayed, formatted with a sign and space padding (e.g., "+10").
-     */
-    private void updateTextViewCent(TextView textView, double cents) {
-        String noteText = noteName;
-
-        // Format cents with leading spaces and sign (+/-), suppress lint warning
-        @SuppressLint("DefaultLocale") String centsString = String.format("%+3d", (int) cents);
-        centsString = "Cents:" + centsString;
-
-        // Create a SpannableString combining note text and cents with a line break
-        SpannableString spannableString = new SpannableString(noteText + "\n" + centsString);
-
-        // Set the color for the entire text to black
-        spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Make the note text bold (first part only)
-        spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Increase size of note text by factor 2.0
-        spannableString.setSpan(new RelativeSizeSpan(2.0f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Apply monospace font to the cents part (including "Cents:")
-        spannableString.setSpan(new TypefaceSpan("monospace"), noteText.length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Make cents part 1.5 times larger than normal text
-        spannableString.setSpan(new RelativeSizeSpan(1.5f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Set the final formatted text to the TextView
-        textView.setText(spannableString);
-    }
 }

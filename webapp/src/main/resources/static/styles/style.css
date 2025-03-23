@@ -226,13 +226,27 @@ footer {
     font-size: 2rem;
 }
 
-.grid-cell.expanded::after {
-    content: attr(cents-border-text); /* Displays border text if set */
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 0 5px;
-    font-size: 0.9rem;
+[cents-border-text] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+[cents-border-text]::before {
+    content: attr(cents-border-text);
+    font-family: monospace;
+    font-size: 18px;
+    margin-top: 4px;
+    order: 2;
+}
+
+[cents-border-text] > * {
+    order: 1;
+}
+
+[cents-border-text] span {
+    font-weight: bold;
+    font-size: 40px;
 }
 
 /* Label styles for alignment */

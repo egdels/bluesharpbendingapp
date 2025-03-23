@@ -23,17 +23,8 @@ package de.schliweb.bluesharpbendingapp.view.android;
  *
  */
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -140,97 +131,26 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
     @Override
     public void update(double cents) {
         if (enlargedTextView != null) {
-            updateTextView(enlargedTextView, cents);
+            activity.runOnUiThread(() -> {
+                TextViewUtils.updateEnlargedTextViewLine(enlargedTextView, cents);
+                TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), cents);
+            });
         }
-        updateTextView(noteTextView, cents);
+        activity.runOnUiThread(() ->
+            TextViewUtils.updateTextViewLine(noteTextView, cents)
+        );
     }
-
-
-    /**
-     * Updates the appearance and position of a graphic line on the given TextView's background,
-     * based on the provided cents value. This method modifies the visual representation of
-     * pitch deviation and, if the TextView is an enlarged view, updates its displayed cents value.
-     *
-     * @param textView the TextView whose appearance will be updated
-     * @param cents the pitch deviation value in cents; ranges from -44 to 44
-     *              with values clamped within this range for graphical rendering
-     */
-    private void updateTextView(TextView textView, double cents) {
-        activity.runOnUiThread(() -> {
-            LayerDrawable layout = (LayerDrawable) textView.getBackground();
-
-            GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-            line.setAlpha(255);
-
-            double height = textView.getHeight();
-
-            int lineWidth = Math.max((int) (textView.getHeight() / 10.0), 10);
-
-            line.setStroke(lineWidth, Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0));
-
-            // Limit the cents values to the range -44 to 44
-            double limitedCents = Math.max(-44.0, Math.min(44.0, cents));
-            double position = height - height * (limitedCents / 50.0);
-
-
-            if (textView.equals(enlargedTextView)) {
-                // For the enlarged view, extend the line horizontally by half lineWidth on each side
-                // This creates a wider line for better visibility in the enlarged view
-                line.setBounds(line.getBounds().left - lineWidth / 2,    // Move left edge further left
-                        line.getBounds().top,                   // Keep top position
-                        line.getBounds().right + lineWidth / 2,   // Move right edge further right
-                        (int) position                          // Set bottom position based on touch/movement
-                );
-
-                // Update the cents display in enlarged view
-                updateTextViewCent(enlargedTextView, cents);
-            } else {
-                // For normal (non-enlarged) view, keep original horizontal bounds
-                // Only update vertical position of the line
-                line.setBounds(line.getBounds().left,    // Keep original left position
-                        line.getBounds().top,     // Keep top position
-                        line.getBounds().right,   // Keep original right position
-                        (int) position           // Set bottom position based on touch/movement
-                );
-            }
-        });
-    }
-
 
     @Override
     public void clear() {
         if (enlargedTextView != null) {
-            clearTextView(enlargedTextView);
+            activity.runOnUiThread(() -> {
+                TextViewUtils.clearTextViewLine(enlargedTextView);
+                TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
+            });
         }
-        clearTextView(noteTextView);
+        activity.runOnUiThread(() -> TextViewUtils.clearTextViewLine(noteTextView));
     }
-
-
-    /**
-     * Clears the visual elements associated with the specified TextView. This method modifies
-     * the background of the TextView to make specific layers transparent and resets any
-     * additional display elements if applicable. The operation is performed on the UI thread
-     * to ensure safe manipulation of the user interface.
-     *
-     * @param textView the TextView whose background and display settings will be cleared
-     */
-    private void clearTextView(TextView textView) {
-        // Execute on UI thread since we're modifying UI elements
-        activity.runOnUiThread(() -> {
-            // Get the LayerDrawable and extract the line layer (index 1)
-            LayerDrawable layout = (LayerDrawable) textView.getBackground();
-            GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-
-            // Make the line completely transparent
-            line.setAlpha(0);
-
-            // If this is the enlarged TextView, reset its cents display to 0
-            if (textView.equals(enlargedTextView)) {
-                updateTextViewCent(enlargedTextView, 0);
-            }
-        });
-    }
-
 
     /**
      * Sets the specified TextView as the enlarged view for this instance. The method adjusts
@@ -258,48 +178,8 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
             shape.setColor(noteShape.getColor());
 
             // Clear any existing text in the enlarged TextView
-            clearTextView(enlargedTextView);
+            TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
         }
     }
 
-
-    /**
-     * Updates the text and style of a given TextView to display a formatted
-     * representation of note text and pitch deviation in cents.
-     * The method applies various styles to enhance the visual distinction
-     * between the note text and the cents text.
-     *
-     * @param textView the TextView to be updated with the formatted note and cents text
-     * @param cents the pitch deviation value in cents; positive values represent upward
-     *              deviation, while negative values represent downward deviation
-     */
-    private void updateTextViewCent(TextView textView, double cents) {
-        // Get the existing note text from the TextView
-        CharSequence noteText = noteTextView.getText();
-
-        // Format cents with leading spaces and sign (+/-), suppress lint warning
-        @SuppressLint("DefaultLocale") String centsString = String.format("%+3d", (int) cents);
-        centsString = "Cents:" + centsString;
-
-        // Create a SpannableString combining note text and cents with a line break
-        SpannableString spannableString = new SpannableString(noteText + "\n" + centsString);
-
-        // Set the color for the entire text to black
-        spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Make the note text bold (first part only)
-        spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Increase size of note text by factor 2.0
-        spannableString.setSpan(new RelativeSizeSpan(2.0f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Apply monospace font to the cents part (including "Cents:")
-        spannableString.setSpan(new TypefaceSpan("monospace"), noteText.length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Make cents part 1.5 times larger than normal text
-        spannableString.setSpan(new RelativeSizeSpan(1.5f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Set the final formatted text to the TextView
-        textView.setText(spannableString);
-    }
 }

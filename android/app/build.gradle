@@ -26,17 +26,22 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+Properties versionProps = new Properties()
+def versionPropsFile = file('version.properties')
+if (versionPropsFile.exists()) {
+    versionProps.load(new FileInputStream(versionPropsFile))
+}
+
+def code = (versionProps['VERSION_CODE'] ?: "0").toInteger()
+if (gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }) {
+    code += 1
+    versionProps['VERSION_CODE'] = code.toString()
+    versionProps.store(versionPropsFile.newWriter(), null)
+}
+
 android {
     namespace 'de.schliweb.bluesharpbendingapp'
     compileSdk 35
-
-    Properties versionProps = new Properties()
-    def versionPropsFile = file('version.properties')
-    if(versionPropsFile.exists())
-        versionProps.load(new FileInputStream(versionPropsFile))
-    def code = (versionProps['VERSION_CODE'] ?: "0").toInteger() + 1
-    versionProps['VERSION_CODE'] = code.toString()
-    versionProps.store(versionPropsFile.newWriter(), null)
 
     defaultConfig {
         applicationId "de.schliweb.bluesharpbendingapp"

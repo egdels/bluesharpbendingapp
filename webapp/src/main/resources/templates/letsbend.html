@@ -257,7 +257,7 @@
             lineElement.style.visibility = 'hidden';
 
             if(span.parentElement.parentElement.classList.contains('expanded')) {
-                span.parentElement.parentElement.setAttribute('cents-border-text','Cents: --');
+                span.parentElement.parentElement.setAttribute('cents-border-text','Cents:'+ "+0".toString().padStart(3, ' '));
             }
 
             // Check if the text content of the span equals data.noteName
@@ -267,8 +267,13 @@
                 // Retrieve the value from data.cents
                 const centsValue = Math.round(data.cents);
 
+                const centsString = (centsValue >= 0 ? '+' : '-') + Math.abs(centsValue);
+                const formattedCents = centsString.toString().padStart(3, ' ');
+
+                // console.log(formattedCents, formattedCents.length);
+
                 if(span.parentElement.parentElement.classList.contains('expanded')) {
-                    span.parentElement.parentElement.setAttribute('cents-border-text', 'Cents: ' +  centsValue);
+                    span.parentElement.parentElement.setAttribute('cents-border-text', 'Cents:' +  formattedCents);
                 }
 
                 // Define the limits for calculation

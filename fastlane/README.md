@@ -49,6 +49,35 @@ Deploy a new version to the Google Play
 
 ----
 
+
+## Mac
+
+### mac test
+
+```sh
+[bundle exec] fastlane mac test
+```
+
+Runs all the tests
+
+### mac clean
+
+```sh
+[bundle exec] fastlane mac clean
+```
+
+Clean
+
+### mac package
+
+```sh
+[bundle exec] fastlane mac package
+```
+
+Create installation package
+
+----
+
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 
 More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).
