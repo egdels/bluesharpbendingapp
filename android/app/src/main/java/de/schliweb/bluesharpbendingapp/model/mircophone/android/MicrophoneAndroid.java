@@ -336,12 +336,12 @@ public class MicrophoneAndroid implements Microphone {
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
             result = PitchDetectionUtil.detectPitchWithYIN(audioData, SAMPLE_RATE);
-            pitch = result.getPitch();
-            conf = result.getConfidence();
+            pitch = result.pitch();
+            conf = result.confidence();
         } else if ("MPM".equals(getAlgorithm())) {
             result = PitchDetectionUtil.detectPitchWithMPM(audioData, SAMPLE_RATE);
-            pitch = result.getPitch();
-            conf = result.getConfidence();
+            pitch = result.pitch();
+            conf = result.confidence();
         }
         if (conf < confidence)
             pitch = -1;

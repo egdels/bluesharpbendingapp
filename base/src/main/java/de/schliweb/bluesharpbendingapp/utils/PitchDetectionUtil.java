@@ -23,9 +23,8 @@ package de.schliweb.bluesharpbendingapp.utils;
  *
  */
 
-import lombok.Getter;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,37 +51,92 @@ public class PitchDetectionUtil {
      */
     private static final double YIN_MINIMUM_THRESHOLD = 0.4;
 
-    private PitchDetectionUtil() {}
+    /**
+     * A scaling factor used in the Root Mean Square (RMS) calculation to normalize
+     * and adjust the amplitude threshold in pitch detection processes.
+     * <p>
+     * This constant is utilized to fine-tune the sensitivity of audio signal analysis,
+     * ensuring that the detected pitch is accurate and reliable, particularly under
+     * varying signal conditions and noise levels.
+     */
+    private static final double RMS_SCALING_FACTOR = 0.3;
+
+
+    private PitchDetectionUtil() {
+    }
 
     /**
      * Detects the pitch of an audio signal using the YIN algorithm.
+     * <p>
+     * This implementation calculates the pitch (fundamental frequency) of an audio signal
+     * by analyzing periodic patterns in the signal's waveform. The algorithm evaluates the
+     * signal's periodicity with the help of the cumulative mean normalized difference function (CMNDF),
+     * and dynamically determines thresholds for improved accuracy.
+     * If a pitch is successfully detected, the method refines the results and provides a
+     * confidence value to indicate the reliability of the estimate.
      *
-     * @param audioData  an array of double values representing the audio signal.
-     * @param sampleRate the sample rate of the audio signal in Hz.
-     * @return a PitchDetectionResult containing the detected pitch in Hz and a confidence value, or -1 and 0 if no pitch is detected.
+     * @param audioData  an array of double values representing the audio signal to analyze.
+     *                   Each value corresponds to the amplitude of the signal at a specific point in time.
+     * @param sampleRate the sample rate of the audio signal in Hz, which determines
+     *                   the number of samples per second and is needed to calculate the
+     *                   pitch in terms of frequency.
+     * @return a PitchDetectionResult object containing:
+     * - detected pitch (in Hz): If detected, this is the fundamental frequency of the signal.
+     * - confidence (range: 0.0 to 1.0): A measure of reliability in the pitch detection.
+     * If no pitch is detected, the pitch is set to NO_DETECTED_PITCH, and the confidence is 0.0.
      */
     public static PitchDetectionResult detectPitchWithYIN(double[] audioData, int sampleRate) {
+        // Determine the size of the input buffer (length of the audio sample data)
         int bufferSize = audioData.length;
 
-        // Step 1: Compute the difference function
+        // Step 1: Calculate the difference function for the audio sample data.
+        // This function measures the similarity of the signal to itself when delayed
+        // by a specific lag (tau). It is used to identify periodicity in the signal.
         double[] difference = computeDifferenceFunction(audioData, bufferSize);
 
-        // Step 2: Compute the cumulative mean normalized difference function
+        // Step 2: Compute the cumulative mean normalized difference function (CMNDF).
+        // The CMNDF refines the results of the difference function by normalizing cumulative values,
+        // making it easier to identify potential fundamental frequencies (pitch candidates).
         double[] cmndf = computeCMNDF(difference);
 
-        // Step 3: Find the first minimum below a threshold
-        int tauEstimate = findFirstMinimum(cmndf);
-        double confidence;
+        // Step 3: Calculate the root mean square (RMS) of the audio signal to assess its energy.
+        // A higher RMS value indicates a stronger (louder) signal, which affects the threshold dynamics.
+        // The RMS result is scaled and used to adjust the minimum threshold dynamically.
+        double rms = calcRMS(audioData);
 
-        // Step 4: Use parabolic interpolation for more precise tau estimation
+        // Step 4: Adjust the YIN minimum threshold dynamically.
+        // The threshold is scaled by a factor based on the RMS value and ensures that only
+        // significant periodicities are considered for pitch estimation.
+        double dynamicThreshold = YIN_MINIMUM_THRESHOLD * (1 + RMS_SCALING_FACTOR * (1 - rms));
+
+        // Step 5: Find the first minimum in the CMNDF that is below the dynamic threshold.
+        // This step identifies the lag value (tau) that is most likely to correspond to a
+        // fundamental frequency in the signal. If no such value is found, -1 is returned.
+        int tauEstimate = findFirstMinimum(cmndf, dynamicThreshold);
+
+        // Step 6: If a valid tau value is found, refine it using parabolic interpolation.
+        // This refinement step improves the precision of the lag (tau) estimate
+        // by analyzing the CMNDF values around the tau estimate.
         if (tauEstimate != -1) {
-            confidence = Math.max(0, 1 - (cmndf[tauEstimate] / YIN_MINIMUM_THRESHOLD));
             double refinedTau = parabolicInterpolation(cmndf, tauEstimate);
-            if (refinedTau > 0.0) {
+
+            // Ensure the refined lag value is valid (greater than zero).
+            if (refinedTau > 0) {
+                // Confidence is calculated as 1 minus the CMNDF value at the estimated tau
+                // divided by the threshold. A higher confidence value indicates
+                // a more reliable pitch detection result.
+                double confidence = 1 - (cmndf[tauEstimate] / dynamicThreshold);
+
+                // Calculate the pitch (fundamental frequency) in Hz.
+                // The pitch is obtained by dividing the sample rate by the refined lag (tau).
                 double pitch = sampleRate / refinedTau;
+
+                // Return the detected pitch and confidence as a PitchDetectionResult object.
                 return new PitchDetectionResult(pitch, confidence);
             }
         }
+
+        // Step 7: If no pitch is detected, return a result with NO_DETECTED_PITCH and zero confidence.
         return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
     }
 
@@ -123,16 +177,19 @@ public class PitchDetectionUtil {
 
 
     /**
-     * Finds the first index in the given cumulative mean normalized difference function (CMNDF)
-     * array where the value is below a specified threshold and is a local minimum.
+     * Finds the first index in the cumulative mean normalized difference function (CMNDF)
+     * where the value is below a given threshold and is a local minimum.
      *
-     * @param cmndf an array of double values representing the cumulative mean normalized difference function (CMNDF)
-     * @return the index of the first local minimum in the CMNDF array that is below the threshold,
-     * or -1 if no such local minimum is found
+     * @param cmndf     an array of double values representing the cumulative mean
+     *                  normalized difference function (CMNDF).
+     * @param threshold a double value specifying the threshold to compare against
+     *                  the CMNDF values.
+     * @return the index of the first local minimum that satisfies the threshold condition;
+     * returns -1 if no such index is found.
      */
-    private static int findFirstMinimum(double[] cmndf) {
+    private static int findFirstMinimum(double[] cmndf, double threshold) {
         for (int tau = 2; tau < cmndf.length - 1; tau++) {
-            if (cmndf[tau] < PitchDetectionUtil.YIN_MINIMUM_THRESHOLD && isLocalMinimum(cmndf, tau)) {
+            if (cmndf[tau] < threshold && isLocalMinimum(cmndf, tau)) {
                 return tau;
             }
         }
@@ -160,20 +217,27 @@ public class PitchDetectionUtil {
     }
 
     /**
-     * Computes the difference function of the given audio data for use in pitch detection algorithms.
-     * The difference function calculates the squared difference between signal values at various time lags.
+     * Computes the difference function for an audio signal, used as an intermediate
+     * step in signal processing algorithms like pitch detection. The difference function
+     * evaluates the dissimilarity between overlapping segments of the audio data at
+     * various time lags to assess periodicity.
      *
-     * @param audioData  an array of double values representing the audio signal
-     * @param bufferSize the size of the buffer to be used for the computation, representing the length of the audio segment
-     * @return an array of double values representing the computed difference function
+     * @param audioData  an array of double values representing the original audio signal
+     *                   to be analyzed. Each value corresponds to the amplitude of the
+     *                   signal at a specific point in time.
+     * @param bufferSize the size of the buffer to process in the audio data. This determines
+     *                   the range of time lags to evaluate in the difference function.
+     * @return an array of double values representing the computed difference function.
+     * Each value corresponds to the dissimilarity measure for a specific time lag.
      */
     private static double[] computeDifferenceFunction(double[] audioData, int bufferSize) {
+        double[] audioSquared = Arrays.stream(audioData).map(x -> x * x).toArray();
         double[] difference = new double[bufferSize / 2];
+
         for (int tau = 0; tau < difference.length; tau++) {
             double sum = 0;
             for (int i = 0; i < bufferSize / 2; i++) {
-                double delta = audioData[i] - audioData[i + tau];
-                sum += delta * delta;
+                sum += audioSquared[i] + audioSquared[i + tau] - 2 * audioData[i] * audioData[i + tau];
             }
             difference[tau] = sum;
         }
@@ -217,7 +281,7 @@ public class PitchDetectionUtil {
      * @param audioData an array of double values representing the audio signal to be analyzed
      * @param n         the number of samples from the audio signal to process
      * @return an array of double values containing the computed NSDF values, where each index
-     *         represents the normalized squared difference for a specific time lag
+     * represents the normalized squared difference for a specific time lag
      */
     private static double[] calculateNSDF(double[] audioData, int n) {
         double[] nsdf = new double[n];
@@ -252,7 +316,7 @@ public class PitchDetectionUtil {
      *               Each element corresponds to a specific lag in the pitch detection process.
      * @param maxLag an integer representing the maximum lag limit within which peaks should be identified.
      * @return a list of integers where each integer represents the index of a detected peak
-     *         in the NSDF array that meets the specified criteria.
+     * in the NSDF array that meets the specified criteria.
      */
     private static List<Integer> findPeaks(double[] nsdf, int maxLag) {
         List<Integer> candidatePeaks = new ArrayList<>();
@@ -273,7 +337,7 @@ public class PitchDetectionUtil {
      * @param candidatePeaks a list of integers representing the indices of candidate peaks in the NSDF array.
      *                       Each value corresponds to a potential periodicity of the audio signal.
      * @return the index of the selected peak from the list of candidate peaks if a valid peak is found,
-     *         or -1 if no valid peak is identified.
+     * or -1 if no valid peak is identified.
      */
     private static int selectPeak(List<Integer> candidatePeaks) {
         if (candidatePeaks.isEmpty()) {
@@ -311,19 +375,20 @@ public class PitchDetectionUtil {
 
     /**
      * Calculates the Root Mean Square (RMS) value of an audio signal.
-     * RMS is a measure of the magnitude of a varying quantity and is
-     * commonly used in audio processing to determine signal energy.
+     * The RMS value is a measure of the audio signal's energy and is
+     * commonly used in audio processing to represent the signal's amplitude.
      *
-     * @param audioData an array of double values representing the audio signal
-     *                  for which the RMS is to be calculated.
-     * @return the RMS value of the audio signal as a double, scaled by a factor of 100.
+     * @param audioData an array of double values representing the audio signal.
+     *                  Each value corresponds to the amplitude of the signal at
+     *                  a specific point in time.
+     * @return the RMS value of the audio signal as a double.
      */
     public static double calcRMS(double[] audioData) {
         double sum = 0;
         for (double sample : audioData) {
             sum += sample * sample;
         }
-        return Math.sqrt(sum / audioData.length) * 100;
+        return Math.sqrt(sum / audioData.length);
     }
 
     /**
@@ -331,25 +396,6 @@ public class PitchDetectionUtil {
      * This class stores the detected pitch frequency in Hz
      * and a confidence score indicating the reliability of the detection.
      */
-    @Getter
-    public static class PitchDetectionResult {
-
-        public final double pitch;
-
-        public final double confidence;
-
-
-        /**
-         * Constructs a new instance of {@code PitchDetectionResult} with the specified pitch and confidence values.
-         *
-         * @param pitch      the detected pitch frequency in hertz
-         * @param confidence the confidence score of the pitch detection, typically between 0.0 and 1.0
-         */
-        public PitchDetectionResult(double pitch, double confidence) {
-            this.pitch = pitch;
-            this.confidence = confidence;
-        }
-
+    public record PitchDetectionResult(double pitch, double confidence) {
     }
-
 }

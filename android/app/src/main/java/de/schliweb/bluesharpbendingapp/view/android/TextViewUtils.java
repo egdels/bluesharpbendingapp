@@ -117,7 +117,7 @@ public class TextViewUtils {
 
         // Format cents with leading spaces and sign (+/-), suppress lint warning
         @SuppressLint("DefaultLocale") String centsString = String.format("%+3d", (int) cents);
-        centsString = "Cents:" + centsString;
+        centsString = "ct:" + centsString;
 
         // Create a SpannableString combining note text and cents with a line break
         SpannableString spannableString = new SpannableString(noteText + "\n" + centsString);
