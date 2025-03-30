@@ -28,6 +28,7 @@ class PitchDetectionUtil {
     // Constants
     static NO_DETECTED_PITCH = -1; // Indicates no pitch detected
     static YIN_MINIMUM_THRESHOLD = 0.4; // YIN’s minimum threshold for periodicity
+    static RMS_SCALING_FACTOR = 0.3; // Scaling factor for RMS calculation
 
     /**
      * Detects the pitch of an audio signal using the YIN algorithm.
@@ -39,41 +40,26 @@ class PitchDetectionUtil {
      * @returns {{pitch: number, confidence: number}} - An object containing the detected pitch in Hz and confidence (0–1).
      */
     static detectPitchWithYIN(audioData, sampleRate) {
-        const yinDiff = [];
-        const cmndf = [];
         const yinLength = Math.floor(audioData.length / 2);
         let pitch = this.NO_DETECTED_PITCH;
 
         // Step 1: Difference function
-        for (let tau = 0; tau < yinLength; tau++) {
-            yinDiff[tau] = 0;
-            for (let j = 0; j < yinLength; j++) {
-                const delta = audioData[j] - audioData[j + tau];
-                yinDiff[tau] += delta * delta;
-            }
-        }
+        const yinDiff = this.computeDifferenceFunction(audioData, yinLength);
+
 
         // Step 2: Cumulative mean normalized difference function (CMNDF)
-        cmndf[0] = 1.0;
-        let runningSum = 0;
-        for (let tau = 1; tau < yinLength; tau++) {
-            runningSum += yinDiff[tau];
-            cmndf[tau] = yinDiff[tau] / (runningSum / tau);
-        }
+        const cmndf = this.computeCMNDF(yinDiff, yinLength);
+
+        const rms = this.calculateRMS(audioData);
+        const dynamicThreshold = this.YIN_MINIMUM_THRESHOLD * (1+ this.RMS_SCALING_FACTOR*(1-rms));
 
         // Step 3: Find the first minimum below the defined threshold
-        let tau = -1;
-        for (let t = 2; t < yinLength; t++) {
-            if (cmndf[t] < this.YIN_MINIMUM_THRESHOLD && this.isLocalMinimum(cmndf, t)) {
-                tau = t;
-                break;
-            }
-        }
+        let tau = this.findFirstMinimum(cmndf, dynamicThreshold);
 
         let confidence = 0;
 
         if (tau !== -1) {
-            confidence = Math.max(0, 1 - (cmndf[tau] / this.YIN_MINIMUM_THRESHOLD));
+            confidence = Math.max(0, 1 - (cmndf[tau] / dynamicThreshold));
             const refinedTau = this.parabolicInterpolation(cmndf, tau);
             if (refinedTau > 0) {
                 pitch = sampleRate / refinedTau;
@@ -84,6 +70,62 @@ class PitchDetectionUtil {
         }
         return {pitch, confidence};
     }
+
+    /**
+     * Computes the Cumulative Mean Normalized Difference Function (CMNDF) from the given difference function array.
+     *
+     * @param {number[]} yinDiff - The array containing the difference function values.
+     * @param {number} yinLength - The length of the `yinDiff` array.
+     * @return {number[]} An array containing the computed CMNDF values.
+     */
+    static computeCMNDF(yinDiff, yinLength) {
+        const cmndf = new Array(yinLength).fill(0);
+        cmndf[0] = 1.0;
+        let runningSum = 0;
+        for (let tau = 1; tau < yinLength; tau++) {
+            runningSum += yinDiff[tau];
+            cmndf[tau] = yinDiff[tau] / (runningSum / tau); // Normalized difference
+        }
+        return cmndf;
+    }
+
+
+    /**
+     * Computes the difference function for the given audio data.
+     *
+     * @param {Array<number>} audioData - The array of audio data samples.
+     * @param {number} yinLength - The length of the YIN algorithm processing window.
+     * @return {Array<number>} An array containing the computed difference function results.
+     */
+    static computeDifferenceFunction(audioData, yinLength) {
+        const yinDiff = new Array(yinLength).fill(0);
+        for (let tau = 0; tau < yinLength; tau++) {
+            for (let j = 0; j < yinLength; j++) {
+                const delta = audioData[j] - audioData[j + tau];
+                yinDiff[tau] += delta * delta;
+            }
+        }
+        return yinDiff;
+    }
+
+
+    /**
+     * Finds the first index in the given array where the value is below a specified threshold
+     * and is a local minimum.
+     *
+     * @param {number[]} cmndf - The array to search through.
+     * @param {number} threshold - The value below which the function will look for a local minimum.
+     * @return {number} The index of the first local minimum below the threshold, or -1 if not found.
+     */
+    static findFirstMinimum(cmndf, threshold) {
+        for (let tau = 2; tau < cmndf.length - 1; tau++) {
+            if (cmndf[tau] < threshold && this.isLocalMinimum(cmndf, tau)) {
+                return tau;
+            }
+        }
+        return -1;
+    }
+
 
     /**
      * Refines the estimate of the lag value `tau` using parabolic interpolation to improve accuracy.
@@ -192,6 +234,24 @@ class PitchDetectionUtil {
         }
 
         return { pitch: this.NO_DETECTED_PITCH, confidence: 0.0 }; // No pitch detected
+    }
+
+    /**
+     * Calculates the Root Mean Square (RMS) of an audio signal.
+     *
+     * RMS is a measure of the signal's power and helps to determine
+     * whether it's strong enough for pitch detection.
+     *
+     * @param {Array<number>} audioData - The array of sample amplitudes of the audio signal.
+     * @returns {number} - The RMS value of the audio data.
+     */
+    static calculateRMS(audioData) {
+        if (!Array.isArray(audioData) || audioData.length === 0) {
+            return 0;
+        }
+
+        const sumOfSquares = audioData.reduce((sum, sample) => sum + sample ** 2, 0);
+        return Math.sqrt(sumOfSquares / audioData.length);
     }
 
 }

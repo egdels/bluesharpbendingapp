@@ -23,14 +23,6 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Runs all the tests
 
-### android beta
-
-```sh
-[bundle exec] fastlane android beta
-```
-
-Submit a new Beta Build to Crashlytics Beta
-
 ### android clean
 
 ```sh
@@ -46,6 +38,22 @@ Clean
 ```
 
 Deploy a new version to the Google Play
+
+### android build_signed_bundle
+
+```sh
+[bundle exec] fastlane android build_signed_bundle
+```
+
+Builds a signed Android App Bundle (.aab) for release
+
+### android tag_and_push_bundle
+
+```sh
+[bundle exec] fastlane android tag_and_push_bundle
+```
+
+Tags the Android release .aab bundle and pushes the tag to the origin
 
 ----
 

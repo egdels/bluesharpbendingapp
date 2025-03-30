@@ -49,7 +49,11 @@ import java.util.Objects;
 
 
 /**
- * The type Webapp controller.
+ * WebappController is a Spring MVC controller responsible for handling
+ * various web requests and serving the appropriate views. It provides
+ * endpoints for different pages like index, impressum, datenschutz, error,
+ * download page, and an audio stream page. It also includes utility methods
+ * to fetch and process files for download and localize date and number formats.
  */
 @Controller
 public class WebappController {

@@ -21,24 +21,73 @@ platform :android do
     gradle(task: "test")
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
-  end
-
   desc "Clean"
   lane :clean do
-     gradle(task: "clean")
+    gradle(task: "clean")
   end
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+    upload_to_play_store(
+      track: "internal", # oder "alpha", "beta", "production"
+      aab: File.join(__dir__, "./android/app/release/android-release.aab")
+    )
+
+  end
+
+  desc "Builds a signed Android App Bundle (.aab) for release"
+  lane :build_signed_bundle do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEYSTORE_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"]
+      }
+    )
+
+    aab_path = File.join(__dir__, "../android/app/build/outputs/bundle/release/android-release.aab")
+    destination_folder = File.join(__dir__, "../android/app/release")
+    FileUtils.mkdir_p(destination_folder)
+    FileUtils.cp(aab_path, destination_folder)
+    UI.success("Copied .aab file to #{destination_folder}")
+    increment_version_code(gradle_file_path: "./android/app/build.gradle")
+  end
+
+  desc "Tags the Android release .aab bundle and pushes the tag to the origin"
+  lane :tag_and_push_bundle do
+    aab_path = File.join(__dir__, "../android/app/release/android-release.aab")
+
+    if !File.exist?(aab_path)
+      UI.error("The .aab file does not exist at: #{aab_path}")
+      exit 1
+    end
+
+    version_file = File.join(__dir__, "../build.gradle")
+    version = nil
+    File.foreach(version_file) do |line|
+      if line.match(/version\s*=\s*['"](.*)['"]/)
+        version = line.match(/version\s*=\s*['"](.*)['"]/)[1]
+        break
+      end
+    end
+    if version.nil?
+      UI.error("Could not find a version in #{version_file}")
+      exit 1
+    end
+
+    time_stamp = Time.now.strftime("%Y%m%d%H%M")
+
+    tag_name = "#{version}-#{time_stamp}"
+
+    add_git_tag(
+      tag: tag_name,
+      message: "Release for bundle: #{tag_name}"
+    )
+
+    push_git_tags
   end
 end
 
@@ -50,7 +99,7 @@ platform :mac do
 
   desc "Clean"
   lane :clean do
-     gradle(task: "clean")
+    gradle(task: "clean")
   end
 
   desc "Create installation package"
