@@ -78,9 +78,7 @@ platform :android do
       exit 1
     end
 
-    time_stamp = Time.now.strftime("%Y%m%d%H%M")
-
-    tag_name = "#{version}-#{time_stamp}"
+    tag_name = "v#{version}"
 
     add_git_tag(
       tag: tag_name,
