@@ -86,6 +86,14 @@ platform :android do
     )
 
     push_git_tags
+
+
+    github_release(
+            repository_name: "egdels/bluesharpbendingapp",
+            tag_name: tag_name,
+            upload_assets: ["../android/app/release/android-release.aab"]
+    )
+
   end
 end
 
