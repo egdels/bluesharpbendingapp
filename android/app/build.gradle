@@ -34,10 +34,19 @@ android {
         applicationId "de.schliweb.bluesharpbendingapp"
         minSdk 28
         targetSdk 35
-        versionCode 45
+        versionCode 46
         versionName project.version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    dependenciesInfo {
+        // Disables the inclusion of dependency metadata in the APK,
+        // required for F-Droid to comply with its focus on privacy and transparency.
+        // Dependency metadata is unnecessary and could expose additional information.
+        includeInApk = false
+        // Disables the inclusion of dependency metadata in Android App Bundles as well.
+        includeInBundle = false
     }
 
     buildTypes {
