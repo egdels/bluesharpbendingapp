@@ -39,13 +39,13 @@ Clean
 
 Deploy a new version to the Google Play
 
-### android build_signed_bundle
+### android build_signed_bundle_apk
 
 ```sh
-[bundle exec] fastlane android build_signed_bundle
+[bundle exec] fastlane android build_signed_bundle_apk
 ```
 
-Builds a signed Android App Bundle (.aab) for release
+Builds a signed Android App Bundle (.aab) and APK for release
 
 ### android tag_and_push_bundle
 
@@ -53,7 +53,7 @@ Builds a signed Android App Bundle (.aab) for release
 [bundle exec] fastlane android tag_and_push_bundle
 ```
 
-Tags the Android release .aab bundle and pushes the tag to the origin
+Tags the Android release and pushes the tag to the origin
 
 ----
 
@@ -83,6 +83,14 @@ Clean
 ```
 
 Create installation package
+
+### mac build_release_package_and_push_to_tag
+
+```sh
+[bundle exec] fastlane mac build_release_package_and_push_to_tag
+```
+
+Create release package and push to release tag
 
 ----
 

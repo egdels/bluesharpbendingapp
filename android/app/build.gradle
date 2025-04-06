@@ -34,7 +34,7 @@ android {
         applicationId "de.schliweb.bluesharpbendingapp"
         minSdk 28
         targetSdk 35
-        versionCode 46
+        versionCode 47
         versionName project.version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

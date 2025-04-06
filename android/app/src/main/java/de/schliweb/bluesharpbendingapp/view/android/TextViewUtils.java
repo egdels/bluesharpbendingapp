@@ -65,7 +65,7 @@ public class TextViewUtils {
         line.setStroke(lineWidth, Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0));
 
         // Limit the cents values to the range -44 to 44
-        double limitedCents = Math.max(-44.0, Math.min(44.0, cents));
+        double limitedCents = Math.clamp(cents, -44, 44);
         double position = height - height * (limitedCents / 50.0);
 
 
