@@ -21,3 +21,14 @@
 #-renamesourcefileattribute SourceFile
 #-keepattributes LineNumberTable,SourceFile
 #-renamesourcefileattribute SourceFile
+
+-keep class de.schliweb.bluesharpbendingapp.model.MainModel {
+    *;
+}
+
+-keep class de.schliweb.bluesharpbendingapp.model.AndroidModel {
+    *;
+}
+
+-keepattributes SourceFile,LineNumberTable
+
