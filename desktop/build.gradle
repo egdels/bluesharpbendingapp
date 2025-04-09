@@ -121,11 +121,23 @@ tasks.register('jpackage', Exec) {
     def imageIcon = file("src/main/resources/ic_launcher_round.${imgType}").absolutePath
     // Sets the path to the application icon
 
+    def currentArch = System.getProperty("os.arch")
+    def archSuffix = ""
+    if (currentOs.macOsX) {
+        if (currentArch.contains("x86_64")) {
+            archSuffix = "-x64"
+        } else if (currentArch.contains("aarch64")) {
+            archSuffix = "-arm64"
+        } else {
+            archSuffix = "-unknownArch"
+        }
+    }
+
     // Retrieves project version and application information
     def appVersion = project.version
     def mainJarName = jar.archiveFileName.get()
     def mainJarClass = application.mainClass.get()
-    def applicationName = 'bluesharpbendingapp'
+    def applicationName = "bluesharpbendingapp${currentOs.macOsX ? archSuffix : ''}"
 
     def installerOptions = []
     // installerOptions += ['--resource-dir', "src/main/resources"] // Uncomment if additional resources are required

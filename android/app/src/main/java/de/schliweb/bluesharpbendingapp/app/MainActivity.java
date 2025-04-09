@@ -97,12 +97,12 @@ import lombok.extern.slf4j.Slf4j;
  * Key Functionalities:
  * - Permission Request: Ensures proper handling of RECORD_AUDIO permission for microphone functionality.
  * - Fragment Interaction: Observes and configures behaviors for various fragments such as SettingsFragment,
- *   HarpFragment, AboutFragment, and TrainingFragment.
+ * HarpFragment, AboutFragment, and TrainingFragment.
  * - Model Persistence: Reads and saves the application model state to local storage.
  * - Training, Settings, and UI Management: Provides specific handlers for UI elements like training views,
- *   settings, and other configuration parameters.
+ * settings, and other configuration parameters.
  * - App Bar Control: Provides methods to dynamically show and hide the app bar based on user interactions
- *   and conditions.
+ * and conditions.
  * <p>
  * Implements:
  * - MainWindow: Facilitates communication with the Main Controller.
@@ -111,12 +111,12 @@ import lombok.extern.slf4j.Slf4j;
  * Activity Lifecycle:
  * - onCreate(Bundle savedInstanceState): Initializes the Activity and sets up the components.
  * - onOptionsItemSelected(MenuItem item): Handles user selections from the options menu and navigates to
- *   respective fragments or functionalities.
+ * respective fragments or functionalities.
  * - onTouchEvent(MotionEvent e): Handles touch interactions, toggling app bar visibility under certain conditions.
  * <p>
  * Permission Validation:
  * - Checks for RECORD_AUDIO permissions required for the app's microphone-based functionalities and requests
- *   them if not granted.
+ * them if not granted.
  * <p>
  * Navigation:
  * - Configured using the Navigation UI library to allow smooth transitions between different fragments.
@@ -143,62 +143,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * outcome of permission requests or checks at runtime.
      */
     private volatile boolean permissionGranted = false;
-
-    /**
-     * Configuration object for managing the behavior of the app's AppBar.
-     * Ensures proper navigation and UI behavior within the MainActivity.
-     * Typically used to define top-level destinations and control navigation up actions.
-     */
-    private AppBarConfiguration appBarConfiguration;
-
-    /**
-     * Represents the currently selected view fragment in the application.
-     * This field is used to keep track of the active fragment displayed
-     * in the application, enabling specific behaviors and operations
-     * depending on the fragment type.
-     */
-    private FragmentView selectedFragmentView;
-
-    /**
-     * Manages the view handler for the Harp settings screen of the application.
-     * Controls the interactions and configurations related to the Harp settings UI.
-     * Responsible for displaying, updating, and handling user actions within the Harp settings view.
-     */
-    @Getter
-    @Setter
-    private HarpSettingsViewHandler harpSettingsViewHandler;
-
-    /**
-     * Manages the behavior and representation of the harp view component within the application.
-     * This variable is responsible for handling updates, interactions, and rendering related
-     * to the harp view, ensuring seamless integration within the user interface.
-     */
-    @Getter
-    @Setter
-    private HarpViewHandler harpViewHandler;
-
-    /**
-     * Manages the MicrophoneSettingsViewHandler, which handles the user interface
-     * and interactions related to the microphone settings within the application.
-     * <p>
-     * This variable serves as a link between the `MainActivity` and the
-     * `MicrophoneSettingsView` component, facilitating operations such as
-     * retrieving the microphone settings view, checking its state, and controlling
-     * its behavior.
-     */
-    @Getter
-    @Setter
-    private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
-
-    /**
-     * Represents the Android model used for managing application state and data.
-     * This variable stores an instance of the {@code AndroidModel} class.
-     * It is used across various methods of the {@code MainActivity} to persist and retrieve the
-     * state of the application, interact with views, and handle application logic.
-     */
-    private AndroidModel model;
-
-
     /**
      * This launcher is used to request a single runtime permission from the user.
      * It uses the {@link ActivityResultContracts.RequestPermission} contract to handle the permission request
@@ -216,12 +160,60 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      *     }
      * </pre>
      * </p>
+     *
      * @see ActivityResultContracts.RequestPermission
      * @see ActivityResultLauncher
      * @see Manifest.permission
      */
     protected final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> permissionGranted = isGranted);
-
+    /**
+     * Configuration object for managing the behavior of the app's AppBar.
+     * Ensures proper navigation and UI behavior within the MainActivity.
+     * Typically used to define top-level destinations and control navigation up actions.
+     */
+    private AppBarConfiguration appBarConfiguration;
+    /**
+     * Represents the currently selected view fragment in the application.
+     * This field is used to keep track of the active fragment displayed
+     * in the application, enabling specific behaviors and operations
+     * depending on the fragment type.
+     */
+    private FragmentView selectedFragmentView;
+    /**
+     * Manages the view handler for the Harp settings screen of the application.
+     * Controls the interactions and configurations related to the Harp settings UI.
+     * Responsible for displaying, updating, and handling user actions within the Harp settings view.
+     */
+    @Getter
+    @Setter
+    private HarpSettingsViewHandler harpSettingsViewHandler;
+    /**
+     * Manages the behavior and representation of the harp view component within the application.
+     * This variable is responsible for handling updates, interactions, and rendering related
+     * to the harp view, ensuring seamless integration within the user interface.
+     */
+    @Getter
+    @Setter
+    private HarpViewHandler harpViewHandler;
+    /**
+     * Manages the MicrophoneSettingsViewHandler, which handles the user interface
+     * and interactions related to the microphone settings within the application.
+     * <p>
+     * This variable serves as a link between the `MainActivity` and the
+     * `MicrophoneSettingsView` component, facilitating operations such as
+     * retrieving the microphone settings view, checking its state, and controlling
+     * its behavior.
+     */
+    @Getter
+    @Setter
+    private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
+    /**
+     * Represents the Android model used for managing application state and data.
+     * This variable stores an instance of the {@code AndroidModel} class.
+     * It is used across various methods of the {@code MainActivity} to persist and retrieve the
+     * state of the application, interact with views, and handle application logic.
+     */
+    private AndroidModel model;
     /**
      * Indicates whether the application is currently in a paused state.
      * This variable is typically used to manage or track the state of
@@ -271,53 +263,62 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
 
 
     /**
-     * Saves the provided model to a temporary file in the application's cache directory.
+     * Stores the provided AndroidModel instance into a temporary file within the application's
+     * internal storage directory. The model is serialized as a string and written to the file.
+     * Logs a message upon successful completion or an error if the operation fails.
      *
-     * @param model The AndroidModel instance to be stored. This is serialized into
-     *              a string format and saved to a cache file for later retrieval.
+     * @param model The AndroidModel instance to be serialized and saved to the temporary file.
      */
     private void storeModel(AndroidModel model) {
-
-        File directory = this.getApplicationContext().getCacheDir();
+        File directory = this.getApplicationContext().getFilesDir();
         File file = new File(directory, TEMP_FILE);
 
 
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(model.getString());
             writer.flush();
+            log.info("Model successfully stored at: " + file.getAbsolutePath());
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("Error while storing model to file: " + file.getAbsolutePath(), e);
         }
 
     }
 
     /**
-     * Reads and restores the AndroidModel instance from a cached file in the application's
-     * cache directory. If the file exists and is valid, it is deserialized back into an
-     * AndroidModel object. If any error occurs while reading or parsing the file,
-     * a new default AndroidModel instance is returned.
+     * Reads an AndroidModel instance from a temporary file located in the application's
+     * internal storage directory. If the file does not exist or is empty, a new instance
+     * of AndroidModel is returned. Logs appropriate messages to indicate the success
+     * or failure of the operation.
      *
-     * @return The restored AndroidModel instance if the cache file exists and is valid,
-     *         otherwise a new default AndroidModel instance.
+     * @return An AndroidModel instance either read from the file or an empty instance
+     * if the file is not present or could not be read.
      */
     protected AndroidModel readModel() {
-
         AndroidModel androidModel = new AndroidModel();
-        File directory = this.getApplicationContext().getCacheDir();
+
+        File directory = this.getApplicationContext().getFilesDir();
         File file = new File(directory, TEMP_FILE);
 
-        try (BufferedReader bw = new BufferedReader(new FileReader(file))) {
+        if (!file.exists()) {
+            log.warn("Model file does not exist at: " + file.getAbsolutePath());
+            return androidModel;
+        }
 
-            String line = bw.readLine();
-            if (line != null) androidModel = AndroidModel.createFromString(line);
-
-
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line = br.readLine();
+            if (line != null) {
+                androidModel = AndroidModel.createFromString(line);
+                log.info("Model successfully read from file: " + file.getAbsolutePath());
+            } else {
+                log.warn("Model file is empty: " + file.getAbsolutePath());
+            }
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("Error while reading model from file: " + file.getAbsolutePath(), e);
         }
 
         return androidModel;
     }
+
 
     /**
      * Initializes the main activity, setting up the user interface, managing permissions,
@@ -340,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
         microphone.setConfidence(model.getStoredConfidenceIndex());
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             permissionGranted = true;
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
             showPermissionInformation();
@@ -459,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      *          This includes information such as the type of action
      *          (e.g., ACTION_DOWN, ACTION_UP), the position of the touch, etc.
      * @return A boolean indicating whether the event was handled.
-     *         Always returns true in this implementation.
+     * Always returns true in this implementation.
      */
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -519,8 +520,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * @param item The selected menu item from the action bar. Provides details
      *             about the selected action including its ID.
      * @return A boolean indicating whether the event was successfully handled.
-     *         Returns true if the action was processed, otherwise defer to
-     *         the superclass implementation.
+     * Returns true if the action was processed, otherwise defer to
+     * the superclass implementation.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -560,8 +561,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * handled by the NavigationUI, it delegates the navigation behavior to the superclass.
      *
      * @return A boolean indicating whether the navigation event was successfully handled.
-     *         Returns true if the navigation was handled, otherwise returns the result
-     *         of the superclass implementation.
+     * Returns true if the navigation was handled, otherwise returns the result
+     * of the superclass implementation.
      */
     @Override
     public boolean onSupportNavigateUp() {
@@ -670,7 +671,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * <p>
      * - The `isPaused` flag is set to `true` to reflect the paused state of the activity.
      * - If the microphone permission has been granted and a valid microphone instance exists,
-     *   the microphone is closed to release the resource and save battery.
+     * the microphone is closed to release the resource and save battery.
      * <p>
      * Always calls the superclass implementation to ensure proper behavior of the activity's
      * lifecycle.
@@ -680,7 +681,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         super.onPause();
         isPaused = true;
         if (permissionGranted) {
-           mainController.stop();
+            mainController.stop();
         }
     }
 
@@ -694,8 +695,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * it clears the same flag, allowing the screen to turn off as per the system's default behavior.
      *
      * @param isLookScreen A boolean indicating whether the screen lock should be activated.
-     *                      {@code true} to keep the screen on (lock activated).
-     *                      {@code false} to allow the screen to turn off (lock deactivated).
+     *                     {@code true} to keep the screen on (lock activated).
+     *                     {@code false} to allow the screen to turn off (lock deactivated).
      */
     @Override
     public void handleLookScreen(boolean isLookScreen) {
@@ -711,7 +712,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * Checks whether the application's app bar (ActionBar) is currently hidden.
      *
      * @return A boolean value indicating the visibility state of the app bar.
-     *         Returns true if the app bar is hidden, otherwise false.
+     * Returns true if the app bar is hidden, otherwise false.
      */
     protected boolean isAppBarHidden() {
         return isAppBarHidden;
