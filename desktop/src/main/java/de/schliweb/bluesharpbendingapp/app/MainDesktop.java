@@ -24,8 +24,8 @@ package de.schliweb.bluesharpbendingapp.app;
  */
 
 import de.schliweb.bluesharpbendingapp.controller.MainController;
-import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
+import de.schliweb.bluesharpbendingapp.model.VersionService;
 import de.schliweb.bluesharpbendingapp.model.microphone.desktop.MicrophoneDesktop;
 import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController;
 import javafx.application.Application;
@@ -34,223 +34,79 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.Objects;
-import java.util.Scanner;
 
 
 /**
- * The MainDesktop class represents the entry point for a JavaFX desktop application.
- * It serves as the main application class responsible for initializing the application,
- * managing its lifecycle, and handling essential tasks such as loading data, interacting
- * with the GUI controller, and shutting down.
+ * The MainDesktop class serves as the entry point for the desktop application.
+ * It extends the {@code Application} class from JavaFX to manage the lifecycle
+ * of the application and initialize the main user interface, controllers, and services.
+ * <p>
+ * Key responsibilities:
+ * - Launching the application and initializing required resources.
+ * - Setting up the primary stage with the main window layout and styles.
+ * - Managing the application lifecycle, including start and stop processes.
+ * <p>
+ * This class initializes:
+ * - JavaFX user interface from an FXML file.
+ * - The main controller responsible for application workflow and interaction with models.
+ * - Temporary directory and file to store application data during runtime.
+ * <p>
+ * Methods:
+ * - {@code main(String[] args)}: Entry point to launch the application.
+ * - {@code start(Stage primaryStage)}: Called during application startup to set up the GUI and initialize required components.
+ * - {@code stop()}: Called during application termination to perform cleanup operations and properly shut down resources.
  */
 @Slf4j
 public class MainDesktop extends Application {
 
     /**
-     * The URL pointing to the version file of the application.
-     * This URL is used to retrieve the latest version information for the application.
-     */
-    private static final String VERSION_URL = "https://letsbend.de/download/version.txt";
-
-    /**
-     * The constant TEMP_DIR represents the directory path where temporary files are stored
-     * for the application. It is constructed dynamically using the user's home directory
-     * and a predefined subdirectory specific to the application.
-     * <p>
-     * Key Characteristics:
-     * - Utilizes the user's home directory as the base path.
-     * - Appends a specific temporary folder named "BluesHarpBendingApp.tmp".
-     * - Ensures platform-independent file path construction by leveraging the default
-     *   file system separator.
-     * <p>
-     * Usage:
-     * TEMP_DIR is used internally to define a consistent temporary storage location
-     * for the application's runtime operations.
-     */
-    private static final String TEMP_DIR = System.getProperty("user.home") + FileSystems.getDefault().getSeparator() + "BluesHarpBendingApp.tmp" + FileSystems.getDefault().getSeparator();
-
-    /**
      * Represents the name of the temporary file used by the application.
-     * This file is utilized for storing intermediate or temporary data,
-     * particularly related to the main model of the application.
+     * This file is utilized to store intermediate or transient data that
+     * may be required during the runtime of the application.
      * <p>
-     * TEMP_FILE is a constant holding the file name "Model.tmp", which may
-     * be used in operations such as saving, reading, or managing model data.
-     * <p>
-     * It is defined as a static final variable, meaning its value cannot
-     * be modified during application runtime.
+     * The file is located in the application's working directory or a
+     * predefined directory, as needed, and is named "Model.tmp".
      */
     private static final String TEMP_FILE = "Model.tmp";
 
     /**
-     * A static variable that stores the version information of the application retrieved from the host.
-     * This variable is initially set to null and is updated as needed during runtime to reflect the
-     * version details fetched from an external source.
+     * Specifies the path for the temporary directory used by the application.
+     * The directory is located in the user's home directory and named "BluesHarpBendingApp.tmp".
+     * The path includes the system-specific file separator.
+     * <p>
+     * This temporary directory is intended to store application-specific temporary files
+     * and is created if it does not already exist.
+     * <p>
+     * The value is dynamically constructed using the "user.home" system property
+     * and the default file system separator.
+     * <p>
+     * Example usage includes storing logs or temporary files for the application in
+     * a consistent and centralized location.
      */
-    private static String versionFromHost = null;
+    private static final String TEMP_DIR = System.getProperty("user.home") + FileSystems.getDefault().getSeparator() + "BluesHarpBendingApp.tmp" + FileSystems.getDefault().getSeparator();
 
     /**
-     * A instance of the MainController used to manage the primary
-     * interactions and operations of the MainDesktop application.
-     * The controller facilitates communication and control between
-     * different components of the application.
+     * A private instance of `MainController` used as the primary
+     * controller within the application. This variable serves as
+     * the main interface for coordinating and managing application-level
+     * logic or interactions between various components. Typically,
+     * it may handle tasks such as navigating between views, processing
+     * user actions, and updating the user interface based on state changes.
      */
     private MainController controller;
 
     /**
-     * The main model instance used across the application to store and manage
-     * the core data or state encapsulated by the {@code MainModel} class.
-     * This static field acts as a shared resource within the {@code MainDesktop}
-     * class and its operations.
-     * <p>
-     * This field is initialized and manipulated by specific methods within the
-     * {@code MainDesktop} class, ensuring centralized control over the model's
-     * lifecycle and integrity. Modifications to this model should adhere to
-     * the imposed access restrictions and lifecycle management of the enclosing class.
-     */
-    private static MainModel mainModel;
-
-    /**
-     * The main entry point for the application. This method initializes the logging settings,
-     * configures the microphone, retrieves the main model, and starts the application.
+     * Main entry point for the application. This method invokes the version retrieval logic
+     * and launches the application.
      *
-     * @param args the command-line arguments passed to the application. Supported arguments:
-     *             - "debug": Enables debug-level logging and informational logging.
-     *             - "info": Enables informational logging.
+     * @param args command-line arguments passed to the application, typically used for
+     *             configuration or initialization purposes.
      */
     public static void main(String[] args) {
-
-
-        checkVersionFromHost();
-
-        Microphone microphone = new MicrophoneDesktop();
-        microphone.setName(0);
-
-        mainModel = readModel();
-        mainModel.setMicrophone(microphone);
-        microphone.setAlgorithm(mainModel.getStoredAlgorithmIndex());
-        microphone.setName(mainModel.getStoredMicrophoneIndex());
+        VersionService.getVersionFromHost();
         launch(args);
-    }
-
-    /**
-     * Stores the provided model object into a file within a temporary directory.
-     * Ensures the directory exists and handles the creation of the file if it does not already exist.
-     * Writes the string representation of the model to the file.
-     * Logs any errors encountered during the process.
-     *
-     * @param model the {@link MainModel} object to be stored in the file
-     */
-    private static void storeModel(MainModel model) {
-
-        File directory = new File(TEMP_DIR);
-        if (!directory.exists()) {
-            boolean isCreated = directory.mkdirs();
-            if (isCreated) log.debug("Directory created by storeModel()");
-        }
-        File file = new File(TEMP_DIR + FileSystems.getDefault().getSeparator() + TEMP_FILE);
-        try (FileOutputStream fos = new FileOutputStream(file); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
-            boolean isCreated = file.createNewFile();
-            if (isCreated) log.debug("Filed created");
-
-            bw.write(model.getString());
-
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-
-    }
-
-    /**
-     * Reads the model object from a temporary directory file if it exists.
-     * If the directory or file is not present, it initializes with a default MainModel object.
-     * The method enforces directory creation if missing, reads the file,
-     * and constructs the model from a string representation in the file content.
-     * Logs debug and error messages appropriately during execution.
-     *
-     * @return the {@link MainModel} object read from the file or a default instance if the file does not exist.
-     */
-    private static MainModel readModel() {
-
-        MainModel model = new MainModel();
-        File directory = new File(TEMP_DIR);
-        if (!directory.exists()) {
-            boolean isCreated = directory.mkdirs();
-            if (isCreated) log.debug("Directory created by readModel()");
-        }
-        File file = new File(TEMP_DIR + FileSystems.getDefault().getSeparator() + TEMP_FILE);
-        if (file.exists()) {
-            try (FileInputStream fos = new FileInputStream(file); BufferedReader bw = new BufferedReader(new InputStreamReader(fos))) {
-
-                String line = bw.readLine();
-                if (line != null) model = MainModel.createFromString(line);
-
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
-        }
-        return model;
-    }
-
-    /**
-     * Checks the latest version information available on a remote host and logs related details.
-     * Connects to a predefined URL to fetch the version information, reads the response content,
-     * and updates the application's version information if available.
-     * <p>
-     * The method performs the following steps:
-     * - Creates a connection to the specified URL.
-     * - Sends a GET request to the server and checks the HTTP response code.
-     * - If the response code is HTTP 200 (OK), fetches the content of the response.
-     * - Reads the version string from the response and trims it to remove extra spaces if needed.
-     * - Logs the retrieved version string or error details in case of failures.
-     * <p>
-     * Any exceptions such as URI syntax errors or IO-related issues during the connection or
-     * data retrieval process are caught and handled by logging the error message.
-     */
-    private static void checkVersionFromHost() {
-        URL url;
-        HttpURLConnection huc;
-        try {
-            // Use the constant for the URL
-            url = new URI(VERSION_URL).toURL();
-            huc = (HttpURLConnection) url.openConnection();
-            int responseCode = huc.getResponseCode();
-
-            if (HttpURLConnection.HTTP_OK == responseCode) {
-                log.info("ok");
-                try (Scanner scanner = new Scanner((InputStream) huc.getContent())) {
-                    versionFromHost = scanner.nextLine();
-                }
-
-                if (versionFromHost != null) {
-                    versionFromHost = versionFromHost.trim();
-                }
-                log.info(versionFromHost);
-            }
-        } catch (IOException | URISyntaxException e) {
-            log.error(e.getMessage());
-        }
-    }
-
-
-    /**
-     * Retrieves the latest application version from a remote host.
-     * If the version information has already been fetched and cached, it returns the cached value.
-     * Otherwise, it fetches the version from the host by invoking the {@code checkVersionFromHost()} method.
-     *
-     * @return the latest version as a {@code String}, or {@code null} if the version could not be fetched.
-     */
-    public static String getVersionFromHost() {
-        if (versionFromHost != null) return versionFromHost;
-        checkVersionFromHost();
-        return versionFromHost;
     }
 
     @Override
@@ -267,7 +123,7 @@ public class MainDesktop extends Application {
             MainWindowDesktopFXController mainWindowDesktopFXController = loader.getController();
 
             // Initialize the main application controller with the view-controller and application model
-            controller = new MainController(mainWindowDesktopFXController, mainModel);
+            controller = new MainController(mainWindowDesktopFXController, new MicrophoneDesktop(), new ModelStorageService(TEMP_DIR, TEMP_FILE));
             controller.start();
 
             // Set the scene and show the stage
@@ -284,7 +140,6 @@ public class MainDesktop extends Application {
     public void stop() {
         log.info("Shutting down");
         controller.stop();
-        storeModel(mainModel);
         System.exit(0);
     }
 

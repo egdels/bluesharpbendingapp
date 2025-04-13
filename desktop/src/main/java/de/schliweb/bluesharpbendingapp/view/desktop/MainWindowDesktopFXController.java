@@ -25,9 +25,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import de.schliweb.bluesharpbendingapp.controller.*;
 import de.schliweb.bluesharpbendingapp.view.*;
-
 import javafx.fxml.FXML;
-
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 
@@ -108,9 +106,9 @@ public class MainWindowDesktopFXController implements MainWindow {
      * Specifically, this field:
      * - Is populated and initialized during the controller's view and container setup process.
      * - Becomes visible when the {@code showTrainingView()} method is invoked, allowing the user
-     *   to interact with the training view.
+     * to interact with the training view.
      * - Is hidden as part of the {@code hideAllViews()} method to ensure no overlapping visibility
-     *   with other view containers.
+     * with other view containers.
      */
     @FXML
     private VBox trainingViewContainer;
@@ -198,6 +196,22 @@ public class MainWindowDesktopFXController implements MainWindow {
      */
     @Setter
     private HarpViewHandler harpViewHandler;
+
+    /**
+     * The {@code androidSettingsHandler} field holds a reference to an implementation
+     * of the {@link AndroidSettingsHandler} interface. It is responsible for managing
+     * operations related to Android-specific settings within the application.
+     * <p>
+     * This field can be used to:
+     * - Initialize the lock screen settings on an Android device.
+     * - Handle user selection or changes to Android lock screen configurations.
+     * <p>
+     * This field is typically set during the application's initialization process,
+     * ensuring that the controller has access to Android-specific settings functionality
+     * if needed.
+     */
+    @Setter
+    private AndroidSettingsHandler androidSettingsHandler;
 
     /**
      * Represents the primary graphical user interface (GUI) component for displaying
@@ -298,7 +312,7 @@ public class MainWindowDesktopFXController implements MainWindow {
      * the user interface to the "About" section of the application. It performs the following steps:
      * 1. Invokes {@code hideAllViews()} to ensure all other view containers are hidden.
      * 2. Sets the visibility of {@code aboutViewContainer} to {@code true},
-     *    making the "About" view visible to the user.
+     * making the "About" view visible to the user.
      */
     @FXML
     public void showAboutView() {
@@ -316,10 +330,10 @@ public class MainWindowDesktopFXController implements MainWindow {
      * 1. Invokes {@code hideAllViews()} to ensure all other view containers are hidden.
      * 2. Sets the visibility of the {@code settingsViewContainer} to {@code true}.
      * 3. Calls initialization methods from the respective handlers to populate
-     *    the required settings data, including:
-     *    - Microphone options (microphone list, algorithm list, confidence levels)
-     *    - Harp settings (key list, tuning options)
-     *    - Note settings (concert pitch options)
+     * the required settings data, including:
+     * - Microphone options (microphone list, algorithm list, confidence levels)
+     * - Harp settings (key list, tuning options)
+     * - Note settings (concert pitch options)
      */
     @FXML
     public void showSettingsView() {
@@ -342,10 +356,10 @@ public class MainWindowDesktopFXController implements MainWindow {
      * 1. Calls {@code hideAllViews()} to ensure that all other view containers are hidden.
      * 2. Sets the visibility of the {@code trainingViewContainer} to {@code true}.
      * 3. Invokes initialization methods from the {@code trainingViewHandler} to prepare
-     *    the necessary data and configurations for the training view, including:
-     *    - Initializing the training list via {@code trainingViewHandler.initTrainingList()}.
-     *    - Setting up the training container via {@code trainingViewHandler.initTrainingContainer()}.
-     *    - Initializing the precision list via {@code trainingViewHandler.initPrecisionList()}.
+     * the necessary data and configurations for the training view, including:
+     * - Initializing the training list via {@code trainingViewHandler.initTrainingList()}.
+     * - Setting up the training container via {@code trainingViewHandler.initTrainingContainer()}.
+     * - Initializing the precision list via {@code trainingViewHandler.initPrecisionList()}.
      */
     @FXML
     private void showTrainingView() {
@@ -479,6 +493,19 @@ public class MainWindowDesktopFXController implements MainWindow {
     @Override
     public TrainingView getTrainingView() {
         return trainingView.getController();
+    }
+
+
+    @Override
+    public AndroidSettingsView getAndroidSettingsView() {
+        // no need for Desktop
+        return null;
+    }
+
+    @Override
+    public boolean isAndroidSettingsViewActive() {
+        // no need for Desktop
+        return false;
     }
 
 }

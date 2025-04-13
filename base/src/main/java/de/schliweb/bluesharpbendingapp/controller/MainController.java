@@ -24,9 +24,11 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
+import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
@@ -48,7 +50,7 @@ import java.util.concurrent.Executors;
  * Implements multiple handler interfaces to manage various sections of the application.
  */
 @Slf4j
-public class MainController implements MicrophoneHandler, MicrophoneSettingsViewHandler, HarpSettingsViewHandler, HarpViewHandler, NoteSettingsViewHandler, TrainingViewHandler {
+public class MainController implements MicrophoneHandler, MicrophoneSettingsViewHandler, HarpSettingsViewHandler, HarpViewHandler, NoteSettingsViewHandler, TrainingViewHandler, AndroidSettingsHandler {
 
     /**
      * The maximum number of channels that can be utilized in the system.
@@ -74,6 +76,12 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     private final MainModel model;
 
     /**
+     * A service responsible for handling storage operations related to models.
+     * This service provides functionality to persist and retrieve model data.
+     */
+    private final ModelStorageService modelStorageService;
+
+    /**
      * Represents the primary window of the application's user interface.
      * This field holds a reference to the {@link MainWindow} implementation
      * used by the {@code MainController} to manage and interact with the UI components.
@@ -86,6 +94,23 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * This field is immutable and is initialized in the constructor of {@code MainController}.
      */
     private final MainWindow window;
+    /**
+     * Represents the microphone utilized for capturing audio input.
+     * This is an immutable instance of the Microphone class.
+     */
+    private final Microphone microphone;
+    /**
+     * Represents a training module or session that is used for instructional purposes
+     * or to develop specific skills or knowledge. This variable holds the instance
+     * of the Training class containing the details about the training program.
+     */
+    private Training training;
+    /**
+     * Represents a musical instrument known as a harmonica.
+     * This variable is used to manage or store the state of a harmonica instance.
+     * A harmonica is a free reed wind instrument typically used in various musical genres.
+     */
+    private Harmonica harmonica;
     /**
      * Manages a fixed thread pool for executing asynchronous tasks in the MainController.
      * Provides concurrency control and efficient resource management for background operations.
@@ -109,35 +134,39 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     private TrainingContainer trainingContainer;
 
     /**
-     * Constructs a new MainController instance with the specified MainWindow and MainModel.
-     * Initializes the application by setting up harmonica, training, microphone, and view handlers.
-     * Also configures the stored settings for concert pitch, key, tune, training, and microphone parameters.
+     * Constructs a new MainController and initializes its components using the provided
+     * {@code MainWindow}, {@code Microphone}, and {@code ModelStorageService} objects.
+     * <br>
+     * The initialization process includes setting up the model, configuring the microphone,
+     * creating necessary objects like harmonica and training, and assigning view handlers
+     * to the {@code MainWindow}.
      *
-     * @param window the main application window interface that acts as a view layer
-     * @param model  the main application model containing data and logic
+     * @param window              The MainWindow instance used to set up UI view handlers.
+     * @param microphone          The Microphone instance used to configure and assign a microphone handler.
+     * @param modelStorageService The ModelStorageService instance used to retrieve and store model data.
      */
-    public MainController(MainWindow window, MainModel model) {
+    public MainController(MainWindow window, Microphone microphone, ModelStorageService modelStorageService) {
         log.info("Initializing MainController with MainWindow and MainModel...");
-
+        this.modelStorageService = modelStorageService;
         this.window = window;
-        this.model = model;
+        this.model = modelStorageService.readModel();
         this.executorService = Executors.newCachedThreadPool();
+
+        this.microphone = microphone;
 
         log.info("Setting stored reference pitch based on the model's stored concert pitch index...");
         NoteLookup.setConcertPitchByIndex(model.getStoredConcertPitchIndex());
 
         log.info("Creating and setting harmonica using stored key and tune indices...");
-        this.model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
+        this.harmonica = AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex());
 
         log.info("Creating and setting training object using stored key and training indices...");
-        this.model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), model.getStoredTrainingIndex()));
+        this.training = AbstractTraining.create(model.getStoredKeyIndex(), model.getStoredTrainingIndex());
 
-        Microphone microphone = model.getMicrophone();
         log.info("Configuring microphone with stored settings...");
         microphone.setAlgorithm(model.getStoredAlgorithmIndex());
         microphone.setName(model.getStoredMicrophoneIndex());
         microphone.setConfidence(model.getStoredConfidenceIndex());
-        this.model.setMicrophone(microphone);
 
         log.info("Assigning view handlers to MainWindow...");
         this.window.setMicrophoneSettingsViewHandler(this);
@@ -145,6 +174,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         this.window.setHarpViewHandler(this);
         this.window.setNoteSettingsViewHandler(this);
         this.window.setTrainingViewHandler(this);
+        this.window.setAndroidSettingsHandler(this);
 
         log.info("Registering microphone handler...");
         microphone.setMicrophoneHandler(this);
@@ -159,9 +189,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
         log.debug("Updating stored algorithm index in the model...");
         this.model.setStoredAlgorithmIndex(algorithmIndex);
-
-        log.debug("Fetching microphone from model...");
-        Microphone microphone = model.getMicrophone();
+        this.model.setSelectedAlgorithmIndex(algorithmIndex);
 
         log.info("Closing the current microphone by handleAlgorithmSelection...");
         microphone.close();
@@ -172,6 +200,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         log.info("Reopening the microphone with the updated algorithm...");
         microphone.open();
 
+        modelStorageService.storeModel(model);
         log.info("Algorithm selection process completed successfully.");
     }
 
@@ -182,10 +211,12 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
         log.debug("Updating stored key index in the model...");
         this.model.setStoredKeyIndex(keyIndex);
+        this.model.setSelectedKeyIndex(keyIndex);
 
         log.info("Creating and setting a new harmonica based on the selected key and the stored tune...");
-        model.setHarmonica(AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex()));
+        harmonica = AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex());
 
+        modelStorageService.storeModel(model);
         log.info("Key selection process completed successfully.");
     }
 
@@ -196,9 +227,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
         log.debug("Updating stored microphone index in the model...");
         this.model.setStoredMicrophoneIndex(microphoneIndex);
-
-        log.debug("Fetching microphone from the model...");
-        Microphone microphone = model.getMicrophone();
+        this.model.setSelectedMicrophoneIndex(microphoneIndex);
 
         log.info("Closing the current microphone by handleMicrophoneSelection...");
         microphone.close();
@@ -209,6 +238,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         log.info("Reopening the microphone with the updated configuration...");
         microphone.open();
 
+        modelStorageService.storeModel(model);
         log.info("Microphone selection process completed successfully.");
     }
 
@@ -218,10 +248,12 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
         log.debug("Updating stored tune index in the model...");
         this.model.setStoredTuneIndex(tuneIndex);
+        this.model.setSelectedTuneIndex(tuneIndex);
 
         log.info("Creating and setting a new harmonica based on the stored key and the selected tune...");
-        model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex));
+        harmonica = AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex);
 
+        modelStorageService.storeModel(model);
         log.info("Tune selection process completed successfully.");
     }
 
@@ -304,7 +336,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
 
             log.debug("Setting algorithms in the microphone settings view...");
-            microphoneSettingsView.setAlgorithms(model.getAlgorithms());
+            microphoneSettingsView.setAlgorithms(AbstractMicrophone.getSupportedAlgorithms());
 
             log.debug("Setting the selected algorithm in the microphone settings view...");
             microphoneSettingsView.setSelectedAlgorithm(model.getSelectedAlgorithmIndex());
@@ -325,7 +357,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             HarpSettingsView harpSettingsView = window.getHarpSettingsView();
 
             log.debug("Setting keys in the harp settings view...");
-            harpSettingsView.setKeys(model.getKeys());
+            harpSettingsView.setKeys(AbstractHarmonica.getSupporterKeys());
 
             log.debug("Setting the selected key in the harp settings view...");
             harpSettingsView.setSelectedKey(model.getSelectedKeyIndex());
@@ -346,7 +378,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
 
             log.debug("Setting microphone list in the microphone settings view...");
-            microphoneSettingsView.setMicrophones(model.getMicrophones());
+            microphoneSettingsView.setMicrophones(microphone.getSupportedMicrophones());
 
             log.debug("Setting the selected microphone in the microphone settings view...");
             microphoneSettingsView.setSelectedMicrophone(model.getSelectedMicrophoneIndex());
@@ -367,7 +399,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
 
             log.debug("Setting confidence list in the microphone settings view...");
-            microphoneSettingsView.setConfidences(model.getConfidences());
+            microphoneSettingsView.setConfidences(AbstractMicrophone.getSupportedConfidences());
 
             log.debug("Setting the selected confidence value in the microphone settings view...");
             microphoneSettingsView.setSelectedConfidence(model.getSelectedConfidenceIndex());
@@ -384,8 +416,8 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
         log.debug("Updating stored confidence index in the model...");
         this.model.setStoredConfidenceIndex(confidenceIndex);
+        this.model.setSelectedConfidenceIndex(confidenceIndex);
 
-        Microphone microphone = model.getMicrophone();
         if (microphone != null) {
             log.debug("Setting confidence index {} on the microphone...", confidenceIndex);
             microphone.setConfidence(confidenceIndex);
@@ -393,6 +425,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         } else {
             log.warn("Cannot set confidence index. Microphone object is null.");
         }
+        modelStorageService.storeModel(model);
     }
 
     @Override
@@ -407,7 +440,6 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         log.debug("Harp view is active. Proceeding to initialize notes...");
 
         ArrayList<NoteContainer> notesList = new ArrayList<>();
-        Harmonica harmonica = model.getHarmonica();
         HarpView harpView = window.getHarpView();
 
         for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX; channel++) {
@@ -427,9 +459,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * This method updates the provided list of note containers by adding blowing, drawing,
      * bending, overblow, and overdraw notes for the specified channel.
      *
-     * @param channel the harmonica channel to process
+     * @param channel   the harmonica channel to process
      * @param harmonica the Harmonica object representing the harmonica being played
-     * @param harpView the HarpView object containing information related to the visual representation of the harmonica
+     * @param harpView  the HarpView object containing information related to the visual representation of the harmonica
      * @param notesList the list of NoteContainer objects that will be updated with the notes from the specified channel
      */
     private void processChannelNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
@@ -445,9 +477,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     /**
      * Adds a blowing note for the specified channel of the harmonica to the notes list.
      *
-     * @param channel The channel of the harmonica for which the blowing note needs to be added.
+     * @param channel   The channel of the harmonica for which the blowing note needs to be added.
      * @param harmonica The harmonica object providing note frequency and other properties.
-     * @param harpView The view representation of the harmonica for UI or processing purposes.
+     * @param harpView  The view representation of the harmonica for UI or processing purposes.
      * @param notesList The list of note containers to which the blowing note will be added.
      */
     private void addBlowingNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
@@ -468,9 +500,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * its frequency. The method retrieves the note name from the frequency and creates
      * a NoteContainer to store the note details.
      *
-     * @param channel the channel number of the harmonica for which the drawing note is being added
+     * @param channel   the channel number of the harmonica for which the drawing note is being added
      * @param harmonica the harmonica object to retrieve the note frequency
-     * @param harpView the harp view object used to associate the note with its visual representation
+     * @param harpView  the harp view object used to associate the note with its visual representation
      * @param notesList the list to which the newly created NoteContainer will be added
      */
     private void addDrawingNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
@@ -489,9 +521,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * Adds bending notes for a specific channel to the list of note containers.
      * Bending notes include both drawing and blowing bending notes.
      *
-     * @param channel the channel of the harmonica for which bending notes are to be added
+     * @param channel   the channel of the harmonica for which bending notes are to be added
      * @param harmonica the harmonica object containing information about the instrument's configuration
-     * @param harpView the view representation of the harmonica, used for display or interaction
+     * @param harpView  the view representation of the harmonica, used for display or interaction
      * @param notesList the list of NoteContainer objects to which the bending notes will be added
      */
     private void addBendingNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
@@ -511,9 +543,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * Adds overblow notes to the provided list of notes if the harmonica does not handle
      * inverse cents for the specified channel.
      *
-     * @param channel the channel number to check for inverse cents handling
+     * @param channel   the channel number to check for inverse cents handling
      * @param harmonica the Harmonica object that provides configuration and state
-     * @param harpView the HarpView object representing the visual representation of the harmonica
+     * @param harpView  the HarpView object representing the visual representation of the harmonica
      * @param notesList the list of NoteContainer objects to which overblow notes are added
      */
     private void addOverblowNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
@@ -525,9 +557,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     /**
      * Adds overdraw notes to the provided notes list for the specified channel.
      *
-     * @param channel The channel number for which overdraw notes are being added.
+     * @param channel   The channel number for which overdraw notes are being added.
      * @param harmonica The Harmonica object containing information about note handling.
-     * @param harpView The HarpView object used for note visualization.
+     * @param harpView  The HarpView object used for note visualization.
      * @param notesList The list of NoteContainer objects where the overdraw notes will be added.
      */
     private void addOverdrawNotes(int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
@@ -541,11 +573,11 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
      * based on the given harmonica and channel information and then appending a new {@code NoteContainer}
      * object to the list if the note lookup is successful.
      *
-     * @param channel the channel number on the harmonica where the note is to be added
-     * @param noteIndex the index of the note within the specific channel
-     * @param harmonica the harmonica object used to fetch the frequency of the note
-     * @param harpView the harp view associated with the harmonica object
-     * @param notesList the list of {@code NoteContainer} objects to which the note will be added
+     * @param channel    the channel number on the harmonica where the note is to be added
+     * @param noteIndex  the index of the note within the specific channel
+     * @param harmonica  the harmonica object used to fetch the frequency of the note
+     * @param harpView   the harp view associated with the harmonica object
+     * @param notesList  the list of {@code NoteContainer} objects to which the note will be added
      * @param logMessage the log message string to be included in debug or warning logs
      */
     private void addNoteToList(int channel, int noteIndex, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList, String logMessage) {
@@ -570,7 +602,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             HarpSettingsView harpSettingsView = window.getHarpSettingsView();
 
             log.debug("Setting tunes in the harp settings view...");
-            harpSettingsView.setTunes(model.getTunes());
+            harpSettingsView.setTunes(AbstractHarmonica.getSupportedTunes());
 
             log.debug("Setting the selected tune in the harp settings view...");
             harpSettingsView.setSelectedTune(model.getSelectedTuneIndex());
@@ -592,7 +624,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         log.info("Starting application...");
 
         log.debug("Opening microphone...");
-        this.model.getMicrophone().open();
+        microphone.open();
 
         log.debug("Opening main application window...");
         this.window.open();
@@ -616,13 +648,13 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         log.info("Stopping application...");
 
         log.debug("Closing microphone...");
-        this.model.getMicrophone().close();
+        microphone.close();
 
         log.debug("Shutting down executor service...");
         if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdownNow();
         }
-
+        modelStorageService.storeModel(model);
         log.info("Application stopped successfully.");
     }
 
@@ -677,6 +709,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             return false;
         }
     }
+
     /**
      * Updates the microphone settings view with the specified frequency.
      * <p>
@@ -735,6 +768,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
         log.debug("Updating stored concert pitch index in the model to: {}", pitchIndex);
         this.model.setStoredConcertPitchIndex(pitchIndex);
+        this.model.setSelectedConcertPitchIndex(pitchIndex);
 
         log.debug("Setting concert pitch in NoteLookup using pitch index: {}", pitchIndex);
         NoteLookup.setConcertPitchByIndex(pitchIndex);
@@ -744,8 +778,9 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         int storedTuneIndex = model.getStoredTuneIndex();
         log.debug("Stored key index: {}, Stored tune index: {}", storedKeyIndex, storedTuneIndex);
 
-        model.setHarmonica(AbstractHarmonica.create(storedKeyIndex, storedTuneIndex));
+        harmonica = AbstractHarmonica.create(storedKeyIndex, storedTuneIndex);
 
+        modelStorageService.storeModel(model);
         log.info("Concert pitch selection handled successfully. Model updated with the new harmonica.");
     }
 
@@ -759,7 +794,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             NoteSettingsView noteSettingsView = window.getNoteSettingsView();
 
             log.debug("Setting concert pitches in NoteSettingsView.");
-            noteSettingsView.setConcertPitches(model.getConcertPitches());
+            noteSettingsView.setConcertPitches(NoteLookup.getSupportedConcertPitches());
 
             log.debug("Setting selected concert pitch in NoteSettingsView. Selected pitch index: {}", model.getSelectedConcertPitchIndex());
             noteSettingsView.setSelectedConcertPitch(model.getSelectedConcertPitchIndex());
@@ -780,7 +815,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             TrainingView trainingView = window.getTrainingView();
 
             log.debug("Setting training list in TrainingView.");
-            trainingView.setTrainings(model.getTrainings());
+            trainingView.setTrainings(AbstractTraining.getSupportedTrainings());
 
             log.debug("Setting selected training in TrainingView. Selected training index: {}", model.getSelectedTrainingIndex());
             trainingView.setSelectedTraining(model.getSelectedTrainingIndex());
@@ -801,7 +836,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             TrainingView trainingView = window.getTrainingView();
 
             log.debug("Setting precision list in TrainingView.");
-            trainingView.setPrecisions(model.getPrecisions());
+            trainingView.setPrecisions(AbstractTraining.getSupportedPrecisions());
 
             log.debug("Setting selected precision in TrainingView. Selected precision index: {}", model.getSelectedPrecisionIndex());
             trainingView.setSelectedPrecision(model.getSelectedPrecisionIndex());
@@ -818,14 +853,15 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
         log.debug("Updating stored training index in the model to: {}", trainingIndex);
         this.model.setStoredTrainingIndex(trainingIndex);
+        this.model.setSelectedTrainingIndex(trainingIndex);
 
-        log.debug("Creating and setting the training in the model. Using stored key index: {} and training index: {}",
-                model.getStoredKeyIndex(), trainingIndex);
-        model.setTraining(AbstractTraining.create(model.getStoredKeyIndex(), trainingIndex));
+        log.debug("Creating and setting the training in the model. Using stored key index: {} and training index: {}", model.getStoredKeyIndex(), trainingIndex);
+        training = AbstractTraining.create(model.getStoredKeyIndex(), trainingIndex);
 
         log.debug("Initializing training container after selection.");
         initTrainingContainer();
 
+        modelStorageService.storeModel(model);
         log.info("Training selection handled successfully. Training and container updated.");
     }
 
@@ -836,7 +872,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
         if (window.isTrainingViewActive()) {
             log.debug("Training view is active. Proceeding with training container initialization.");
 
-            this.trainingContainer = new TrainingContainer(this.model.getTraining(), window.getTrainingView());
+            this.trainingContainer = new TrainingContainer(training, window.getTrainingView());
             log.debug("Created new TrainingContainer with current training model and training view.");
 
             TrainingView trainingView = window.getTrainingView();
@@ -853,7 +889,6 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     public void handleTrainingStart() {
         log.info("Starting training...");
 
-        Training training = this.model.getTraining();
         if (training != null) {
             log.debug("Retrieved training from model. Training details: {}", training);
 
@@ -873,7 +908,6 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
     public void handleTrainingStop() {
         log.info("Stopping training...");
 
-        Training training = this.model.getTraining();
         if (training != null) {
             log.debug("Retrieved training from model in handleTrainingStop(). Training details: {}", training);
 
@@ -890,6 +924,7 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
 
         log.debug("Updating stored precision index to: {}", selectedIndex);
         this.model.setStoredPrecisionIndex(selectedIndex);
+        this.model.setSelectedPrecisionIndex(selectedIndex);
 
         try {
             String[] supportedPrecisions = AbstractTraining.getSupportedPrecisions();
@@ -902,10 +937,27 @@ public class MainController implements MicrophoneHandler, MicrophoneSettingsView
             log.info("Precision selection handled successfully. Precision set to: {}", precision);
 
         } catch (ArrayIndexOutOfBoundsException e) {
-            log.error("Selected index is out of bounds. Supported precisions length: {}, selected index: {}",
-                    AbstractTraining.getSupportedPrecisions().length, selectedIndex, e);
+            log.error("Selected index is out of bounds. Supported precisions length: {}, selected index: {}", AbstractTraining.getSupportedPrecisions().length, selectedIndex, e);
         } catch (NumberFormatException e) {
             log.error("Failed to parse precision value at index: {}", selectedIndex, e);
+        }
+        modelStorageService.storeModel(model);
+    }
+
+    @Override
+    public void handleLockScreenSelection(int lockScreenIndex) {
+        this.model.setSelectedLockScreenIndex(lockScreenIndex);
+        this.model.setStoredLockScreenIndex(lockScreenIndex);
+        modelStorageService.storeModel(model);
+    }
+
+    @Override
+    public void initLockScreen() {
+        if (window.isAndroidSettingsViewActive()) {
+            AndroidSettingsView androidSettingsView = window.getAndroidSettingsView();
+            if (androidSettingsView != null) {
+                androidSettingsView.setSelectedLockScreen(model.getSelectedLockScreenIndex());
+            }
         }
     }
 }

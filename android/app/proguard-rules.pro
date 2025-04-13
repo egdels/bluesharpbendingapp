@@ -26,9 +26,5 @@
     *;
 }
 
--keep class de.schliweb.bluesharpbendingapp.model.AndroidModel {
-    *;
-}
-
 -keepattributes SourceFile,LineNumberTable
 

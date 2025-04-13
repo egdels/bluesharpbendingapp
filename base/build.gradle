@@ -21,9 +21,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-plugins {
-    id 'java' // For the basic configuration of Java projects
-}
 
 test {
     useJUnitPlatform() // Enables the use of JUnit 5 (JUnit Platform) for testing

@@ -68,13 +68,6 @@ public interface Microphone {
     void setName(int storedMicrophoneIndex);
 
     /**
-     * Retrieves the list of algorithms supported by the microphone.
-     *
-     * @return an array of strings, where each string represents a supported algorithm
-     */
-    String[] getSupportedAlgorithms();
-
-    /**
      * Retrieves a list of microphones supported by the system or application.
      *
      * @return an array of strings, where each string represents the name of a supported microphone
@@ -89,15 +82,6 @@ public interface Microphone {
      * @param confidenceIndex the index of the confidence level to be set
      */
     void setConfidence(int confidenceIndex);
-
-    /**
-     * Retrieves the confidence levels supported by the microphone.
-     * These confidence levels represent predefined values that can be used
-     * to configure the microphone's operational accuracy or sensitivity.
-     *
-     * @return an array of doubles where each value represents a supported confidence level
-     */
-    String[] getSupportedConfidences ();
 
     /**
      * Opens the microphone for audio input.

@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
@@ -50,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
  * - Multi-threaded processing with specialized executors for audio data capture and analysis.
  */
 @Slf4j
-public class MicrophoneAndroid implements Microphone {
+public class MicrophoneAndroid extends AbstractMicrophone {
 
     /**
      * The sample rate used for audio recording and processing.
@@ -99,22 +100,7 @@ public class MicrophoneAndroid implements Microphone {
      * in audio recording and processing.
      */
     private volatile MicrophoneHandler microphoneHandler;
-    /**
-     * Represents the currently selected pitch detection algorithm for processing audio data.
-     * <p>
-     * The algorithm variable determines which pitch detection method will be used while
-     * processing audio data. Supported algorithms include:
-     * - "YIN": Implements the YIN pitch detection algorithm, which is suitable for monophonic
-     * signals and provides high accuracy for pitch detection.
-     * - "MPM": Implements the McLeod Pitch Method (MPM) for fast and efficient pitch detection.
-     * <p>
-     * This variable is used internally by the microphone processing system, specifically in the
-     * {@code processAudioData} method, to apply the appropriate pitch detection algorithm.
-     * It can be retrieved or updated using the respective methods in the MicrophoneAndroid class.
-     * <p>
-     * Default value: "YIN"
-     */
-    private String algorithm = "YIN";
+
     /**
      * The {@code executor} is a thread pool used to handle asynchronous or parallel tasks
      * related to the microphone's operation and audio data processing.
@@ -153,20 +139,6 @@ public class MicrophoneAndroid implements Microphone {
      * resources when the microphone is closed or the application is terminated.
      */
     private ExecutorService processingExecutor;
-    /**
-     * The confidence level associated with a result or prediction.
-     * <p>
-     * This value represents the degree of certainty or reliability
-     * in the correctness of a prediction or the validity of a
-     * calculated result.  It is typically expressed as a value
-     * between 0 and 1, where a higher number indicates greater
-     * confidence.
-     * </p>
-     * <p>
-     * The default value is 0.95.
-     * </p>
-     */
-    private double confidence = 0.95;
 
     /**
      * Initializes and starts recording audio using the device's microphone.
@@ -269,50 +241,14 @@ public class MicrophoneAndroid implements Microphone {
     }
 
     @Override
-    public String[] getSupportedAlgorithms() {
-        return new String[]{"YIN", "MPM"};
-    }
-
-    @Override
     public String[] getSupportedMicrophones() {
         return new String[0];
     }
 
-    @Override
-    public String[] getSupportedConfidences() {
-        return new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
-    }
-
-    @Override
-    public String getAlgorithm() {
-        return algorithm;
-    }
-
-    @Override
-    public void setAlgorithm(int index) {
-        String[] algorithms = getSupportedAlgorithms();
-        if (index >= 0 && index < algorithms.length) {
-            algorithm = algorithms[index];
-        }
-    }
 
     @Override
     public void setMicrophoneHandler(MicrophoneHandler microphoneHandler) {
         this.microphoneHandler = microphoneHandler;
-    }
-
-    @Override
-    public String getConfidence() {
-        return Double.toString(confidence);
-    }
-
-    @Override
-    public void setConfidence(int confidenceIndex) {
-        try {
-            confidence = Double.parseDouble(getSupportedConfidences()[confidenceIndex]);
-        } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
-            log.error(exception.getMessage());
-        }
     }
 
     @Override

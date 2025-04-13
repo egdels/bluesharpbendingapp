@@ -46,13 +46,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import de.schliweb.bluesharpbendingapp.R;
+import de.schliweb.bluesharpbendingapp.controller.AndroidSettingsHandler;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MainController;
@@ -60,18 +55,16 @@ import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.ActivityMainBinding;
-import de.schliweb.bluesharpbendingapp.model.AndroidModel;
-import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
-import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.mircophone.android.MicrophoneAndroid;
+import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
-import de.schliweb.bluesharpbendingapp.view.android.AboutFragment;
-import de.schliweb.bluesharpbendingapp.view.android.AndroidSettingsHandler;
 import de.schliweb.bluesharpbendingapp.view.android.FragmentView;
 import de.schliweb.bluesharpbendingapp.view.android.FragmentViewModel;
 import de.schliweb.bluesharpbendingapp.view.android.HarpFragment;
@@ -122,7 +115,7 @@ import lombok.extern.slf4j.Slf4j;
  * - Configured using the Navigation UI library to allow smooth transitions between different fragments.
  */
 @Slf4j
-public class MainActivity extends AppCompatActivity implements MainWindow, AndroidSettingsHandler {
+public class MainActivity extends AppCompatActivity implements MainWindow {
 
 
     /**
@@ -207,13 +200,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Getter
     @Setter
     private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
-    /**
-     * Represents the Android model used for managing application state and data.
-     * This variable stores an instance of the {@code AndroidModel} class.
-     * It is used across various methods of the {@code MainActivity} to persist and retrieve the
-     * state of the application, interact with views, and handle application logic.
-     */
-    private AndroidModel model;
+
     /**
      * Indicates whether the application is currently in a paused state.
      * This variable is typically used to manage or track the state of
@@ -253,6 +240,21 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     private TrainingViewHandler trainingViewHandler;
 
     /**
+     * Represents the handler responsible for managing Android-specific settings within the application.
+     * This field is used to encapsulate and manipulate settings related to the Android framework,
+     * such as configurations, preferences, and runtime behavioral adjustments.
+     * <p>
+     * The AndroidSettingsHandler interacts with other components of the application to provide
+     * a centralized management solution for Android-related settings, ensuring consistency and
+     * reducing redundancy in managing these settings across the application.
+     * <p>
+     * This property can be accessed and modified using the associated getter and setter methods.
+     */
+    @Getter
+    @Setter
+    private AndroidSettingsHandler androidSettingsHandler;
+
+    /**
      * The main controller of the application.
      * This controller is responsible for coordinating the interaction
      * between the different parts of the application, handling user input,
@@ -260,64 +262,13 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
      * for application logic and manages the flow of data.
      */
     private MainController mainController;
-
-
     /**
-     * Stores the provided AndroidModel instance into a temporary file within the application's
-     * internal storage directory. The model is serialized as a string and written to the file.
-     * Logs a message upon successful completion or an error if the operation fails.
-     *
-     * @param model The AndroidModel instance to be serialized and saved to the temporary file.
+     * Provides functionality related to storing and retrieving model data required by the application.
+     * This service acts as an intermediary for accessing, managing, and persisting application-specific
+     * models such as configuration or settings data. It facilitates consistent and centralized
+     * management of data, ensuring easy access throughout the application lifecycle.
      */
-    private void storeModel(AndroidModel model) {
-        File directory = this.getApplicationContext().getFilesDir();
-        File file = new File(directory, TEMP_FILE);
-
-
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(model.getString());
-            writer.flush();
-            log.info("Model successfully stored at: " + file.getAbsolutePath());
-        } catch (IOException e) {
-            log.error("Error while storing model to file: " + file.getAbsolutePath(), e);
-        }
-
-    }
-
-    /**
-     * Reads an AndroidModel instance from a temporary file located in the application's
-     * internal storage directory. If the file does not exist or is empty, a new instance
-     * of AndroidModel is returned. Logs appropriate messages to indicate the success
-     * or failure of the operation.
-     *
-     * @return An AndroidModel instance either read from the file or an empty instance
-     * if the file is not present or could not be read.
-     */
-    protected AndroidModel readModel() {
-        AndroidModel androidModel = new AndroidModel();
-
-        File directory = this.getApplicationContext().getFilesDir();
-        File file = new File(directory, TEMP_FILE);
-
-        if (!file.exists()) {
-            log.warn("Model file does not exist at: " + file.getAbsolutePath());
-            return androidModel;
-        }
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line = br.readLine();
-            if (line != null) {
-                androidModel = AndroidModel.createFromString(line);
-                log.info("Model successfully read from file: " + file.getAbsolutePath());
-            } else {
-                log.warn("Model file is empty: " + file.getAbsolutePath());
-            }
-        } catch (IOException e) {
-            log.error("Error while reading model from file: " + file.getAbsolutePath(), e);
-        }
-
-        return androidModel;
-    }
+    private ModelStorageService modelStorageService;
 
 
     /**
@@ -334,13 +285,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
 
-        model = readModel();
-
-        Microphone microphone = new MicrophoneAndroid();
-        model.setMicrophone(microphone);
-        model.setHarmonica(AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
-        microphone.setConfidence(model.getStoredConfidenceIndex());
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             permissionGranted = true;
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
@@ -349,7 +293,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
         }
 
-        mainController = new MainController(this, model);
+        modelStorageService = new ModelStorageService(this.getApplicationContext().getFilesDir().getAbsolutePath(), TEMP_FILE);
+        mainController = new MainController(this, new MicrophoneAndroid(), modelStorageService);
 
         FragmentViewModel viewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
         viewModel.getSelectedFragmentView().observe(this, item -> {
@@ -359,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
                 settingsFragment.setHarpSettingsViewHandler(getHarpSettingsViewHandler());
                 settingsFragment.setMicrophoneSettingsViewHandler(getMicrophoneSettingsViewHandler());
                 settingsFragment.setNoteSettingsViewHandler(getNoteSettingsViewHandler());
-                settingsFragment.setAndroidSettingsViewHandler(this);
+                settingsFragment.setAndroidSettingsViewHandler(getAndroidSettingsHandler());
 
                 settingsFragment.getHarpSettingsViewHandler().initTuneList();
                 settingsFragment.getHarpSettingsViewHandler().initKeyList();
@@ -367,26 +312,19 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
                 settingsFragment.getMicrophoneSettingsViewHandler().initMicrophoneList();
                 settingsFragment.getMicrophoneSettingsViewHandler().initConfidenceList();
                 settingsFragment.getNoteSettingsViewHandler().initConcertPitchList();
-                settingsFragment.initScreenLock(model.getStoredLockScreenIndex());
-
-                model.getMicrophone().setMicrophoneHandler(mainController);
-
+                settingsFragment.getAndroidSettingsViewHandler().initLockScreen();
             }
             if (item.getInstance() instanceof HarpFragment harpFragment) {
                 harpFragment.setHarpViewHandler(getHarpViewHandler());
                 harpFragment.getHarpViewHandler().initNotes();
-                model.getMicrophone().setMicrophoneHandler(mainController);
-            }
-            if (item.getInstance() instanceof AboutFragment) {
-                model.getMicrophone().setMicrophoneHandler(null);
             }
             if (item.getInstance() instanceof TrainingFragment trainingFragment) {
                 trainingFragment.setTrainingViewHandler(getTrainingViewHandler());
                 trainingFragment.getTrainingViewHandler().initTrainingContainer();
                 trainingFragment.getTrainingViewHandler().initTrainingList();
                 trainingFragment.getTrainingViewHandler().initPrecisionList();
-                model.getMicrophone().setMicrophoneHandler(mainController);
             }
+            handleLookScreen();
         });
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -400,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        handleLookScreen(model.getStoredLockScreenIndex() > 0);
 
         if (permissionGranted) {
             mainController.start();
@@ -410,6 +347,17 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Override
     public TrainingView getTrainingView() {
         return (TrainingView) selectedFragmentView.getInstance();
+    }
+
+
+    @Override
+    public AndroidSettingsView getAndroidSettingsView() {
+        return (AndroidSettingsView) selectedFragmentView.getInstance();
+    }
+
+    @Override
+    public boolean isAndroidSettingsViewActive() {
+        return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof SettingsFragment;
     }
 
 
@@ -529,8 +477,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        // onDestroy is not always called, so save also when switching the view
-        storeModel(model);
 
         if (id == R.id.action_settings) {
             Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_to_SettingsFragment);
@@ -622,7 +568,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
     @Override
     public void onDestroy() {
         super.onDestroy();
-        storeModel(model);
         mainController.stop();
     }
 
@@ -685,23 +630,23 @@ public class MainActivity extends AppCompatActivity implements MainWindow, Andro
         }
     }
 
-
     /**
-     * Handles the behavior of the screen lock functionality based on the provided flag.
+     * Handles the screen's "keep awake" behavior based on the stored lock screen index in the model.
      * <p>
-     * This method adjusts internal model state and screen lock behavior.
-     * If the screen is to be locked, it ensures the screen remains on by adding
-     * the {@code FLAG_KEEP_SCREEN_ON} flag to the window. When the screen is not to be locked,
-     * it clears the same flag, allowing the screen to turn off as per the system's default behavior.
-     *
-     * @param isLookScreen A boolean indicating whether the screen lock should be activated.
-     *                     {@code true} to keep the screen on (lock activated).
-     *                     {@code false} to allow the screen to turn off (lock deactivated).
+     * This method reads the current model from the model storage service. If the stored lock screen index
+     * in the model is greater than 0, it sets the `FLAG_KEEP_SCREEN_ON` flag on the window, preventing
+     * the screen from dimming or turning off automatically. If the index is not greater than 0, it clears
+     * the `FLAG_KEEP_SCREEN_ON` flag, allowing the screen to behave according to the system's default
+     * power management settings.
+     * </p>
+     * <p>
+     * In essence, a `storedLockScreenIndex` greater than 0 signifies that a lock screen or some other
+     * activity requiring the screen to stay on is active.
+     * </p>
      */
-    @Override
-    public void handleLookScreen(boolean isLookScreen) {
-        model.setStoredLockScreenIndex(isLookScreen ? 1 : 0);
-        if (isLookScreen) {
+    private void handleLookScreen() {
+        MainModel model = modelStorageService.readModel();
+        if (model.getStoredLockScreenIndex() > 0) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

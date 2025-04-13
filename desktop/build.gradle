@@ -21,8 +21,6 @@
  */
 
 plugins {
-    // Enables the Java plugin for basic configuration of Java projects
-    id 'java'
     id 'application' // Java application plugin
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }

@@ -36,11 +36,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import de.schliweb.bluesharpbendingapp.R;
+import de.schliweb.bluesharpbendingapp.controller.AndroidSettingsHandler;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentSettingsBinding;
-import de.schliweb.bluesharpbendingapp.model.AndroidModel;
+import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
@@ -78,7 +80,7 @@ import lombok.Setter;
  * - Note settings: Concert pitch management.
  * - General functionality: Screen lock control and instance retrieval.
  */
-public class SettingsFragment extends Fragment implements HarpSettingsView, MicrophoneSettingsView, FragmentView, NoteSettingsView {
+public class SettingsFragment extends Fragment implements HarpSettingsView, MicrophoneSettingsView, FragmentView, NoteSettingsView, AndroidSettingsView {
 
 
     /**
@@ -123,6 +125,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      * integrate with other setting handlers and manage Android-specific
      * configuration options.
      */
+    @Getter
     @Setter
     private AndroidSettingsHandler androidSettingsViewHandler;
 
@@ -140,7 +143,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      * Called after the fragment's view has been created. This method initializes the ViewModel
      * and sets up the user interface functionality for button clicks and other actions.
      *
-     * @param view The view returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param view               The view returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a
      *                           previous saved state as given here.
      */
@@ -152,16 +155,15 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         viewModel.selectFragmentView(this);
 
         binding.settingsResetButton.setOnClickListener(v -> {
-            AndroidModel model = new AndroidModel();
+            MainModel model = new MainModel();
             setSelectedConcertPitch(model.getStoredConcertPitchIndex());
             setSelectedKey(model.getStoredKeyIndex());
             setSelectedTune(model.getStoredTuneIndex());
             setSelectedAlgorithm(model.getStoredAlgorithmIndex());
             setSelectedConfidence(model.getStoredConfidenceIndex());
-            initScreenLock(model.getStoredLockScreenIndex());
+            setSelectedLockScreen(model.getStoredLockScreenIndex());
         });
-
-        binding.settingsScreenlock.setOnClickListener(v -> androidSettingsViewHandler.handleLookScreen(binding.settingsScreenlock.isChecked()));
+        binding.settingsScreenlock.setOnClickListener(v -> androidSettingsViewHandler.handleLockScreenSelection(binding.settingsScreenlock.isChecked() ? 1 : 0));
     }
 
 
@@ -348,18 +350,8 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
         spinner.setSelection(i);
     }
 
-    /**
-     * Initializes the screen lock setting based on a stored value.
-     * Resets the screen lock setting to unchecked by default and sets it to checked
-     * if the given stored index is greater than 0.
-     *
-     * @param storedLockScreenIndex The stored index indicating whether the screen lock setting
-     *                              should be enabled (greater than 0) or disabled (0 or less).
-     */
-    public void initScreenLock(int storedLockScreenIndex) {
-        binding.settingsScreenlock.setChecked(false);
-        if (storedLockScreenIndex > 0) {
-            binding.settingsScreenlock.setChecked(true);
-        }
+    @Override
+    public void setSelectedLockScreen(int selectedLockScreenIndex) {
+        binding.settingsScreenlock.setChecked(selectedLockScreenIndex > 0);
     }
 }

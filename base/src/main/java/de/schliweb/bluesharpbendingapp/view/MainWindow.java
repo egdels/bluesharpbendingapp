@@ -157,4 +157,30 @@ public interface MainWindow {
      * and interact with the training-related components of the application.
      */
     TrainingView getTrainingView();
+
+    /**
+     * Assigns the handler responsible for managing and interacting with Android settings.
+     * This method allows the application to delegate Android-specific settings management
+     * to the provided handler.
+     *
+     * @param androidSettingsHandler the handler to manage operations and settings related
+     *                               to Android-specific features
+     */
+    void setAndroidSettingsHandler(AndroidSettingsHandler androidSettingsHandler);
+
+    /**
+     * Retrieves the Android settings view associated with the application.
+     *
+     * @return an instance of AndroidSettingsView, which provides methods to manage
+     * and interact with settings specific to the Android platform.
+     */
+    AndroidSettingsView getAndroidSettingsView();
+
+    /**
+     * Determines if the Android settings view is currently active.
+     *
+     * @return true if the Android settings view is active; false otherwise
+     */
+    boolean isAndroidSettingsViewActive();
+
 }

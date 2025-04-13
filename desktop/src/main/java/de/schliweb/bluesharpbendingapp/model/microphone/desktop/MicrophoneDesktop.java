@@ -24,7 +24,7 @@ package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
  */
 
 
-import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * allows selecting different microphones and algorithms, ensuring flexibility in audio applications.
  */
 @Slf4j
-public class MicrophoneDesktop implements Microphone {
+public class MicrophoneDesktop extends AbstractMicrophone {
 
     /**
      * Defines the size of the buffer used for audio data processing in the application.
@@ -140,26 +140,6 @@ public class MicrophoneDesktop implements Microphone {
      * microphone configurations or options.
      */
     private String name;
-    /**
-     * The pitch detection algorithm currently in use by the `MicrophoneDesktop` class.
-     * This variable serves as the default algorithm for audio processing and pitch detection.
-     * By default, the algorithm is set to "YIN". The chosen algorithm can be changed via
-     * the associated setter method.
-     * <p>
-     * This is an integral part of the microphone class's audio processing logic.
-     */
-    private String algorithm = "YIN"; // Default algorithm
-
-    /**
-     * Represents the confidence level used by the microphone implementation to determine
-     * the reliability or accuracy of certain operations, such as pitch detection or audio
-     * feature analysis. This value typically serves as a threshold or metric for handling
-     * results or triggering specific behaviors in the application.
-     * <p>
-     * The default confidence value is set to 0.95, indicating a high level of reliability.
-     * It can be used or modified based on the application's sensitivity requirements.
-     */
-    private double confidence = 0.95;
 
     /**
      * Retrieves the audio format configuration used by the application.
@@ -191,37 +171,12 @@ public class MicrophoneDesktop implements Microphone {
         }
     }
 
-    @Override
-    public String getAlgorithm() {
-        return algorithm;
-    }
-
-    @Override
-    public void setAlgorithm(int index) {
-        String[] algorithms = getSupportedAlgorithms();
-        if (index >= 0 && index < algorithms.length) {
-            algorithm = algorithms[index];
-        }
-    }
 
     @Override
     public void setMicrophoneHandler(MicrophoneHandler microphoneHandler) {
         this.microphoneHandler.set(microphoneHandler);
     }
 
-    @Override
-    public String getConfidence() {
-        return Double.toString(confidence);
-    }
-
-    @Override
-    public void setConfidence(int confidenceIndex) {
-        try {
-            confidence = Double.parseDouble(getSupportedConfidences()[confidenceIndex]);
-        } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
-            log.error(exception.getMessage());
-        }
-    }
 
     @Override
     public String getName() {
@@ -235,11 +190,6 @@ public class MicrophoneDesktop implements Microphone {
         } catch (ArrayIndexOutOfBoundsException exception) {
             log.error(exception.getMessage());
         }
-    }
-
-    @Override
-    public String[] getSupportedAlgorithms() {
-        return new String[]{"YIN", "MPM"};
     }
 
     @Override
@@ -263,11 +213,6 @@ public class MicrophoneDesktop implements Microphone {
             }
         }
         return microphones.toArray(String[]::new);
-    }
-
-    @Override
-    public String[] getSupportedConfidences() {
-        return new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
     }
 
     /**

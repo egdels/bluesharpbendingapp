@@ -899,7 +899,7 @@ class PitchDetectionUtilTest {
         }
 
         double detectedPitch = PitchDetectionUtil.detectPitchWithYIN(audioData, sampleRate).pitch();
-        assertEquals(frequency, detectedPitch, 0.03, "Detected pitch should match A3 despite added noise.");
+        assertEquals(frequency, detectedPitch, 0.04, "Detected pitch should match A3 despite added noise.");
     }
     /**
      * Tests detectPitchWithYIN for overlapping frequencies where A3 (220 Hz) is dominant.

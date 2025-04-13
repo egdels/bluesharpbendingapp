@@ -1,4 +1,4 @@
-package de.schliweb.bluesharpbendingapp.view.android;
+package de.schliweb.bluesharpbendingapp.controller;
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -30,12 +30,7 @@ package de.schliweb.bluesharpbendingapp.view.android;
  */
 public interface AndroidSettingsHandler {
 
+    void handleLockScreenSelection(int lookScreenIndex);
 
-    /**
-     * Handles the setting for enabling or disabling the lock screen.
-     *
-     * @param isLookScreen true to enable the lock screen, false to disable it.
-     */
-    void handleLookScreen(boolean isLookScreen);
-
+    void initLockScreen();
 }

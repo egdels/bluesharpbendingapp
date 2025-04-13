@@ -23,8 +23,9 @@ package de.schliweb.bluesharpbendingapp.model;
  *
  */
 
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.Test;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,76 +33,40 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * The type Main model test.
  */
 class MainModelTest {
-    /**
-     * The constant mainModel.
-     */
-    private static MainModel mainModel;
 
-    /**
-     * Sets up before class.
-     */
-    @BeforeAll
-    static void setUpBeforeClass() {
-        mainModel = new MainModel();
-        mainModel.setStoredMicrophoneIndex(1);
-        mainModel.setStoredAlgorithmIndex(2);
-        mainModel.setStoredKeyIndex(3);
-        mainModel.setStoredConcertPitchIndex(100);
-        mainModel.setStoredTuneIndex(42);
-    }
-
-    /**
-     * Test to string.
-     */
     @Test
-    void testGetString() {
-        MainModel newMainModel = MainModel.createFromString(mainModel.getString());
-        assertEquals(1, newMainModel.getStoredMicrophoneIndex());
-        assertEquals(2, newMainModel.getStoredAlgorithmIndex());
-        assertEquals(3, newMainModel.getStoredKeyIndex());
-        assertEquals(100, newMainModel.getStoredConcertPitchIndex());
-        assertEquals(42, newMainModel.getStoredTuneIndex());
+    void testGetSelectedLockScreenIndex_usesSelectedValueIfSet() {
+        MainModel model = new MainModel();
+        model.setSelectedLockScreenIndex(5);
+        model.setStoredLockScreenIndex(2);
+
+        assertEquals(5, model.getSelectedLockScreenIndex());
     }
 
-    /**
-     * Test createFromString with an empty string.
-     */
     @Test
-    void testCreateFromStringEmptyString() {
-        MainModel newMainModel = MainModel.createFromString("");
-        assertEquals(0, newMainModel.getStoredMicrophoneIndex());
-        assertEquals(0, newMainModel.getStoredAlgorithmIndex());
-        assertEquals(4, newMainModel.getStoredKeyIndex());
-        assertEquals(11, newMainModel.getStoredConcertPitchIndex());
-        assertEquals(6, newMainModel.getStoredTuneIndex());
+    void testGetSelectedLockScreenIndex_usesStoredValueIfSelectedIsZero() {
+        MainModel model = new MainModel();
+        model.setSelectedLockScreenIndex(0);
+        model.setStoredLockScreenIndex(2);
+
+        assertEquals(2, model.getSelectedLockScreenIndex());
     }
 
-    /**
-     * Test createFromString with an invalid string.
-     */
     @Test
-    void testCreateFromStringInvalidString() {
-        MainModel newMainModel = MainModel.createFromString("invalid:data, other:data");
-        assertEquals(0, newMainModel.getStoredMicrophoneIndex());
-        assertEquals(0, newMainModel.getStoredAlgorithmIndex());
-        assertEquals(4, newMainModel.getStoredKeyIndex());
-        assertEquals(11, newMainModel.getStoredConcertPitchIndex());
-        assertEquals(6, newMainModel.getStoredTuneIndex());
+    void testGetSelectedLockScreenIndex_returnsZeroWhenBothAreZero() {
+        MainModel model = new MainModel();
+        model.setSelectedLockScreenIndex(0);
+        model.setStoredLockScreenIndex(0);
+
+        assertEquals(0, model.getSelectedLockScreenIndex());
     }
 
-    /**
-     * Test createFromString with a valid string.
-     */
     @Test
-    void testCreateFromStringValidString() {
-        String validString = "[getStoredMicrophoneIndex:2, getStoredAlgorithmIndex:4, getStoredKeyIndex:6, "
-                + "getStoredConcertPitchIndex:440, getStoredTuneIndex:9]";
-        MainModel newMainModel = MainModel.createFromString(validString);
-        assertEquals(2, newMainModel.getStoredMicrophoneIndex());
-        assertEquals(4, newMainModel.getStoredAlgorithmIndex());
-        assertEquals(6, newMainModel.getStoredKeyIndex());
-        assertEquals(440, newMainModel.getStoredConcertPitchIndex());
-        assertEquals(9, newMainModel.getStoredTuneIndex());
-    }
+    void testGetSelectedLockScreenIndex_handlesNegativeSelectedIndex() {
+        MainModel model = new MainModel();
+        model.setSelectedLockScreenIndex(-1);
+        model.setStoredLockScreenIndex(3);
 
+        assertEquals(-1, model.getSelectedLockScreenIndex());
+    }
 }
