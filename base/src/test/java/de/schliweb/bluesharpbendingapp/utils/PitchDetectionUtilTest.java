@@ -31,6 +31,138 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PitchDetectionUtilTest {
 
+    private static final int SAMPLE_RATE = 44100;
+    private static final double TOLERANCE = 0.5;
+
+    /**
+     * Tests that a sine wave with 934.6 Hz is correctly detected and not confused
+     * with a subharmonic frequency such as 460 Hz.
+     */
+    @Test
+    void testDetectPitchWithYIN_CorrectlyDetect934HzAvoid460Hz() {
+        double frequency = 934.6;
+        int durationMs = 1000; // 1 second
+        double[] sineWave = generateSineWave(frequency, SAMPLE_RATE, durationMs);
+
+        PitchDetectionUtil.PitchDetectionResult result =
+                PitchDetectionUtil.detectPitchWithYIN(sineWave, SAMPLE_RATE);
+
+        assertEquals(frequency, result.pitch(), TOLERANCE,
+                "The detected frequency should be 934.6 Hz.");
+        assertTrue(result.confidence() > 0.8, "The confidence should be high (> 0.8).");
+    }
+
+    /**
+     * Tests the algorithm's ability to distinguish between a fundamental frequency
+     * and subharmonics by ensuring the frequency (460 Hz) is correctly rejected when
+     * the input signal is 934.6 Hz.
+     */
+    @Test
+    void testDetectPitchWithYIN_RejectSubharmonic460HzFor934Hz() {
+        double frequency = 460.0;
+        int durationMs = 1000; // 1 second
+        double[] sineWave = generateSineWave(frequency, SAMPLE_RATE, durationMs);
+
+        PitchDetectionUtil.PitchDetectionResult result =
+                PitchDetectionUtil.detectPitchWithYIN(sineWave, SAMPLE_RATE);
+
+        assertEquals(frequency, result.pitch(), TOLERANCE,
+                "The detected frequency should be 460 Hz.");
+        assertTrue(result.confidence() > 0.8, "The confidence should be high (> 0.8).");
+    }
+
+    /**
+     * Tests the algorithm with a combined input of 934.6 Hz and a subharmonic (460 Hz)
+     * to ensure that the fundamental frequency is preferred over the subharmonic.
+     */
+    @Test
+    void testDetectPitchWithYIN_MixedFrequenciesWithSubharmonic() {
+        double mainFrequency = 934.6;
+        double subharmonicFrequency = 460.0;
+        int durationMs = 1000; // 1 second
+        double[] mixedWave = generateMixedSineWave(mainFrequency, subharmonicFrequency, SAMPLE_RATE, durationMs);
+
+        PitchDetectionUtil.PitchDetectionResult result =
+                PitchDetectionUtil.detectPitchWithYIN(mixedWave, SAMPLE_RATE);
+
+        assertEquals(mainFrequency, result.pitch(), TOLERANCE,
+                "The detected frequency should primarily be 934.6 Hz.");
+        assertTrue(result.confidence() > 0.7, "The confidence should be high enough (> 0.7).");
+    }
+
+    /**
+     * Tests the algorithm with a sine wave of 934.6 Hz combined with a small amount of white noise
+     * to verify that the fundamental frequency is still detected correctly.
+     */
+    @Test
+    void testDetectPitchWithYIN_FrequencyWithWhiteNoise() {
+        double frequency = 934.6;
+        int durationMs = 1000; // 1 second
+        double noiseLevel = 0.1; // White noise as 10% of the signal amplitude
+        double[] noisyWave = generateSineWaveWithNoise(frequency, SAMPLE_RATE, durationMs, noiseLevel);
+
+        PitchDetectionUtil.PitchDetectionResult result =
+                PitchDetectionUtil.detectPitchWithYIN(noisyWave, SAMPLE_RATE);
+
+        assertEquals(frequency, result.pitch(), TOLERANCE,
+                "The detected frequency should still be 934.6 Hz, even with white noise.");
+        assertTrue(result.confidence() > 0.6, "The confidence should be high enough (> 0.6).");
+    }
+
+    // Helper method: Generates a sine wave with the given frequency, sample rate, and duration
+    private double[] generateSineWave(double frequency, int sampleRate, int durationMs) {
+        int sampleCount = sampleRate * durationMs / 1000;
+        double[] sineWave = new double[sampleCount];
+        for (int i = 0; i < sampleCount; i++) {
+            sineWave[i] = Math.sin(2.0 * Math.PI * frequency * i / sampleRate);
+        }
+        return sineWave;
+    }
+
+    // Helper method: Generates a sine wave with two combined frequencies
+    private double[] generateMixedSineWave(double primaryFreq, double secondaryFreq, int sampleRate, int durationMs) {
+        int sampleCount = sampleRate * durationMs / 1000;
+        double[] mixedWave = new double[sampleCount];
+        for (int i = 0; i < sampleCount; i++) {
+            mixedWave[i] = Math.sin(2.0 * Math.PI * primaryFreq * i / sampleRate)
+                    + Math.sin(2.0 * Math.PI * secondaryFreq * i / sampleRate);
+        }
+        return mixedWave;
+    }
+
+    // Helper method: Generates a sine wave with added white noise
+    private double[] generateSineWaveWithNoise(double frequency, int sampleRate, int durationMs, double noiseLevel) {
+        int sampleCount = sampleRate * durationMs / 1000;
+        double[] noisyWave = new double[sampleCount];
+        for (int i = 0; i < sampleCount; i++) {
+            noisyWave[i] = Math.sin(2.0 * Math.PI * frequency * i / sampleRate) + noiseLevel * (Math.random() - 0.5);
+        }
+        return noisyWave;
+    }
+
+    @ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({
+            "44100, 1",
+            "44100, 5",
+            "44100, 10",
+            "48000, 1",
+            "48000, 5",
+            "48000, 10",
+    })
+    void testDetectPitchWithYIN_460Hz_VaryingSampleRatesAndDurations(int sampleRate, int durationMs) {
+        // Arrange
+        double frequency = 934.6;
+        double[] sineWave = generateSineWave(frequency, sampleRate, durationMs);
+
+        // Act
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithYIN(sineWave, sampleRate);
+        assertTrue( 0.95 <= result.confidence());
+        // Assert
+        assertEquals(frequency, result.pitch(), 2,
+                "Detected pitch does not match the expected value at sample rate "
+                        + sampleRate + " Hz and duration " + durationMs + " ms.");
+    }
+
     /**
      * Verifies that the detectPitchWithMPM method accurately detects the pitch of a sine wave
      * with zero-crossing behavior. The test generates a square-like waveform with alternating
