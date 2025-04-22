@@ -126,4 +126,18 @@ public interface Harmonica {
      * @return true if the specified note is an overdraw, false otherwise
      */
     boolean isOverdraw(int channel, int note);
+
+    /**
+     * Retrieves the minimum frequency achievable by the harmonica.
+     *
+     * @return the minimum frequency of the harmonica in hertz
+     */
+    double getHarmonicaMinFrequency();
+
+    /**
+     * Retrieves the maximum frequency achievable by the harmonica.
+     *
+     * @return the maximum frequency of the harmonica in hertz
+     */
+    double getHarmonicaMaxFrequency();
 }

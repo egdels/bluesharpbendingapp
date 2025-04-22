@@ -585,6 +585,35 @@ public abstract class AbstractHarmonica implements Harmonica {
     }
 
     /**
+     * Retrieves the minimum frequency that the harmonica can produce.
+     * This is calculated by reducing the frequency of the first channel's output by 50 cents.
+     *
+     * @return the minimum frequency of the harmonica in Hertz
+     */
+    @Override
+    public double getHarmonicaMinFrequency() {
+        return NoteUtils.addCentsToFrequency(-50.0, getChannelOutFrequency(1));
+    }
+
+    /**
+     * Computes the maximum frequency that the harmonica can achieve, factoring in
+     * overblow frequencies when applicable.
+     * <p>
+     * If an overblow is detected on channel 10 at note -1, the maximum frequency
+     * is calculated by adding the frequency offset from the overblow. Otherwise,
+     * the calculation is based on the standard frequency of channel 10.
+     *
+     * @return the maximum frequency of the harmonica in Hertz
+     */
+    @Override
+    public double getHarmonicaMaxFrequency() {
+        if(isOverblow(10, -1)) {
+            return NoteUtils.addCentsToFrequency(50.0, getOverblowOverdrawFrequency(10));
+        }
+        return NoteUtils.addCentsToFrequency(50.0, getChannelInFrequency(10));
+    }
+
+    /**
      * An enumeration of supported harmonica tuning systems.
      */
     public enum TUNE {

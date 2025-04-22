@@ -23,6 +23,8 @@ package de.schliweb.bluesharpbendingapp.utils;
  *
  */
 
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +35,12 @@ import java.util.List;
  * and to analyze key audio features like RMS (Root Mean Square).
  */
 public class PitchDetectionUtil {
+
+    @Setter
+    private static double minFrequency=80.0;
+
+    @Setter
+    private static double maxFrequency=4835.0;
 
     /**
      * A constant representing the absence of a detected pitch in pitch detection algorithms.
@@ -89,54 +97,43 @@ public class PitchDetectionUtil {
         // Determine the size of the input buffer (length of the audio sample data)
         int bufferSize = audioData.length;
 
-        // Step 1: Calculate the difference function for the audio sample data.
-        // This function measures the similarity of the signal to itself when delayed
-        // by a specific lag (tau). It is used to identify periodicity in the signal.
+        // Calculate tau limits based on the frequency range
+        int maxTau = (int) (sampleRate / NoteUtils.addCentsToFrequency(-25, minFrequency));
+        int minTau = (int) (sampleRate / NoteUtils.addCentsToFrequency(25, maxFrequency));
+
+        // Step 1: Compute the difference function to measure signal similarity at various lags
         double[] difference = computeDifferenceFunction(audioData, bufferSize);
 
-        // Step 2: Compute the cumulative mean normalized difference function (CMNDF).
-        // The CMNDF refines the results of the difference function by normalizing cumulative values,
-        // making it easier to identify potential fundamental frequencies (pitch candidates).
-        double[] cmndf = computeCMNDF(difference);
+        // Step 2: Normalize the difference function using the CMNDF algorithm
+        double[] cmndf = computeCMNDFInRange(difference, minTau, maxTau);
 
-        // Step 3: Calculate the root mean square (RMS) of the audio signal to assess its energy.
-        // A higher RMS value indicates a stronger (louder) signal, which affects the threshold dynamics.
-        // The RMS result is scaled and used to adjust the minimum threshold dynamically.
+        // Step 3: Compute the Root Mean Square (RMS) to assess the signal's energy level
         double rms = calcRMS(audioData);
 
-        // Step 4: Adjust the YIN minimum threshold dynamically.
-        // The dynamic threshold is capped at a maximum value of 0.5 and is based on the YIN minimum threshold.
-        // The threshold is scaled by a factor dependent on the RMS value, ensuring stability for low RMS values.
+        // Step 4: Adapt the YIN threshold based on RMS to improve pitch detection reliability
         double dynamicThreshold = Math.min(0.5, YIN_MINIMUM_THRESHOLD * (1 + RMS_SCALING_FACTOR / (rms + 0.01)));
 
-        // Step 5: Find the first minimum in the CMNDF that is below the dynamic threshold.
-        // This step identifies the lag value (tau) that is most likely to correspond to a
-        // fundamental frequency in the signal. If no such value is found, -1 is returned.
-        int tauEstimate = findFirstMinimum(cmndf, dynamicThreshold);
+        // Step 5: Find the first minimum in the CMNDF below the threshold; this corresponds to the lag (tau)
+        int tauEstimate = findFirstMinimum(cmndf, dynamicThreshold, minTau, maxTau);
 
-        // Step 6: If a valid tau value is found, refine it using parabolic interpolation.
-        // This refinement step improves the precision of the lag (tau) estimate
-        // by analyzing the CMNDF values around the tau estimate.
+        // Step 6: If a valid lag is found, refine it using parabolic interpolation for accuracy
         if (tauEstimate != -1) {
             double refinedTau = parabolicInterpolation(cmndf, tauEstimate);
 
-            // Ensure the refined lag value is valid (greater than zero).
+            // Ensure the refined lag is valid before proceeding
             if (refinedTau > 0) {
-
-                // The confidence value is calculated by subtracting the squared ratio of cmndf[tauEstimate] to the dynamic threshold from 1.
-                // This ensures that smaller ratios (closer matches) result in higher confidence, while larger ratios reduce confidence.
+                // Calculate the confidence by evaluating how close the CMNDF value is to the threshold
                 double confidence = 1 - Math.pow((cmndf[tauEstimate] / dynamicThreshold), 2);
 
-                // Calculate the pitch (fundamental frequency) in Hz.
-                // The pitch is obtained by dividing the sample rate by the refined lag (tau).
+                // Derive the pitch (fundamental frequency) from the sample rate and tau
                 double pitch = sampleRate / refinedTau;
 
-                // Return the detected pitch and confidence as a PitchDetectionResult object.
+                // Return the detected pitch and confidence in a result object
                 return new PitchDetectionResult(pitch, confidence);
             }
         }
 
-        // Step 7: If no pitch is detected, return a result with NO_DETECTED_PITCH and zero confidence.
+        // Step 7: If no pitch is detected, return no pitch with confidence set to 0.0
         return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
     }
 
@@ -175,20 +172,40 @@ public class PitchDetectionUtil {
         return array[index] < array[index - 1] && array[index] < array[index + 1];
     }
 
-
     /**
-     * Finds the first index in the cumulative mean normalized difference function (CMNDF)
-     * where the value is below a given threshold and is a local minimum.
+     * Finds the first index in the Cumulative Mean Normalized Difference Function (CMNDF)
+     * array where the value is below a specified threshold and is a local minimum.
+     * This simplified version searches the entire array.
      *
-     * @param cmndf     an array of double values representing the cumulative mean
-     *                  normalized difference function (CMNDF).
-     * @param threshold a double value specifying the threshold to compare against
-     *                  the CMNDF values.
+     * @param cmndf     an array of double values representing the cumulative mean normalized
+     *                  difference function (CMNDF). Each element corresponds to the
+     *                  periodicity measure for a specific lag value.
+     * @param threshold a double value representing the threshold for identifying valid
+     *                  CMNDF values. Only elements below this value will be considered.
      * @return the index of the first local minimum that satisfies the threshold condition;
-     * returns -1 if no such index is found.
+     *         returns -1 if no valid index is found.
      */
     private static int findFirstMinimum(double[] cmndf, double threshold) {
-        for (int tau = 2; tau < cmndf.length - 1; tau++) {
+        return findFirstMinimum(cmndf, threshold, 0, cmndf.length);
+    }
+
+    /**
+     * Finds the first index in the Cumulative Mean Normalized Difference Function (CMNDF)
+     * array where the value is below a specified threshold and is a local minimum.
+     *
+     * @param cmndf     an array of double values representing the cumulative mean normalized
+     *                  difference function (CMNDF). Each element corresponds to the
+     *                  periodicity measure for a specific lag value.
+     * @param threshold a double value representing the threshold for identifying valid
+     *                  CMNDF values. Only elements below this value will be considered.
+     * @param minTau    an integer specifying the minimum lag value to start the search from.
+     * @param maxTau    an integer specifying the maximum lag value up to which the search
+     *                  should be conducted.
+     * @return the index of the first local minimum that satisfies the threshold condition;
+     *         returns -1 if no valid index is found within the given range.
+     */
+    private static int findFirstMinimum(double[] cmndf, double threshold, int minTau, int maxTau) {
+        for (int tau = minTau; tau < maxTau; tau++) {
             if (cmndf[tau] < threshold && isLocalMinimum(cmndf, tau)) {
                 return tau;
             }
@@ -197,22 +214,42 @@ public class PitchDetectionUtil {
     }
 
     /**
-     * Computes the Cumulative Mean Normalized Difference Function (CMNDF) for a given difference function.
-     * The CMNDF is used in pitch detection algorithms to evaluate the periodicity of signals.
-     *
-     * @param difference an array of double values representing the difference function
-     *                   of a signal, typically derived from a pitch detection process.
-     * @return an array of double values representing the CMNDF, where each value indicates
-     * the normalized difference for a potential periodicity.
+     * Computes the Cumulative Mean Normalized Difference Function (CMNDF) for a difference array.
+     * This is a simplified version that computes CMNDF for the entire array without range restrictions.
+     * 
+     * @param difference an array of difference values to compute the CMNDF from
+     * @return an array representing the CMNDF values
      */
     private static double[] computeCMNDF(double[] difference) {
+        return computeCMNDFInRange(difference, 0, difference.length - 1);
+    }
+
+    /**
+     * Computes the Cumulative Mean Normalized Difference Function (CMNDF) for the given range of τ values.
+     * This method calculates a normalized measure within the relevant τ range, specified by minTau and maxTau,
+     * while ignoring values outside that range.
+     *
+     * @param difference an array of difference values to compute the CMNDF from
+     * @param minTau the minimum index in the τ range to be considered for calculation
+     * @param maxTau the maximum index in the τ range to be considered for calculation
+     * @return an array representing the CMNDF values, where values outside the specified range are set to 1
+     */
+    private static double[] computeCMNDFInRange(double[] difference, int minTau, int maxTau) {
         double[] cmndf = new double[difference.length];
-        cmndf[0] = 1; // First value is always 1
+        cmndf[0] = 1;
         double cumulativeSum = 0;
+
         for (int tau = 1; tau < difference.length; tau++) {
             cumulativeSum += difference[tau];
-            cmndf[tau] = difference[tau] / ((cumulativeSum / tau) + 1e-10); // Avoid division by zero
+
+            // Nur im relevanten Bereich berechnen
+            if (tau >= minTau && tau <= maxTau) {
+                cmndf[tau] = difference[tau] / ((cumulativeSum / tau) + 1e-10);
+            } else {
+                cmndf[tau] = 1; // Werte außerhalb des Bereichs ignorieren
+            }
         }
+
         return cmndf;
     }
 
@@ -389,6 +426,204 @@ public class PitchDetectionUtil {
             sum += sample * sample;
         }
         return Math.sqrt(sum / audioData.length);
+    }
+
+    /**
+     * Detects the pitch of a harmonica audio signal using an optimized version of the McLeod Pitch Method (MPM).
+     * This method is specifically tuned for harmonica sounds, with optimizations for the typical frequency
+     * range and harmonic characteristics of harmonicas.
+     *
+     * @param audioData  an array of double values representing the harmonica audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value (0 to 1).
+     */
+    private static PitchDetectionResult detectPitchWithMPMForHarmonica(double[] audioData, int sampleRate) {
+        // Harmonica-specific frequency range optimization
+        // Most harmonicas play in the range of ~196Hz (G3) to ~988Hz (B5)
+        int n = audioData.length;
+
+        // Optimize for harmonica frequency range
+        // For a typical harmonica range (196Hz-988Hz) at 44100Hz sample rate,
+        // we're looking at periods of ~45-225 samples
+        int minLag = Math.max(1, sampleRate / 1200); // Higher frequency limit (~1200Hz)
+        int maxLag = Math.min(n / 2, sampleRate / 150); // Lower frequency limit (~150Hz)
+
+        // Calculate NSDF only for the relevant lag range to save computation
+        double[] nsdf = new double[n];
+
+        // Optimized NSDF calculation for harmonica frequency range
+        for (int lag = 0; lag < minLag; lag++) {
+            nsdf[lag] = 0; // Skip calculation for lags outside harmonica range
+        }
+
+        for (int lag = minLag; lag < maxLag; lag++) {
+            double numerator = 0;
+            double denominator = 0;
+
+            // Use a smaller window for calculation to improve performance
+            int windowSize = Math.min(n - lag, 1024); // Limit window size
+
+            for (int i = 0; i < windowSize; i++) {
+                numerator += audioData[i] * audioData[i + lag];
+                denominator += audioData[i] * audioData[i] + audioData[i + lag] * audioData[i + lag];
+            }
+
+            if (denominator == 0) {
+                nsdf[lag] = 0;
+            } else {
+                nsdf[lag] = 2 * numerator / denominator;
+            }
+        }
+
+        for (int lag = maxLag; lag < n; lag++) {
+            nsdf[lag] = 0; // Skip calculation for lags outside harmonica range
+        }
+
+        // Fast peak finding for harmonicas
+        List<Integer> candidatePeaks = new ArrayList<>();
+        for (int lag = minLag + 1; lag < maxLag - 1; lag++) {
+            // Only check every other sample to improve performance
+            if (lag % 2 == 0 && nsdf[lag] > nsdf[lag - 2] && nsdf[lag] > nsdf[lag + 2] && nsdf[lag] > 0.7) {
+                // Verify it's a true peak by checking immediate neighbors
+                if (nsdf[lag] > nsdf[lag - 1] && nsdf[lag] > nsdf[lag + 1]) {
+                    candidatePeaks.add(lag);
+                }
+            }
+        }
+
+        // Early exit if no peaks found
+        if (candidatePeaks.isEmpty()) {
+            return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
+        }
+
+        // Simplified peak selection for harmonicas
+        int peakIndex = candidatePeaks.get(0); // Take the first peak
+        double confidence = nsdf[peakIndex];
+
+        // Simple parabolic interpolation
+        if (peakIndex > 0 && peakIndex < nsdf.length - 1) {
+            double x0 = nsdf[peakIndex - 1];
+            double x1 = nsdf[peakIndex];
+            double x2 = nsdf[peakIndex + 1];
+            double adjustment = 0.5 * (x0 - x2) / (x0 - 2 * x1 + x2);
+
+            // Only apply if the adjustment is reasonable
+            if (Math.abs(adjustment) < 1) {
+                peakIndex += adjustment;
+            }
+        }
+
+        double pitch = (double) sampleRate / peakIndex;
+
+        // Additional confidence boost for pitches in the harmonica range
+        if (pitch >= 196 && pitch <= 988) {
+            confidence = Math.min(1.0, confidence * 1.1);
+        }
+
+        return new PitchDetectionResult(pitch, confidence);
+    }
+
+    /**
+     * Detects the pitch of a harmonica audio signal using an optimized version of the YIN algorithm.
+     * This method is specifically tuned for harmonica sounds, with optimizations for the typical frequency
+     * range and harmonic characteristics of harmonicas.
+     *
+     * @param audioData  an array of double values representing the harmonica audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value (0 to 1).
+     */
+    private static PitchDetectionResult detectPitchWithYINForHarmonica(double[] audioData, int sampleRate) {
+        // Harmonica-specific frequency range optimization
+        // Most harmonicas play in the range of ~196Hz (G3) to ~988Hz (B5)
+        int bufferSize = audioData.length;
+
+        // Optimize for harmonica frequency range
+        // For a typical harmonica range (196Hz-988Hz) at 44100Hz sample rate,
+        // we're looking at periods of ~45-225 samples
+        int maxTau = Math.min(bufferSize / 2, sampleRate / 150); // Lower frequency limit (~150Hz)
+        int minTau = Math.max(2, sampleRate / 1200); // Higher frequency limit (~1200Hz)
+
+        // Step 1: Compute the difference function more efficiently for harmonica range
+        double[] difference = new double[bufferSize / 2];
+
+        // Pre-compute squared audio data for efficiency
+        double[] audioSquared = new double[bufferSize];
+        for (int i = 0; i < bufferSize; i++) {
+            audioSquared[i] = audioData[i] * audioData[i];
+        }
+
+        // Only compute difference function for relevant tau range
+        for (int tau = 0; tau < difference.length; tau++) {
+            if (tau < minTau || tau > maxTau) {
+                difference[tau] = 1.0; // Set to high value outside harmonica range
+                continue;
+            }
+
+            // Use a smaller window for calculation to improve performance
+            int windowSize = Math.min(bufferSize / 2, 1024); // Limit window size
+            double sum = 0;
+
+            for (int i = 0; i < windowSize; i++) {
+                sum += audioSquared[i] + audioSquared[i + tau] - 2 * audioData[i] * audioData[i + tau];
+            }
+            difference[tau] = sum;
+        }
+
+        // Step 2: Compute CMNDF more efficiently
+        double[] cmndf = new double[difference.length];
+        cmndf[0] = 1.0;
+
+        // Only compute CMNDF for relevant tau range
+        double cumulativeSum = 0;
+        for (int tau = 1; tau < difference.length; tau++) {
+            if (tau < minTau || tau > maxTau) {
+                cmndf[tau] = 1.0; // Set to high value outside harmonica range
+                continue;
+            }
+
+            cumulativeSum += difference[tau];
+            cmndf[tau] = difference[tau] / ((cumulativeSum / tau) + 1e-10);
+        }
+
+        // Step 3: Compute RMS for threshold adjustment
+        double rms = calcRMS(audioData);
+
+        // Step 4: Use a more aggressive threshold for harmonica sounds
+        // Harmonicas have strong fundamentals, so we can use a lower threshold
+        double harmonicaThreshold = Math.min(0.4, YIN_MINIMUM_THRESHOLD * (1 + RMS_SCALING_FACTOR / (rms + 0.01)));
+
+        // Step 5: Find the first minimum more efficiently
+        int tauEstimate = -1;
+        for (int tau = minTau; tau <= maxTau; tau++) {
+            if (cmndf[tau] < harmonicaThreshold && isLocalMinimum(cmndf, tau)) {
+                tauEstimate = tau;
+                break;
+            }
+        }
+
+        // Step 6: If a valid lag is found, refine it using parabolic interpolation
+        if (tauEstimate != -1) {
+            double refinedTau = parabolicInterpolation(cmndf, tauEstimate);
+
+            // Ensure the refined lag is valid
+            if (refinedTau > 0) {
+                // Calculate confidence
+                double confidence = 1 - Math.pow((cmndf[tauEstimate] / harmonicaThreshold), 2);
+
+                // Derive the pitch
+                double pitch = sampleRate / refinedTau;
+
+                // Boost confidence for pitches in the harmonica range
+                if (pitch >= 196 && pitch <= 988) {
+                    confidence = Math.min(1.0, confidence * 1.1);
+                }
+
+                return new PitchDetectionResult(pitch, confidence);
+            }
+        }
+
+        // Step 7: If no pitch is detected, return no pitch with confidence set to 0.0
+        return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
     }
 
     /**

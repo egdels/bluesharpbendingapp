@@ -30,6 +30,7 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
+import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
@@ -81,7 +82,8 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
         LoggingUtils.logDebug("Creating and setting harmonica using stored key and tune indices");
         this.harmonica = AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex());
-
+        PitchDetectionUtil.setMinFrequency(harmonica.getHarmonicaMinFrequency());
+        PitchDetectionUtil.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
         LoggingUtils.logInitialized("HarpController");
     }
 
@@ -122,7 +124,8 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
         LoggingUtils.logDebug("Creating and setting a new harmonica based on the selected key and the stored tune");
         harmonica = AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex());
-
+        PitchDetectionUtil.setMinFrequency(harmonica.getHarmonicaMinFrequency());
+        PitchDetectionUtil.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
         long startTime = System.currentTimeMillis();
         modelStorageService.storeModel(model);
         long duration = System.currentTimeMillis() - startTime;
@@ -142,7 +145,8 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
         LoggingUtils.logDebug("Creating and setting a new harmonica based on the stored key and the selected tune");
         harmonica = AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex);
-
+        PitchDetectionUtil.setMinFrequency(harmonica.getHarmonicaMinFrequency());
+        PitchDetectionUtil.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
         long startTime = System.currentTimeMillis();
         modelStorageService.storeModel(model);
         long duration = System.currentTimeMillis() - startTime;
@@ -350,6 +354,8 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
         LoggingUtils.logDebug("Stored key index: " + storedKeyIndex + ", Stored tune index: " + storedTuneIndex);
 
         harmonica = AbstractHarmonica.create(storedKeyIndex, storedTuneIndex);
+        PitchDetectionUtil.setMinFrequency(harmonica.getHarmonicaMinFrequency());
+        PitchDetectionUtil.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
 
         long startTime = System.currentTimeMillis();
         modelStorageService.storeModel(model);
