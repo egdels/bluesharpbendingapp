@@ -26,7 +26,6 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -36,10 +35,7 @@ import java.io.IOException;
  * defined in an FXML file. It provides access to the root node of the interface and its associated controller.
  */
 @Getter
-@Slf4j
 public class SettingsViewDesktopFX {
-
-
 
 
     /**
@@ -103,7 +99,6 @@ public class SettingsViewDesktopFX {
             throw new FxmlLoadingException("Failed to load FXML file", e);
         }
     }
-
 
 
 }

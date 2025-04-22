@@ -30,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
@@ -45,34 +44,18 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import de.schliweb.bluesharpbendingapp.R;
-import de.schliweb.bluesharpbendingapp.controller.AndroidSettingsHandler;
-import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.MainController;
-import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
-import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
+import de.schliweb.bluesharpbendingapp.controller.*;
 import de.schliweb.bluesharpbendingapp.databinding.ActivityMainBinding;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
-import de.schliweb.bluesharpbendingapp.model.mircophone.android.MicrophoneAndroid;
-import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
-import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
-import de.schliweb.bluesharpbendingapp.view.HarpView;
-import de.schliweb.bluesharpbendingapp.view.MainWindow;
-import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
-import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
-import de.schliweb.bluesharpbendingapp.view.TrainingView;
-import de.schliweb.bluesharpbendingapp.view.android.FragmentView;
-import de.schliweb.bluesharpbendingapp.view.android.FragmentViewModel;
-import de.schliweb.bluesharpbendingapp.view.android.HarpFragment;
-import de.schliweb.bluesharpbendingapp.view.android.SettingsFragment;
-import de.schliweb.bluesharpbendingapp.view.android.TrainingFragment;
+import de.schliweb.bluesharpbendingapp.view.*;
+import de.schliweb.bluesharpbendingapp.view.android.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.inject.Inject;
 
 
 /**
@@ -116,15 +99,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MainActivity extends AppCompatActivity implements MainWindow {
-
-
-    /**
-     * Represents the filename used for storing and retrieving a temporary model file.
-     * This file is typically located in the application's cache directory.
-     * It is used in methods such as {@code storeModel(AndroidModel model)} and {@code readModel()}
-     * to serialize and deserialize the application's model data.
-     */
-    private static final String TEMP_FILE = "Model.tmp";
 
     /**
      * Indicates whether the necessary permissions have been granted.
@@ -177,17 +151,15 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
      * Controls the interactions and configurations related to the Harp settings UI.
      * Responsible for displaying, updating, and handling user actions within the Harp settings view.
      */
-    @Getter
-    @Setter
-    private HarpSettingsViewHandler harpSettingsViewHandler;
+    @Inject
+    /* package */ HarpSettingsViewHandler harpSettingsViewHandler;
     /**
      * Manages the behavior and representation of the harp view component within the application.
      * This variable is responsible for handling updates, interactions, and rendering related
      * to the harp view, ensuring seamless integration within the user interface.
      */
-    @Getter
-    @Setter
-    private HarpViewHandler harpViewHandler;
+    @Inject
+    /* package */ HarpViewHandler harpViewHandler;
     /**
      * Manages the MicrophoneSettingsViewHandler, which handles the user interface
      * and interactions related to the microphone settings within the application.
@@ -197,9 +169,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
      * retrieving the microphone settings view, checking its state, and controlling
      * its behavior.
      */
-    @Getter
-    @Setter
-    private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
+    @Inject
+    /* package */ MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
 
     /**
      * Indicates whether the application is currently in a paused state.
@@ -224,9 +195,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
      * and handling the behavior and interactions of the note settings
      * view within the application.
      */
-    @Getter
-    @Setter
-    private NoteSettingsViewHandler noteSettingsViewHandler;
+    @Inject
+    /* package */ NoteSettingsViewHandler noteSettingsViewHandler;
 
     /**
      * The TrainingViewHandler instance responsible for managing and handling
@@ -235,9 +205,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
      * to the training view, such as rendering, lifecycle management, and
      * user inputs.
      */
-    @Getter
-    @Setter
-    private TrainingViewHandler trainingViewHandler;
+    @Inject
+    /* package */ TrainingViewHandler trainingViewHandler;
 
     /**
      * Represents the handler responsible for managing Android-specific settings within the application.
@@ -250,9 +219,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
      * <p>
      * This property can be accessed and modified using the associated getter and setter methods.
      */
-    @Getter
-    @Setter
-    private AndroidSettingsHandler androidSettingsHandler;
+    @Inject
+    /* package */ AndroidSettingsHandler androidSettingsHandler;
 
     /**
      * The main controller of the application.
@@ -261,14 +229,17 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
      * and updating the application's state. It acts as a central hub
      * for application logic and manages the flow of data.
      */
-    private MainController mainController;
+    @Inject
+    /* package */ MainController mainController;
+
     /**
      * Provides functionality related to storing and retrieving model data required by the application.
      * This service acts as an intermediary for accessing, managing, and persisting application-specific
      * models such as configuration or settings data. It facilitates consistent and centralized
      * management of data, ensuring easy access throughout the application lifecycle.
      */
-    private ModelStorageService modelStorageService;
+    @Inject
+    /* package */ ModelStorageService modelStorageService;
 
 
     /**
@@ -279,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
      *                           being shut down, this bundle contains the most recent data
      *                           supplied in onSaveInstanceState. Otherwise, it is null.
      */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Handle the splash screen transition.
@@ -293,36 +265,39 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
         }
 
-        modelStorageService = new ModelStorageService(this.getApplicationContext().getFilesDir().getAbsolutePath(), TEMP_FILE);
-        mainController = new MainController(this, new MicrophoneAndroid(), modelStorageService);
+        // Initialize dependency injection
+        BlueSharpBendingApplication app = (BlueSharpBendingApplication) getApplication();
+
+        // First initialize with just the MainActivity as MainWindow
+        app.initializeDependencyInjection(this);
+
+        // Get the AppComponent and inject dependencies
+        app.getAppComponent().inject(this);
 
         FragmentViewModel viewModel = new ViewModelProvider(this).get(FragmentViewModel.class);
         viewModel.getSelectedFragmentView().observe(this, item -> {
             // Perform an action with the latest item data.
             this.selectedFragmentView = item;
             if (item.getInstance() instanceof SettingsFragment settingsFragment) {
-                settingsFragment.setHarpSettingsViewHandler(getHarpSettingsViewHandler());
-                settingsFragment.setMicrophoneSettingsViewHandler(getMicrophoneSettingsViewHandler());
-                settingsFragment.setNoteSettingsViewHandler(getNoteSettingsViewHandler());
-                settingsFragment.setAndroidSettingsViewHandler(getAndroidSettingsHandler());
-
-                settingsFragment.getHarpSettingsViewHandler().initTuneList();
-                settingsFragment.getHarpSettingsViewHandler().initKeyList();
-                settingsFragment.getMicrophoneSettingsViewHandler().initAlgorithmList();
-                settingsFragment.getMicrophoneSettingsViewHandler().initMicrophoneList();
-                settingsFragment.getMicrophoneSettingsViewHandler().initConfidenceList();
-                settingsFragment.getNoteSettingsViewHandler().initConcertPitchList();
-                settingsFragment.getAndroidSettingsViewHandler().initLockScreen();
-            }
+                settingsFragment.setHarpSettingsViewHandler(harpSettingsViewHandler);
+                settingsFragment.setMicrophoneSettingsViewHandler(microphoneSettingsViewHandler);
+                settingsFragment.setNoteSettingsViewHandler(noteSettingsViewHandler);
+                settingsFragment.setAndroidSettingsViewHandler(androidSettingsHandler);
+                harpSettingsViewHandler.initKeyList();
+                harpSettingsViewHandler.initTuneList();
+                microphoneSettingsViewHandler.initAlgorithmList();
+                microphoneSettingsViewHandler.initMicrophoneList();
+                microphoneSettingsViewHandler.initConfidenceList();
+                noteSettingsViewHandler.initConcertPitchList();
+                androidSettingsHandler.initLockScreen();     }
             if (item.getInstance() instanceof HarpFragment harpFragment) {
-                harpFragment.setHarpViewHandler(getHarpViewHandler());
-                harpFragment.getHarpViewHandler().initNotes();
+                harpViewHandler.initNotes();
             }
             if (item.getInstance() instanceof TrainingFragment trainingFragment) {
-                trainingFragment.setTrainingViewHandler(getTrainingViewHandler());
-                trainingFragment.getTrainingViewHandler().initTrainingContainer();
-                trainingFragment.getTrainingViewHandler().initTrainingList();
-                trainingFragment.getTrainingViewHandler().initPrecisionList();
+                trainingFragment.setTrainingViewHandler(trainingViewHandler);
+                trainingViewHandler.initTrainingContainer();
+                trainingViewHandler.initTrainingList();
+                trainingViewHandler.initPrecisionList();
             }
             handleLookScreen();
         });
@@ -349,7 +324,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         return (TrainingView) selectedFragmentView.getInstance();
     }
 
-
     @Override
     public AndroidSettingsView getAndroidSettingsView() {
         return (AndroidSettingsView) selectedFragmentView.getInstance();
@@ -359,7 +333,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
     public boolean isAndroidSettingsViewActive() {
         return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof SettingsFragment;
     }
-
 
     /**
      * Hides the application's primary app bar (ActionBar) if it is currently visible.
@@ -653,13 +626,4 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         }
     }
 
-    /**
-     * Checks whether the application's app bar (ActionBar) is currently hidden.
-     *
-     * @return A boolean value indicating the visibility state of the app bar.
-     * Returns true if the app bar is hidden, otherwise false.
-     */
-    protected boolean isAppBarHidden() {
-        return isAppBarHidden;
-    }
 }

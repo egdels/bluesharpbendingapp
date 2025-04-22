@@ -22,14 +22,13 @@ package de.schliweb.bluesharpbendingapp.view.android;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import android.widget.TextView;
-
 import androidx.fragment.app.FragmentActivity;
-
-import java.util.HashMap;
-
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import lombok.Setter;
+
+import java.util.HashMap;
 
 /**
  * Represents a UI element that handles displaying and updating specific note-related information

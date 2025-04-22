@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import javafx.geometry.Pos;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;

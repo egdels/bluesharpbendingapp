@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.view.android;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Typeface;

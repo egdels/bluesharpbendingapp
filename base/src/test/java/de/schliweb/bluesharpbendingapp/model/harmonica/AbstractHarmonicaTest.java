@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -26,7 +26,7 @@
 <?import javafx.scene.layout.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             xmlns="http://javafx.com/javafx"
-            fx:controller="de.schliweb.tuner.RealTimeTuner" stylesheets="/styles/tunerapp.css" styleClass="tunerapp">
+            fx:controller="de.schliweb.bluesharpbendingapp.tuner.RealTimeTuner" stylesheets="/styles/tunerapp.css" styleClass="tunerapp">
     <top>
         <HBox spacing="20">
             <padding>
@@ -47,4 +47,3 @@
     </center>
 
 </BorderPane>
-

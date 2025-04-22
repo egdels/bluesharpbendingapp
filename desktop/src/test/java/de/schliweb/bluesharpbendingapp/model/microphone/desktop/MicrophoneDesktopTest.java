@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import org.junit.jupiter.api.Test;
 

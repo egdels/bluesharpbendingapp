@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.controller;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
@@ -60,11 +61,11 @@ class NoteContainerTest {
      * <p>
      * Mocks and their behaviors:
      * - The mock Harmonica returns predefined minimum and maximum frequencies
-     *   for a given channel and note when appropriate methods are called.
+     * for a given channel and note when appropriate methods are called.
      * - The mock HarpView returns an associated HarpViewNoteElement for the
-     *   specified channel and note.
+     * specified channel and note.
      * - The mock HarpViewNoteElement is used to represent the visual element
-     *   in the harp view for the corresponding note.
+     * in the harp view for the corresponding note.
      */
     @BeforeEach
     void setUp() {
@@ -92,7 +93,7 @@ class NoteContainerTest {
      * <p>
      * Test Steps:
      * 1. A valid frequency value is assigned using the `setFrequencyToHandle` method of the
-     *    `NoteContainer` class.
+     * `NoteContainer` class.
      * 2. The `run` method of the `NoteContainer` class is executed.
      * 3. It is verified that the `update` method of the mocked `HarpViewNoteElement` is called exactly once.
      * 4. It is verified that the `clear` method of the mocked `HarpViewNoteElement` is never called.
@@ -122,7 +123,7 @@ class NoteContainerTest {
      * <p>
      * Preconditions:
      * - A frequency value is initially set within the valid range of `MIN_FREQUENCY` and
-     *   `MAX_FREQUENCY`.
+     * `MAX_FREQUENCY`.
      * - The frequency value is then updated to a value outside the valid range.
      * <p>
      * Test Steps:
@@ -135,9 +136,9 @@ class NoteContainerTest {
      * <p>
      * Assertions:
      * - The `update` method of the mocked `HarpViewNoteElement` is called once when the frequency
-     *   was within the valid range.
+     * was within the valid range.
      * - The `clear` method of the mocked `HarpViewNoteElement` is called once when the frequency
-     *   transitions to an out-of-range value.
+     * transitions to an out-of-range value.
      */
     @Test
     void testClearCleanNotCalled_WhenFrequencyOutOfRange() {
@@ -181,7 +182,6 @@ class NoteContainerTest {
      * Expected Behavior:
      * - The `clear` method is never called because the frequency remains out of the valid range throughout the test.
      * - There is no repeated clearing of the element for continuous out-of-range frequencies.
-     *
      */
     @Test
     void testClearNotCalled_WhenFrequencyRemainsOutOfRange() {
@@ -218,7 +218,7 @@ class NoteContainerTest {
      * <p>
      * Assertions:
      * - The `update` method of the mocked `HarpViewNoteElement` is called exactly once after the
-     *   frequency returns to the valid range.
+     * frequency returns to the valid range.
      * - The `clear` method of the mocked `HarpViewNoteElement` is never called during this test case.
      */
     @Test
@@ -255,12 +255,12 @@ class NoteContainerTest {
      * 1. Set a valid frequency within the defined range using the `setFrequencyToHandle` method.
      * 2. Execute the `run` method of the `NoteContainer` instance.
      * 3. Verify that the `update` method of the `HarpViewNoteElement` is invoked exactly once with the negative
-     *    value of the computed cents.
+     * value of the computed cents.
      * 4. Verify that the `clear` method of the `HarpViewNoteElement` is never called during the execution.
      * <p>
      * Expected Behavior:
      * - When inverse handling is true, the calculated cents are negated, and the `update` method is called
-     *   with this negative value.
+     * with this negative value.
      * - The `clear` method is not invoked since the frequency remains within the valid range.
      */
     @Test
@@ -276,9 +276,7 @@ class NoteContainerTest {
         when(mockHarpViewWithInverse.getHarpViewElement(CHANNEL, NOTE)).thenReturn(mockHarpViewElementWithInverse);
         when(mockHarmonicaWithInverse.getCentsNote(CHANNEL, NOTE, validFrequency)).thenReturn(50.0);
 
-        NoteContainer inverseNoteContainer = new NoteContainer(
-                CHANNEL, NOTE, NOTE_NAME, mockHarmonicaWithInverse, mockHarpViewWithInverse, true
-        );
+        NoteContainer inverseNoteContainer = new NoteContainer(CHANNEL, NOTE, NOTE_NAME, mockHarmonicaWithInverse, mockHarpViewWithInverse, true);
 
         inverseNoteContainer.setFrequencyToHandle(validFrequency);
 
@@ -350,13 +348,14 @@ class NoteContainerTest {
         verify(mockHarpViewElement, never()).update(anyDouble());
         verify(mockHarpViewElement, never()).clear();
     }
+
     /**
      * Tests that the `run` method of `noteContainer` correctly calls the `update` method on the
      * `HarpViewElement` mock when provided with a valid frequency.
      * <p>
      * The test verifies the following behavior:
      * - For a frequency within the valid range, the `update` method of the `HarpViewElement` mock
-     *   is called exactly once with the correct `cents` value obtained from the `Harmonica` mock.
+     * is called exactly once with the correct `cents` value obtained from the `Harmonica` mock.
      * - The `clear` method of the `HarpViewElement` mock is never called during this process.
      * <p>
      * This ensures that the `noteContainer` processes valid frequency inputs as expected,

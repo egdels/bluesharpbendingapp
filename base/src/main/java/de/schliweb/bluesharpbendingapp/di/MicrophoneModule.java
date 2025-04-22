@@ -1,4 +1,4 @@
-package de.schliweb.tuner;
+package de.schliweb.bluesharpbendingapp.di;
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,42 +23,38 @@ package de.schliweb.tuner;
  *
  */
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import dagger.Module;
+import dagger.Provides;
+import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 
-public class TunerApp extends Application {
+import javax.inject.Singleton;
 
-    private RealTimeTuner controller;
+/**
+ * Dagger module that provides microphone-related dependencies for the application.
+ * This module is responsible for providing the Microphone instance.
+ */
+@Module
+public class MicrophoneModule {
 
-    public static void main(String[] args) {
-        launch(args);
+    private final Microphone microphone;
+
+    /**
+     * Constructs a new MicrophoneModule with the specified Microphone.
+     *
+     * @param microphone the Microphone instance to provide
+     */
+    public MicrophoneModule(Microphone microphone) {
+        this.microphone = microphone;
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/tunerapp.fxml"));
-        Parent root = loader.load();
-
-        controller = loader.getController();
-
-        Scene scene = new Scene(root);
-        primaryStage.setTitle("Tuning Meter");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        controller.startTuning();
+    /**
+     * Provides a singleton instance of Microphone.
+     *
+     * @return a singleton Microphone instance
+     */
+    @Provides
+    @Singleton
+    public Microphone provideMicrophone() {
+        return microphone;
     }
-
-    @Override
-    public void stop() {
-        if (controller != null) {
-            controller.stopTuning();
-        }
-        System.exit(0);
-    }
-
-
 }

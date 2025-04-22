@@ -3,7 +3,7 @@ package de.schliweb.bluesharpbendingapp.app;
  * Copyright (c) 2023 Christian Kierdorf
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the “Software”),
+ * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
@@ -12,7 +12,7 @@ package de.schliweb.bluesharpbendingapp.app;
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -24,15 +24,15 @@ package de.schliweb.bluesharpbendingapp.app;
  */
 
 import de.schliweb.bluesharpbendingapp.controller.MainController;
-import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.VersionService;
-import de.schliweb.bluesharpbendingapp.model.microphone.desktop.MicrophoneDesktop;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.FileSystems;
 import java.util.Objects;
@@ -58,7 +58,6 @@ import java.util.Objects;
  * - {@code start(Stage primaryStage)}: Called during application startup to set up the GUI and initialize required components.
  * - {@code stop()}: Called during application termination to perform cleanup operations and properly shut down resources.
  */
-@Slf4j
 public class MainDesktop extends Application {
 
     /**
@@ -114,16 +113,24 @@ public class MainDesktop extends Application {
         try {
             // Load the FXML file for the main window
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main-window.fxml"));
+            Parent rootNode = loader.load();
+            MainWindowDesktopFXController mainWindowController = loader.getController();
 
-            // Create the scene and apply the stylesheet
-            Scene scene = new Scene(loader.load());
+            // Create a scene with the loaded FXML
+            Scene scene = new Scene(rootNode);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/main-window.css")).toExternalForm());
 
-            // Access the controller of the FXML file
-            MainWindowDesktopFXController mainWindowDesktopFXController = loader.getController();
+            // Initialize the application with dependency injection
+            BlueSharpBendingDesktopApplication app = new BlueSharpBendingDesktopApplication();
+            app.initializeDependencyInjection(TEMP_DIR, mainWindowController);
 
-            // Initialize the main application controller with the view-controller and application model
-            controller = new MainController(mainWindowDesktopFXController, new MicrophoneDesktop(), new ModelStorageService(TEMP_DIR, TEMP_FILE));
+            // Get the main controller from the Dagger component
+            controller = app.getAppComponent().getMainController();
+
+            // Inject dependencies into the main window controller
+            app.getAppComponent().inject(mainWindowController);
+
+            // Start the controller
             controller.start();
 
             // Set the scene and show the stage
@@ -132,13 +139,15 @@ public class MainDesktop extends Application {
             primaryStage.show();
         } catch (Exception e) {
             // Log an error if something goes wrong during application startup
-            log.error("Error while starting the application: {}", e.getMessage());
+            LoggingContext.setComponent("MainDesktop");
+            LoggingUtils.logError("Error while starting the application", e);
         }
     }
 
     @Override
     public void stop() {
-        log.info("Shutting down");
+        LoggingContext.setComponent("MainDesktop");
+        LoggingUtils.logAppShutdown("Desktop Application");
         controller.stop();
         System.exit(0);
     }

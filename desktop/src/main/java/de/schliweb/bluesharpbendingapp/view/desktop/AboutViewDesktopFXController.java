@@ -24,12 +24,12 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  */
 
 import de.schliweb.bluesharpbendingapp.model.VersionService;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.AboutView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.net.URI;
@@ -44,7 +44,6 @@ import java.util.Objects;
  * displaying "About" information. The controller handles user interactions, such as clicking on links
  * to download the application or make donations through provided URLs.
  */
-@Slf4j
 public class AboutViewDesktopFXController implements AboutView {
 
     /**
@@ -110,10 +109,8 @@ public class AboutViewDesktopFXController implements AboutView {
         // The version is retrieved from the package implementation details and compared with the latest version from the host
         String latestVersion = VersionService.getVersionFromHost();
         if (latestVersion != null) {
-            versionLabel.setText("Version " + getClass().getPackage().getImplementationVersion() +
-                    " (Latest: " + VersionService.getVersionFromHost() + ")");
-        }
-        else {
+            versionLabel.setText("Version " + getClass().getPackage().getImplementationVersion() + " (Latest: " + VersionService.getVersionFromHost() + ")");
+        } else {
             versionLabel.setText("Version " + getClass().getPackage().getImplementationVersion());
         }
     }
@@ -178,7 +175,7 @@ public class AboutViewDesktopFXController implements AboutView {
         try {
             Desktop.getDesktop().browse(new URI(uri));
         } catch (Exception ex) {
-            log.error("Error while opening the link: {}", uri);
+            LoggingUtils.logError("Error while opening the link: {}", uri);
         }
     }
 

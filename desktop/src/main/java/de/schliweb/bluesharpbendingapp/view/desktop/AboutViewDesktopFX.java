@@ -22,10 +22,10 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -35,9 +35,9 @@ import java.io.IOException;
  * desktop "About" view within a JavaFX application. It utilizes an FXML file for
  * the layout and a corresponding controller to manage view-related logic.
  */
-@Slf4j
 @Getter
-public class AboutViewDesktopFX {
+public class
+AboutViewDesktopFX {
 
     /**
      * Represents the root Node of the "About" view in a JavaFX application. This node is

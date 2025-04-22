@@ -26,7 +26,6 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -40,7 +39,6 @@ import java.io.IOException;
  * represented by the FXML file and its associated controller.
  */
 @Getter
-@Slf4j
 public class TrainingViewDesktopFX {
 
     /**
@@ -79,7 +77,7 @@ public class TrainingViewDesktopFX {
      * - Retrieves and saves the root node and the associated controller from the FXML file.
      * - Ensures the root node is managed and visible within the UI framework.
      * - Properly handles errors by logging them and throwing a RuntimeException
-     *   to indicate failure during the FXML loading process.
+     * to indicate failure during the FXML loading process.
      * <p>
      * Throws:
      * - RuntimeException if loading the FXML file fails due to an IOException.

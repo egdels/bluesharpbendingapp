@@ -26,8 +26,9 @@ package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
 
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.sound.sampled.*;
 import javax.sound.sampled.Mixer.Info;
@@ -48,7 +49,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * This class interacts with audio hardware and uses multi-threading for efficient data processing. It also
  * allows selecting different microphones and algorithms, ensuring flexibility in audio applications.
  */
-@Slf4j
 public class MicrophoneDesktop extends AbstractMicrophone {
 
     /**
@@ -80,7 +80,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
      * and manage sample-related computations.
      */
     private static final int BYTES_PER_SAMPLE = BITS_PER_SAMPLE / 8;
-     /**
+    /**
      * A reusable buffer for storing normalized audio sample data. The array is
      * sized proportionally to the audio buffer size and the number of bytes per sample,
      * ensuring efficient reuse during audio processing tasks.
@@ -188,7 +188,8 @@ public class MicrophoneDesktop extends AbstractMicrophone {
         try {
             name = getSupportedMicrophones()[microphoneIndex];
         } catch (ArrayIndexOutOfBoundsException exception) {
-            log.error(exception.getMessage());
+            LoggingContext.setComponent("MicrophoneDesktop");
+            LoggingUtils.logError("Error setting microphone name", exception);
         }
     }
 
@@ -200,13 +201,15 @@ public class MicrophoneDesktop extends AbstractMicrophone {
         for (Info mixerInfo : mixerInfos) {
             Mixer mixer = AudioSystem.getMixer(mixerInfo);
             if (mixer.isLineSupported(dataLineInfo)) {
-                log.debug("Mixer.getLineInfo(): " + mixer.getLineInfo().toString());
+                LoggingContext.setComponent("MicrophoneDesktop");
+                LoggingUtils.logDebug("Mixer.getLineInfo()", mixer.getLineInfo().toString());
                 try {
                     TargetDataLine targetDataLine = (TargetDataLine) mixer.getLine(dataLineInfo);
                     targetDataLine.open();
                     targetDataLine.close();
                 } catch (LineUnavailableException e) {
-                    log.error("No supported microphone: " + e.getMessage());
+                    LoggingContext.setComponent("MicrophoneDesktop");
+                    LoggingUtils.logError("No supported microphone", e.getMessage());
                     continue;
                 }
                 microphones.add(mixer.getMixerInfo().getName());
@@ -235,12 +238,14 @@ public class MicrophoneDesktop extends AbstractMicrophone {
                 try {
                     targetDataLine = (TargetDataLine) mixer.getLine(dataLineInfo);
                 } catch (LineUnavailableException e) {
-                    log.error(e.getMessage());
+                    LoggingContext.setComponent("MicrophoneDesktop");
+                    LoggingUtils.logError("Error getting target data line", e);
                 }
             }
         }
         if (targetDataLine == null) {
-            log.error("No matching mixer found for name: " + name + ".");
+            LoggingContext.setComponent("MicrophoneDesktop");
+            LoggingUtils.logError("No matching mixer found for name", name);
         }
         return targetDataLine;
     }
@@ -325,7 +330,8 @@ public class MicrophoneDesktop extends AbstractMicrophone {
                     processAudioData(audioFrame, audioFrame.length);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    log.info("Processing thread interrupted.");
+                    LoggingContext.setComponent("MicrophoneDesktop");
+                    LoggingUtils.logDebug("Processing thread interrupted");
                 }
             }
         });
@@ -345,16 +351,16 @@ public class MicrophoneDesktop extends AbstractMicrophone {
      * <p>
      * Preconditions:
      * - The {@link #getTargetDataLine(String)} method should provide a valid
-     *   {@link TargetDataLine} instance or return null.
+     * {@link TargetDataLine} instance or return null.
      * - Thread interruptions during execution will close the audio line gracefully.
      * <p>
      * Exceptions:
      * - Handles {@link LineUnavailableException} if the audio line cannot be
-     *   opened and logs the error.
+     * opened and logs the error.
      * <p>
      * Thread-safety:
      * - This method utilizes a threading model via an {@link ExecutorService}
-     *   for asynchronous execution.
+     * for asynchronous execution.
      */
     private void startAudioRecordingThread() {
         executorService.execute(() -> {
@@ -374,13 +380,15 @@ public class MicrophoneDesktop extends AbstractMicrophone {
 
                             // Offer the data to the BlockingQueue
                             boolean offer = audioDataQueue.offer(dataCopy);
-                            log.debug("Audio data queue offer status: {}", offer);
+                            LoggingContext.setComponent("MicrophoneDesktop");
+                            LoggingUtils.logDebug("Audio data queue offer status", String.valueOf(offer));
                         }
                     }
                     line.close();
                 }
             } catch (LineUnavailableException e) {
-                log.error("Error opening microphone: {}", e.getMessage(), e);
+                LoggingContext.setComponent("MicrophoneDesktop");
+                LoggingUtils.logError("Error opening microphone", e);
             }
         });
     }
@@ -427,8 +435,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
             pitch = result.pitch();
             conf = result.confidence();
         }
-        if (conf < confidence)
-            pitch = -1;
+        if (conf < confidence) pitch = -1;
 
         if (microphoneHandler.get() != null) {
             microphoneHandler.get().handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS

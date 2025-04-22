@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;

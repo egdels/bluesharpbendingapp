@@ -25,7 +25,8 @@ package de.schliweb.bluesharpbendingapp.app;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import lombok.extern.slf4j.Slf4j;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -36,7 +37,6 @@ import java.io.File;
  * main application logic. This includes setting up logging configurations
  * and ensuring necessary directories exist.
  */
-@Slf4j
 public class Launcher {
 
     /**
@@ -90,14 +90,17 @@ public class Launcher {
             if (classLoader.getResource(configFile) != null) {
                 // Configure Logback directly from the InputStream of the classpath resource
                 configurator.doConfigure(classLoader.getResourceAsStream(configFile));
-                log.info("Logback configuration loaded: {}", configFile);
+                LoggingContext.setComponent("Launcher");
+                LoggingUtils.logConfigChange("Logging", "configuration", configFile);
             } else {
                 // Print an error message if the configuration file is not found in the classpath
-                log.error("Logback configuration file not found: {}", configFile);
+                LoggingContext.setComponent("Launcher");
+                LoggingUtils.logError("Logback configuration file not found", configFile);
             }
         } catch (Exception e) {
             // Handle any exceptions during the Logback configuration process
-            log.error("Error loading Logback configuration: {}", e.getMessage());
+            LoggingContext.setComponent("Launcher");
+            LoggingUtils.logError("Error loading Logback configuration", e);
         }
     }
 
@@ -118,12 +121,13 @@ public class Launcher {
 
         if (!logsDir.exists()) {
             if (logsDir.mkdirs()) {
-                log.info("Logs directory created at: {}", logsDir.getAbsolutePath());
+                LoggingContext.setComponent("Launcher");
+                LoggingUtils.logOperationCompleted("Logs directory creation at: " + logsDir.getAbsolutePath());
             } else {
-                log.error("Failed to create logs directory at: {}", logsDir.getAbsolutePath());
+                LoggingContext.setComponent("Launcher");
+                LoggingUtils.logError("Failed to create logs directory", logsDir.getAbsolutePath());
             }
         }
     }
 
 }
-

@@ -23,7 +23,9 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
-import lombok.extern.slf4j.Slf4j;
+
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
+
 
 /**
  * This exception is thrown when an FXML file fails to load. It extends the
@@ -38,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
  * message and a cause, which enables better debugging and troubleshooting
  * when an exception occurs.
  */
-@Slf4j
 public class FxmlLoadingException extends RuntimeException {
 
     /**
@@ -48,12 +49,12 @@ public class FxmlLoadingException extends RuntimeException {
      * FXML file loading.
      *
      * @param message the detail message explaining the reason for the exception.
-     * @param cause the underlying cause of the exception (e.g., an IOException or
-     *              parsing error). This can be null if no cause is available or applicable.
+     * @param cause   the underlying cause of the exception (e.g., an IOException or
+     *                parsing error). This can be null if no cause is available or applicable.
      */
     public FxmlLoadingException(String message, Throwable cause) {
         super(message, cause);
-        log.error("Error while loading the FXML: {}", message, cause);
+        LoggingUtils.logError("Error while loading the FXML", cause);
     }
 }
 

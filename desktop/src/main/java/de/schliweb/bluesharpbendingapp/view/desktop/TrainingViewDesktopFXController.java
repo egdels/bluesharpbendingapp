@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import de.schliweb.bluesharpbendingapp.controller.TrainingContainer;
 import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
 import javafx.application.Platform;
@@ -35,7 +36,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * The TrainingViewDesktopFXController class is a JavaFX controller that implements
@@ -44,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
  * of UI elements based on training interaction and handles user actions relating
  * to training sessions.
  */
-@Slf4j
 public class TrainingViewDesktopFXController implements TrainingView {
 
     /**
@@ -216,7 +215,7 @@ public class TrainingViewDesktopFXController implements TrainingView {
      * <p>
      * Preconditions:
      * - `trainingViewHandler` must not be null. If it is null, the method will not
-     *   execute any functionality.
+     * execute any functionality.
      * <p>
      * Postconditions:
      * - The training process is stopped.
@@ -261,8 +260,7 @@ public class TrainingViewDesktopFXController implements TrainingView {
     public void initTrainingContainer(TrainingContainer trainingContainer) {
         Platform.runLater(() -> {
             TrainingViewNoteElementDesktopFX actualNoteElementDesktop = TrainingViewNoteElementDesktopFX.getInstance(trainingNote);
-            actualNoteElementDesktop.setNoteName(trainingContainer.getActualNoteName() != null ?
-                    trainingContainer.getActualNoteName() : "");
+            actualNoteElementDesktop.setNoteName(trainingContainer.getActualNoteName() != null ? trainingContainer.getActualNoteName() : "");
             int progress = trainingContainer.getProgress();
             double normalizedProgress = progress / 100.0;
             progressBar.setProgress(normalizedProgress);
@@ -289,7 +287,7 @@ public class TrainingViewDesktopFXController implements TrainingView {
     private void initComboBox(ComboBox<String> combo, String[] items) {
         // Check if the ComboBox is null
         if (combo == null) {
-            log.error("ComboBox is not initialized in initializeComboBox()!");
+            LoggingUtils.logError("ComboBox is not initialized in initComboBox()!");
             return; // Exit the method if the ComboBox is null
         }
 
@@ -309,18 +307,18 @@ public class TrainingViewDesktopFXController implements TrainingView {
      * and no selection is made.
      *
      * @param selectedIndex the index of the item to select in the ComboBox
-     * @param combo the ComboBox in which the selection should be made
+     * @param combo         the ComboBox in which the selection should be made
      */
     private void setSelected(int selectedIndex, ComboBox<String> combo) {
         // Check if the ComboBox is null
         if (combo == null) {
-            log.error("ComboBox is not initialized in setSelected()!");
+            LoggingUtils.logError("ComboBox is not initialized in setSelected()!");
             return; // Exit the method if the ComboBox is null
         }
 
         // Validate whether the selected index is within the valid bounds of the ComboBox items
         if (selectedIndex < 0 || selectedIndex >= combo.getItems().size()) {
-            log.error("Invalid index: {}", selectedIndex);
+            LoggingUtils.logError("Invalid index");
             return; // Exit the method if the index is out of range
         }
 

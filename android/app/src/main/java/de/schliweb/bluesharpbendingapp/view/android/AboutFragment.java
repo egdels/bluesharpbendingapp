@@ -30,15 +30,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentAboutBinding;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.AboutView;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -52,7 +50,6 @@ import lombok.extern.slf4j.Slf4j;
  * - Retrieves and displays application version name and version code from PackageManager.
  * - Notifies a shared ViewModel about the current fragment for communication or state management.
  */
-@Slf4j
 public class AboutFragment extends Fragment implements AboutView, FragmentView {
 
 
@@ -82,7 +79,7 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
      * This method is used to display version information of the application
      * and to initialize the shared ViewModel with the current fragment for fragment selection.
      *
-     * @param view The View returned by {@code onCreateView}.
+     * @param view               The View returned by {@code onCreateView}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a
      *                           previous saved state as given here.
      */
@@ -98,7 +95,7 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
             TextView textView = binding.aboutVersion;
             textView.setText(getString(R.string.about_version, versionName, versionCode));
         } catch (PackageManager.NameNotFoundException e) {
-            log.error(e.getMessage());
+            LoggingUtils.logError("Failed to get package information", e);
         }
 
         FragmentViewModel viewModel = new ViewModelProvider(requireActivity()).get(FragmentViewModel.class);

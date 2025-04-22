@@ -22,22 +22,22 @@ package de.schliweb.bluesharpbendingapp.model.mircophone.android;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Process;
+import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
+import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
+import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
-import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
-import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
-import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implementation of the {@link Microphone} interface specific to the Android platform.
@@ -50,7 +50,6 @@ import lombok.extern.slf4j.Slf4j;
  * - Customizable pitch detection algorithm (e.g., YIN, MPM).
  * - Multi-threaded processing with specialized executors for audio data capture and analysis.
  */
-@Slf4j
 public class MicrophoneAndroid extends AbstractMicrophone {
 
     /**
@@ -77,11 +76,7 @@ public class MicrophoneAndroid extends AbstractMicrophone {
      * A sufficiently large buffer size ensures that audio data is captured and processed
      * without underruns and provides reliable real-time performance for audio recording tasks.
      */
-    private static final int BUFFER_SIZE = Math.max(4096, AudioRecord.getMinBufferSize(
-            SAMPLE_RATE,
-            AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_FLOAT
-    ));
+    private static final int BUFFER_SIZE = Math.max(4096, AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT));
 
 
     /**
@@ -165,16 +160,10 @@ public class MicrophoneAndroid extends AbstractMicrophone {
     @Override
     public void open() {
         try {
-            AudioRecord audioRecord = new AudioRecord(
-                    MediaRecorder.AudioSource.MIC,
-                    SAMPLE_RATE,
-                    AudioFormat.CHANNEL_IN_MONO,
-                    AudioFormat.ENCODING_PCM_FLOAT,
-                    BUFFER_SIZE
-            );
+            AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT, BUFFER_SIZE);
 
             if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-                log.error("Failed to initialize AudioRecord.");
+                LoggingUtils.logError("Failed to initialize AudioRecord");
                 return;
             }
 
@@ -198,16 +187,16 @@ public class MicrophoneAndroid extends AbstractMicrophone {
                             System.arraycopy(buffer, 0, dataCopy, 0, bytesRead);
                             // add to queue
                             boolean offer = audioDataQueue.offer(dataCopy);
-                            log.debug("Audio data added to queue: {}", offer);
+                            LoggingUtils.logDebug("Audio data added to queue", String.valueOf(offer));
                         } else if (bytesRead < 0) {
-                            log.error("AudioRecord read error: {}", bytesRead);
+                            LoggingUtils.logError("AudioRecord read error", String.valueOf(bytesRead));
                             break;
                         }
                     }
                 } finally {
                     audioRecord.stop();
                     audioRecord.release();
-                    log.info("Audio recording thread stopped.");
+                    LoggingUtils.logOperationCompleted("Audio recording thread");
                 }
             });
 
@@ -220,13 +209,13 @@ public class MicrophoneAndroid extends AbstractMicrophone {
                         processAudioData(audioFrame, audioFrame.length);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        log.info("Processing thread interrupted.");
+                        LoggingUtils.logOperationCompleted("Processing thread interrupted");
                     }
                 }
             });
 
         } catch (Exception e) {
-            log.error("Failed to start recording: {}", e.getMessage());
+            LoggingUtils.logError("Failed to start recording", e);
         }
     }
 
@@ -301,8 +290,7 @@ public class MicrophoneAndroid extends AbstractMicrophone {
             pitch = result.pitch();
             conf = result.confidence();
         }
-        if (conf < confidence)
-            pitch = -1;
+        if (conf < confidence) pitch = -1;
         if (microphoneHandler != null) {
             microphoneHandler.handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
         }

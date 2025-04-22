@@ -1,6 +1,26 @@
 <configuration>
     <property name="USER_HOME" value="${user.home}" />
+
+    <!-- JSON file appender for structured logging in production -->
     <appender name="PROD_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${USER_HOME}/BluesHarpBendingApp.tmp/application.json</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <fileNamePattern>${USER_HOME}/BluesHarpBendingApp.tmp/application.%d{yyyy-MM-dd}.%i.json.gz</fileNamePattern>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Custom fields that will be added to every log entry -->
+            <customFields>{"application":"bluesharpbendingapp","environment":"production"}</customFields>
+            <!-- Include caller data (class name, method name, line number) -->
+            <includeCallerData>true</includeCallerData>
+            <!-- Include context (MDC) data -->
+            <includeMdc>true</includeMdc>
+        </encoder>
+    </appender>
+
+    <!-- Traditional log file for backward compatibility -->
+    <appender name="PROD_FILE_TRADITIONAL" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${USER_HOME}/BluesHarpBendingApp.tmp/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <maxFileSize>5MB</maxFileSize>
@@ -11,7 +31,11 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+
     <root level="info">
+        <!-- Use the JSON appender by default -->
         <appender-ref ref="PROD_FILE" />
+        <!-- Uncomment the line below to also use the traditional log file -->
+        <!-- <appender-ref ref="PROD_FILE_TRADITIONAL" /> -->
     </root>
 </configuration>

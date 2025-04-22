@@ -1,0 +1,16 @@
+<configuration>
+    <!-- Logcat appender for console output -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Set the root logger level to INFO and use the CONSOLE appender -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <!-- Set specific logger levels if needed -->
+    <logger name="de.schliweb.bluesharpbendingapp" level="DEBUG" />
+</configuration>

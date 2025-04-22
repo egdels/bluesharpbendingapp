@@ -26,7 +26,6 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -37,7 +36,6 @@ import java.io.IOException;
  * controller class to handle user interactions and events.
  */
 @Getter
-@Slf4j
 public class HarpViewDesktopFX {
 
     /**

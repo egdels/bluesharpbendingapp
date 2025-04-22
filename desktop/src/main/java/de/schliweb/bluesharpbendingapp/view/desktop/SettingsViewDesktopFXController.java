@@ -28,6 +28,7 @@ import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
@@ -38,7 +39,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.function.IntConsumer;
@@ -48,7 +48,6 @@ import java.util.function.IntConsumer;
  * that are part of the settings view in a desktop application. It implements the HarpSettingsView,
  * MicrophoneSettingsView, and NoteSettingsView interfaces to manage harp, microphone, and note-related settings.
  */
-@Slf4j
 public class SettingsViewDesktopFXController implements HarpSettingsView, MicrophoneSettingsView, NoteSettingsView {
 
     /**
@@ -217,9 +216,9 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      * The initialization process includes:
      * - Logging the start of the initialization procedure for debugging purposes.
      * - Adding change listeners to a predefined set of {@link ComboBox} components
-     *   (e.g., {@code comboKeys}, {@code comboTunes}, {@code comboAlgorithms},
-     *   {@code comboMicrophones}, {@code comboConfidences}, and
-     *   {@code comboConcertPitches}) to respond to value changes.
+     * (e.g., {@code comboKeys}, {@code comboTunes}, {@code comboAlgorithms},
+     * {@code comboMicrophones}, {@code comboConfidences}, and
+     * {@code comboConcertPitches}) to respond to value changes.
      * <p>
      * The change listeners added to the combo boxes trigger appropriate handlers
      * by delegating to the corresponding view handler, enabling real-time updates
@@ -227,7 +226,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      */
     @FXML
     public void initialize() {
-        log.info("initialize()");
+        LoggingUtils.logInitialized(this.getClass().getSimpleName());
         for (ComboBox<String> stringComboBox : Arrays.asList(comboKeys, comboTunes, comboAlgorithms, comboMicrophones, comboConfidences, comboConcertPitches)) {
             addChangeListenerToComboBox(stringComboBox);
         }
@@ -255,18 +254,18 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      * the method logs an error and performs no further action.
      *
      * @param selectedIndex the index of the item to be selected in the ComboBox
-     * @param combo the ComboBox in which to select the specified item
+     * @param combo         the ComboBox in which to select the specified item
      */
     private void setSelected(int selectedIndex, ComboBox<String> combo) {
         // Check if the ComboBox is null
         if (combo == null) {
-            log.error("ComboBox is not initialized in setSelected()!");
+            LoggingUtils.logError(this.getClass().getSimpleName(), "setSelected() called with null ComboBox!");
             return; // Exit the method as there's nothing to work with
         }
 
         // Validate the selected index is within valid bounds of the ComboBox items
         if (selectedIndex < 0 || selectedIndex >= combo.getItems().size()) {
-            log.error("Invalid index: {} for ComboBox {} in setSelected()!", selectedIndex, combo.getId());
+            LoggingUtils.logError("Invalid index");
             return; // Exit the method as the index is out of range
         }
 
@@ -288,7 +287,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     private void initComboBox(ComboBox<String> combo, String[] items) {
         // Check if the ComboBox is null
         if (combo == null) {
-            log.error("ComboBox is not initialized in initComboBox()!");
+            LoggingUtils.logError(this.getClass().getSimpleName(), "initComboBox() called with null ComboBox!");
             return; // Exit the method as there's nothing to work with
         }
 
@@ -314,8 +313,6 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      */
     private void addChangeListenerToComboBox(ComboBox<String> combo) {
         combo.valueProperty().addListener((observable, oldValue, newValue) -> {
-            log.info("ComboBox ({}) changed from {} to {}", combo.getId(), oldValue, newValue);
-
             if (newValue != null) {
                 handleSelectionChange(comboKeys, harpSettingsViewHandler::handleKeySelection);
                 handleSelectionChange(comboTunes, harpSettingsViewHandler::handleTuneSelection);
@@ -415,7 +412,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      * When invoked, this method:
      * - Creates a new instance of {@code MainModel} to retrieve stored settings.
      * - Updates the selected indices for various settings components (concert pitch, key,
-     *   algorithm, microphone, tune, and confidence) based on the stored values in the model.
+     * algorithm, microphone, tune, and confidence) based on the stored values in the model.
      * <p>
      * The method modifies the state of the settings view by delegating to helper
      * methods for updating UI components to reflect the stored defaults.

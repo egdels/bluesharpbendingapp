@@ -163,8 +163,7 @@ public class NoteContainer implements Runnable {
      * @param harpView                the harp view used to obtain the harp view element
      * @param hasInverseCentsHandling the flag indicating if inverse cents handling is enabled
      */
-    public NoteContainer(int channel, int note, String noteName, Harmonica harmonica, HarpView harpView,
-                         boolean hasInverseCentsHandling) {
+    public NoteContainer(int channel, int note, String noteName, Harmonica harmonica, HarpView harpView, boolean hasInverseCentsHandling) {
         this(channel, note, noteName, harmonica, harpView);
         this.hasInverseCentsHandling = hasInverseCentsHandling;
     }
@@ -189,10 +188,10 @@ public class NoteContainer implements Runnable {
      * <p>
      * This method performs the following steps:
      * 1. Calculates the cents deviation for the note using the current frequency and retrieves
-     *    the last cached cents value for comparison.
+     * the last cached cents value for comparison.
      * 2. Determines whether the change in cents exceeds a predefined threshold of significance.
      * 3. Updates the cached cents value and the harp view element accordingly, while applying
-     *    inversion logic if specified.
+     * inversion logic if specified.
      * 4. Flags the state to indicate that updates are required for subsequent operations.
      */
     private void handleFrequencyChange() {

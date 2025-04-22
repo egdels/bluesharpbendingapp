@@ -38,6 +38,13 @@ dependencies {
     // Adds dependency on the project named ':base'
     implementation project(':base')
     implementation 'ch.qos.logback:logback-classic:1.5.16'
+    // Add structured logging support
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.1'
+
+    // TestFX dependencies for UI testing
+    testImplementation 'org.testfx:testfx-core:4.0.18'
+    testImplementation 'org.testfx:testfx-junit5:4.0.18'
+    testImplementation 'org.hamcrest:hamcrest:3.0'
 }
 
 // Application-specific configurations

@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,13 +47,11 @@ class NoteLookupTest {
 
 
     @ParameterizedTest
-    @CsvSource({
-            "A4, 440.0",      // Standard pitch note
+    @CsvSource({"A4, 440.0",      // Standard pitch note
             "C8, 4186.01",    // Highest note
             "C0, 16.35"       // Lowest note
     })
-    void testGetNoteFrequency(String noteName, double expectedFrequency)
-    {
+    void testGetNoteFrequency(String noteName, double expectedFrequency) {
         // Arrange
 
         // Act
@@ -83,10 +82,7 @@ class NoteLookupTest {
         String invalidNoteName = "InvalidNote";
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> NoteLookup.getNoteFrequency(invalidNoteName)
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> NoteLookup.getNoteFrequency(invalidNoteName));
         assertTrue(exception.getMessage().contains("Invalid note name"));
     }
 
@@ -95,10 +91,7 @@ class NoteLookupTest {
         // Arrange
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> NoteLookup.getNoteFrequency(null)
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> NoteLookup.getNoteFrequency(null));
         assertTrue(exception.getMessage().contains("Invalid note name"));
     }
 
@@ -108,10 +101,7 @@ class NoteLookupTest {
         String emptyNoteName = "";
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> NoteLookup.getNoteFrequency(emptyNoteName)
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> NoteLookup.getNoteFrequency(emptyNoteName));
         assertTrue(exception.getMessage().contains("Invalid note name"));
     }
 }

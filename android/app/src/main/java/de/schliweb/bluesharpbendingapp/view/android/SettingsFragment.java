@@ -30,11 +30,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.AndroidSettingsHandler;
 import de.schliweb.bluesharpbendingapp.controller.HarpSettingsViewHandler;
@@ -46,8 +44,8 @@ import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
-import lombok.Getter;
 import lombok.Setter;
+
 
 
 /**
@@ -97,7 +95,6 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      * comprehensive configuration interface.
      */
     @Setter
-    @Getter
     private HarpSettingsViewHandler harpSettingsViewHandler;
 
     /**
@@ -105,7 +102,6 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      * This variable is used to interface with and control the microphone-specific settings available in the application.
      */
     @Setter
-    @Getter
     private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
 
     /**
@@ -114,7 +110,6 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      * and interactions in the user interface for customizing application behavior.
      */
     @Setter
-    @Getter
     private NoteSettingsViewHandler noteSettingsViewHandler;
 
 
@@ -125,7 +120,6 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
      * integrate with other setting handlers and manage Android-specific
      * configuration options.
      */
-    @Getter
     @Setter
     private AndroidSettingsHandler androidSettingsViewHandler;
 

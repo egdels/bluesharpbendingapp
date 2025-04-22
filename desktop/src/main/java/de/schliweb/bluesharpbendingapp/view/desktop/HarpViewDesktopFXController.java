@@ -276,10 +276,10 @@ public class HarpViewDesktopFXController implements HarpView {
      * <p>
      * Specifically:
      * - The `overlayContainer` is dynamically resized to match the dimensions of
-     *   the `harpGrid` by binding its width and height properties to those of the grid.
+     * the `harpGrid` by binding its width and height properties to those of the grid.
      * - Event handlers are attached to certain panes within the `harpGrid` to
-     *   detect mouse clicks, excluding panes that have the `channel` style class.
-     *   Clicking on such panes triggers a call to the `handlePaneClick` method for further processing.
+     * detect mouse clicks, excluding panes that have the `channel` style class.
+     * Clicking on such panes triggers a call to the `handlePaneClick` method for further processing.
      * - A click event is also attached to the `enlargedPane` to close it when it is clicked.
      */
     @FXML
@@ -361,7 +361,7 @@ public class HarpViewDesktopFXController implements HarpView {
      * - A scaling animation is applied to the `enlargedPane`, reducing its size to minimal proportions.
      * - Once the animation completes, the visibility of the `enlargedPane` is set to false.
      * - If the `enlargedPane`'s user data contains a reference to another pane, it resets the
-     *   enlarged pane reference for that specific pane.
+     * enlarged pane reference for that specific pane.
      * - Finally, the visibility of the `overlayContainer` is set to false.
      * <p>
      * The animation duration is set to 200 milliseconds, creating a smooth shrinking effect.
@@ -498,16 +498,7 @@ public class HarpViewDesktopFXController implements HarpView {
      * respective channels and categories.
      */
     private void hideNotes() {
-        List<Pane[]> allNotes = List.of(
-                new Pane[]{channel1NoteM3, channel2NoteM3, channel3NoteM3, channel4NoteM3, channel5NoteM3, channel6NoteM3, channel7NoteM3, channel8NoteM3, channel9NoteM3, channel10NoteM3},
-                new Pane[]{channel1NoteM2, channel2NoteM2, channel3NoteM2, channel4NoteM2, channel5NoteM2, channel6NoteM2, channel7NoteM2, channel8NoteM2, channel9NoteM2, channel10NoteM2},
-                new Pane[]{channel1NoteM1, channel2NoteM1, channel3NoteM1, channel4NoteM1, channel5NoteM1, channel6NoteM1, channel7NoteM1, channel8NoteM1, channel9NoteM1, channel10NoteM1},
-                new Pane[]{channel1Note0, channel2Note0, channel3Note0, channel4Note0, channel5Note0, channel6Note0, channel7Note0, channel8Note0, channel9Note0, channel10Note0},
-                new Pane[]{channel1Note1, channel2Note1, channel3Note1, channel4Note1, channel5Note1, channel6Note1, channel7Note1, channel8Note1, channel9Note1, channel10Note1},
-                new Pane[]{channel1Note2, channel2Note2, channel3Note2, channel4Note2, channel5Note2, channel6Note2, channel7Note2, channel8Note2, channel9Note2, channel10Note2},
-                new Pane[]{channel1Note3, channel2Note3, channel3Note3, channel4Note3, channel5Note3, channel6Note3, channel7Note3, channel8Note3, channel9Note3, channel10Note3},
-                new Pane[]{channel1Note4, channel2Note4, channel3Note4, channel4Note4, channel5Note4, channel6Note4, channel7Note4, channel8Note4, channel9Note4, channel10Note4}
-        );
+        List<Pane[]> allNotes = List.of(new Pane[]{channel1NoteM3, channel2NoteM3, channel3NoteM3, channel4NoteM3, channel5NoteM3, channel6NoteM3, channel7NoteM3, channel8NoteM3, channel9NoteM3, channel10NoteM3}, new Pane[]{channel1NoteM2, channel2NoteM2, channel3NoteM2, channel4NoteM2, channel5NoteM2, channel6NoteM2, channel7NoteM2, channel8NoteM2, channel9NoteM2, channel10NoteM2}, new Pane[]{channel1NoteM1, channel2NoteM1, channel3NoteM1, channel4NoteM1, channel5NoteM1, channel6NoteM1, channel7NoteM1, channel8NoteM1, channel9NoteM1, channel10NoteM1}, new Pane[]{channel1Note0, channel2Note0, channel3Note0, channel4Note0, channel5Note0, channel6Note0, channel7Note0, channel8Note0, channel9Note0, channel10Note0}, new Pane[]{channel1Note1, channel2Note1, channel3Note1, channel4Note1, channel5Note1, channel6Note1, channel7Note1, channel8Note1, channel9Note1, channel10Note1}, new Pane[]{channel1Note2, channel2Note2, channel3Note2, channel4Note2, channel5Note2, channel6Note2, channel7Note2, channel8Note2, channel9Note2, channel10Note2}, new Pane[]{channel1Note3, channel2Note3, channel3Note3, channel4Note3, channel5Note3, channel6Note3, channel7Note3, channel8Note3, channel9Note3, channel10Note3}, new Pane[]{channel1Note4, channel2Note4, channel3Note4, channel4Note4, channel5Note4, channel6Note4, channel7Note4, channel8Note4, channel9Note4, channel10Note4});
         for (Pane[] notes : allNotes) {
             for (Pane note : notes) {
                 if (note != null) {

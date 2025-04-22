@@ -1,10 +1,27 @@
 <configuration>
+    <!-- For development, we'll use a JSON encoder for structured logging -->
     <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Custom fields that will be added to every log entry -->
+            <customFields>{"application":"bluesharpbendingapp","environment":"development"}</customFields>
+            <!-- Include caller data (class name, method name, line number) -->
+            <includeCallerData>true</includeCallerData>
+            <!-- Include context (MDC) data -->
+            <includeMdc>true</includeMdc>
+        </encoder>
+    </appender>
+
+    <!-- For developers who prefer traditional logs, we can keep a pattern-based appender -->
+    <appender name="DEV_CONSOLE_PATTERN" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+
     <root level="debug">
+        <!-- Use the JSON appender by default -->
         <appender-ref ref="DEV_CONSOLE"/>
+        <!-- Uncomment the line below to also use the pattern-based appender -->
+        <!-- <appender-ref ref="DEV_CONSOLE_PATTERN"/> -->
     </root>
 </configuration>

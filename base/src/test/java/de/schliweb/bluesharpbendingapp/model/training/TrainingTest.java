@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.model.training;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import org.junit.jupiter.api.Test;
 
@@ -69,12 +70,7 @@ class TrainingTest {
     @Test
     void testOctaveLeaps() {
         Training training = AbstractTraining.create(AbstractHarmonica.KEY.C, AbstractTraining.TRAINING.OCTAVE_LEAPS);
-        String[] expectedNotes = {
-                "C4", "C5", "C6", "C7", "C6", "C5",
-                "D4", "D5", "D6", "D5", "E4", "E5", "E6", "E5",
-                "F4", "F5", "F6", "F5", "G4", "G5", "G6", "G5",
-                "A4", "A5", "A6", "A5", "B4", "B5", "B6", "B5"
-        };
+        String[] expectedNotes = {"C4", "C5", "C6", "C7", "C6", "C5", "D4", "D5", "D6", "D5", "E4", "E5", "E6", "E5", "F4", "F5", "F6", "F5", "G4", "G5", "G6", "G5", "A4", "A5", "A6", "A5", "B4", "B5", "B6", "B5"};
 
         assertArrayEquals(expectedNotes, training.getNotes());
     }

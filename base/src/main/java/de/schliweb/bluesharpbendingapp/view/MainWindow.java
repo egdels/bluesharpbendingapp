@@ -3,7 +3,7 @@ package de.schliweb.bluesharpbendingapp.view;
  * Copyright (c) 2023 Christian Kierdorf
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the “Software”),
+ * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
@@ -12,7 +12,7 @@ package de.schliweb.bluesharpbendingapp.view;
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -26,10 +26,10 @@ package de.schliweb.bluesharpbendingapp.view;
 import de.schliweb.bluesharpbendingapp.controller.*;
 
 /**
- * The MainWindow interface defines the contract for a main application window
- * that manages various views and their corresponding handlers within the application.
- * It provides methods to retrieve and interact with views, determine their active status,
- * and set the handlers responsible for managing their operations.
+ * MainWindow serves as an interface for managing and interacting with different
+ * views and components within the application. It provides methods to retrieve
+ * specific views, check their active states, and perform actions such as opening
+ * a component or view.
  */
 public interface MainWindow {
 
@@ -94,39 +94,6 @@ public interface MainWindow {
     void open();
 
     /**
-     * Sets the handler responsible for managing and interacting with the harp settings view.
-     *
-     * @param harpSettingsViewHandler the handler to handle operations and events related to the harp settings view
-     */
-    void setHarpSettingsViewHandler(HarpSettingsViewHandler harpSettingsViewHandler);
-
-    /**
-     * Sets the handler responsible for managing and interacting with the harp view.
-     *
-     * @param harpViewHandler the handler to manage operations and events related to the harp view
-     */
-    void setHarpViewHandler(HarpViewHandler harpViewHandler);
-
-    /**
-     * Sets the handler responsible for managing and interacting with the training view.
-     * <p>
-     * This method assigns the provided training view handler to facilitate operations
-     * and event handling related to the training view. The handler is expected to
-     * implement logic for managing the training view's components, data, and interactions
-     * within the application interface.
-     *
-     * @param trainingViewHandler the handler to manage operations and events related to the training view
-     */
-    void setTrainingViewHandler(TrainingViewHandler trainingViewHandler);
-
-    /**
-     * Sets the handler responsible for managing and interacting with the microphone settings view.
-     *
-     * @param microphoneSettingsViewHandler the handler to manage operations and events related to the microphone settings view
-     */
-    void setMicrophoneSettingsViewHandler(MicrophoneSettingsViewHandler microphoneSettingsViewHandler);
-
-    /**
      * Determines if the note settings view is currently active.
      *
      * @return true if the note settings view is active; false otherwise
@@ -142,31 +109,12 @@ public interface MainWindow {
     NoteSettingsView getNoteSettingsView();
 
     /**
-     * Sets the handler responsible for managing and interacting with the note settings view.
-     * This method assigns the provided note settings view handler to facilitate operations
-     * and event handling related to the note settings view within the application's interface.
-     *
-     * @param noteSettingsViewHandler the handler to manage operations and events related to the note settings view
-     */
-    void setNoteSettingsViewHandler(NoteSettingsViewHandler noteSettingsViewHandler);
-
-    /**
      * Retrieves the training view associated with the application.
      *
      * @return an instance of TrainingView, which provides methods to manage
      * and interact with the training-related components of the application.
      */
     TrainingView getTrainingView();
-
-    /**
-     * Assigns the handler responsible for managing and interacting with Android settings.
-     * This method allows the application to delegate Android-specific settings management
-     * to the provided handler.
-     *
-     * @param androidSettingsHandler the handler to manage operations and settings related
-     *                               to Android-specific features
-     */
-    void setAndroidSettingsHandler(AndroidSettingsHandler androidSettingsHandler);
 
     /**
      * Retrieves the Android settings view associated with the application.

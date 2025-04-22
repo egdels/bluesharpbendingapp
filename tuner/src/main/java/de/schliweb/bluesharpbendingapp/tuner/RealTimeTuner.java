@@ -1,9 +1,9 @@
-package de.schliweb.tuner;
+package de.schliweb.bluesharpbendingapp.tuner;
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the “Software”),
+ * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
@@ -12,7 +12,7 @@ package de.schliweb.tuner;
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -24,6 +24,7 @@ package de.schliweb.tuner;
  */
 
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
+import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.model.microphone.desktop.MicrophoneDesktop;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
@@ -81,11 +82,11 @@ public class RealTimeTuner implements MicrophoneHandler {
 
     private void initializeMicrophone() {
         microphone = new MicrophoneDesktop();
-        List<String> supportedAlgorithms = List.of(microphone.getSupportedAlgorithms());
+        List<String> supportedAlgorithms = List.of(AbstractMicrophone.getSupportedAlgorithms());
         int algorithmIndex = supportedAlgorithms.indexOf(DEFAULT_ALGORITHM); // Gibt den Index oder -1 zurück
         microphone.setAlgorithm(algorithmIndex);
         microphone.setName(DEFAULT_NAME);
-        List<String> supportedConfidences = List.of(microphone.getSupportedConfidences());
+        List<String> supportedConfidences = List.of(AbstractMicrophone.getSupportedConfidences());
         int confidenceIndex = supportedConfidences.indexOf(DEFAULT_CONFIDENCE + ""); // Gibt den Index oder -1 zurück
         microphone.setConfidence(confidenceIndex);
         microphone.setMicrophoneHandler(this);

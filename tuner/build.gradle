@@ -45,7 +45,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'de.schliweb.tuner.Launcher'
+    mainClass = 'de.schliweb.bluesharpbendingapp.tuner.Launcher'
     applicationName = 'TunerApp'
 }
 
@@ -178,4 +178,3 @@ tasks.register('jpackage', Exec) {
 test {
     useJUnitPlatform()
 }
-

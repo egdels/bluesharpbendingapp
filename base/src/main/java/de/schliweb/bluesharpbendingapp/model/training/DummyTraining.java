@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.model.training;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 
 /**

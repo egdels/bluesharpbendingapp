@@ -82,6 +82,9 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.9'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.9'
     implementation 'androidx.core:core-splashscreen:1.0.1'
+    // Dependency Injection with Dagger
+    implementation "com.google.dagger:dagger:${daggerVersion}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
     implementation(project(":base"))
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     compileOnly "org.projectlombok:lombok:${lombokVersion}"

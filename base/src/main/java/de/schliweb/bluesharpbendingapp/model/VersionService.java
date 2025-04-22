@@ -1,6 +1,30 @@
 package de.schliweb.bluesharpbendingapp.model;
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
 
-import lombok.extern.slf4j.Slf4j;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +42,7 @@ import java.util.Scanner;
  * The class cannot be instantiated since it has a private constructor. It provides static methods
  * for accessing version information.
  */
-@Slf4j
+
 public class VersionService {
 
     /**
@@ -42,6 +66,7 @@ public class VersionService {
     private static String versionFromHost = null;
 
     private VersionService() {
+        LoggingContext.setComponent("VersionService");
     }
 
     /**
@@ -64,6 +89,8 @@ public class VersionService {
      * - Logs errors in cases of connection or processing failures.
      */
     private static void checkVersionFromHost() {
+        LoggingContext.setOperation("versionFromHost");
+        LoggingUtils.logDebug("Checking version from host");
         URL url;
         HttpURLConnection huc;
         try {
@@ -73,7 +100,7 @@ public class VersionService {
             int responseCode = huc.getResponseCode();
 
             if (HttpURLConnection.HTTP_OK == responseCode) {
-                log.info("ok");
+                LoggingUtils.logDebug("ok");
                 try (Scanner scanner = new Scanner((InputStream) huc.getContent())) {
                     versionFromHost = scanner.nextLine();
                 }
@@ -81,10 +108,10 @@ public class VersionService {
                 if (versionFromHost != null) {
                     versionFromHost = versionFromHost.trim();
                 }
-                log.info(versionFromHost);
+                LoggingUtils.logDebug("Version from host: " + versionFromHost);
             }
         } catch (IOException | URISyntaxException e) {
-            log.error(e.getMessage());
+            LoggingUtils.logError("Failed to check version from host", e);
         }
     }
 

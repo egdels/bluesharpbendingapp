@@ -34,13 +34,14 @@ plugins {
 ext {
     slf4jVersion = "2.0.16"
     lombokVersion = "1.18.36"
+    daggerVersion = "2.56.2"
 }
 
 allprojects {
     // Defines the group ID used for all projects
     group = 'de.schliweb.bluesharpbendingapp'
     // Sets the version of the project, matching ${revision}
-    version = '2.3.0'
+    version = '3.0.0'
 
     repositories {
         google()
@@ -73,6 +74,10 @@ subprojects {
 
             implementation "org.slf4j:slf4j-api:${slf4jVersion}"
 
+            // Dependency Injection with Dagger
+            implementation "com.google.dagger:dagger:${daggerVersion}"
+            annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
+
             compileOnly "org.projectlombok:lombok:${lombokVersion}"
             annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
@@ -81,6 +86,3 @@ subprojects {
         }
     }
 }
-
-
-

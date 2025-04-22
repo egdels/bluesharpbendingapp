@@ -29,6 +29,8 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import lombok.Setter;
 
+import javax.inject.Inject;
+
 /**
  * The MainWindowDesktopFXController class serves as the controller for the main
  * application window in a JavaFX desktop application. It manages the initialization
@@ -123,8 +125,8 @@ public class MainWindowDesktopFXController implements MainWindow {
      * in the harp settings view. This field enables the controller to delegate specific
      * harp settings-related operations to the corresponding handler implementation.
      */
-    @Setter
-    private HarpSettingsViewHandler harpSettingsViewHandler;
+    @Inject
+    /* package */ HarpSettingsViewHandler harpSettingsViewHandler;
 
     /**
      * The handler associated with managing microphone settings in the application.
@@ -142,11 +144,11 @@ public class MainWindowDesktopFXController implements MainWindow {
      * It is typically invoked during initialization and when the settings
      * view is displayed to ensure the user has access to the relevant configuration options.
      */
-    @Setter
-    private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
+    @Inject
+    /* package */ MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
 
     /**
-     * A setter method for the NoteSettingsViewHandler instance.
+     * The NoteSettingsViewHandler instance.
      * <p>
      * The `noteSettingsViewHandler` is used to manage functionalities related to note settings,
      * specifically for initializing and handling adjustments of concert pitch within the application.
@@ -154,12 +156,10 @@ public class MainWindowDesktopFXController implements MainWindow {
      * delegating tasks such as updating the UI or managing the application's state related to
      * note settings.
      * <p>
-     * This field is typically utilized during the application's setup or configuration phase
-     * to associate the appropriate implementation of the NoteSettingsViewHandler interface
-     * with the main application controller.
+     * This field is injected by Guice during the application's setup phase.
      */
-    @Setter
-    private NoteSettingsViewHandler noteSettingsViewHandler;
+    @Inject
+    /* package */ NoteSettingsViewHandler noteSettingsViewHandler;
 
     /**
      * Manages the training view of the application by handling its initialization
@@ -178,8 +178,8 @@ public class MainWindowDesktopFXController implements MainWindow {
      * - Setting up the precision settings.
      * - Managing the layout container for the training view.
      */
-    @Setter
-    private TrainingViewHandler trainingViewHandler;
+    @Inject
+    /* package */ TrainingViewHandler trainingViewHandler;
 
     /**
      * Represents the handler responsible for managing and interacting with
@@ -194,8 +194,8 @@ public class MainWindowDesktopFXController implements MainWindow {
      * operates correctly and interacts seamlessly with other parts of the
      * application, such as rendering note data or supporting user interface transitions.
      */
-    @Setter
-    private HarpViewHandler harpViewHandler;
+    @Inject
+    /* package */ HarpViewHandler harpViewHandler;
 
     /**
      * The {@code androidSettingsHandler} field holds a reference to an implementation
@@ -210,8 +210,8 @@ public class MainWindowDesktopFXController implements MainWindow {
      * ensuring that the controller has access to Android-specific settings functionality
      * if needed.
      */
-    @Setter
-    private AndroidSettingsHandler androidSettingsHandler;
+    @Inject
+    /* package */ AndroidSettingsHandler androidSettingsHandler;
 
     /**
      * Represents the primary graphical user interface (GUI) component for displaying
@@ -495,7 +495,6 @@ public class MainWindowDesktopFXController implements MainWindow {
         return trainingView.getController();
     }
 
-
     @Override
     public AndroidSettingsView getAndroidSettingsView() {
         // no need for Desktop
@@ -508,5 +507,5 @@ public class MainWindowDesktopFXController implements MainWindow {
         return false;
     }
 
-}
 
+}

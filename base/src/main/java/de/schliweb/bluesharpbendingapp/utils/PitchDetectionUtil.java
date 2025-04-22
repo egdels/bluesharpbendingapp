@@ -105,9 +105,9 @@ public class PitchDetectionUtil {
         double rms = calcRMS(audioData);
 
         // Step 4: Adjust the YIN minimum threshold dynamically.
-        // The threshold is scaled by a factor based on the RMS value and ensures that only
-        // significant periodicities are considered for pitch estimation.
-        double dynamicThreshold = YIN_MINIMUM_THRESHOLD * (1 + RMS_SCALING_FACTOR * (1 - rms));
+        // The dynamic threshold is capped at a maximum value of 0.5 and is based on the YIN minimum threshold.
+        // The threshold is scaled by a factor dependent on the RMS value, ensuring stability for low RMS values.
+        double dynamicThreshold = Math.min(0.5, YIN_MINIMUM_THRESHOLD * (1 + RMS_SCALING_FACTOR / (rms + 0.01)));
 
         // Step 5: Find the first minimum in the CMNDF that is below the dynamic threshold.
         // This step identifies the lag value (tau) that is most likely to correspond to a
@@ -122,10 +122,10 @@ public class PitchDetectionUtil {
 
             // Ensure the refined lag value is valid (greater than zero).
             if (refinedTau > 0) {
-                // Confidence is calculated as 1 minus the CMNDF value at the estimated tau
-                // divided by the threshold. A higher confidence value indicates
-                // a more reliable pitch detection result.
-                double confidence = 1 - (cmndf[tauEstimate] / dynamicThreshold);
+
+                // The confidence value is calculated by subtracting the squared ratio of cmndf[tauEstimate] to the dynamic threshold from 1.
+                // This ensures that smaller ratios (closer matches) result in higher confidence, while larger ratios reduce confidence.
+                double confidence = 1 - Math.pow((cmndf[tauEstimate] / dynamicThreshold), 2);
 
                 // Calculate the pitch (fundamental frequency) in Hz.
                 // The pitch is obtained by dividing the sample rate by the refined lag (tau).

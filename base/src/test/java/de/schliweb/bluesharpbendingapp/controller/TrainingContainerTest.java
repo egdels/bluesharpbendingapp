@@ -22,6 +22,7 @@ package de.schliweb.bluesharpbendingapp.controller;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.training.Training;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
@@ -127,8 +128,7 @@ class TrainingContainerTest {
         trainingContainer.run();
 
         // Assert: Awaitility stellt sicher, dass die Mocks korrekt aufgerufen werden
-        await()
-                .atMost(1000, MILLISECONDS) // max. 1000ms warten
+        await().atMost(1000, MILLISECONDS) // max. 1000ms warten
                 .untilAsserted(() -> {
                     verify(harpElementMock, never()).update(anyDouble()); // update(...) nie aufgerufen
                     verify(harpElementMock, times(1)).clear();            // clear() einmal aufgerufen

@@ -33,18 +33,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.TrainingContainer;
 import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentTrainingBinding;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
-import lombok.Getter;
 import lombok.Setter;
 
 
@@ -56,7 +53,7 @@ import lombok.Setter;
  * Responsibilities:
  * - Initializes and manages the fragment view using data bindings.
  * - Implements methods from TrainingView to handle setting and updating UI components such as
- *   spinners and progress indicators.
+ * spinners and progress indicators.
  * - Facilitates interaction with the training view handler to manage training-related actions.
  * - Provides lifecycle support for initialization and cleanup of the fragment.
  */
@@ -80,7 +77,6 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
      * This variable is used in methods that control the training state, such as toggling the training
      * start/stop button and other related functionalities.
      */
-    @Getter
     @Setter
     private TrainingViewHandler trainingViewHandler;
 
@@ -97,7 +93,7 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
     /**
      * Called after the fragment's view has been created.
      *
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
      */
     @Override
@@ -175,7 +171,7 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
         GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
         line.setAlpha(0); // hide line
         binding.progressBar.setProgress(trainingContainer.getProgress());
-        TrainingViewNoteElementAndroid.getInstance(textView).setNoteName(trainingContainer.getActualNoteName()!=null ? trainingContainer.getActualNoteName() : "");
+        TrainingViewNoteElementAndroid.getInstance(textView).setNoteName(trainingContainer.getActualNoteName() != null ? trainingContainer.getActualNoteName() : "");
         TrainingViewNoteElementAndroid.getInstance(textView).clear();
     }
 

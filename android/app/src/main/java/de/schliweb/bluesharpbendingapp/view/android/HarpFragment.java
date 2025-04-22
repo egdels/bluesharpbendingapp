@@ -32,14 +32,10 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import java.util.Set;
-
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
@@ -48,6 +44,8 @@ import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
 
 
 /**
@@ -84,21 +82,6 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     private FragmentHarpBinding binding;
 
     /**
-     * Represents the handler responsible for managing the visual representation
-     * and interactions of the harp view within the HarpFragment. The HarpViewHandler
-     * facilitates the operations related to note initialization, color assignment,
-     * and enlarged view states for notes in the harp diagram.
-     * <p>
-     * This field allows interactions between the fragment's UI elements and their
-     * corresponding data logic by delegating visual updates and user interactions
-     * to the HarpViewHandler.
-     */
-    @Setter
-    @Getter
-    private HarpViewHandler harpViewHandler;
-
-
-    /**
      * Tracks whether a musical note is currently enlarged in the UI.
      * <p>
      * This variable is toggled to true when a note is displayed in its enlarged state
@@ -132,8 +115,8 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * Updates the state to track the enlarged note and associates it with the overlay.
      * If a note is already enlarged, the method will return without any operations.
      *
-     * @param note         The TextView representing the original note to be enlarged.
-     * @param overlayNote  The TextView that acts as the overlay for displaying the enlarged note.
+     * @param note        The TextView representing the original note to be enlarged.
+     * @param overlayNote The TextView that acts as the overlay for displaying the enlarged note.
      */
     private void showEnlargedTextView(TextView note, TextView overlayNote) {
         // Early return if a note is already enlarged
@@ -186,7 +169,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * of the enlarged view when notes are selected. The method also establishes a connection with
      * the ViewModel for fragment interaction.
      *
-     * @param view           The root view of the fragment's layout.
+     * @param view               The root view of the fragment's layout.
      * @param savedInstanceState A Bundle containing any saved state information for the fragment.
      */
     @Override
@@ -238,7 +221,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * a click listener that triggers the display of the note in an overlay
      * TextView for enlarged viewing.
      *
-     * @param tableRow   The TableRow containing child Views, including the notes as TextViews.
+     * @param tableRow    The TableRow containing child Views, including the notes as TextViews.
      * @param overlayNote The TextView used as an overlay to display an enlarged view of a clicked note.
      */
     private void setNoteClickListenersOnRow(TableRow tableRow, TextView overlayNote) {
@@ -263,11 +246,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      */
     private boolean isChannelIdentifier(int viewId) {
         // Use a Set for faster lookups
-        Set<Integer> channelIds = Set.of(
-                R.id.channel_1, R.id.channel_2, R.id.channel_3, R.id.channel_4,
-                R.id.channel_5, R.id.channel_6, R.id.channel_7, R.id.channel_8,
-                R.id.channel_9, R.id.channel_10
-        );
+        Set<Integer> channelIds = Set.of(R.id.channel_1, R.id.channel_2, R.id.channel_3, R.id.channel_4, R.id.channel_5, R.id.channel_6, R.id.channel_7, R.id.channel_8, R.id.channel_9, R.id.channel_10);
         return channelIds.contains(viewId);
     }
 

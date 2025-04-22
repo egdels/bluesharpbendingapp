@@ -32,7 +32,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 
-
 /**
  * A JavaFX custom control that visualizes tuning deviations in cents.
  * The TuningMeterFX is represented as a semicircular meter with a
@@ -53,7 +52,7 @@ public class TuningMeterFX extends Pane {
      * This constructor initializes the following:
      * - A Canvas object for custom drawing.
      * - Listeners to handle dynamic resizing of the canvas in response to changes in the width
-     *   and height properties of the Pane.
+     * and height properties of the Pane.
      * - A preferred size for the Pane set to 200x120 pixels.
      * - An initial graphical rendering of the tuning meter.
      * <p>
@@ -107,7 +106,7 @@ public class TuningMeterFX extends Pane {
      * - Renders tick marks at intervals, with larger ticks for significant labels.
      * - Displays labels for -50, 0, and +50 cents values.
      * - Draws a needle indicating the current tuning offset, with its color
-     *   dynamically changing based on the deviation from the center.
+     * dynamically changing based on the deviation from the center.
      * <p>
      * The needle and tick positions are calculated based on the width and height
      * of the canvas, and adjusted dynamically for resizing.
@@ -128,9 +127,7 @@ public class TuningMeterFX extends Pane {
         // Draw the background arc
         gc.setStroke(Color.LIGHTGRAY);
         gc.setLineWidth(2);
-        gc.strokeArc(centerX - radius, centerY - radius,
-                radius * 2, radius * 2,
-                180, 180, javafx.scene.shape.ArcType.OPEN);
+        gc.strokeArc(centerX - radius, centerY - radius, radius * 2, radius * 2, 180, 180, javafx.scene.shape.ArcType.OPEN);
 
         // Draw tick marks
         gc.setLineWidth(1);
@@ -166,8 +163,7 @@ public class TuningMeterFX extends Pane {
 
         // Calculate color for the needle based on the absolute deviation
         double absValue = Math.abs(cents / 50.0);
-        Color lineColor = Color.rgb(
-                (int) (250.0 * absValue),          // Red component (increases with deviation)
+        Color lineColor = Color.rgb((int) (250.0 * absValue),          // Red component (increases with deviation)
                 (int) (250.0 * (1.0 - absValue)),  // Green component (decreases with deviation)
                 0                                  // Blue component (constant)
         );
@@ -175,8 +171,6 @@ public class TuningMeterFX extends Pane {
         gc.setLineWidth(2);
 
         // Draw the needle from the center to the calculated angle
-        gc.strokeLine(centerX, centerY,
-                centerX + Math.cos(angle) * radius,
-                centerY - Math.sin(angle) * radius);
+        gc.strokeLine(centerX, centerY, centerX + Math.cos(angle) * radius, centerY - Math.sin(angle) * radius);
     }
 }

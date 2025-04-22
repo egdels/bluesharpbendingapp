@@ -23,9 +23,10 @@ package de.schliweb.bluesharpbendingapp.model;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -47,8 +48,19 @@ import java.util.ArrayList;
  */
 @Getter
 @Setter
-@Slf4j
 public class MainModel implements Serializable {
+
+    /**
+     * Constructs a new MainModel with default values.
+     * This constructor initializes the model with predefined default values
+     * for various settings like algorithm, key, microphone, etc.
+     */
+    public MainModel() {
+        LoggingContext.setComponent("MainModel");
+        LoggingUtils.logInitializing("MainModel");
+        LoggingUtils.logDebug("Creating new MainModel instance with default values");
+        LoggingUtils.logInitialized("MainModel");
+    }
 
     /**
      * Represents the index of the currently selected or stored algorithm.
@@ -333,18 +345,35 @@ public class MainModel implements Serializable {
      * "methodName:value", with elements separated by commas and enclosed in brackets.
      */
     public String getString() {
+        LoggingContext.setComponent("MainModel");
+        LoggingContext.setOperation("getString");
+        LoggingUtils.logDebug("Generating string representation of model");
+
+        long startTime = System.currentTimeMillis();
+
         Method[] methods = this.getClass().getMethods();
         ArrayList<String> stringList = new ArrayList<>();
+        int methodsProcessed = 0;
+
         for (Method m : methods) {
             if (m.getName().indexOf("getStored") == 0 && int.class == m.getReturnType()) {
                 try {
-                    stringList.add(m.getName() + ":" + m.invoke(this));
+                    Object value = m.invoke(this);
+                    stringList.add(m.getName() + ":" + value);
+                    methodsProcessed++;
+                    LoggingUtils.logDebug("Added property to string representation", m.getName() + "=" + value);
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    log.error(e.getMessage());
+                    LoggingUtils.logError("Error invoking method during string generation", e);
                 }
             }
         }
-        return stringList.toString();
+
+        String result = stringList.toString();
+        long duration = System.currentTimeMillis() - startTime;
+        LoggingUtils.logPerformance("Model string generation", duration);
+        LoggingUtils.logDebug("Generated string representation with " + methodsProcessed + " properties", "length=" + result.length());
+
+        return result;
     }
 
 }

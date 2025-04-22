@@ -1,7 +1,30 @@
 package de.schliweb.bluesharpbendingapp.model;
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
 
-
-import lombok.extern.slf4j.Slf4j;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +43,6 @@ import java.nio.file.FileSystems;
  * <p>
  * The temporary file is stored in the user's home directory with a predefined sub-path.
  */
-@Slf4j
 public class ModelStorageService {
 
 
@@ -46,8 +68,15 @@ public class ModelStorageService {
      * @param tempFile      the name of the temporary file
      */
     public ModelStorageService(String tempDirectory, String tempFile) {
+        LoggingContext.setComponent("ModelStorageService");
+        LoggingUtils.logInitializing("ModelStorageService");
+
         this.tempDirectory = tempDirectory;
         this.tempFile = tempFile;
+
+        LoggingUtils.logDebug("Initialized with directory", tempDirectory);
+        LoggingUtils.logDebug("Initialized with file", tempFile);
+        LoggingUtils.logInitialized("ModelStorageService");
     }
 
     /**
@@ -58,23 +87,37 @@ public class ModelStorageService {
      * @param model The MainModel object containing the data to be stored.
      */
     public void storeModel(MainModel model) {
+        LoggingContext.setComponent("ModelStorageService");
+        LoggingContext.setOperation("storeModel");
+        LoggingUtils.logOperationStarted("Model storage");
+
+        long startTime = System.currentTimeMillis();
 
         File directory = new File(tempDirectory);
         if (!directory.exists()) {
             boolean isCreated = directory.mkdirs();
-            if (isCreated) log.debug("Directory created by storeModel()");
+            if (isCreated) {
+                LoggingUtils.logDebug("Directory created", tempDirectory);
+            }
         }
+
         File file = new File(tempDirectory + FileSystems.getDefault().getSeparator() + tempFile);
         try (FileOutputStream fos = new FileOutputStream(file); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
             boolean isCreated = file.createNewFile();
-            if (isCreated) log.debug("Filed created");
+            if (isCreated) {
+                LoggingUtils.logDebug("File created", file.getAbsolutePath());
+            }
 
             bw.write(model.getString());
+            LoggingUtils.logDebug("Model data written to file");
 
         } catch (IOException e) {
-            log.error(e.getMessage());
+            LoggingUtils.logError("Failed to store model", e);
         }
 
+        long duration = System.currentTimeMillis() - startTime;
+        LoggingUtils.logPerformance("Model storage", duration);
+        LoggingUtils.logOperationCompleted("Model storage");
     }
 
     /**
@@ -87,24 +130,42 @@ public class ModelStorageService {
      * or a new MainModel instance if the file is not available or cannot be read.
      */
     public MainModel readModel() {
+        LoggingContext.setComponent("ModelStorageService");
+        LoggingContext.setOperation("readModel");
+        LoggingUtils.logOperationStarted("Model loading");
+
+        long startTime = System.currentTimeMillis();
 
         MainModel model = new MainModel();
         File directory = new File(tempDirectory);
         if (!directory.exists()) {
             boolean isCreated = directory.mkdirs();
-            if (isCreated) log.debug("Directory created by readModel()");
-        }
-        File file = new File(tempDirectory + FileSystems.getDefault().getSeparator() + tempFile);
-        if (file.exists()) {
-            try (FileInputStream fos = new FileInputStream(file); BufferedReader bw = new BufferedReader(new InputStreamReader(fos))) {
-
-                String line = bw.readLine();
-                if (line != null) model = createFromString(line);
-
-            } catch (IOException e) {
-                log.error(e.getMessage());
+            if (isCreated) {
+                LoggingUtils.logDebug("Directory created", tempDirectory);
             }
         }
+
+        File file = new File(tempDirectory + FileSystems.getDefault().getSeparator() + tempFile);
+        if (file.exists()) {
+            LoggingUtils.logDebug("Model file found", file.getAbsolutePath());
+            try (FileInputStream fos = new FileInputStream(file); BufferedReader bw = new BufferedReader(new InputStreamReader(fos))) {
+                String line = bw.readLine();
+                if (line != null) {
+                    LoggingUtils.logDebug("Model data read from file");
+                    model = createFromString(line);
+                } else {
+                    LoggingUtils.logWarning("Empty model file", "Using default model");
+                }
+            } catch (IOException e) {
+                LoggingUtils.logError("Failed to read model", e);
+            }
+        } else {
+            LoggingUtils.logDebug("Model file not found", "Using default model");
+        }
+
+        long duration = System.currentTimeMillis() - startTime;
+        LoggingUtils.logPerformance("Model loading", duration);
+        LoggingUtils.logOperationCompleted("Model loading");
         return model;
     }
 
@@ -122,9 +183,16 @@ public class ModelStorageService {
      * based on the input string.
      */
     private MainModel createFromString(String string) {
+        LoggingContext.setComponent("ModelStorageService");
+        LoggingContext.setOperation("createFromString");
+        LoggingUtils.logDebug("Creating model from string representation");
+
+        long startTime = System.currentTimeMillis();
+
         String[] strings = string.replace("[", "").replace("]", "").split(", ");
         MainModel model = new MainModel();
         Method[] methods = model.getClass().getMethods();
+        int propertiesSet = 0;
 
         for (String entry : strings) {
             entry = entry.replaceFirst("get", "set");
@@ -135,13 +203,19 @@ public class ModelStorageService {
                     if (method.getName().equals(m)) {
                         try {
                             method.invoke(model, Integer.parseInt(p));
+                            propertiesSet++;
+                            LoggingUtils.logDebug("Set model property", m + "=" + p);
                         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                            log.error(e.getMessage());
+                            LoggingUtils.logError("Failed to set model property " + m, e);
                         }
                     }
                 }
             }
         }
+
+        long duration = System.currentTimeMillis() - startTime;
+        LoggingUtils.logPerformance("Model creation from string", duration);
+        LoggingUtils.logDebug("Model created with " + propertiesSet + " properties set");
         return model;
     }
 

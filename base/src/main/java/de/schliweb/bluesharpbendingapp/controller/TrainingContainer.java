@@ -146,7 +146,7 @@ public class TrainingContainer implements Runnable {
      * Sets the lock state for all threads managed by the TrainingContainer.
      *
      * @param lockAllThreads a boolean value indicating whether all threads
-     *                        should be locked (true) or unlocked (false)
+     *                       should be locked (true) or unlocked (false)
      */
     public synchronized void setLockAllThreads(boolean lockAllThreads) {
         this.lockAllThreads = lockAllThreads;

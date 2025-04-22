@@ -26,12 +26,10 @@ package de.schliweb.bluesharpbendingapp.view.android;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.widget.TextView;
-
 import androidx.fragment.app.FragmentActivity;
+import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 import java.util.HashMap;
-
-import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 
 
 /**
@@ -136,9 +134,7 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
                 TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), cents);
             });
         }
-        activity.runOnUiThread(() ->
-            TextViewUtils.updateTextViewLine(noteTextView, cents)
-        );
+        activity.runOnUiThread(() -> TextViewUtils.updateTextViewLine(noteTextView, cents));
     }
 
     @Override
