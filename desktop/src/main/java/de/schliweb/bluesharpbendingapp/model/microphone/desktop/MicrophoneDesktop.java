@@ -52,14 +52,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MicrophoneDesktop extends AbstractMicrophone {
 
     /**
-     * Defines the size of the buffer used for audio data processing in the application.
-     * This constant specifies the number of bytes that can be temporarily stored in
-     * the buffer while reading or processing audio streams. A larger buffer size may
-     * result in smoother audio streaming but can increase latency, whereas a smaller
-     * size may decrease latency but increase the risk of audio disruptions.
-     */
-    protected static final int BUFFER_SIZE = 8192;
-    /**
      * Represents the audio sample rate used by the application.
      * The sample rate determines the number of audio samples captured
      * or processed per second. A higher sample rate results in better audio fidelity
@@ -80,6 +72,17 @@ public class MicrophoneDesktop extends AbstractMicrophone {
      * and manage sample-related computations.
      */
     private static final int BYTES_PER_SAMPLE = BITS_PER_SAMPLE / 8;
+
+    /**
+     * Dynamically calculated buffer size for audio processing.
+     * Ensures a minimum buffer duration of 0.1 seconds based on the sample rate and
+     * bytes per sample, or falls back to 8192 bytes if it meets minimum requirements.
+     */
+    protected static final int BUFFER_SIZE = Math.max(
+            (int) (SAMPLE_RATE * 0.1) * BYTES_PER_SAMPLE, // For 0.1 seconds
+            8192 // Fallback value
+    );
+
     /**
      * A reusable buffer for storing normalized audio sample data. The array is
      * sized proportionally to the audio buffer size and the number of bytes per sample,

@@ -22,10 +22,18 @@ package de.schliweb.bluesharpbendingapp.utils;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
+import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,12 +43,23 @@ class PitchDetectionUtilTest {
     private static final int SAMPLE_RATE = 44100;
     private static final double TOLERANCE = 0.5;
 
+
+    @BeforeEach
+    void setUpEach() {
+        // restore default harmonica settings
+        PitchDetectionUtil.setMaxFrequency(PitchDetectionUtil.getDefaultMaxFrequency());
+        PitchDetectionUtil.setMinFrequency(PitchDetectionUtil.getDefaultMinFrequency());
+    }
+
     @ParameterizedTest
     @CsvSource({
             // mainFrequency, mainAmplitude, subharmonicFrequency, subharmonicAmplitude, tolerance, minConfidence
             "934.6, 1.0, 460.0, 0.3, 5.0, 0.8",  // Weak subharmonic, high confidence required
             "934.6, 1.0, 460.0, 0.5, 10.0, 0.3", // Moderate subharmonic
-            "934.6, 1.9, 460.0, 1.0, 10.0, 0.1"  // Dominant main frequency, lower confidence acceptable
+            "934.6, 1.9, 460.0, 1.0, 10.0, 0.1",  // Dominant main frequency, lower confidence acceptable
+            "2093.0, 1.0, 1046.50, 0.3, 10.3, 0.8",  // Weak subharmonic, high confidence required
+            "2093.0, 1.0, 1046.50, 0.5, 20.0, 0.3", // Moderate subharmonic
+            "2093.0, 1.9, 1046.50, 1.0, 20.0, 0.1"  // Dominant main frequency, lower confidence acceptable
     })
     void testDetectPitchWithYIN_MixedFrequencies(double mainFrequency, double mainAmplitude, double subharmonicFrequency, double subharmonicAmplitude, double tolerance, double minConfidence) {
         int duration = 1; // 1 second
@@ -58,6 +77,50 @@ class PitchDetectionUtilTest {
         // Assert that the confidence level is above the minimum threshold
         assertTrue(result.confidence() > minConfidence,
                 "The confidence should be at least " + minConfidence);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideHarmonicaParameters")
+    void testYIN_Edges_Harmonica(AbstractHarmonica.KEY key, AbstractHarmonica.TUNE tune, double maxFrequencyTolerance, double minFrequencyTolerance) {
+        Harmonica harmonica = AbstractHarmonica.create(key, tune);
+        PitchDetectionUtil.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
+        PitchDetectionUtil.setMinFrequency(harmonica.getHarmonicaMinFrequency());
+
+        // Test for max frequency
+        double[] sineWave = generateSineWave(harmonica.getHarmonicaMaxFrequency(), SAMPLE_RATE, 1.0);
+        PitchDetectionUtil.PitchDetectionResult result = PitchDetectionUtil.detectPitchWithYIN(sineWave, SAMPLE_RATE);
+        assertTrue(result.confidence() >= 0.95);
+        assertEquals(harmonica.getHarmonicaMaxFrequency(), result.pitch(), maxFrequencyTolerance,
+                "Detected pitch should match the sine wave max frequency");
+
+        // Test for min frequency
+        sineWave = generateSineWave(harmonica.getHarmonicaMinFrequency(), SAMPLE_RATE, 1.0);
+        result = PitchDetectionUtil.detectPitchWithYIN(sineWave, SAMPLE_RATE);
+        assertTrue(result.confidence() >= 0.95);
+        assertEquals(harmonica.getHarmonicaMinFrequency(), result.pitch(), minFrequencyTolerance,
+                "Detected pitch should match the sine wave min frequency");
+    }
+
+    private static Stream<Arguments> provideHarmonicaParameters() {
+        return Stream.of(
+                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.A, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.B, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.A_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.D, AbstractHarmonica.TUNE.AUGMENTED, 5.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.D_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 20.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.E, AbstractHarmonica.TUNE.COUNTRY, 50.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.E_FLAT, AbstractHarmonica.TUNE.COUNTRY, 5.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LA, AbstractHarmonica.TUNE.COUNTRY, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LF_HASH, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LG, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LD_FLAT, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.B_FLAT, AbstractHarmonica.TUNE.PADDYRICHTER, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 3.0, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 3.0, 0.01)
+
+        );
     }
 
     @ParameterizedTest
@@ -685,7 +748,9 @@ class PitchDetectionUtilTest {
     @Test
     void testDetectPitchWithYIN_ExtremeLowFrequency() {
         int sampleRate = 44100;
+
         double frequency = 10.0; // Extreme low frequency sine wave
+        PitchDetectionUtil.setMinFrequency(10.0);
         double duration = 2.0; // Longer duration to allow full wavelength
         int samples = (int) (sampleRate * duration);
         double[] audioData = new double[samples];

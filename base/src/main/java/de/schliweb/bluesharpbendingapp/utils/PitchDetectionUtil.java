@@ -23,6 +23,7 @@ package de.schliweb.bluesharpbendingapp.utils;
  *
  */
 
+import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -36,11 +37,18 @@ import java.util.List;
  */
 public class PitchDetectionUtil {
 
-    @Setter
-    private static double minFrequency=80.0;
+    @Getter
+    private static final double defaultMinFrequency=80.0;
+
+    @Getter
+    private static final double defaultMaxFrequency=4835.0;
 
     @Setter
-    private static double maxFrequency=4835.0;
+    private static double minFrequency=defaultMinFrequency;
+
+    @Setter
+    private static double maxFrequency=defaultMaxFrequency;
+
 
     /**
      * A constant representing the absence of a detected pitch in pitch detection algorithms.
