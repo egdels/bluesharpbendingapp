@@ -26,9 +26,7 @@ package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
 
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
-import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
-import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
-import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
+import de.schliweb.bluesharpbendingapp.utils.*;
 
 import javax.sound.sampled.*;
 import javax.sound.sampled.Mixer.Info;
@@ -426,22 +424,26 @@ public class MicrophoneDesktop extends AbstractMicrophone {
         double[] audioData = convertToDouble(buffer, bytesRead);
         double pitch = -1;
         double conf = 0;
-        PitchDetectionUtil.PitchDetectionResult result;
+        PitchDetector.PitchDetectionResult result;
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
-            result = PitchDetectionUtil.detectPitchWithYIN(audioData, SAMPLE_RATE);
+            result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         } else if ("MPM".equals(getAlgorithm())) {
-            result = PitchDetectionUtil.detectPitchWithMPM(audioData, SAMPLE_RATE);
+            result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+            pitch = result.pitch();
+            conf = result.confidence();
+        } else if ("ZCR".equals(getAlgorithm())) {
+            result = ZCRPitchDetector.detectPitch(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         }
         if (conf < confidence) pitch = -1;
 
         if (microphoneHandler.get() != null) {
-            microphoneHandler.get().handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
+            microphoneHandler.get().handle(pitch, PitchDetector.calcRMS(audioData)); // frequency, RMS
         }
     }
 }

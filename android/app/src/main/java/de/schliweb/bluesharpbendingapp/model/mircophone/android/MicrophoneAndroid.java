@@ -31,8 +31,7 @@ import android.os.Process;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
-import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
-import de.schliweb.bluesharpbendingapp.utils.PitchDetectionUtil;
+import de.schliweb.bluesharpbendingapp.utils.*;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -285,21 +284,26 @@ public class MicrophoneAndroid extends AbstractMicrophone {
         }
         double conf = 0;
         double pitch = -1;
-        PitchDetectionUtil.PitchDetectionResult result;
+        PitchDetector.PitchDetectionResult result;
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
-            result = PitchDetectionUtil.detectPitchWithYIN(audioData, SAMPLE_RATE);
+            result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         } else if ("MPM".equals(getAlgorithm())) {
-            result = PitchDetectionUtil.detectPitchWithMPM(audioData, SAMPLE_RATE);
+            result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+            pitch = result.pitch();
+            conf = result.confidence();
+        } else if ("ZCR".equals(getAlgorithm())) {
+            result = ZCRPitchDetector.detectPitch(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         }
+
         if (conf < confidence) pitch = -1;
         if (microphoneHandler != null) {
-            microphoneHandler.handle(pitch, PitchDetectionUtil.calcRMS(audioData)); // frequency, RMS
+            microphoneHandler.handle(pitch, PitchDetector.calcRMS(audioData)); // frequency, RMS
         }
     }
 
