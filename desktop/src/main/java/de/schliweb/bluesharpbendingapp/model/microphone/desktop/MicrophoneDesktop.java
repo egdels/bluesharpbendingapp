@@ -435,10 +435,6 @@ public class MicrophoneDesktop extends AbstractMicrophone {
             result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
-        } else if ("ZCR".equals(getAlgorithm())) {
-            result = ZCRPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-            pitch = result.pitch();
-            conf = result.confidence();
         }
         if (conf < confidence) pitch = -1;
 

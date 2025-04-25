@@ -27,15 +27,12 @@ public class PitchDetectorComparisonTest {
     private static final int TEST_RUNS = 10; // Number of test runs for performance measurement
 
     // Data structures to store results
-    private final Map<String, List<AlgorithmResult>> zcrResults = new HashMap<>();
     private final Map<String, List<AlgorithmResult>> yinResults = new HashMap<>();
     private final Map<String, List<AlgorithmResult>> mpmResults = new HashMap<>();
 
     @BeforeEach
     void setUp() {
         // Reset frequency ranges to defaults for all detectors
-        ZCRPitchDetector.setMinFrequency(ZCRPitchDetector.getDefaultMinFrequency());
-        ZCRPitchDetector.setMaxFrequency(ZCRPitchDetector.getDefaultMaxFrequency());
         YINPitchDetector.setMinFrequency(YINPitchDetector.getDefaultMinFrequency());
         YINPitchDetector.setMaxFrequency(YINPitchDetector.getDefaultMaxFrequency());
         MPMPitchDetector.setMinFrequency(MPMPitchDetector.getDefaultMinFrequency());
@@ -48,7 +45,6 @@ public class PitchDetectorComparisonTest {
         System.out.println("==========================================================");
 
         // Clear previous results
-        zcrResults.clear();
         yinResults.clear();
         mpmResults.clear();
 
@@ -99,14 +95,6 @@ public class PitchDetectorComparisonTest {
             writer.write("Key,Tune,FreqType,Algorithm,Performance (ms),Accuracy (cents),Confidence");
             writer.newLine();
 
-            // Write ZCR results
-            for (Map.Entry<String, List<AlgorithmResult>> entry : zcrResults.entrySet()) {
-                for (AlgorithmResult result : entry.getValue()) {
-                    writer.write(String.format("%s,ZCR,%.2f,%.2f,%.2f", 
-                            entry.getKey(), result.performance, result.accuracy, result.confidence));
-                    writer.newLine();
-                }
-            }
 
             // Write YIN results
             for (Map.Entry<String, List<AlgorithmResult>> entry : yinResults.entrySet()) {
@@ -141,10 +129,6 @@ public class PitchDetectorComparisonTest {
             writer.write("Algorithm,Avg Performance (ms),Avg Accuracy (cents),Avg Confidence");
             writer.newLine();
 
-            // Calculate statistics
-            double zcrAvgPerformance = calculateAveragePerformance(zcrResults);
-            double zcrAvgAccuracy = calculateAverageAccuracy(zcrResults);
-            double zcrAvgConfidence = calculateAverageConfidence(zcrResults);
 
             double yinAvgPerformance = calculateAveragePerformance(yinResults);
             double yinAvgAccuracy = calculateAverageAccuracy(yinResults);
@@ -155,11 +139,9 @@ public class PitchDetectorComparisonTest {
             double mpmAvgConfidence = calculateAverageConfidence(mpmResults);
 
             // Write statistics
-            writer.write(String.format("ZCR,%.2f,%.2f,%.2f", zcrAvgPerformance, zcrAvgAccuracy, zcrAvgConfidence));
+            writer.write(String.format("YIN;%.2f;%.2f;%.2f", yinAvgPerformance, yinAvgAccuracy, yinAvgConfidence));
             writer.newLine();
-            writer.write(String.format("YIN,%.2f,%.2f,%.2f", yinAvgPerformance, yinAvgAccuracy, yinAvgConfidence));
-            writer.newLine();
-            writer.write(String.format("MPM,%.2f,%.2f,%.2f", mpmAvgPerformance, mpmAvgAccuracy, mpmAvgConfidence));
+            writer.write(String.format("MPM;%.2f;%.2f;%.2f", mpmAvgPerformance, mpmAvgAccuracy, mpmAvgConfidence));
             writer.newLine();
         }
     }
@@ -168,18 +150,11 @@ public class PitchDetectorComparisonTest {
      * Prints detailed results for all test cases.
      */
     private void printDetailedResults() {
-        // Print ZCR results
-        for (Map.Entry<String, List<AlgorithmResult>> entry : zcrResults.entrySet()) {
-            for (AlgorithmResult result : entry.getValue()) {
-                System.out.printf("%s, ZCR, %.2f, %.2f, %.2f%n", 
-                        entry.getKey(), result.performance, result.accuracy, result.confidence);
-            }
-        }
 
         // Print YIN results
         for (Map.Entry<String, List<AlgorithmResult>> entry : yinResults.entrySet()) {
             for (AlgorithmResult result : entry.getValue()) {
-                System.out.printf("%s, YIN, %.2f, %.2f, %.2f%n", 
+                System.out.printf("%s; YIN; %.2f; %.2f; %.2f%n",
                         entry.getKey(), result.performance, result.accuracy, result.confidence);
             }
         }
@@ -187,7 +162,7 @@ public class PitchDetectorComparisonTest {
         // Print MPM results
         for (Map.Entry<String, List<AlgorithmResult>> entry : mpmResults.entrySet()) {
             for (AlgorithmResult result : entry.getValue()) {
-                System.out.printf("%s, MPM, %.2f, %.2f, %.2f%n", 
+                System.out.printf("%s; MPM; %.2f; %.2f; %.2f%n",
                         entry.getKey(), result.performance, result.accuracy, result.confidence);
             }
         }
@@ -197,10 +172,6 @@ public class PitchDetectorComparisonTest {
      * Calculates and prints summary statistics for each algorithm.
      */
     private void printSummaryStatistics() {
-        // Calculate ZCR statistics
-        double zcrAvgPerformance = calculateAveragePerformance(zcrResults);
-        double zcrAvgAccuracy = calculateAverageAccuracy(zcrResults);
-        double zcrAvgConfidence = calculateAverageConfidence(zcrResults);
 
         // Calculate YIN statistics
         double yinAvgPerformance = calculateAveragePerformance(yinResults);
@@ -214,9 +185,8 @@ public class PitchDetectorComparisonTest {
 
         // Print statistics
         System.out.println("Algorithm, Avg Performance (ms), Avg Accuracy (cents), Avg Confidence");
-        System.out.printf("ZCR, %.2f, %.2f, %.2f%n", zcrAvgPerformance, zcrAvgAccuracy, zcrAvgConfidence);
-        System.out.printf("YIN, %.2f, %.2f, %.2f%n", yinAvgPerformance, yinAvgAccuracy, yinAvgConfidence);
-        System.out.printf("MPM, %.2f, %.2f, %.2f%n", mpmAvgPerformance, mpmAvgAccuracy, mpmAvgConfidence);
+        System.out.printf("YIN; %.2f; %.2f; %.2f%n", yinAvgPerformance, yinAvgAccuracy, yinAvgConfidence);
+        System.out.printf("MPM; %.2f; %.2f; %.2f%n", mpmAvgPerformance, mpmAvgAccuracy, mpmAvgConfidence);
     }
 
     /**
@@ -279,8 +249,6 @@ public class PitchDetectorComparisonTest {
         double maxFreq = harmonica.getHarmonicaMaxFrequency();
 
         // Set frequency ranges for all detectors
-        ZCRPitchDetector.setMinFrequency(minFreq);
-        ZCRPitchDetector.setMaxFrequency(maxFreq);
         YINPitchDetector.setMinFrequency(minFreq);
         YINPitchDetector.setMaxFrequency(maxFreq);
         MPMPitchDetector.setMinFrequency(minFreq);
@@ -309,9 +277,6 @@ public class PitchDetectorComparisonTest {
         // Generate test audio data
         double[] audioData = generateSineWave(frequency, SAMPLE_RATE, DURATION);
 
-        // Test ZCR
-        AlgorithmResult zcrResult = testAlgorithm("ZCR", audioData, frequency);
-
         // Test YIN
         AlgorithmResult yinResult = testAlgorithm("YIN", audioData, frequency);
 
@@ -319,13 +284,9 @@ public class PitchDetectorComparisonTest {
         AlgorithmResult mpmResult = testAlgorithm("MPM", audioData, frequency);
 
         // Store results
-        String resultKey = String.format("%s, %s, %s", key, tune, freqType);
+        String resultKey = String.format("%s; %s; %s", key, tune, freqType);
 
         // Store ZCR result
-        if (!zcrResults.containsKey(resultKey)) {
-            zcrResults.put(resultKey, new ArrayList<>());
-        }
-        zcrResults.get(resultKey).add(zcrResult);
 
         // Store YIN result
         if (!yinResults.containsKey(resultKey)) {
@@ -340,7 +301,7 @@ public class PitchDetectorComparisonTest {
         mpmResults.get(resultKey).add(mpmResult);
 
         // Print progress indicator
-        System.out.printf("Testing %s, %s, %s...%n", key, tune, freqType);
+        System.out.printf("Testing %s; %s; %s...%n", key, tune, freqType);
     }
 
     /**
@@ -384,8 +345,6 @@ public class PitchDetectorComparisonTest {
      */
     private PitchDetector.PitchDetectionResult runAlgorithm(String algorithm, double[] audioData) {
         switch (algorithm) {
-            case "ZCR":
-                return ZCRPitchDetector.detectPitch(audioData, SAMPLE_RATE);
             case "YIN":
                 return YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
             case "MPM":

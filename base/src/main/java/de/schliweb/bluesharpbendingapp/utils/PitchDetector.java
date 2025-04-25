@@ -92,7 +92,6 @@ public class PitchDetector {
      */
     public static void setMinFrequency(double harmonicaMinFrequency) {
         MPMPitchDetector.setMinFrequency(harmonicaMinFrequency);
-        ZCRPitchDetector.setMinFrequency(harmonicaMinFrequency);
         YINPitchDetector.setMinFrequency(harmonicaMinFrequency);
     }
 
@@ -105,7 +104,6 @@ public class PitchDetector {
     public static void setMaxFrequency(double harmonicaMaxFrequency) {
         MPMPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
         YINPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
-        ZCRPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
     }
 
     /**

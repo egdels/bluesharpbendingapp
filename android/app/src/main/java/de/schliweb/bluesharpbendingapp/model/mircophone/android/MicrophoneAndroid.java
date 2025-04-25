@@ -68,21 +68,14 @@ public class MicrophoneAndroid extends AbstractMicrophone {
     /**
      * The default audio buffer size used for capturing and processing audio data in the microphone system.
      * <p>
-     * It is determined dynamically by taking the larger of:
-     * - A minimum size equivalent to 0.1 seconds of audio at the current sample rate.
-     * - The minimum buffer size required by the {@link AudioRecord#getMinBufferSize} method.
+     * This value is determined by taking the maximum of a predefined constant size (4096 bytes)
+     * and the minimum buffer size required by the {@link AudioRecord#getMinBufferSize(int, int, int)} API,
+     * based on the configured sample rate, channel configuration, and encoding format.
      * <p>
-     * This ensures compliance with real-time performance recommendations for pitch detection
-     * while maintaining system compatibility.
+     * A sufficiently large buffer size ensures that audio data is captured and processed
+     * without underruns and provides reliable real-time performance for audio recording tasks.
      */
-    private static final int BUFFER_SIZE = Math.max(
-            (int) (SAMPLE_RATE * 0.1) * 4, // 0.1 seconds
-            AudioRecord.getMinBufferSize(
-                    SAMPLE_RATE,
-                    AudioFormat.CHANNEL_IN_MONO,
-                    AudioFormat.ENCODING_PCM_FLOAT
-            )
-    );
+    private static final int BUFFER_SIZE = Math.max(4096, AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT));
 
 
     /**
@@ -293,10 +286,6 @@ public class MicrophoneAndroid extends AbstractMicrophone {
             conf = result.confidence();
         } else if ("MPM".equals(getAlgorithm())) {
             result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-            pitch = result.pitch();
-            conf = result.confidence();
-        } else if ("ZCR".equals(getAlgorithm())) {
-            result = ZCRPitchDetector.detectPitch(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         }

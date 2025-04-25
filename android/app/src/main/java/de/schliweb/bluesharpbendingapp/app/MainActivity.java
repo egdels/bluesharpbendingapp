@@ -51,8 +51,6 @@ import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.*;
 import de.schliweb.bluesharpbendingapp.view.android.*;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
