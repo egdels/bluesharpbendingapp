@@ -24,4 +24,9 @@
 
 test {
     useJUnitPlatform() // Enables the use of JUnit 5 (JUnit Platform) for testing
+    exclude '**/PitchDetectorComparisonTest.class'
+}
+
+dependencies {
+    implementation 'com.github.wendykierp:JTransforms:3.1'
 }

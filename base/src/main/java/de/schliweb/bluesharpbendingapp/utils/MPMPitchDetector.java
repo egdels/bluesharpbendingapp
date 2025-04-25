@@ -7,18 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of the McLeod Pitch Method (MPM) for pitch detection.
- * <p>
- * This class provides a clean, efficient implementation of the MPM algorithm
- * for detecting the fundamental frequency (pitch) of an audio signal.
- * The implementation allows configuring the frequency range and provides
- * both the detected pitch and a confidence value.
- * <p>
- * The MPM algorithm works by:
- * 1. Calculating the Normalized Square Difference Function (NSDF)
- * 2. Finding peaks in the NSDF
- * 3. Selecting the most significant peak
- * 4. Calculating the pitch from the selected peak
+ * The MPMPitchDetector class is a specialized pitch detection implementation
+ * using the McLeod Pitch Method (MPM). It analyzes audio signals to detect
+ * the fundamental frequency (pitch) and calculate its confidence.
+ *
+ * This implementation leverages the Normalized Square Difference Function (NSDF)
+ * for determining pitch-related peaks and uses techniques such as parabolic
+ * interpolation for refined peak accuracy.
+ *
+ * Features:
+ * - Configurable frequency detection range (minimum and maximum frequencies).
+ * - Peaks are detected with a threshold to exclude insignificant candidates.
+ * - Refined pitch estimation using parabolic interpolation.
  */
 public class MPMPitchDetector extends PitchDetector {
 
@@ -61,9 +61,9 @@ public class MPMPitchDetector extends PitchDetector {
         int n = audioData.length;
 
         // Calculate lag limits based on the frequency range
-        // We extend the range by 30% on both ends to ensure we can detect frequencies at the edges
-        int minLag = Math.max(1, (int)(sampleRate / (maxFrequency * 1.3))); // Extend by 30% higher
-        int maxLag = Math.min(n / 2, (int)(sampleRate / (minFrequency * 0.7))); // Extend by 30% lower
+        // We extend the range by 10% on both ends to ensure we can detect frequencies at the edges
+        int minLag = Math.max(1, (int)(sampleRate / (maxFrequency * 1.1))); // Extend by 10% higher
+        int maxLag = Math.min(n / 2, (int)(sampleRate / (minFrequency * 0.9))); // Extend by 10% lower
 
         // Calculate the NSDF
         double[] nsdf = calculateNSDF(audioData, n, minLag, maxLag);
@@ -87,11 +87,6 @@ public class MPMPitchDetector extends PitchDetector {
 
         // Calculate the pitch from the refined peak index
         double pitch = (double) sampleRate / refinedPeakIndex;
-
-        // No correction factor needed
-
-        // Adjust confidence based on the frequency
-        confidence = adjustConfidence(confidence, pitch);
 
         return new PitchDetectionResult(pitch, confidence);
     }
@@ -160,34 +155,16 @@ public class MPMPitchDetector extends PitchDetector {
     }
 
     /**
-     * Selects the primary peak from a list of candidate peaks based on certain criteria.
-     * This is used to determine the most significant peak in a pitch detection process.
+     * Selects the most relevant peak index from a list of candidate peak indices.
+     * If the list of candidate peaks is empty, the method returns -1.
      *
-     * @param candidatePeaks a list of integers representing the indices of candidate peaks in the NSDF array.
-     *                       Each value corresponds to a potential periodicity of the audio signal.
-     * @return the index of the selected peak from the list of candidate peaks if a valid peak is found,
-     * or -1 if no valid peak is identified.
+     * @param candidatePeaks a list of integers representing the indices of candidate peaks
+     * @return the index of the selected peak from the candidate peaks, or -1 if the list is empty
      */
     private static int selectPeak(List<Integer> candidatePeaks) {
         if (candidatePeaks.isEmpty()) {
             return -1;
         }
-
-        // If there's only one peak, return it
-        if (candidatePeaks.size() == 1) {
-            return candidatePeaks.get(0);
-        }
-
-        // Try to find a harmonic relationship (octave)
-        /*for (int i = 1; i < candidatePeaks.size(); i++) {
-            double ratio = (double) candidatePeaks.get(i-1) / candidatePeaks.get(0);
-            if (ratio >= 1.9 && ratio <= 2.1) {
-                return candidatePeaks.get(0);
-            }
-        }*/
-
-        // If no harmonic relationship is found, return the first peak
-        // This is a reasonable default as it's likely to be the most prominent peak
         return candidatePeaks.get(0);
     }
 
@@ -225,28 +202,6 @@ public class MPMPitchDetector extends PitchDetector {
         }
 
         return (peakIndex + adjustment) + minLag;
-    }
-
-    /**
-     * Adjusts the confidence value based on the detected pitch.
-     * This helps provide more accurate confidence values for different frequency ranges.
-     *
-     * @param confidence the initial confidence value
-     * @param pitch      the detected pitch in Hz
-     * @return the adjusted confidence value
-     */
-    private static double adjustConfidence(double confidence, double pitch) {
-        // Boost confidence for frequencies at the edges of the range
-        double frequencyRatio = Math.min(pitch / minFrequency, maxFrequency / pitch);
-        if (frequencyRatio < 1.2) {
-            // Boost confidence for frequencies near the edges (within 20% of min/max)
-            confidence = Math.min(1.0, confidence * 1.2);
-        }
-
-        // Ensure a minimum confidence value for detected pitches
-        confidence = Math.max(0.95, confidence);
-
-        return confidence;
     }
 
 }

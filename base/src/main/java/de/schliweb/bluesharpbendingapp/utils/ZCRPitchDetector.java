@@ -2,6 +2,7 @@ package de.schliweb.bluesharpbendingapp.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jtransforms.fft.DoubleFFT_1D;
 
 /**
  * Implementation of a Zero-Crossing Rate with Spectral Weighting (ZCR-SW) algorithm for pitch detection.
@@ -278,37 +279,24 @@ public class ZCRPitchDetector extends PitchDetector {
      * @return an array of double values representing the magnitude spectrum.
      */
     private static double[] calculateSpectrum(double[] audioData) {
-        // Create a windowed copy of the audio data for FFT
-        double[] windowedData = new double[FFT_SIZE];
+        DoubleFFT_1D fft = new DoubleFFT_1D(FFT_SIZE);
+        double[] fftData = new double[FFT_SIZE * 2]; // Platz für komplexe FFT
+        System.arraycopy(audioData, 0, fftData, 0, Math.min(audioData.length, FFT_SIZE));
 
-        // Apply a Hann window to reduce spectral leakage
-        for (int i = 0; i < Math.min(audioData.length, FFT_SIZE); i++) {
-            // Hann window: 0.5 * (1 - cos(2π*n/(N-1)))
-            double window = 0.5 * (1 - Math.cos(2 * Math.PI * i / (FFT_SIZE - 1)));
-            windowedData[i] = audioData[i] * window;
+        // Berechne die FFT
+        fft.realForward(fftData);
+
+        // Berechne die Magnitude
+        double[] magnitude = new double[FFT_SIZE / 2];
+        for (int i = 0; i < magnitude.length; i++) {
+            double re = fftData[2 * i];       // Realteil
+            double im = fftData[2 * i + 1];  // Imaginärteil
+            magnitude[i] = Math.sqrt(re * re + im * im);
         }
 
-        // Calculate the magnitude spectrum
-        // In a real implementation, we would use an FFT library
-        // For simplicity, we'll simulate the spectrum calculation
-        double[] spectrum = new double[FFT_SIZE / 2];
-
-        // Simulate spectrum calculation (in a real implementation, use FFT)
-        for (int i = 0; i < spectrum.length; i++) {
-            double frequency = i * 1.0;  // Frequency bin
-            double magnitude = 0;
-
-            // Calculate magnitude for this frequency bin
-            for (int j = 0; j < windowedData.length; j++) {
-                double phase = 2 * Math.PI * frequency * j / FFT_SIZE;
-                magnitude += windowedData[j] * Math.cos(phase);
-            }
-
-            spectrum[i] = Math.abs(magnitude);
-        }
-
-        return spectrum;
+        return magnitude;
     }
+
 
     /**
      * Refines the pitch estimate using spectral information.
@@ -371,33 +359,6 @@ public class ZCRPitchDetector extends PitchDetector {
      * @return the corrected pitch in Hz.
      */
     private static double applyFrequencyCorrection(double detectedPitch) {
-        // Special handling for signals with harmonics
-        // For signals that might be between fundamental and harmonic frequencies,
-        // we'll snap to the closest common frequency
-
-        // Handle frequencies around 440 Hz and its harmonics
-        if (detectedPitch >= 400 && detectedPitch < 460) {
-            return 440.0; // A4
-        } else if (detectedPitch >= 850 && detectedPitch < 910) {
-            return 880.0; // A5 (first harmonic of A4)
-        } else if (detectedPitch >= 650 && detectedPitch < 690) {
-            return 660.0; // E5 (harmonic relationship with A4)
-        } else if (detectedPitch >= 215 && detectedPitch < 225) {
-            return 440.0; // Detected subharmonic of A4, correct to A4
-        }
-
-        // Apply corrections for other common test frequencies
-        if (detectedPitch >= 95 && detectedPitch <= 110) {
-            // Correction for ~100 Hz
-            return 100.0;
-        } else if (detectedPitch >= 1990 && detectedPitch <= 2010) {
-            // Correction for ~2000 Hz
-            return 2000.0;
-        } else if (detectedPitch >= 2990 && detectedPitch <= 3010) {
-            // Correction for ~3000 Hz
-            return 3000.0;
-        }
-
         // For other frequencies, apply a general correction factor
         // based on the observed bias in our algorithm
         if (detectedPitch < 200) {

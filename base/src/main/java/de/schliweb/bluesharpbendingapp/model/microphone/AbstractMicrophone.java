@@ -72,7 +72,7 @@ public abstract class AbstractMicrophone implements Microphone {
      * @return an array of strings, where each string is the name of a supported algorithm
      */
     public static String[] getSupportedAlgorithms() {
-        return new String[]{"YIN", "MPM", "ZCR"};
+        return new String[]{"YIN", "MPM"};
     }
 
     /**

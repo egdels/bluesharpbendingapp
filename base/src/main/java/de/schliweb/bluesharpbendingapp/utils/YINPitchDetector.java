@@ -157,23 +157,6 @@ public class YINPitchDetector extends PitchDetector {
     /**
      * Finds the first index in the Cumulative Mean Normalized Difference Function (CMNDF)
      * array where the value is below a specified threshold and is a local minimum.
-     * This simplified version searches the entire array.
-     *
-     * @param cmndf     an array of double values representing the cumulative mean normalized
-     *                  difference function (CMNDF). Each element corresponds to the
-     *                  periodicity measure for a specific lag value.
-     * @param threshold a double value representing the threshold for identifying valid
-     *                  CMNDF values. Only elements below this value will be considered.
-     * @return the index of the first local minimum that satisfies the threshold condition;
-     *         returns -1 if no valid index is found.
-     */
-    private int findFirstMinimum(double[] cmndf, double threshold) {
-        return findFirstMinimum(cmndf, threshold, 0, cmndf.length);
-    }
-
-    /**
-     * Finds the first index in the Cumulative Mean Normalized Difference Function (CMNDF)
-     * array where the value is below a specified threshold and is a local minimum.
      *
      * @param cmndf     an array of double values representing the cumulative mean normalized
      *                  difference function (CMNDF). Each element corresponds to the
@@ -193,17 +176,6 @@ public class YINPitchDetector extends PitchDetector {
             }
         }
         return -1;
-    }
-
-    /**
-     * Computes the Cumulative Mean Normalized Difference Function (CMNDF) for a difference array.
-     * This is a simplified version that computes CMNDF for the entire array without range restrictions.
-     * 
-     * @param difference an array of difference values to compute the CMNDF from
-     * @return an array representing the CMNDF values
-     */
-    private double[] computeCMNDF(double[] difference) {
-        return computeCMNDFInRange(difference, 0, difference.length - 1);
     }
 
     /**

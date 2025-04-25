@@ -27,8 +27,8 @@ class MPMPitchDetectorTest {
 
     @BeforeEach
     void setUp() {
-        MPMPitchDetector.setMaxFrequency(MPMPitchDetector.getMaxFrequency());
-        MPMPitchDetector.setMinFrequency(MPMPitchDetector.getMinFrequency());
+        MPMPitchDetector.setMaxFrequency(MPMPitchDetector.getDefaultMaxFrequency());
+        MPMPitchDetector.setMinFrequency(MPMPitchDetector.getDefaultMinFrequency());
     }
 
     @Test
@@ -101,7 +101,7 @@ class MPMPitchDetectorTest {
         MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
 
         // Assert
-        assertEquals(frequency, result.pitch(), TOLERANCE * 10, "Detected pitch should match the high frequency sine wave");
+        assertEquals(frequency, result.pitch(), TOLERANCE, "Detected pitch should match the high frequency sine wave");
         assertTrue(result.confidence() > 0.9, "Confidence should be high for a high frequency sine wave");
     }
 
@@ -206,12 +206,7 @@ class MPMPitchDetectorTest {
         // Act
         MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
 
-        // Assert
-        // Our detector is capable of accurately detecting pitches outside the specified range
-        if (result.pitch() != MPMPitchDetector.NO_DETECTED_PITCH) {
-            assertEquals(frequency, result.pitch(), TOLERANCE, 
-                      "The detector should accurately detect the pitch even outside the specified range");
-        }
+        assertEquals(MPMPitchDetector.NO_DETECTED_PITCH, result.pitch(), "The detector should not detect a pitch outside the specified range");
     }
 
     @Test
@@ -249,22 +244,22 @@ class MPMPitchDetectorTest {
 
     private static Stream<Arguments> provideHarmonicaParameters() {
         return Stream.of(
-                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.A, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.B, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.A_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.D, AbstractHarmonica.TUNE.AUGMENTED, 5.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.D_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 20.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.E, AbstractHarmonica.TUNE.COUNTRY, 50.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.E_FLAT, AbstractHarmonica.TUNE.COUNTRY, 5.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.LA, AbstractHarmonica.TUNE.COUNTRY, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.LF_HASH, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.LG, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.LD_FLAT, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.B_FLAT, AbstractHarmonica.TUNE.PADDYRICHTER, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 3.0, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 3.0, 0.01)
+                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.A, AbstractHarmonica.TUNE.RICHTER, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.B, AbstractHarmonica.TUNE.RICHTER, 0.2, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.A_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.D, AbstractHarmonica.TUNE.AUGMENTED, 0.3, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.D_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 0.2, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.E, AbstractHarmonica.TUNE.COUNTRY, 0.4, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.E_FLAT, AbstractHarmonica.TUNE.COUNTRY, 0.3, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LA, AbstractHarmonica.TUNE.COUNTRY, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LF_HASH, AbstractHarmonica.TUNE.DIMINISHED, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LG, AbstractHarmonica.TUNE.DIMINISHED, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LD_FLAT, AbstractHarmonica.TUNE.DIMINISHED, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.B_FLAT, AbstractHarmonica.TUNE.PADDYRICHTER, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 0.1, 0.01)
         );
     }
 
@@ -560,15 +555,12 @@ class MPMPitchDetectorTest {
         int sampleRate = 44100;
         double frequency = 4000.0; // High frequency sine wave
         double duration = 1.0;
-        int samples = (int) (sampleRate * duration);
-        double[] audioData = new double[samples];
-        for (int i = 0; i < samples; i++) {
-            audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
-        }
+
+        double[] audioData = generateSineWave(frequency, sampleRate, duration);
 
         MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
         double detectedPitch = result.pitch();
-        assertEquals(frequency, detectedPitch, TOLERANCE * 10, "Detected pitch should match the high-frequency sine wave");
+        assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the high-frequency sine wave");
     }
 
     /**
@@ -582,7 +574,6 @@ class MPMPitchDetectorTest {
         for (int i = 0; i < audioData.length; i++) {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
-
         MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertTrue(detectedPitch > 0, "Detected pitch should be a positive number for simple input");

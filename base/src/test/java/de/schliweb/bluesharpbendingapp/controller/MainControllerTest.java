@@ -26,11 +26,16 @@ package de.schliweb.bluesharpbendingapp.controller;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import java.util.concurrent.ExecutorService;
+
+import static org.mockito.Mockito.*;
+
 
 
 class MainControllerTest {
@@ -43,6 +48,8 @@ class MainControllerTest {
     private MicrophoneController microphoneController;
     private HarpController harpController;
     private TrainingController trainingController;
+    private ExecutorService executorService;
+    private AndroidSettingsView androidSettingsView;
 
     @BeforeEach
     void setup() {
@@ -53,58 +60,136 @@ class MainControllerTest {
         harpController = mock(HarpController.class);
         trainingController = mock(TrainingController.class);
         microphoneController = mock(MicrophoneController.class);
+        executorService = mock(ExecutorService.class);
+        androidSettingsView = mock(AndroidSettingsView.class);
 
         when(modelStorageService.readModel()).thenReturn(model);
-        /*
+        when(mainWindow.isAndroidSettingsViewActive()).thenReturn(true);
+        when(mainWindow.getAndroidSettingsView()).thenReturn(androidSettingsView);
+
         mainController = new MainController(
                 model,
                 mainWindow,
                 modelStorageService,
-                microphoneController
-        );*/
+                microphoneController,
+                executorService
+        );
     }
 
-    // Commented out due to handleAlgorithmSelection method not existing in MainController
-     /*
-     @Test
-     void testHandleAlgorithmSelectionUpdatesModel() {
-         int algorithmIndex = 2;
+    @AfterEach
+    void tearDown() {
+        // Clean up resources if needed
+    }
 
-         mainController.handleAlgorithmSelection(algorithmIndex);
+    @Test
+    void testStartOpensMicrophone() {
+        // Act
+        mainController.start();
 
-         verify(model).setStoredAlgorithmIndex(algorithmIndex);
-         verify(model).setSelectedAlgorithmIndex(algorithmIndex);
-     }
+        // Assert
+        verify(microphoneController).open();
+    }
 
-     @Test
-     void testHandleAlgorithmSelectionUpdatesMicrophone() {
-         int algorithmIndex = 1;
+    @Test
+    void testStartOpensMainWindow() {
+        // Act
+        mainController.start();
 
-         mainController.handleAlgorithmSelection(algorithmIndex);
+        // Assert
+        verify(mainWindow).open();
+    }
 
-         verify(microphone).close();
-         verify(microphone).setAlgorithm(algorithmIndex);
-         verify(microphone).open();
-     }
+    @Test
+    void testStartRecreatesExecutorServiceIfShutdown() {
+        // Arrange
+        when(executorService.isShutdown()).thenReturn(true);
 
-     @Test
-     void testHandleAlgorithmSelectionStoresModel() {
-         int algorithmIndex = 3;
+        // Act
+        mainController.start();
 
-         mainController.handleAlgorithmSelection(algorithmIndex);
+        // Assert - we can't directly verify the recreation since it's a local operation
+        // but we can verify the check was made
+        verify(executorService).isShutdown();
+    }
 
-         verify(modelStorageService).storeModel(model);
-     }
-     @Test
-     void testHandleAlgorithmSelectionLogsCorrectly() {
-         int algorithmIndex = 2;
+    @Test
+    void testStopClosesMicrophone() {
+        // Act
+        mainController.stop();
 
-         // Call method
-         mainController.handleAlgorithmSelection(algorithmIndex);
+        // Assert
+        verify(microphoneController).close();
+    }
 
-         // No mock verification is performed, but this ensures that execution passes and logs
-         assertDoesNotThrow(() -> mainController.handleAlgorithmSelection(algorithmIndex));
-     }
-     */
+    @Test
+    void testStopShutdownsExecutorService() {
+        // Arrange
+        when(executorService.isShutdown()).thenReturn(false);
+
+        // Act
+        mainController.stop();
+
+        // Assert
+        verify(executorService).shutdownNow();
+    }
+
+    @Test
+    void testStopStoresModel() {
+        // Act
+        mainController.stop();
+
+        // Assert
+        verify(modelStorageService).storeModel(model);
+    }
+
+    @Test
+    void testHandleLockScreenSelectionUpdatesModel() {
+        // Arrange
+        int lockScreenIndex = 2;
+
+        // Act
+        mainController.handleLockScreenSelection(lockScreenIndex);
+
+        // Assert
+        verify(model).setSelectedLockScreenIndex(lockScreenIndex);
+        verify(model).setStoredLockScreenIndex(lockScreenIndex);
+    }
+
+    @Test
+    void testHandleLockScreenSelectionStoresModel() {
+        // Arrange
+        int lockScreenIndex = 2;
+
+        // Act
+        mainController.handleLockScreenSelection(lockScreenIndex);
+
+        // Assert
+        verify(modelStorageService).storeModel(model);
+    }
+
+    @Test
+    void testInitLockScreenSetsSelectedLockScreen() {
+        // Arrange
+        int lockScreenIndex = 3;
+        when(model.getSelectedLockScreenIndex()).thenReturn(lockScreenIndex);
+
+        // Act
+        mainController.initLockScreen();
+
+        // Assert
+        verify(androidSettingsView).setSelectedLockScreen(lockScreenIndex);
+    }
+
+    @Test
+    void testInitLockScreenDoesNothingWhenViewInactive() {
+        // Arrange
+        when(mainWindow.isAndroidSettingsViewActive()).thenReturn(false);
+
+        // Act
+        mainController.initLockScreen();
+
+        // Assert - verify that the view was not accessed
+        verify(mainWindow, never()).getAndroidSettingsView();
+    }
 
 }
