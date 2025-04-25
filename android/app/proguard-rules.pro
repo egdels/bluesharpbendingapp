@@ -50,4 +50,5 @@
 
 
 -keepattributes SourceFile,LineNumberTable
-
+-dontwarn com.sun.xml.internal.ws.encoding.soap.SerializationException
+-dontwarn sun.misc.Cleaner
