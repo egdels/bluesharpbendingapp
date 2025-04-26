@@ -173,8 +173,9 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
             // Apply the note's background color to the enlarged TextView
             shape.setColor(noteShape.getColor());
 
-            // Clear any existing text in the enlarged TextView
+            // Clear any existing text and line in the enlarged TextView
             TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
+            TextViewUtils.clearTextViewLine(enlargedTextView);
         }
     }
 

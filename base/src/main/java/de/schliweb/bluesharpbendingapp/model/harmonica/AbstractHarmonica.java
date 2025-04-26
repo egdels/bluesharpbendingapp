@@ -484,6 +484,10 @@ public abstract class AbstractHarmonica implements Harmonica {
          */
         G("G3"),
         /**
+         * Ha key.
+         */
+        HA("A4"),
+        /**
          * Ha flat key.
          */
         HA_FLAT("G#4"),

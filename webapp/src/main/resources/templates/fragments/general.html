@@ -39,6 +39,38 @@
     <link href="/site.webmanifest" rel="manifest">
     <link th:href="${'/styles/style.css?v=' + @environment.getProperty('spring.application.version')}" rel="stylesheet">
     <script th:src="${'/scripts/script.js?v=' + @environment.getProperty('spring.application.version')}" ></script>
+
+    <!-- Polyfills for browser compatibility -->
+    <script>
+        // Feature detection and conditional polyfill loading
+        (function() {
+            // Check if we need ES6 polyfills
+            var needsES6Polyfill = !window.Promise || !window.fetch || !window.Symbol || 
+                                   !Array.prototype.includes || !String.prototype.includes;
+
+            // Check if we need Web Audio API polyfills
+            var needsAudioPolyfill = !window.AudioContext && !window.webkitAudioContext;
+
+            // Check if we need getUserMedia polyfill
+            var needsGetUserMediaPolyfill = !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia;
+
+            // Load polyfills as needed
+            if (needsES6Polyfill) {
+                var es6Script = document.createElement('script');
+                es6Script.src = 'https://cdn.jsdelivr.net/npm/core-js-bundle@3.30.2/minified.js';
+                document.head.appendChild(es6Script);
+                console.log('Loading ES6 polyfills');
+            }
+
+            // Load adapter.js for WebRTC compatibility (includes getUserMedia polyfill)
+            if (needsGetUserMediaPolyfill) {
+                var adapterScript = document.createElement('script');
+                adapterScript.src = 'https://webrtc.github.io/adapter/adapter-latest.js';
+                document.head.appendChild(adapterScript);
+                console.log('Loading WebRTC adapter');
+            }
+        })();
+    </script>
 </head>
 <body>
 

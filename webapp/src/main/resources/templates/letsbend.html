@@ -26,7 +26,10 @@
 <!DOCTYPE html>
 <html th:lang="#{language}" th:xmllang="#{language}" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/general :: head}"></head>
+<head th:replace="~{fragments/general :: head}">
+    <!-- This content will be replaced by the fragment, but we include it here for clarity -->
+    <!-- Polyfills for older browsers will be added in the fragment -->
+</head>
 <body>
 <header th:replace="~{fragments/general :: header}"></header>
 
@@ -110,6 +113,9 @@
                     <button disabled id="stop">Stop</button>
                 </div>
             </div>
+            <!-- Hidden fields for harmonica frequency range -->
+            <input type="hidden" id="harmonicaMinFrequency" th:value="${harmonica.getHarmonicaMinFrequency()}">
+            <input type="hidden" id="harmonicaMaxFrequency" th:value="${harmonica.getHarmonicaMaxFrequency()}">
         </div>
         <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
             Ergebnis wird hier angezeigt...
@@ -121,7 +127,8 @@
 <footer th:replace="~{fragments/general :: footer}"></footer>
 
 <script th:inline="javascript" type="module">
-    import PitchDetectionUtil from './scripts/PitchDetectionUtil.js';
+    import YINPitchDetector from './scripts/YINPitchDetector.js';
+    import MPMPitchDetector from './scripts/MPMPitchDetector.js';
     import NoteLookup from './scripts/NoteLookup.js';
     import NoteUtils from './scripts/NoteUtils.js';
 
@@ -214,13 +221,51 @@
      * @return {boolean} Returns true if the AudioWorklet API is supported, otherwise false.
      */
     function isAudioWorkletSupported() {
-        return 'audioWorklet' in AudioContext.prototype;
+        return window.AudioContext && 'audioWorklet' in AudioContext.prototype;
     }
 
+    /**
+     * Checks if the browser is Safari.
+     *
+     * @return {boolean} Returns true if the browser is Safari, otherwise false.
+     */
     function isSafari() {
         return !!navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
             navigator.userAgent.indexOf('CriOS') === -1 &&
             navigator.userAgent.indexOf('FxiOS') === -1;
+    }
+
+    /**
+     * Checks if the getUserMedia API is supported in the current browser environment.
+     *
+     * @return {boolean} Returns true if the getUserMedia API is supported, otherwise false.
+     */
+    function isGetUserMediaSupported() {
+        return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    }
+
+    /**
+     * Checks if the Web Audio API is supported in the current browser environment.
+     *
+     * @return {boolean} Returns true if the Web Audio API is supported, otherwise false.
+     */
+    function isWebAudioSupported() {
+        return !!(window.AudioContext || window.webkitAudioContext);
+    }
+
+    /**
+     * Checks if the ScriptProcessorNode API is supported in the current browser environment.
+     *
+     * @return {boolean} Returns true if the ScriptProcessorNode API is supported, otherwise false.
+     */
+    function isScriptProcessorSupported() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return false;
+
+        const ctx = new AudioContext();
+        const isSupported = typeof ctx.createScriptProcessor === 'function';
+        ctx.close();
+        return isSupported;
     }
 
 
@@ -355,11 +400,34 @@
         document.querySelectorAll('.line').forEach(line => line.style.visibility = 'hidden');
         resultDiv = document.getElementById('result');
 
-        // Warning for unsupported browsers
-        if (!isAudioWorkletSupported() || isSafari()) {
+        // Check browser compatibility
+        const hasGetUserMedia = isGetUserMediaSupported();
+        const hasWebAudio = isWebAudioSupported();
+        const hasAudioWorklet = isAudioWorkletSupported();
+        const hasScriptProcessor = isScriptProcessorSupported();
+        const isSafariBrowser = isSafari();
+
+        // Display appropriate warnings based on browser capabilities
+        if (!hasGetUserMedia) {
             resultDiv.style.visibility = 'visible';
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = 'Your browser does not support modern audio processing. Please use an updated browser.';
+            resultDiv.style.backgroundColor = '#ffcc00';
+            resultDiv.innerHTML = 'Your browser does not support microphone access. Please use a modern browser like Chrome, Firefox, or Edge.';
+        } else if (!hasWebAudio) {
+            resultDiv.style.visibility = 'visible';
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#ffcc00';
+            resultDiv.innerHTML = 'Your browser does not support audio processing. Please use a modern browser like Chrome, Firefox, or Edge.';
+        } else if (!hasAudioWorklet && !hasScriptProcessor) {
+            resultDiv.style.visibility = 'visible';
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#ffcc00';
+            resultDiv.innerHTML = 'Your browser does not support required audio processing features. Please use a modern browser like Chrome, Firefox, or Edge.';
+        } else if (isSafariBrowser) {
+            resultDiv.style.visibility = 'visible';
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#ffcc00';
+            resultDiv.innerHTML = 'Safari has limited support for audio processing. The app will use a fallback method which may affect performance.';
         }
 
         document.getElementById('start').addEventListener('click', async () => {
@@ -376,39 +444,84 @@
 
             algorithm = document.getElementById('supportedAlgorithms').value;
 
+            // Get harmonica frequency range from hidden fields
+            const harmonicaMinFrequency = parseFloat(document.getElementById('harmonicaMinFrequency').value);
+            const harmonicaMaxFrequency = parseFloat(document.getElementById('harmonicaMaxFrequency').value);
+
+            console.log("minFrequency: " + harmonicaMaxFrequency);
+            console.log("maxFrequency: " + harmonicaMinFrequency);
+
+
+            // Set frequency range in pitch detectors
+            YINPitchDetector.setMinFrequency(harmonicaMinFrequency);
+            YINPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
+            MPMPitchDetector.setMinFrequency(harmonicaMinFrequency);
+            MPMPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
+
             try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
-                audioContext = new AudioContext();
+                // Request microphone access with error handling
+                try {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
+                } catch (micError) {
+                    handleError(new Error(`Microphone access denied: ${micError.message}`));
+                    return;
+                }
+
+                // Initialize AudioContext with fallback
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioContextClass();
+
+                // Resume AudioContext if it's suspended (needed for some browsers)
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
 
                 // Feature-based processing
                 if (isAudioWorkletSupported() && !isSafari()) {
-                    // Modern approach with AudioWorkletNode
-                    await audioContext.audioWorklet.addModule('./scripts/PitchProcessor.js');
+                    try {
+                        // Modern approach with AudioWorkletNode
+                        await audioContext.audioWorklet.addModule('./scripts/PitchProcessor.js');
 
-                    processingNode = new AudioWorkletNode(audioContext, 'pitch-processor', {
-                        numberOfInputs: 1,
-                        numberOfOutputs: 1,
-                        processorOptions: {
-                            sampleRate: audioContext.sampleRate,
-                            algorithm: algorithm
-                        },
-                    });
+                        processingNode = new AudioWorkletNode(audioContext, 'pitch-processor', {
+                            numberOfInputs: 1,
+                            numberOfOutputs: 1,
+                            processorOptions: {
+                                sampleRate: audioContext.sampleRate,
+                                algorithm: algorithm
+                            },
+                        });
 
-                    processingNode.port.onmessage = (event) => {
-                        processAudioResult(event.data);
-                    };
-                } else {
+                        processingNode.port.onmessage = (event) => {
+                            processAudioResult(event.data);
+                        };
+                    } catch (workletError) {
+                        console.warn("AudioWorklet failed to initialize, falling back to ScriptProcessor:", workletError);
+                        // If AudioWorklet fails, fall back to ScriptProcessor
+                        if (isScriptProcessorSupported()) {
+                            initializeScriptProcessor();
+                        } else {
+                            throw new Error("Neither AudioWorklet nor ScriptProcessor are available");
+                        }
+                    }
+                } else if (isScriptProcessorSupported()) {
                     // Fallback to the old ScriptProcessorNode
-                    processingNode = audioContext.createScriptProcessor(4096, 1, 1);
+                    initializeScriptProcessor();
+                } else {
+                    throw new Error("Your browser doesn't support required audio processing features");
+                }
+
+                // Helper function to initialize ScriptProcessor
+                function initializeScriptProcessor() {
+                    processingNode = audioContext.createScriptProcessor(8192, 1, 1);
 
                     processingNode.onaudioprocess = (e) => {
                         const audioData = e.inputBuffer.getChannelData(0);
                         let result;
                         if(algorithm === 'YIN') {
-                            result = PitchDetectionUtil.detectPitchWithYIN(audioData, audioContext.sampleRate);
+                            result = YINPitchDetector.detectPitch(audioData, audioContext.sampleRate);
                         }
                         if(algorithm === 'MPM') {
-                            result = PitchDetectionUtil.detectPitchWithMPM(audioData, audioContext.sampleRate);
+                            result = MPMPitchDetector.detectPitch(audioData, audioContext.sampleRate);
                         }
                         processAudioResult(result);
                     };
@@ -452,19 +565,58 @@
         }
 
         /**
-         * Handles errors related to microphone access and updates the UI accordingly.
+         * Handles errors related to audio processing and updates the UI accordingly.
+         * Provides user-friendly error messages based on the type of error.
          *
          * @param {Error} err - The error object representing the issue encountered.
          * @return {void} This function does not return a value.
          */
         function handleError(err) {
-            console.error("Error accessing the microphone:", err);
+            console.error("Audio processing error:", err);
+
+            let errorMessage = err.message;
+            let errorColor = 'red';
+
+            // Provide more user-friendly error messages based on error type
+            if (errorMessage.includes('Permission denied') || errorMessage.includes('access denied') || 
+                errorMessage.includes('NotAllowedError') || errorMessage.includes('PermissionDeniedError')) {
+                errorMessage = "Microphone access was denied. Please allow microphone access and try again.";
+            } else if (errorMessage.includes('NotFoundError') || errorMessage.includes('DevicesNotFoundError')) {
+                errorMessage = "No microphone was found. Please connect a microphone and try again.";
+            } else if (errorMessage.includes('NotReadableError') || errorMessage.includes('TrackStartError')) {
+                errorMessage = "Could not access your microphone. It may be in use by another application.";
+            } else if (errorMessage.includes('AbortError')) {
+                errorMessage = "Microphone access was aborted. Please try again.";
+            } else if (errorMessage.includes('SecurityError')) {
+                errorMessage = "Microphone access was blocked due to security restrictions. Please use HTTPS or localhost.";
+            } else if (errorMessage.includes('support')) {
+                // For browser support issues, use yellow instead of red
+                errorColor = '#ffcc00';
+            }
+
+            // Update UI
             resultDiv.style.visibility = 'visible';
             resultDiv.style.display = 'block';
-            resultDiv.style.backgroundColor = 'red';
-            resultDiv.innerHTML = "Error accessing the microphone: " + err.message;
+            resultDiv.style.backgroundColor = errorColor;
+            resultDiv.innerHTML = errorMessage;
+
+            // Reset button states
             document.getElementById('start').disabled = false;
             document.getElementById('stop').disabled = true;
+
+            // Clean up any existing audio resources
+            if (processingNode) {
+                processingNode.disconnect();
+                processingNode = null;
+            }
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            if (audioContext) {
+                audioContext.close().catch(e => console.warn("Error closing AudioContext:", e));
+                audioContext = null;
+            }
         }
 
         // Stop button handler

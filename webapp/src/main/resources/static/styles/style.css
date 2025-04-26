@@ -141,46 +141,6 @@ footer {
 
 /* ---------------- End Footer Styles ---------------- */
 
-/* Styles for the download table */
-.downloadTable tr:nth-child(even) {
-    background: #f4f4f4; /* For alternating row colors */
-}
-
-.downloadTable th, td {
-    padding: 0.1em 0.5em;
-}
-
-.downloadTable th {
-    text-align: left;
-    font-weight: bold;
-    background: #eee;
-    border-bottom: 1px solid #aaa;
-}
-
-.downloadTable {
-    border: 1px solid #aaa;
-    width: 100%;
-}
-
-.downloadTable a {
-    color: #a33;
-}
-
-.downloadTable a:hover {
-    color: #e33;
-}
-
-/* Prevents long words or URLs from breaking layout containers */
-.dont-break-out {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word; /* Use this where supported */
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto; /* Adds a hyphenation when breaking */
-}
-
 /* Harp - Grid container styles */
 .grid-container {
     position: relative;

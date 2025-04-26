@@ -140,4 +140,22 @@ public class HarmonicaWeb implements Serializable {
     public boolean isOverdraw(int channelIndex, int noteIndex) {
         return toHarmonica().isOverdraw(channelIndex, noteIndex);
     }
+
+    /**
+     * Retrieves the minimum frequency achievable by the harmonica.
+     *
+     * @return the minimum frequency of the harmonica in hertz
+     */
+    public double getHarmonicaMinFrequency() {
+        return toHarmonica().getHarmonicaMinFrequency();
+    }
+
+    /**
+     * Retrieves the maximum frequency achievable by the harmonica.
+     *
+     * @return the maximum frequency of the harmonica in hertz
+     */
+    public double getHarmonicaMaxFrequency() {
+        return toHarmonica().getHarmonicaMaxFrequency();
+    }
 }

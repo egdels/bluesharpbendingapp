@@ -45,10 +45,9 @@ class AbstractMicrophoneTest {
     void testGetSupportedAlgorithms() {
         String[] algorithms = AbstractMicrophone.getSupportedAlgorithms();
         assertNotNull(algorithms);
-        assertEquals(3, algorithms.length);
+        assertEquals(2, algorithms.length);
         assertEquals("YIN", algorithms[0]);
         assertEquals("MPM", algorithms[1]);
-        assertEquals("ZCR", algorithms[2]);
     }
 
     @Test

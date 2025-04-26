@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Pitch Detector Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .test-result {
+            margin-top: 10px;
+        }
+        .pass {
+            color: green;
+        }
+        .fail {
+            color: red;
+        }
+        .test-summary {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Pitch Detector Tests</h1>
+    
+    <button id="run-tests">Run All Tests</button>
+    
+    <div id="test-results">
+        <div class="test-section">
+            <div class="test-title">YIN Pitch Detector Tests</div>
+            <div id="yin-test-results" class="test-result">Click "Run All Tests" to start testing.</div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">MPM Pitch Detector Tests</div>
+            <div id="mpm-test-results" class="test-result">Click "Run All Tests" to start testing.</div>
+        </div>
+    </div>
+    
+    <div id="test-summary" class="test-summary"></div>
+    
+    <script type="module">
+        import YINPitchDetector from '../../main/resources/static/scripts/YINPitchDetector.js';
+        import MPMPitchDetector from '../../main/resources/static/scripts/MPMPitchDetector.js';
+        import NoteUtils from '../../main/resources/static/scripts/NoteUtils.js';
+        
+        // Simple test framework
+        const TestFramework = {
+            results: {
+                yin: { passed: 0, failed: 0, details: [] },
+                mpm: { passed: 0, failed: 0, details: [] }
+            },
+            
+            expect: function(actual) {
+                return {
+                    toBe: function(expected, message) {
+                        if (actual === expected) {
+                            return true;
+                        } else {
+                            throw new Error(message || `Expected ${expected}, got ${actual}`);
+                        }
+                    },
+                    toBeGreaterThan: function(expected, message) {
+                        if (actual > expected) {
+                            return true;
+                        } else {
+                            throw new Error(message || `Expected ${actual} to be greater than ${expected}`);
+                        }
+                    },
+                    toBeLessThanOrEqual: function(expected, message) {
+                        if (actual <= expected) {
+                            return true;
+                        } else {
+                            throw new Error(message || `Expected ${actual} to be less than or equal to ${expected}`);
+                        }
+                    }
+                };
+            },
+            
+            runTest: function(name, testFn, type) {
+                try {
+                    testFn();
+                    this.results[type].passed++;
+                    this.results[type].details.push({ name, passed: true });
+                    return { passed: true };
+                } catch (error) {
+                    this.results[type].failed++;
+                    this.results[type].details.push({ name, passed: false, error: error.message });
+                    return { passed: false, error: error.message };
+                }
+            },
+            
+            displayResults: function() {
+                const yinResultsElement = document.getElementById('yin-test-results');
+                const mpmResultsElement = document.getElementById('mpm-test-results');
+                const summaryElement = document.getElementById('test-summary');
+                
+                // Display YIN test results
+                let yinHtml = '';
+                this.results.yin.details.forEach(detail => {
+                    yinHtml += `<div class="${detail.passed ? 'pass' : 'fail'}">
+                        ${detail.name}: ${detail.passed ? 'PASSED' : 'FAILED'}
+                        ${!detail.passed ? `<br>Error: ${detail.error}` : ''}
+                    </div>`;
+                });
+                yinResultsElement.innerHTML = yinHtml;
+                
+                // Display MPM test results
+                let mpmHtml = '';
+                this.results.mpm.details.forEach(detail => {
+                    mpmHtml += `<div class="${detail.passed ? 'pass' : 'fail'}">
+                        ${detail.name}: ${detail.passed ? 'PASSED' : 'FAILED'}
+                        ${!detail.passed ? `<br>Error: ${detail.error}` : ''}
+                    </div>`;
+                });
+                mpmResultsElement.innerHTML = mpmHtml;
+                
+                // Display summary
+                const totalPassed = this.results.yin.passed + this.results.mpm.passed;
+                const totalFailed = this.results.yin.failed + this.results.mpm.failed;
+                const totalTests = totalPassed + totalFailed;
+                
+                summaryElement.innerHTML = `
+                    Total Tests: ${totalTests}<br>
+                    Passed: ${totalPassed} (${Math.round(totalPassed / totalTests * 100)}%)<br>
+                    Failed: ${totalFailed} (${Math.round(totalFailed / totalTests * 100)}%)
+                `;
+            },
+            
+            resetResults: function() {
+                this.results = {
+                    yin: { passed: 0, failed: 0, details: [] },
+                    mpm: { passed: 0, failed: 0, details: [] }
+                };
+            }
+        };
+        
+        // Helper functions for generating test data
+        function generateSineWave(frequency, sampleRate, duration) {
+            const samples = Math.floor(sampleRate * duration);
+            const sineWave = new Array(samples);
+            
+            for (let i = 0; i < samples; i++) {
+                sineWave[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
+            }
+            
+            return sineWave;
+        }
+        
+        function generateMixedSineWaveWithAmplitudes(primaryFreq, primaryAmp, secondaryFreq, secondaryAmp, sampleRate, duration) {
+            const sampleCount = sampleRate * duration;
+            const mixedWave = new Array(sampleCount);
+            
+            for (let i = 0; i < sampleCount; i++) {
+                mixedWave[i] = primaryAmp * Math.sin(2.0 * Math.PI * primaryFreq * i / sampleRate)
+                        + secondaryAmp * Math.sin(2.0 * Math.PI * secondaryFreq * i / sampleRate);
+            }
+            
+            return mixedWave;
+        }
+        
+        function generateSineWaveWithNoise(frequency, sampleRate, durationMs, noiseLevel) {
+            const sampleCount = Math.floor(sampleRate * durationMs / 1000);
+            const noisyWave = new Array(sampleCount);
+            
+            for (let i = 0; i < sampleCount; i++) {
+                noisyWave[i] = Math.sin(2.0 * Math.PI * frequency * i / sampleRate) + noiseLevel * (Math.random() - 0.5);
+            }
+            
+            return noisyWave;
+        }
+        
+        // YIN Pitch Detector Tests
+        function runYINTests() {
+            const SAMPLE_RATE = 44100;
+            const TOLERANCE = 0.5;
+            
+            // Reset to default frequency range
+            YINPitchDetector.setMinFrequency(YINPitchDetector.DEFAULT_MIN_FREQUENCY);
+            YINPitchDetector.setMaxFrequency(YINPitchDetector.DEFAULT_MAX_FREQUENCY);
+            
+            // Test pure sine wave
+            TestFramework.runTest('Pure Sine Wave', () => {
+                const frequency = 440.0; // A4
+                const duration = 1.0;
+                const samples = Math.floor(SAMPLE_RATE * duration);
+                const audioData = new Array(samples);
+                
+                for (let i = 0; i < samples; i++) {
+                    audioData[i] = Math.sin(2 * Math.PI * frequency * i / SAMPLE_RATE);
+                }
+                
+                const result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(0.02);
+            }, 'yin');
+            
+            // Test silence
+            TestFramework.runTest('Silence', () => {
+                const audioData = new Array(SAMPLE_RATE).fill(0);
+                
+                const result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                
+                TestFramework.expect(result.pitch).toBe(YINPitchDetector.NO_DETECTED_PITCH);
+            }, 'yin');
+            
+            // Test noise
+            TestFramework.runTest('Noise', () => {
+                const audioData = new Array(2000);
+                
+                for (let i = 0; i < audioData.length; i++) {
+                    audioData[i] = Math.random() * 2 - 1; // Random noise between -1 and 1
+                }
+                
+                const result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                
+                TestFramework.expect(result.pitch).toBe(YINPitchDetector.NO_DETECTED_PITCH);
+            }, 'yin');
+            
+            // Test frequency with white noise
+            TestFramework.runTest('Frequency with White Noise', () => {
+                const frequency = 934.6;
+                const durationMs = 1000; // 1 second
+                const noiseLevel = 0.1; // White noise as 10% of the signal amplitude
+                
+                const noisyWave = generateSineWaveWithNoise(frequency, SAMPLE_RATE, durationMs, noiseLevel);
+                
+                const result = YINPitchDetector.detectPitch(noisyWave, SAMPLE_RATE);
+                
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.6);
+            }, 'yin');
+        }
+        
+        // MPM Pitch Detector Tests
+        function runMPMTests() {
+            const SAMPLE_RATE = 44100;
+            const TOLERANCE = 1.0;
+            
+            // Reset to default frequency range
+            MPMPitchDetector.setMinFrequency(MPMPitchDetector.DEFAULT_MIN_FREQUENCY);
+            MPMPitchDetector.setMaxFrequency(MPMPitchDetector.DEFAULT_MAX_FREQUENCY);
+            
+            // Test pure sine wave
+            TestFramework.runTest('Pure Sine Wave', () => {
+                const frequency = 440.0; // A4
+                const duration = 1.0;
+                const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
+                
+                const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.9);
+            }, 'mpm');
+            
+            // Test silence
+            TestFramework.runTest('Silence', () => {
+                const audioData = new Array(SAMPLE_RATE).fill(0); // 1 second of silence
+                
+                const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                
+                TestFramework.expect(result.pitch).toBe(MPMPitchDetector.NO_DETECTED_PITCH);
+                TestFramework.expect(result.confidence).toBe(0.0);
+            }, 'mpm');
+            
+            // Test noise
+            TestFramework.runTest('Noise', () => {
+                const audioData = new Array(SAMPLE_RATE); // 1 second of random noise
+                for (let i = 0; i < audioData.length; i++) {
+                    audioData[i] = Math.random() * 2 - 1; // Random values between -1 and 1
+                }
+                
+                const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                
+                TestFramework.expect(result.pitch).toBe(MPMPitchDetector.NO_DETECTED_PITCH);
+                TestFramework.expect(result.confidence).toBe(0.0);
+            }, 'mpm');
+            
+            // Test low frequency
+            TestFramework.runTest('Low Frequency', () => {
+                const frequency = 80.0; // Low frequency
+                const duration = 1.0;
+                const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
+                
+                const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.9);
+            }, 'mpm');
+            
+            // Test high frequency
+            TestFramework.runTest('High Frequency', () => {
+                const frequency = 4000.0; // High frequency
+                const duration = 1.0;
+                const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
+                
+                const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.9);
+            }, 'mpm');
+        }
+        
+        // Run all tests when the button is clicked
+        document.getElementById('run-tests').addEventListener('click', function() {
+            TestFramework.resetResults();
+            runYINTests();
+            runMPMTests();
+            TestFramework.displayResults();
+        });
+    </script>
+</body>
+</html>

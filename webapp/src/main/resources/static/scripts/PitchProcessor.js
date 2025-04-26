@@ -21,7 +21,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-import PitchDetectionUtil from './PitchDetectionUtil.js';
+import YINPitchDetector from './YINPitchDetector.js';
+import MPMPitchDetector from './MPMPitchDetector.js';
 
 /**
  * The PitchProcessor class extends AudioWorkletProcessor and is used for real-time
@@ -40,7 +41,7 @@ class PitchProcessor extends AudioWorkletProcessor {
      */
     constructor(options) {
         super();
-        this.bufferSize = 4096;
+        this.bufferSize = 8192;
         this.sampleRate = options.processorOptions.sampleRate;
         this.algorithm = options.processorOptions.algorithm;
         this.buffer = new Float32Array(this.bufferSize);
@@ -70,11 +71,11 @@ class PitchProcessor extends AudioWorkletProcessor {
                 let result = {};
                 if (this.algorithm === 'YIN') {
                     // console.log("YIN");
-                    result = PitchDetectionUtil.detectPitchWithYIN(this.buffer, this.sampleRate);
+                    result = YINPitchDetector.detectPitch(this.buffer, this.sampleRate);
                 }
                 else if (this.algorithm === 'MPM') {
                     // console.log("MPM");
-                    result = PitchDetectionUtil.detectPitchWithMPM(this.buffer, this.sampleRate);
+                    result = MPMPitchDetector.detectPitch(this.buffer, this.sampleRate);
                 }
                 // console.log(result);
                 // Send the result back to the main thread

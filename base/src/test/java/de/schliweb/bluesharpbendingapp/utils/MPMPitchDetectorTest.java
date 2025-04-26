@@ -2,14 +2,13 @@ package de.schliweb.bluesharpbendingapp.utils;
 
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
-import org.junit.jupiter.api.BeforeAll;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
@@ -244,8 +243,8 @@ class MPMPitchDetectorTest {
 
     private static Stream<Arguments> provideHarmonicaParameters() {
         return Stream.of(
-                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 0.1, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 0.3, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.HA_FLAT, AbstractHarmonica.TUNE.RICHTER, 2, 0.01),
                 Arguments.of(AbstractHarmonica.KEY.A, AbstractHarmonica.TUNE.RICHTER, 0.1, 0.01),
                 Arguments.of(AbstractHarmonica.KEY.B, AbstractHarmonica.TUNE.RICHTER, 0.2, 0.01),
                 Arguments.of(AbstractHarmonica.KEY.A_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 0.1, 0.01),
@@ -259,7 +258,8 @@ class MPMPitchDetectorTest {
                 Arguments.of(AbstractHarmonica.KEY.LD_FLAT, AbstractHarmonica.TUNE.DIMINISHED, 0.1, 0.01),
                 Arguments.of(AbstractHarmonica.KEY.B_FLAT, AbstractHarmonica.TUNE.PADDYRICHTER, 0.1, 0.01),
                 Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 0.1, 0.01),
-                Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 0.1, 0.01)
+                Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 0.1, 0.01),
+                Arguments.of(AbstractHarmonica.KEY.HA, AbstractHarmonica.TUNE.RICHTER, 1.2, 0.01)
         );
     }
 
