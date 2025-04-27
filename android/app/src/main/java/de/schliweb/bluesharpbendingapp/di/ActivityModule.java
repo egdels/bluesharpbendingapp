@@ -34,6 +34,12 @@ import de.schliweb.bluesharpbendingapp.app.MainActivity;
 @Module
 public class ActivityModule {
 
+    /**
+     * The MainActivity instance that will be provided by this module.
+     * This field is initialized in the constructor and is used by the
+     * provideMainActivity method to supply the MainActivity instance
+     * to dependent components.
+     */
     private final MainActivity mainActivity;
 
     /**

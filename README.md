@@ -171,7 +171,8 @@ Contributions to this project are welcome! Follow these steps to contribute:
 
 1. Fork the repository.
 2. Create a new branch for your changes.
-3. Submit a **Pull Request** with a clear description of your changes.
+3. Follow the [Development Guidelines](docs/development-guidelines.md) for code style, documentation, and testing requirements.
+4. Submit a **Pull Request** with a clear description of your changes.
 
 ---
 

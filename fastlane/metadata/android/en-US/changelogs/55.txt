@@ -1,0 +1,6 @@
+* Refactored pitch detection framework for improved accuracy and performance
+* Added comprehensive logging throughout the application for better diagnostics
+* Improved lock screen selection handling in settings
+* Removed unused dependencies for more efficient resource usage
+* Fixed issue onResume for android devices
+* Cleaned up code by removing redundant constants and unused imports

@@ -31,15 +31,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Controller responsible for handling requests for various web application pages.
+ * Controller responsible for handling HTTP requests for various web application pages.
+ * This controller manages the routing and rendering of different views in the application,
+ * including the main functional pages, legal information pages, and error handling.
+ * 
+ * It also manages session attributes related to harmonica configuration and audio
+ * processing settings, ensuring a consistent user experience across page navigations.
  */
 @Controller
 public class WebappController {
 
     /**
-     * Index model and view.
+     * Handles requests for the index page, which serves as the main landing page
+     * of the web application. This page provides an overview of the application
+     * and its features.
      *
-     * @return the model and view
+     * @return a ModelAndView object configured to render the index page
      */
     @GetMapping("/index.html")
     public ModelAndView index() {
@@ -51,9 +58,11 @@ public class WebappController {
     }
 
     /**
-     * Impressum model and view.
+     * Handles requests for the impressum (imprint) page, which contains legal information
+     * about the website operator, contact details, and other information required by
+     * German law for website operators.
      *
-     * @return the model and view
+     * @return a ModelAndView object configured to render the impressum page
      */
     @GetMapping("/impressum.html")
     public ModelAndView impressum() {
@@ -65,9 +74,11 @@ public class WebappController {
     }
 
     /**
-     * Datenschutz model and view.
+     * Handles requests for the datenschutz (privacy policy) page, which outlines how
+     * user data is collected, processed, and stored by the application. This page
+     * provides information required by data protection regulations such as the GDPR.
      *
-     * @return the model and view
+     * @return a ModelAndView object configured to render the privacy policy page
      */
     @GetMapping("/datenschutz.html")
     public ModelAndView datenschutz() {
@@ -79,9 +90,11 @@ public class WebappController {
     }
 
     /**
-     * Error model and view.
+     * Handles requests for the error page, which is displayed when an exception occurs
+     * or when a user attempts to access a non-existent resource. This page provides
+     * user-friendly error information and possible troubleshooting steps.
      *
-     * @return the model and view
+     * @return a ModelAndView object configured to render the error page
      */
     @GetMapping("/error")
     public ModelAndView error() {
@@ -93,9 +106,15 @@ public class WebappController {
     }
 
     /**
-     * Redirect to the GitHub releases page.
+     * Handles requests for the download page by redirecting users to the GitHub releases page.
+     * <p>
+     * Instead of hosting download files directly on the web server, this method redirects
+     * users to the official GitHub repository's releases page where they can download the
+     * latest version of the application. This approach ensures users always get the most
+     * up-to-date version and reduces the maintenance burden of managing download files
+     * on the web server.
      *
-     * @return the redirect view
+     * @return a string indicating a redirect to the GitHub releases URL
      */
     @GetMapping("/download.html")
     public String download() {

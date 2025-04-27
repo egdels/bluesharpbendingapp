@@ -173,17 +173,40 @@ public class MicrophoneDesktop extends AbstractMicrophone {
     }
 
 
+    /**
+     * Sets the microphone handler that will receive and process audio data.
+     * The handler is responsible for handling frequency and volume information
+     * detected by the microphone. This method uses an AtomicReference to ensure
+     * thread-safe updates to the handler reference.
+     *
+     * @param microphoneHandler the handler implementation that will process audio data
+     */
     @Override
     public void setMicrophoneHandler(MicrophoneHandler microphoneHandler) {
         this.microphoneHandler.set(microphoneHandler);
     }
 
 
+    /**
+     * Retrieves the name of the currently selected microphone.
+     * This name is a user-friendly identifier that represents the audio input device
+     * currently in use by the application.
+     *
+     * @return the name of the currently selected microphone, or null if no microphone is selected
+     */
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the microphone based on the provided index.
+     * This method retrieves the name of the microphone at the specified index
+     * from the list of supported microphones and assigns it to the current instance.
+     * If the index is out of bounds, an error is logged.
+     *
+     * @param microphoneIndex the index of the microphone in the list of supported microphones
+     */
     @Override
     public void setName(int microphoneIndex) {
         try {
@@ -194,6 +217,15 @@ public class MicrophoneDesktop extends AbstractMicrophone {
         }
     }
 
+    /**
+     * Retrieves an array of names for all supported microphones available on the system.
+     * This method scans the audio system for available mixers that support the required
+     * audio format and can be used as input devices. It tests each mixer by attempting
+     * to open and close a target data line, ensuring that the microphone is actually
+     * available for use.
+     *
+     * @return an array of strings containing the names of all supported microphones
+     */
     @Override
     public String[] getSupportedMicrophones() {
         Info[] mixerInfos = AudioSystem.getMixerInfo();
@@ -428,11 +460,11 @@ public class MicrophoneDesktop extends AbstractMicrophone {
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
-            result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+            result = PitchDetector.detectPitchYIN(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         } else if ("MPM".equals(getAlgorithm())) {
-            result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+            result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         }

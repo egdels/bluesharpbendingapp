@@ -24,10 +24,11 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  */
 
 import de.schliweb.bluesharpbendingapp.controller.*;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.*;
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
-import lombok.Setter;
 
 import javax.inject.Inject;
 
@@ -285,8 +286,11 @@ public class MainWindowDesktopFXController implements MainWindow {
      */
     @FXML
     public void initialize() {
+        LoggingContext.setComponent("MainWindowDesktopFXController");
+        LoggingUtils.logInitializing("Main Window UI");
         initializeViews();
         setupContainers();
+        LoggingUtils.logInitialized("Main Window UI");
     }
 
     /**
@@ -300,9 +304,12 @@ public class MainWindowDesktopFXController implements MainWindow {
      */
     @FXML
     private void showHarpView() {
+        LoggingContext.setComponent("MainWindowDesktopFXController");
+        LoggingUtils.logUserAction("Show Harp View", "Switching to harp view");
         hideAllViews();
         harpViewContainer.setVisible(true);
         harpViewHandler.initNotes();
+        LoggingUtils.logOperationCompleted("Harp view displayed");
     }
 
     /**
@@ -316,8 +323,11 @@ public class MainWindowDesktopFXController implements MainWindow {
      */
     @FXML
     public void showAboutView() {
+        LoggingContext.setComponent("MainWindowDesktopFXController");
+        LoggingUtils.logUserAction("Show About View", "Switching to about view");
         hideAllViews();
         aboutViewContainer.setVisible(true);
+        LoggingUtils.logOperationCompleted("About view displayed");
     }
 
     /**
@@ -337,14 +347,24 @@ public class MainWindowDesktopFXController implements MainWindow {
      */
     @FXML
     public void showSettingsView() {
+        LoggingContext.setComponent("MainWindowDesktopFXController");
+        LoggingUtils.logUserAction("Show Settings View", "Switching to settings view");
         hideAllViews();
         settingsViewContainer.setVisible(true);
+
+        LoggingUtils.logDebug("Initializing microphone settings");
         microphoneSettingsViewHandler.initMicrophoneList();
         microphoneSettingsViewHandler.initAlgorithmList();
         microphoneSettingsViewHandler.initConfidenceList();
+
+        LoggingUtils.logDebug("Initializing harp settings");
         harpSettingsViewHandler.initKeyList();
         harpSettingsViewHandler.initTuneList();
+
+        LoggingUtils.logDebug("Initializing note settings");
         noteSettingsViewHandler.initConcertPitchList();
+
+        LoggingUtils.logOperationCompleted("Settings view displayed and initialized");
     }
 
     /**
@@ -363,11 +383,17 @@ public class MainWindowDesktopFXController implements MainWindow {
      */
     @FXML
     private void showTrainingView() {
+        LoggingContext.setComponent("MainWindowDesktopFXController");
+        LoggingUtils.logUserAction("Show Training View", "Switching to training view");
         hideAllViews();
         trainingViewContainer.setVisible(true);
+
+        LoggingUtils.logDebug("Initializing training components");
         trainingViewHandler.initTrainingList();
         trainingViewHandler.initTrainingContainer();
         trainingViewHandler.initPrecisionList();
+
+        LoggingUtils.logOperationCompleted("Training view displayed and initialized");
     }
 
     /**

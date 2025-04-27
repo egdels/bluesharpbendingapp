@@ -1,8 +1,5 @@
 package de.schliweb.bluesharpbendingapp.utils;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +7,11 @@ import java.util.List;
  * The MPMPitchDetector class is a specialized pitch detection implementation
  * using the McLeod Pitch Method (MPM). It analyzes audio signals to detect
  * the fundamental frequency (pitch) and calculate its confidence.
- *
+ * <p>
  * This implementation leverages the Normalized Square Difference Function (NSDF)
  * for determining pitch-related peaks and uses techniques such as parabolic
  * interpolation for refined peak accuracy.
- *
+ * <p>
  * Features:
  * - Configurable frequency detection range (minimum and maximum frequencies).
  * - Peaks are detected with a threshold to exclude insignificant candidates.
@@ -23,28 +20,22 @@ import java.util.List;
 public class MPMPitchDetector extends PitchDetector {
 
     /**
-     * The minimum frequency that can be detected (in Hz).
-     * This can be configured using the setter method.
-     */
-    @Setter
-    @Getter
-    protected static double minFrequency = DEFAULT_MIN_FREQUENCY;
-
-    /**
-     * The maximum frequency that can be detected (in Hz).
-     * This can be configured using the setter method.
-     */
-    @Setter
-    @Getter
-    protected static double maxFrequency = DEFAULT_MAX_FREQUENCY;
-
-    /**
      * The threshold used for peak detection in the NSDF.
      * Peaks with values below this threshold will not be considered.
      */
     private static final double PEAK_THRESHOLD = 0.5;
 
-    private MPMPitchDetector() {
+    /**
+     * Initializes a new instance of the MPMPitchDetector class.
+     * This constructor calls the parent class's default constructor
+     * to initialize shared attributes and configurations for pitch detection.
+     * <p>
+     * MPMPitchDetector implements the McLeod Pitch Method (MPM),
+     * which is designed for detecting the fundamental frequency of an audio signal.
+     * The detector primarily analyzes the Normalized Square Difference Function (NSDF)
+     * for detecting pitch and evaluating its confidence.
+     */
+    protected MPMPitchDetector() {
         super();
     }
 
@@ -57,7 +48,8 @@ public class MPMPitchDetector extends PitchDetector {
      * @param sampleRate the sample rate of the audio signal in Hz.
      * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value (0 to 1).
      */
-    public static PitchDetectionResult detectPitch(double[] audioData, int sampleRate) {
+    @Override
+    PitchDetectionResult detectPitch(double[] audioData, int sampleRate) {
         int n = audioData.length;
 
         // Calculate lag limits based on the frequency range
@@ -83,7 +75,7 @@ public class MPMPitchDetector extends PitchDetector {
         double confidence = nsdf[peakIndex - minLag];
 
         // Apply parabolic interpolation to refine the peak index
-        double refinedPeakIndex = applyParabolicInterpolation(nsdf, peakIndex - minLag, minLag);
+        double refinedPeakIndex = PitchDetector.parabolicInterpolation(nsdf, peakIndex - minLag) + minLag;
 
         // Calculate the pitch from the refined peak index
         double pitch = (double) sampleRate / refinedPeakIndex;
@@ -102,7 +94,7 @@ public class MPMPitchDetector extends PitchDetector {
      * @param maxLag    the maximum lag value to consider (corresponding to the minimum frequency)
      * @return an array of double values containing the computed NSDF values
      */
-    private static double[] calculateNSDF(double[] audioData, int n, int minLag, int maxLag) {
+    private double[] calculateNSDF(double[] audioData, int n, int minLag, int maxLag) {
         int maxLagForCalculation = Math.min(n / 2, maxLag);
         double[] nsdf = new double[maxLagForCalculation - minLag];
 
@@ -135,7 +127,7 @@ public class MPMPitchDetector extends PitchDetector {
      * @param maxLag the maximum lag value to consider (corresponding to the minimum frequency)
      * @return a list of integers where each integer represents the index of a detected peak
      */
-    private static List<Integer> findPeaks(double[] nsdf, int minLag, int maxLag) {
+    private List<Integer> findPeaks(double[] nsdf, int minLag, int maxLag) {
         List<Integer> candidatePeaks = new ArrayList<>();
 
         // Ensure we don't go out of bounds
@@ -161,47 +153,10 @@ public class MPMPitchDetector extends PitchDetector {
      * @param candidatePeaks a list of integers representing the indices of candidate peaks
      * @return the index of the selected peak from the candidate peaks, or -1 if the list is empty
      */
-    private static int selectPeak(List<Integer> candidatePeaks) {
+    private int selectPeak(List<Integer> candidatePeaks) {
         if (candidatePeaks.isEmpty()) {
             return -1;
         }
         return candidatePeaks.get(0);
     }
-
-    /**
-     * Refines the peak index using parabolic interpolation to improve accuracy in
-     * analyzing peaks in the Normalized Square Difference Function (NSDF).
-     *
-     * @param nsdf      an array of double values representing the Normalized Square Difference Function (NSDF).
-     * @param peakIndex the index of the detected peak in the NSDF array.
-     * @param minLag    the minimum lag value used in the NSDF calculation.
-     * @return the refined peak index as a double, adjusted using parabolic interpolation for enhanced accuracy.
-     */
-    private static double applyParabolicInterpolation(double[] nsdf, int peakIndex, int minLag) {
-        if (peakIndex <= 0 || peakIndex >= nsdf.length - 1) {
-            return peakIndex + minLag;
-        }
-
-        double x0 = nsdf[peakIndex - 1];
-        double x1 = nsdf[peakIndex];
-        double x2 = nsdf[peakIndex + 1];
-
-        // Calculate the adjustment using parabolic interpolation
-        double denominator = x0 - 2 * x1 + x2;
-
-        // Avoid division by zero or very small values
-        if (Math.abs(denominator) < 1e-10) {
-            return peakIndex + minLag;
-        }
-
-        double adjustment = 0.5 * (x0 - x2) / denominator;
-
-        // Limit the adjustment to a reasonable range to avoid extreme values
-        if (Math.abs(adjustment) > 1) {
-            adjustment = 0;
-        }
-
-        return (peakIndex + adjustment) + minLag;
-    }
-
 }

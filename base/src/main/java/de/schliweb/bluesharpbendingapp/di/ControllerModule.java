@@ -97,13 +97,12 @@ public abstract class ControllerModule {
      * @param window              the main application window
      * @param modelStorageService the service responsible for managing the persistence of model data
      * @param microphoneController the controller for managing microphone-related functionality
-     * @param executorService     the executor service for handling asynchronous operations
      * @return a singleton MainController instance
      */
     @Provides
     @Singleton
-    static MainController provideMainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, MicrophoneController microphoneController, ExecutorService executorService) {
-        return new MainController(model, window, modelStorageService, microphoneController, executorService);
+    static MainController provideMainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, MicrophoneController microphoneController) {
+        return new MainController(model, window, modelStorageService, microphoneController);
     }
 
     // Bind interfaces to implementations using @Binds

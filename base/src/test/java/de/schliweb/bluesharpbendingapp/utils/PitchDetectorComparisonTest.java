@@ -33,10 +33,8 @@ public class PitchDetectorComparisonTest {
     @BeforeEach
     void setUp() {
         // Reset frequency ranges to defaults for all detectors
-        YINPitchDetector.setMinFrequency(YINPitchDetector.getDefaultMinFrequency());
-        YINPitchDetector.setMaxFrequency(YINPitchDetector.getDefaultMaxFrequency());
-        MPMPitchDetector.setMinFrequency(MPMPitchDetector.getDefaultMinFrequency());
-        MPMPitchDetector.setMaxFrequency(MPMPitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
     }
 
     @Test
@@ -249,10 +247,8 @@ public class PitchDetectorComparisonTest {
         double maxFreq = harmonica.getHarmonicaMaxFrequency();
 
         // Set frequency ranges for all detectors
-        YINPitchDetector.setMinFrequency(minFreq);
-        YINPitchDetector.setMaxFrequency(maxFreq);
-        MPMPitchDetector.setMinFrequency(minFreq);
-        MPMPitchDetector.setMaxFrequency(maxFreq);
+        PitchDetector.setMinFrequency(minFreq);
+        PitchDetector.setMaxFrequency(maxFreq);
 
         // Test with min frequency
         compareDetectorsForFrequency(key, tune, minFreq, "Min");
@@ -346,9 +342,9 @@ public class PitchDetectorComparisonTest {
     private PitchDetector.PitchDetectionResult runAlgorithm(String algorithm, double[] audioData) {
         switch (algorithm) {
             case "YIN":
-                return YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                return PitchDetector.detectPitchYIN(audioData, SAMPLE_RATE);
             case "MPM":
-                return MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+                return PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
             default:
                 throw new IllegalArgumentException("Unknown algorithm: " + algorithm);
         }

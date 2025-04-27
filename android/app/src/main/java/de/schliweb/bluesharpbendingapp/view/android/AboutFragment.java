@@ -65,6 +65,15 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
     private FragmentAboutBinding binding;
 
 
+    /**
+     * Creates and returns the view hierarchy associated with the fragment.
+     * This method inflates the layout for the fragment's UI using view binding.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate views.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The root View of the fragment's layout.
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -103,6 +112,11 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
     }
 
 
+    /**
+     * Called when the view previously created by {@link #onCreateView} has been detached from the fragment.
+     * This method cleans up resources associated with the view, specifically setting the binding to null
+     * to prevent memory leaks.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -110,6 +124,13 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
     }
 
 
+    /**
+     * Returns the current instance of this fragment.
+     * This method is part of the FragmentView interface implementation and allows
+     * other components to access this fragment instance through a common interface.
+     *
+     * @return this fragment instance as an Object
+     */
     @Override
     public Object getInstance() {
         return this;

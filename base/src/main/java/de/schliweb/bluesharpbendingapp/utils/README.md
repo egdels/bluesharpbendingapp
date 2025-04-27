@@ -35,6 +35,78 @@ The class implements appropriate log levels for different types of events:
 
 For detailed usage guidelines, see the [Logging Documentation](../../../../../../../../docs/logging.md).
 
+## Dependency Injection Utilities
+
+### DependencyInjectionInitializer
+
+The `DependencyInjectionInitializer` class provides utilities for initializing dependency injection across different platforms. It reduces code duplication by providing common methods for dependency injection setup.
+
+Key features:
+- Common constants for dependency injection configuration
+- Methods for creating modules with the necessary dependencies
+- Logging utilities for dependency injection initialization
+- Platform-independent implementation that works across desktop, android, and other platforms
+
+Usage example:
+
+```java
+// Log application startup
+DependencyInjectionInitializer.logAppStartup("ComponentName", "Application Name");
+
+// Create modules with the provided dependencies
+BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
+ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
+MicrophoneModule microphoneModule = DependencyInjectionInitializer.createMicrophoneModule(microphone);
+
+// Log that dependency injection has been initialized
+DependencyInjectionInitializer.logDependencyInjectionInitialized("ComponentName");
+```
+
+## Audio Processing Utilities
+
+### PitchDetector
+
+The `PitchDetector` abstract class provides a common interface and shared functionality for different pitch detection algorithms. It defines the basic structure and methods that all pitch detectors use, allowing for consistent configuration and usage across different implementations.
+
+Key features:
+- Abstract base class for different pitch detection algorithms (YIN, MPM)
+- Configurable frequency range (minimum and maximum frequencies)
+- Common utility methods for audio processing (RMS calculation, silence detection)
+- Parabolic interpolation for improved peak detection accuracy
+
+Usage example:
+
+```java
+// Configure the frequency range
+PitchDetector.setMinFrequency(80.0);
+PitchDetector.setMaxFrequency(1000.0);
+
+// Detect pitch in audio data
+PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchYIN(audioData, sampleRate);
+double pitch = result.pitch();
+double confidence = result.confidence();
+```
+
+### YINPitchDetector
+
+The `YINPitchDetector` class implements the YIN algorithm for pitch detection. It provides a clean, efficient implementation for detecting the fundamental frequency (pitch) of an audio signal.
+
+Key features:
+- Implementation of the YIN algorithm for pitch detection
+- Frequency range is set via `PitchDetector`
+- Dynamic threshold adaptation based on signal energy
+- Confidence measure for detected pitches
+
+### MPMPitchDetector
+
+The `MPMPitchDetector` class implements the McLeod Pitch Method (MPM) for pitch detection. It analyzes audio signals to detect the fundamental frequency (pitch) and calculate its confidence.
+
+Key features:
+- Implementation of the MPM algorithm for pitch detection
+- Normalized Square Difference Function (NSDF) for peak detection
+- Frequency range is set via `PitchDetector`
+- Confidence measure for detected pitches
+
 ## How to Add New Utility Classes
 
 When adding new utility classes to this package:

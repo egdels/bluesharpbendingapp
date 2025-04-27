@@ -218,12 +218,26 @@ public abstract class AbstractHarmonica implements Harmonica {
         return NoteUtils.round(value);
     }
 
+    /**
+     * Creates a harmonica instance based on the provided key and tune names.
+     *
+     * @param selectedKey  the name of the musical key for the harmonica (e.g., "C", "D")
+     * @param selectedTune the name of the tuning system that determines the layout of notes
+     * @return a new instance of a {@link Harmonica} configured for the given key and tuning system
+     */
     public static Harmonica create(String selectedKey, String selectedTune) {
           KEY key = KEY.valueOf(selectedKey);
           TUNE tune = TUNE.valueOf(selectedTune);
           return create(key, tune);
     }
 
+    /**
+     * Calculates the number of blow bending tones available for a specific channel.
+     * Blow bending is a technique where the player lowers the pitch of a blown note.
+     *
+     * @param channel the channel number to check for blow bending capabilities
+     * @return the number of blow bending tones available for the specified channel
+     */
     @Override
     public int getBlowBendingTonesCount(int channel) {
         int count = getHalfTonesOut()[channel] - getHalfTonesIn()[channel] - 1;
@@ -233,6 +247,15 @@ public abstract class AbstractHarmonica implements Harmonica {
         return count;
     }
 
+    /**
+     * Calculates the difference in cents between a given frequency and the standard frequency
+     * of a specific note on a specific channel of the harmonica.
+     *
+     * @param channel   the channel number of the harmonica
+     * @param note      the note index within the channel
+     * @param frequency the frequency to compare against the standard note frequency
+     * @return the difference in cents between the given frequency and the standard note frequency
+     */
     @Override
     public double getCentsNote(int channel, int note, double frequency) {
         return getCents(frequency, getNoteFrequency(channel, note));
@@ -260,6 +283,13 @@ public abstract class AbstractHarmonica implements Harmonica {
         return NoteUtils.addCentsToFrequency(getHalfTonesOut()[channel] * 100.0, getKeyFrequency());
     }
 
+    /**
+     * Calculates the number of draw bending tones available for a specific channel.
+     * Draw bending is a technique where the player lowers the pitch of a drawn note.
+     *
+     * @param channel the channel number to check for draw bending capabilities
+     * @return the number of draw bending tones available for the specified channel
+     */
     @Override
     public int getDrawBendingTonesCount(int channel) {
         int count = getHalfTonesIn()[channel] - getHalfTonesOut()[channel] - 1;
@@ -283,6 +313,13 @@ public abstract class AbstractHarmonica implements Harmonica {
      */
     abstract int[] getHalfTonesOut();
 
+    /**
+     * Retrieves the name of the musical key in which this harmonica is tuned.
+     * The method searches through the available keys to find the one that matches
+     * the current harmonica's key frequency.
+     *
+     * @return the name of the musical key as a string, or null if no matching key is found
+     */
     @Override
     public String getKeyName() {
         KEY[] values = KEY.values();
@@ -296,6 +333,15 @@ public abstract class AbstractHarmonica implements Harmonica {
         return name;
     }
 
+    /**
+     * Retrieves the name of a specific note on a specific channel of the harmonica.
+     * This method validates if the note is playable on the given channel before returning its name.
+     * Valid notes include standard blow and draw notes, as well as bend notes, overblows, and overdraws.
+     *
+     * @param channel the channel number of the harmonica (1-10)
+     * @param note    the note index within the channel (positive for draw notes, negative for blow notes)
+     * @return the name of the note (e.g., "C", "D#") if it exists, or null if the note is not valid
+     */
     @Override
     public String getNoteName(int channel, int note) {
         if ((note >= 0 && note <= 1) ||
@@ -313,6 +359,15 @@ public abstract class AbstractHarmonica implements Harmonica {
         return null;
     }
 
+    /**
+     * Calculates the frequency of a specific note on a specific channel of the harmonica.
+     * This method handles various types of notes including standard blow and draw notes,
+     * as well as special techniques like bending, overblow, and overdraw.
+     *
+     * @param channel the channel number of the harmonica (1-10)
+     * @param note    the note index within the channel (positive for draw notes, negative for blow notes)
+     * @return the frequency of the specified note in Hertz, or 0.0 if the note is not valid
+     */
     @Override
     public double getNoteFrequency(int channel, int note) {
         if (isOverblow(channel, note) || isOverdraw(channel, note)) {
@@ -386,16 +441,44 @@ public abstract class AbstractHarmonica implements Harmonica {
         return NoteUtils.addCentsToFrequency(-100.0, baseFrequency);
     }
 
+    /**
+     * Calculates the maximum acceptable frequency for a specific note on a specific channel.
+     * This method adds 50 cents to the standard frequency of the note, defining the upper
+     * boundary of the frequency range that is considered to be the same note.
+     *
+     * @param channel the channel number of the harmonica (1-10)
+     * @param note    the note index within the channel
+     * @return the maximum acceptable frequency for the specified note in Hertz
+     */
     @Override
     public double getNoteFrequencyMaximum(int channel, int note) {
         return NoteUtils.addCentsToFrequency(50.0, getNoteFrequency(channel, note));
     }
 
+    /**
+     * Calculates the minimum acceptable frequency for a specific note on a specific channel.
+     * This method subtracts 50 cents from the standard frequency of the note, defining the lower
+     * boundary of the frequency range that is considered to be the same note.
+     *
+     * @param channel the channel number of the harmonica (1-10)
+     * @param note    the note index within the channel
+     * @return the minimum acceptable frequency for the specified note in Hertz
+     */
     @Override
     public double getNoteFrequencyMinimum(int channel, int note) {
         return NoteUtils.addCentsToFrequency(-50.0, getNoteFrequency(channel, note));
     }
 
+    /**
+     * Determines whether a specific channel on the harmonica has inverse cents handling.
+     * Inverse cents handling means that the blow note (note 0) has a higher frequency
+     * than the draw note (note 1), which affects how overblow and overdraw techniques
+     * are applied to that channel.
+     *
+     * @param channel the channel number of the harmonica (1-10)
+     * @return true if the channel has inverse cents handling (blow note frequency > draw note frequency),
+     *         false otherwise
+     */
     @Override
     public boolean hasInverseCentsHandling(int channel) {
         return getNoteFrequency(channel, 0) > getNoteFrequency(channel, 1);
@@ -421,11 +504,30 @@ public abstract class AbstractHarmonica implements Harmonica {
         return frequency;
     }
 
+    /**
+     * Determines whether a specific note on a specific channel is an overblow note.
+     * An overblow is a technique where the player forces air through a draw reed
+     * to produce a higher pitch than the standard blow or draw notes.
+     *
+     * @param channel the channel number of the harmonica (1-10)
+     * @param note    the note index within the channel
+     * @return true if the specified note is an overblow, false otherwise
+     */
     @Override
     public boolean isOverblow(int channel, int note) {
         return note == -1 && !hasInverseCentsHandling(channel);
     }
 
+    /**
+     * Determines whether a specific note on a specific channel is an overdraw note.
+     * An overdraw is a technique where the player draws air through a blow reed
+     * to produce a higher pitch than the standard blow or draw notes.
+     * This is essentially the opposite of an overblow.
+     *
+     * @param channel the channel number of the harmonica (1-10)
+     * @param note    the note index within the channel
+     * @return true if the specified note is an overdraw, false otherwise
+     */
     @Override
     public boolean isOverdraw(int channel, int note) {
         return note == 2 && hasInverseCentsHandling(channel);

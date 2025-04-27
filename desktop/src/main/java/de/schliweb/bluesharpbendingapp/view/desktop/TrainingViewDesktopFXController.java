@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import de.schliweb.bluesharpbendingapp.controller.TrainingContainer;
 import de.schliweb.bluesharpbendingapp.controller.TrainingViewHandler;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
@@ -153,8 +154,16 @@ public class TrainingViewDesktopFXController implements TrainingView {
      */
     @FXML
     public void initialize() {
+        LoggingContext.setComponent("TrainingViewDesktopFXController");
+        LoggingUtils.logInitializing("Training View Controller");
+
         addChangeListenerToComboBox(comboTrainings);
+        LoggingUtils.logDebug("Added change listener to training combo box");
+
         addChangeListenerToComboBox(comboPrecision);
+        LoggingUtils.logDebug("Added change listener to precision combo box");
+
+        LoggingUtils.logInitialized("Training View Controller");
     }
 
     /**
@@ -198,10 +207,16 @@ public class TrainingViewDesktopFXController implements TrainingView {
      */
     @FXML
     private void handleStartButton() {
+        LoggingContext.setComponent("TrainingViewDesktopFXController");
+        LoggingUtils.logUserAction("Start Training", "User clicked start button");
+
         if (trainingViewHandler != null) {
             trainingViewHandler.handleTrainingStart();
             stopButton.setDisable(false);
             startButton.setDisable(true);
+            LoggingUtils.logOperationCompleted("Training started");
+        } else {
+            LoggingUtils.logWarning("Training start failed", "Training view handler is null");
         }
     }
 
@@ -224,10 +239,16 @@ public class TrainingViewDesktopFXController implements TrainingView {
      */
     @FXML
     private void handleStopButton() {
+        LoggingContext.setComponent("TrainingViewDesktopFXController");
+        LoggingUtils.logUserAction("Stop Training", "User clicked stop button");
+
         if (trainingViewHandler != null) {
             trainingViewHandler.handleTrainingStop();
             stopButton.setDisable(true);
             startButton.setDisable(false);
+            LoggingUtils.logOperationCompleted("Training stopped");
+        } else {
+            LoggingUtils.logWarning("Training stop failed", "Training view handler is null");
         }
     }
 
@@ -285,6 +306,8 @@ public class TrainingViewDesktopFXController implements TrainingView {
      * @param items the array of items to populate in the ComboBox
      */
     private void initComboBox(ComboBox<String> combo, String[] items) {
+        LoggingContext.setComponent("TrainingViewDesktopFXController");
+
         // Check if the ComboBox is null
         if (combo == null) {
             LoggingUtils.logError("ComboBox is not initialized in initComboBox()!");
@@ -296,6 +319,7 @@ public class TrainingViewDesktopFXController implements TrainingView {
 
         // Add all specified items from the provided array to the ComboBox
         combo.getItems().addAll(items);
+        LoggingUtils.logDebug("Initialized ComboBox with " + (items != null ? items.length : 0) + " items");
     }
 
     /**
@@ -310,6 +334,8 @@ public class TrainingViewDesktopFXController implements TrainingView {
      * @param combo         the ComboBox in which the selection should be made
      */
     private void setSelected(int selectedIndex, ComboBox<String> combo) {
+        LoggingContext.setComponent("TrainingViewDesktopFXController");
+
         // Check if the ComboBox is null
         if (combo == null) {
             LoggingUtils.logError("ComboBox is not initialized in setSelected()!");
@@ -318,15 +344,13 @@ public class TrainingViewDesktopFXController implements TrainingView {
 
         // Validate whether the selected index is within the valid bounds of the ComboBox items
         if (selectedIndex < 0 || selectedIndex >= combo.getItems().size()) {
-            LoggingUtils.logError("Invalid index");
+            LoggingUtils.logError("Invalid index for ComboBox selection: " + selectedIndex);
             return; // Exit the method if the index is out of range
         }
 
         // Select the item in the ComboBox corresponding to the provided index
         combo.getSelectionModel().select(selectedIndex);
+        LoggingUtils.logDebug("Selected item at index " + selectedIndex + " in ComboBox");
     }
 
 }
-
-
-

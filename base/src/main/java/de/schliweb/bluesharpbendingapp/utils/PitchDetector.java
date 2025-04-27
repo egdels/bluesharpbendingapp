@@ -14,7 +14,7 @@ import lombok.Setter;
  * Each concrete implementation should provide its own algorithm-specific logic
  * in the detectPitch method.
  */
-public class PitchDetector {
+public abstract class PitchDetector {
 
     /**
      * A constant representing the absence of a detected pitch.
@@ -26,12 +26,26 @@ public class PitchDetector {
     /**
      * The default minimum frequency that can be detected (in Hz).
      */
-    protected static final double DEFAULT_MIN_FREQUENCY = 80.0;
+    private static final double DEFAULT_MIN_FREQUENCY = 80.0;
 
     /**
      * The default maximum frequency that can be detected (in Hz).
      */
-    protected static final double DEFAULT_MAX_FREQUENCY = 4835.0;
+    private static final double DEFAULT_MAX_FREQUENCY = 4835.0;
+
+    /**
+     * The minimum frequency that can be detected (in Hz).
+     */
+    @Getter
+    @Setter
+    protected static double minFrequency = DEFAULT_MIN_FREQUENCY;
+
+    /**
+     * The maximum frequency that can be detected (in Hz).
+     */
+    @Getter
+    @Setter
+    protected static double maxFrequency = DEFAULT_MAX_FREQUENCY;
 
     /**
      * Gets the default minimum frequency that can be detected (in Hz).
@@ -51,8 +65,42 @@ public class PitchDetector {
         return DEFAULT_MAX_FREQUENCY;
     }
 
+    /**
+     * Static method for detecting pitch using the YIN algorithm.
+     * This method is provided for backward compatibility with code that uses static methods.
+     * It creates a temporary YINPitchDetector instance and delegates to it.
+     *
+     * @param audioData  an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value.
+     */
+    public static PitchDetectionResult detectPitchYIN(double[] audioData, int sampleRate) {
+        YINPitchDetector detector = new YINPitchDetector();
+        return detector.detectPitch(audioData, sampleRate);
+    }
 
-    protected PitchDetector () {}
+    /**
+     * Static method for detecting pitch using the MPM algorithm.
+     * This method is provided for backward compatibility with code that uses static methods.
+     * It creates a temporary MPMPitchDetector instance and delegates to it.
+     *
+     * @param audioData  an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value.
+     */
+    public static PitchDetectionResult detectPitchMPM(double[] audioData, int sampleRate) {
+        MPMPitchDetector detector = new MPMPitchDetector();
+        return detector.detectPitch(audioData, sampleRate);
+    }
+
+    /**
+     * Detects the pitch of an audio signal using the specific algorithm implemented by the subclass.
+     *
+     * @param audioData  an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value.
+     */
+    abstract PitchDetectionResult detectPitch(double[] audioData, int sampleRate);
 
     /**
      * Calculates the Root Mean Square (RMS) value of an audio signal.
@@ -85,25 +133,39 @@ public class PitchDetector {
     }
 
     /**
-     * Sets the minimum frequency that can be detected by the pitch detectors.
-     * This method updates the minimum frequency for all available pitch detection algorithms.
+     * Applies parabolic interpolation to refine a peak index.
+     * This method is used by pitch detection algorithms to improve the accuracy
+     * of peak detection in various functions (NSDF, CMNDF, etc.).
      *
-     * @param harmonicaMinFrequency the minimum frequency in Hz to be set for pitch detection.
+     * @param values    an array of double values representing the function to interpolate
+     * @param peakIndex the index of the detected peak in the values array
+     * @return the refined peak index as a double, adjusted using parabolic interpolation
      */
-    public static void setMinFrequency(double harmonicaMinFrequency) {
-        MPMPitchDetector.setMinFrequency(harmonicaMinFrequency);
-        YINPitchDetector.setMinFrequency(harmonicaMinFrequency);
-    }
+    protected static double parabolicInterpolation(double[] values, int peakIndex) {
+        if (peakIndex <= 0 || peakIndex >= values.length - 1) {
+            return peakIndex;
+        }
 
-    /**
-     * Sets the maximum frequency that can be detected by the pitch detectors.
-     * This method updates the maximum frequency for all available pitch detection algorithms.
-     *
-     * @param harmonicaMaxFrequency the maximum frequency in Hz to be set for pitch detection
-     */
-    public static void setMaxFrequency(double harmonicaMaxFrequency) {
-        MPMPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
-        YINPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
+        double x0 = values[peakIndex - 1];
+        double x1 = values[peakIndex];
+        double x2 = values[peakIndex + 1];
+
+        // Calculate the adjustment using parabolic interpolation
+        double denominator = x0 - 2 * x1 + x2;
+
+        // Avoid division by zero or very small values
+        if (Math.abs(denominator) < 1e-10) {
+            return peakIndex;
+        }
+
+        double adjustment = 0.5 * (x0 - x2) / denominator;
+
+        // Limit the adjustment to a reasonable range to avoid extreme values
+        if (Math.abs(adjustment) > 1) {
+            adjustment = 0;
+        }
+
+        return peakIndex + adjustment;
     }
 
     /**

@@ -156,6 +156,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
             setSelectedAlgorithm(model.getStoredAlgorithmIndex());
             setSelectedConfidence(model.getStoredConfidenceIndex());
             setSelectedLockScreen(model.getStoredLockScreenIndex());
+            androidSettingsViewHandler.handleLockScreenSelection(model.getStoredLockScreenIndex());
         });
         binding.settingsScreenlock.setOnClickListener(v -> androidSettingsViewHandler.handleLockScreenSelection(binding.settingsScreenlock.isChecked() ? 1 : 0));
     }

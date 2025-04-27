@@ -1,8 +1,5 @@
 package de.schliweb.bluesharpbendingapp.utils;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Implementation of the YIN algorithm for pitch detection.
  * <p>
@@ -18,23 +15,7 @@ import lombok.Setter;
  * 4. Refining the estimate using parabolic interpolation
  * 5. Calculating the pitch and confidence from the refined estimate
  */
-public class YINPitchDetector extends PitchDetector {
-
-    /**
-     * The minimum frequency that can be detected (in Hz).
-     * This can be configured using the setter method.
-     */
-    @Setter
-    @Getter
-    protected static double minFrequency = DEFAULT_MIN_FREQUENCY;
-
-    /**
-     * The maximum frequency that can be detected (in Hz).
-     * This can be configured using the setter method.
-     */
-    @Setter
-    @Getter
-    protected static double maxFrequency = DEFAULT_MAX_FREQUENCY;
+class YINPitchDetector extends PitchDetector {
 
     /**
      * The minimum threshold value used in the YIN pitch detection algorithm.
@@ -50,31 +31,32 @@ public class YINPitchDetector extends PitchDetector {
      */
     private static final double RMS_SCALING_FACTOR = 0.3;
 
-    private YINPitchDetector() {
+    /**
+     * Default constructor for the YINPitchDetector class.
+     * Initializes a new instance of the pitch detection algorithm using the YIN method.
+     * This constructor provides a protected access level, allowing subclasses or classes
+     * within the same package to instantiate this detector.
+     */
+    protected YINPitchDetector() {
         super();
     }
 
+
     /**
-     * Detects the pitch of an audio signal using the YIN algorithm.
-     * <p>
-     * This implementation calculates the pitch (fundamental frequency) of an audio signal
-     * by analyzing periodic patterns in the signal's waveform. The algorithm evaluates the
-     * signal's periodicity with the help of the cumulative mean normalized difference function (CMNDF),
-     * and dynamically determines thresholds for improved accuracy.
-     * If a pitch is successfully detected, the method refines the results and provides a
-     * confidence value to indicate the reliability of the estimate.
+     * Detects the pitch of an audio signal and returns the pitch frequency along with a confidence score.
+     * This method uses the YIN algorithm with enhancements such as RMS-based dynamic thresholding
+     * and parabolic interpolation for accurate pitch estimation.
      *
-     * @param audioData  an array of double values representing the audio signal to analyze.
-     *                   Each value corresponds to the amplitude of the signal at a specific point in time.
-     * @param sampleRate the sample rate of the audio signal in Hz, which determines
-     *                   the number of samples per second and is needed to calculate the
-     *                   pitch in terms of frequency.
-     * @return a PitchDetectionResult object containing:
-     * - detected pitch (in Hz): If detected, this is the fundamental frequency of the signal.
-     * - confidence (range: 0.0 to 1.0): A measure of reliability in the pitch detection.
-     * If no pitch is detected, the pitch is set to NO_DETECTED_PITCH, and the confidence is 0.0.
+     * @param audioData  an array of double values representing the audio signal to be analyzed. Each value
+     *                   corresponds to the amplitude of the signal at a specific point in time.
+     * @param sampleRate the sample rate of the audio signal in Hz. This value is used to derive
+     *                   frequency calculations from time lags.
+     * @return a {@code PitchDetectionResult} object containing the detected pitch frequency (in Hz) and the
+     *         confidence score (ranging from 0.0 to 1.0). If no pitch is detected, the pitch is set
+     *         to {@code NO_DETECTED_PITCH} and the confidence is 0.0.
      */
-    public static PitchDetectionResult detectPitch(double[] audioData, int sampleRate) {
+    @Override
+    PitchDetectionResult detectPitch(double[] audioData, int sampleRate) {
         // Determine the size of the input buffer (length of the audio sample data)
         int bufferSize = audioData.length;
 
@@ -99,7 +81,7 @@ public class YINPitchDetector extends PitchDetector {
 
         // Step 6: If a valid lag is found, refine it using parabolic interpolation for accuracy
         if (tauEstimate != -1) {
-            double refinedTau = parabolicInterpolation(cmndf, tauEstimate);
+            double refinedTau = PitchDetector.parabolicInterpolation(cmndf, tauEstimate);
 
             // Ensure the refined lag is valid before proceeding
             if (refinedTau > 0) {
@@ -110,31 +92,12 @@ public class YINPitchDetector extends PitchDetector {
                 double pitch = sampleRate / refinedTau;
 
                 // Return the detected pitch and confidence in a result object
-                return new PitchDetector.PitchDetectionResult(pitch, confidence);
+                return new PitchDetectionResult(pitch, confidence);
             }
         }
 
         // Step 7: If no pitch is detected, return no pitch with confidence set to 0.0
-        return new PitchDetector.PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
-    }
-
-
-    /**
-     * Refines the estimate of the lag value `tau` using parabolic interpolation
-     * for improved accuracy in analyzing periodic signals.
-     *
-     * @param cmndf an array of double values representing the cumulative mean normalized difference function (CMNDF)
-     * @param tau   an integer representing the initial lag value
-     * @return the refined lag value as a double, obtained through parabolic interpolation
-     */
-    private static double parabolicInterpolation(double[] cmndf, int tau) {
-        if (tau <= 0 || tau >= cmndf.length - 1) {
-            return tau;
-        }
-        double x0 = cmndf[tau - 1];
-        double x1 = cmndf[tau];
-        double x2 = cmndf[tau + 1];
-        return tau + (x0 - x2) / (2 * (x0 - 2 * x1 + x2)); // Parabolic refinement
+        return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
     }
 
     /**

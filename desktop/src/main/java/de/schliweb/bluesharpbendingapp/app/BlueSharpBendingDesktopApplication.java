@@ -25,7 +25,6 @@ package de.schliweb.bluesharpbendingapp.app;
 
 import de.schliweb.bluesharpbendingapp.di.*;
 import de.schliweb.bluesharpbendingapp.model.microphone.desktop.MicrophoneDesktop;
-import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import lombok.Getter;
 
@@ -34,12 +33,6 @@ import lombok.Getter;
  * Initializes the dependency injection framework (Dagger) and provides access to the component.
  */
 public class BlueSharpBendingDesktopApplication {
-
-    /**
-     * Represents the filename used for storing and retrieving a temporary model file.
-     * This file is typically located in the application's cache directory.
-     */
-    private static final String TEMP_FILE = "Model.tmp";
 
     /**
      * The Dagger component instance used for dependency injection throughout the application.
@@ -57,16 +50,22 @@ public class BlueSharpBendingDesktopApplication {
      *                      or null if not available yet.
      */
     public void initializeDependencyInjection(String tempDirectory, MainWindow mainWindow) {
-        LoggingUtils.logAppStartup("BlueSharp Bending Desktop Application");
+        // Log application startup
+        DependencyInjectionInitializer.logAppStartup("BlueSharpBendingDesktopApplication", "BlueSharp Bending Desktop Application");
 
         // Create modules with the provided dependencies
-        BaseModule baseModule = new BaseModule(tempDirectory, TEMP_FILE);
-        ViewModule viewModule = new ViewModule(mainWindow);
-        MicrophoneModule microphoneModule = new MicrophoneModule(new MicrophoneDesktop());
+        BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
+        ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
+        MicrophoneModule microphoneModule = DependencyInjectionInitializer.createMicrophoneModule(new MicrophoneDesktop());
 
         // Create the Dagger component with all required modules
-        appComponent = DaggerDesktopAppComponent.builder().baseModule(baseModule).viewModule(viewModule).microphoneModule(microphoneModule).build();
+        appComponent = DaggerDesktopAppComponent.builder()
+                .baseModule(baseModule)
+                .viewModule(viewModule)
+                .microphoneModule(microphoneModule)
+                .build();
 
-        LoggingUtils.logInitialized("Dependency injection");
+        // Log that dependency injection has been initialized
+        DependencyInjectionInitializer.logDependencyInjectionInitialized("BlueSharpBendingDesktopApplication");
     }
 }

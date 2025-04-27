@@ -71,8 +71,7 @@ class MainControllerTest {
                 model,
                 mainWindow,
                 modelStorageService,
-                microphoneController,
-                executorService
+                microphoneController
         );
     }
 
@@ -100,37 +99,12 @@ class MainControllerTest {
     }
 
     @Test
-    void testStartRecreatesExecutorServiceIfShutdown() {
-        // Arrange
-        when(executorService.isShutdown()).thenReturn(true);
-
-        // Act
-        mainController.start();
-
-        // Assert - we can't directly verify the recreation since it's a local operation
-        // but we can verify the check was made
-        verify(executorService).isShutdown();
-    }
-
-    @Test
     void testStopClosesMicrophone() {
         // Act
         mainController.stop();
 
         // Assert
         verify(microphoneController).close();
-    }
-
-    @Test
-    void testStopShutdownsExecutorService() {
-        // Arrange
-        when(executorService.isShutdown()).thenReturn(false);
-
-        // Act
-        mainController.stop();
-
-        // Assert
-        verify(executorService).shutdownNow();
     }
 
     @Test

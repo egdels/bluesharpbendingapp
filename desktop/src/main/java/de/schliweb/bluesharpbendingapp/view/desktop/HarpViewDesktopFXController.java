@@ -25,6 +25,8 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
 
 
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import javafx.animation.ScaleTransition;
@@ -284,12 +286,20 @@ public class HarpViewDesktopFXController implements HarpView {
      */
     @FXML
     public void initialize() {
+        LoggingContext.setComponent("HarpViewDesktopFXController");
+        LoggingUtils.logInitializing("Harp View Controller");
+
         overlayContainer.prefWidthProperty().bind(harpGrid.widthProperty());
         overlayContainer.prefHeightProperty().bind(harpGrid.heightProperty());
+        LoggingUtils.logDebug("Overlay container size bound to harp grid");
 
         harpGrid.getChildren().stream().filter(Pane.class::isInstance).filter(node -> !node.getStyleClass().contains("channel")).forEach(pane -> pane.setOnMouseClicked(this::handlePaneClick));
+        LoggingUtils.logDebug("Mouse click handlers set up for harp grid panes");
 
         enlargedPane.setOnMouseClicked(e -> closeEnlargedPane());
+        LoggingUtils.logDebug("Click handler set up for enlarged pane");
+
+        LoggingUtils.logInitialized("Harp View Controller");
     }
 
     /**
@@ -300,11 +310,16 @@ public class HarpViewDesktopFXController implements HarpView {
      * @param event the MouseEvent triggered by clicking on the Pane
      */
     private void handlePaneClick(MouseEvent event) {
+        LoggingContext.setComponent("HarpViewDesktopFXController");
         Pane clickedPane = (Pane) event.getSource();
+        LoggingUtils.logUserAction("Pane Click", "User clicked on pane: " + clickedPane.getId());
+
         if (overlayContainer.isVisible()) {
+            LoggingUtils.logDebug("Overlay container is visible, closing enlarged pane");
             closeEnlargedPane();
             return;
         }
+        LoggingUtils.logDebug("Showing enlarged pane for: " + clickedPane.getId());
         showEnlargedPane(clickedPane);
     }
 
@@ -317,26 +332,35 @@ public class HarpViewDesktopFXController implements HarpView {
      * @param originalPane the Pane from the harp grid that is being enlarged and displayed.
      */
     private void showEnlargedPane(Pane originalPane) {
+        LoggingContext.setComponent("HarpViewDesktopFXController");
+        LoggingUtils.logOperationStarted("Show enlarged pane for: " + originalPane.getId());
 
         HarpViewNoteElementDesktopFX originalInstance = HarpViewNoteElementDesktopFX.getInstance(originalPane);
         originalInstance.setEnlargedPane(enlargedPane);
+        LoggingUtils.logDebug("Set enlarged pane reference in original instance");
 
         enlargedPane.setUserData(originalPane);
 
         DoubleBinding size = Bindings.createDoubleBinding(() -> Math.min(harpGrid.getWidth(), harpGrid.getHeight()) * 0.6, harpGrid.widthProperty(), harpGrid.heightProperty());
+        LoggingUtils.logDebug("Created size binding for enlarged pane");
 
         enlargedPane.prefWidthProperty().unbind();
         enlargedPane.prefHeightProperty().unbind();
 
         enlargedPane.prefWidthProperty().bind(size);
         enlargedPane.prefHeightProperty().bind(size);
+        LoggingUtils.logDebug("Bound enlarged pane size properties");
 
         enlargedPane.translateXProperty().bind(Bindings.createDoubleBinding(() -> (overlayContainer.getWidth() - enlargedPane.getWidth()) / 2, overlayContainer.widthProperty(), enlargedPane.widthProperty()));
         enlargedPane.translateYProperty().bind(Bindings.createDoubleBinding(() -> (overlayContainer.getHeight() - enlargedPane.getHeight()) / 2, overlayContainer.heightProperty(), enlargedPane.heightProperty()));
+        LoggingUtils.logDebug("Bound enlarged pane position properties");
 
         overlayContainer.setVisible(true);
         enlargedPane.setVisible(true);
+        LoggingUtils.logDebug("Made overlay container and enlarged pane visible");
+
         animateEnlargedPane(enlargedPane);
+        LoggingUtils.logOperationCompleted("Enlarged pane displayed and animated");
     }
 
     /**
@@ -346,11 +370,15 @@ public class HarpViewDesktopFXController implements HarpView {
      * @param pane the Pane to be animated with the enlargement effect
      */
     private void animateEnlargedPane(Pane pane) {
+        LoggingContext.setComponent("HarpViewDesktopFXController");
+        LoggingUtils.logDebug("Animating enlarged pane");
+
         ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), pane);
         scaleTransition.setFromX(0.1);
         scaleTransition.setFromY(0.1);
         scaleTransition.setToX(1.0);
         scaleTransition.setToY(1.0);
+        scaleTransition.setOnFinished(e -> LoggingUtils.logDebug("Enlarged pane animation completed"));
         scaleTransition.play();
     }
 
@@ -367,21 +395,31 @@ public class HarpViewDesktopFXController implements HarpView {
      * The animation duration is set to 200 milliseconds, creating a smooth shrinking effect.
      */
     private void closeEnlargedPane() {
+        LoggingContext.setComponent("HarpViewDesktopFXController");
+        LoggingUtils.logOperationStarted("Close enlarged pane");
+
         if (overlayContainer.isVisible()) {
+            LoggingUtils.logDebug("Overlay container is visible, starting close animation");
             ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(200), enlargedPane);
             scaleTransition.setToX(0.1);
             scaleTransition.setToY(0.1);
             scaleTransition.setOnFinished(e -> {
                 enlargedPane.setVisible(false);
+                LoggingUtils.logDebug("Enlarged pane hidden");
 
                 // Check if userData is an instance of Pane
                 if (enlargedPane.getUserData() instanceof Pane pane) {
                     HarpViewNoteElementDesktopFX.getInstance(pane).setEnlargedPane(null);
+                    LoggingUtils.logDebug("Reset enlarged pane reference in original instance");
                 }
 
                 overlayContainer.setVisible(false);
+                LoggingUtils.logDebug("Overlay container hidden");
+                LoggingUtils.logOperationCompleted("Enlarged pane closed");
             });
             scaleTransition.play();
+        } else {
+            LoggingUtils.logDebug("Overlay container is not visible, nothing to close");
         }
     }
 
@@ -508,27 +546,64 @@ public class HarpViewDesktopFXController implements HarpView {
         }
     }
 
+    /**
+     * Retrieves a HarpViewNoteElement for the specified channel and note.
+     * This method provides access to the visual representation of a specific note
+     * within the harp grid, allowing for manipulation and interaction with that note.
+     *
+     * @param channel the channel number (1-10) for which to retrieve the note element
+     * @param note    the note value (-3 to 4) for which to retrieve the note element
+     * @return a HarpViewNoteElement instance representing the specified note
+     */
     @Override
     public HarpViewNoteElement getHarpViewElement(int channel, int note) {
         return HarpViewNoteElementDesktopFX.getInstance(getNotePanel(channel, note));
     }
 
+    /**
+     * Initializes the visual representation of notes based on the provided note containers.
+     * This method first hides all existing notes, then iterates through the provided
+     * note containers to display and configure each note according to its properties.
+     * For each note, it sets visibility, initializes the note element, configures
+     * overblow/overdraw status, sets the note name, and clears any previous state.
+     *
+     * @param noteContainers an array of NoteContainer objects containing information
+     *                      about each note to be displayed, including channel, note value,
+     *                      overblow/overdraw status, and note name
+     */
     @Override
     public void initNotes(NoteContainer[] noteContainers) {
+        LoggingContext.setComponent("HarpViewDesktopFXController");
+        LoggingUtils.logOperationStarted("Initialize notes");
+        LoggingUtils.logDebug("Initializing " + (noteContainers != null ? noteContainers.length : 0) + " notes");
+
         hideNotes();
-        for (NoteContainer noteContainer : noteContainers) {
+        LoggingUtils.logDebug("All existing notes hidden");
 
-            Pane pane = getNotePanel(noteContainer.getChannel(), noteContainer.getNote());
-            pane.setVisible(true);
-            HarpViewNoteElementDesktopFX harpViewNoteElementDesktopFX = HarpViewNoteElementDesktopFX.getInstance(pane);
+        if (noteContainers != null) {
+            for (NoteContainer noteContainer : noteContainers) {
+                LoggingUtils.logDebug("Processing note: Channel " + noteContainer.getChannel() + ", Note " + noteContainer.getNote() + ", Name " + noteContainer.getNoteName());
 
-            harpViewNoteElementDesktopFX.init();
+                Pane pane = getNotePanel(noteContainer.getChannel(), noteContainer.getNote());
+                pane.setVisible(true);
+                HarpViewNoteElementDesktopFX harpViewNoteElementDesktopFX = HarpViewNoteElementDesktopFX.getInstance(pane);
 
-            if (noteContainer.isOverblow()) harpViewNoteElementDesktopFX.setOverblow();
-            if (noteContainer.isOverdraw()) harpViewNoteElementDesktopFX.setOverdraw();
+                harpViewNoteElementDesktopFX.init();
 
-            harpViewNoteElementDesktopFX.setNoteName(noteContainer.getNoteName());
-            harpViewNoteElementDesktopFX.clear();
+                if (noteContainer.isOverblow()) {
+                    harpViewNoteElementDesktopFX.setOverblow();
+                    LoggingUtils.logDebug("Set overblow for note: " + noteContainer.getNoteName());
+                }
+                if (noteContainer.isOverdraw()) {
+                    harpViewNoteElementDesktopFX.setOverdraw();
+                    LoggingUtils.logDebug("Set overdraw for note: " + noteContainer.getNoteName());
+                }
+
+                harpViewNoteElementDesktopFX.setNoteName(noteContainer.getNoteName());
+                harpViewNoteElementDesktopFX.clear();
+            }
         }
+
+        LoggingUtils.logOperationCompleted("Notes initialized successfully");
     }
 }

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Test class for the MPMPitchDetector.
+ * Test class for the PitchDetector.
  * This class tests the functionality of the MPM algorithm implementation.
  */
 class MPMPitchDetectorTest {
@@ -26,8 +26,8 @@ class MPMPitchDetectorTest {
 
     @BeforeEach
     void setUp() {
-        MPMPitchDetector.setMaxFrequency(MPMPitchDetector.getDefaultMaxFrequency());
-        MPMPitchDetector.setMinFrequency(MPMPitchDetector.getDefaultMinFrequency());
+        PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
     }
 
     @Test
@@ -38,7 +38,7 @@ class MPMPitchDetectorTest {
         double[] audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+        PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
         assertEquals(frequency, result.pitch(), TOLERANCE, "Detected pitch should match the input sine wave frequency");
@@ -51,10 +51,10 @@ class MPMPitchDetectorTest {
         double[] audioData = new double[SAMPLE_RATE]; // 1 second of silence
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+        PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
-        assertEquals(MPMPitchDetector.NO_DETECTED_PITCH, result.pitch(), "Should return NO_DETECTED_PITCH for silence");
+        assertEquals(PitchDetector.NO_DETECTED_PITCH, result.pitch(), "Should return NO_DETECTED_PITCH for silence");
         assertEquals(0.0, result.confidence(), "Confidence should be 0.0 for silence");
     }
 
@@ -67,10 +67,10 @@ class MPMPitchDetectorTest {
         }
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
-        assertEquals(MPMPitchDetector.NO_DETECTED_PITCH, result.pitch(), "Should return NO_DETECTED_PITCH for noise");
+        assertEquals(PitchDetector.NO_DETECTED_PITCH, result.pitch(), "Should return NO_DETECTED_PITCH for noise");
         assertEquals(0.0, result.confidence(), "Confidence should be 0.0 for noise");
     }
 
@@ -82,7 +82,7 @@ class MPMPitchDetectorTest {
         double[] audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+        PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
         assertEquals(frequency, result.pitch(), TOLERANCE, "Detected pitch should match the low frequency sine wave");
@@ -97,7 +97,7 @@ class MPMPitchDetectorTest {
         double[] audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
         assertEquals(frequency, result.pitch(), TOLERANCE, "Detected pitch should match the high frequency sine wave");
@@ -119,7 +119,7 @@ class MPMPitchDetectorTest {
         }
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
         assertEquals(fundamentalFrequency, result.pitch(), TOLERANCE, "Detected pitch should match the fundamental frequency");
@@ -143,7 +143,7 @@ class MPMPitchDetectorTest {
         }
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
         assertEquals(frequency, result.pitch(), tolerance, "Detected pitch should match the input frequency regardless of amplitude");
@@ -162,7 +162,7 @@ class MPMPitchDetectorTest {
         double[] audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
         assertEquals(frequency, result.pitch(), tolerance, "Detected pitch should match the input frequency");
@@ -174,20 +174,20 @@ class MPMPitchDetectorTest {
         // Arrange
         double minFreq = 100.0;
         double maxFreq = 3000.0;
-        MPMPitchDetector.setMinFrequency(minFreq);
-        MPMPitchDetector.setMaxFrequency(maxFreq);
+        PitchDetector.setMinFrequency(minFreq);
+        PitchDetector.setMaxFrequency(maxFreq);
 
         double frequency = 440.0; // A4
         double duration = 1.0;
         double[] audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+        PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
         // Assert
         assertEquals(frequency, result.pitch(), TOLERANCE, "Detected pitch should match the input frequency");
-        assertEquals(minFreq, MPMPitchDetector.getMinFrequency(), "Min frequency should be set correctly");
-        assertEquals(maxFreq, MPMPitchDetector.getMaxFrequency(), "Max frequency should be set correctly");
+        assertEquals(minFreq, PitchDetector.getMinFrequency(), "Min frequency should be set correctly");
+        assertEquals(maxFreq, PitchDetector.getMaxFrequency(), "Max frequency should be set correctly");
     }
 
     @Test
@@ -195,28 +195,28 @@ class MPMPitchDetectorTest {
         // Arrange
         double minFreq = 500.0;
         double maxFreq = 1000.0;
-        MPMPitchDetector.setMinFrequency(minFreq);
-        MPMPitchDetector.setMaxFrequency(maxFreq);
+        PitchDetector.setMinFrequency(minFreq);
+        PitchDetector.setMaxFrequency(maxFreq);
 
         double frequency = 440.0; // A4 (below min frequency)
         double duration = 1.0;
         double[] audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
 
         // Act
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
 
-        assertEquals(MPMPitchDetector.NO_DETECTED_PITCH, result.pitch(), "The detector should not detect a pitch outside the specified range");
+        assertEquals(PitchDetector.NO_DETECTED_PITCH, result.pitch(), "The detector should not detect a pitch outside the specified range");
     }
 
     @Test
     void testDefaultFrequencyRange() {
         // Arrange
-        MPMPitchDetector.setMinFrequency(MPMPitchDetector.getDefaultMinFrequency());
-        MPMPitchDetector.setMaxFrequency(MPMPitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
+        PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
         // Assert
-        assertEquals(MPMPitchDetector.getDefaultMinFrequency(), MPMPitchDetector.getMinFrequency(),
+        assertEquals(PitchDetector.getDefaultMinFrequency(), PitchDetector.getMinFrequency(),
                     "Default min frequency should match the default min frequency");
-        assertEquals(MPMPitchDetector.getDefaultMaxFrequency(), MPMPitchDetector.getMaxFrequency(),
+        assertEquals(PitchDetector.getDefaultMaxFrequency(), PitchDetector.getMaxFrequency(),
                     "Default max frequency should match the default max frequency");
     }
 
@@ -224,18 +224,18 @@ class MPMPitchDetectorTest {
     @MethodSource("provideHarmonicaParameters")
     void testMPM_Edges_Harmonica(AbstractHarmonica.KEY key, AbstractHarmonica.TUNE tune, double maxFrequencyTolerance, double minFrequencyTolerance) {
         Harmonica harmonica = AbstractHarmonica.create(key, tune);
-        MPMPitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
-        MPMPitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
+        PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
+        PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
 
         // Test for max frequency
         double[] sineWave = generateSineWave(harmonica.getHarmonicaMaxFrequency(), SAMPLE_RATE, 1.0);
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(sineWave, SAMPLE_RATE);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(sineWave, SAMPLE_RATE);
         assertTrue(result.confidence() >= 0.95);
         assertEquals(harmonica.getHarmonicaMaxFrequency(), result.pitch(), maxFrequencyTolerance,
                 "Detected pitch should match the sine wave max frequency");
         // Test for min frequency
         sineWave = generateSineWave(harmonica.getHarmonicaMinFrequency(), SAMPLE_RATE, 1.0);
-        result = MPMPitchDetector.detectPitch(sineWave, SAMPLE_RATE);
+        result = PitchDetector.detectPitchMPM(sineWave, SAMPLE_RATE);
         assertTrue(result.confidence() >= 0.95);
         assertEquals(harmonica.getHarmonicaMinFrequency(), result.pitch(), minFrequencyTolerance,
                 "Detected pitch should match the sine wave min frequency");
@@ -276,7 +276,7 @@ class MPMPitchDetectorTest {
         // Generate a mixed signal with both main and subharmonic frequencies
         double[] mixedWave = generateMixedSineWaveWithAmplitudes(mainFrequency, mainAmplitude, subharmonicFrequency, subharmonicAmplitude, SAMPLE_RATE, duration);
         // Invoke the pitch detection algorithm to find the dominant frequency
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(mixedWave, SAMPLE_RATE);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(mixedWave, SAMPLE_RATE);
         // Assert that the detected frequency is within the tolerance of the main frequency
         assertEquals(mainFrequency, result.pitch(), tolerance,
                 "The detected frequency should be within the tolerance range of the main frequency.");
@@ -366,7 +366,7 @@ class MPMPitchDetectorTest {
             audioData[i] = (audioData[i] >= 0) ? amplitude : -amplitude; // Zero-crossing behavior
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch(); 
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the sine wave frequency with zero crossing behavior");
     }
@@ -385,7 +385,7 @@ class MPMPitchDetectorTest {
             audioData[i] *= amplitude; // Scale to high amplitude
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the sine wave frequency even with high amplitude");
     }
@@ -405,7 +405,7 @@ class MPMPitchDetectorTest {
             audioData[i] += 0.3 * harmonic[i]; // Add harmonic
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the synthesized waveform's base frequency");
     }
@@ -425,9 +425,9 @@ class MPMPitchDetectorTest {
             audioData[i] = i / (double) samples;
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
-        assertEquals(MPMPitchDetector.NO_DETECTED_PITCH, detectedPitch, "Detected pitch should be NO_DETECTED_PITCH for a linearly increasing signal");
+        assertEquals(PitchDetector.NO_DETECTED_PITCH, detectedPitch, "Detected pitch should be NO_DETECTED_PITCH for a linearly increasing signal");
     }
 
     /**
@@ -445,9 +445,9 @@ class MPMPitchDetectorTest {
             audioData[i] = Math.random() * 2 - 1; // Random values between -1 and 1
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
-        assertEquals(MPMPitchDetector.NO_DETECTED_PITCH, detectedPitch, "Detected pitch should be NO_DETECTED_PITCH for non-periodic signals");
+        assertEquals(PitchDetector.NO_DETECTED_PITCH, detectedPitch, "Detected pitch should be NO_DETECTED_PITCH for non-periodic signals");
     }
 
     /**
@@ -467,7 +467,7 @@ class MPMPitchDetectorTest {
             audioData[i] = amplitude * Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the sine wave frequency despite varying amplitude");
     }
@@ -486,7 +486,7 @@ class MPMPitchDetectorTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the sine wave frequency");
     }
@@ -506,7 +506,7 @@ class MPMPitchDetectorTest {
                     (Math.random() * 0.3 - 0.15); // Adding random noise
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the sine wave frequency despite noise");
     }
@@ -526,7 +526,7 @@ class MPMPitchDetectorTest {
             audioData[i] = amplitude * Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the sine wave frequency even at low amplitude");
     }
@@ -537,12 +537,12 @@ class MPMPitchDetectorTest {
     @Test
     void testDetectPitchWithMPM_LowFrequencySineWave() {
         int sampleRate = 44100;
-        MPMPitchDetector.setMinFrequency(10);
+        PitchDetector.setMinFrequency(10);
         double frequency = 80.0; // Low frequency sine wave
         double duration = 1.0;
         double[] audioData = generateSineWave(frequency, sampleRate, duration);
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the low-frequency sine wave");
     }
@@ -558,7 +558,7 @@ class MPMPitchDetectorTest {
 
         double[] audioData = generateSineWave(frequency, sampleRate, duration);
 
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertEquals(frequency, detectedPitch, TOLERANCE, "Detected pitch should match the high-frequency sine wave");
     }
@@ -574,7 +574,7 @@ class MPMPitchDetectorTest {
         for (int i = 0; i < audioData.length; i++) {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
-        MPMPitchDetector.PitchDetectionResult result = MPMPitchDetector.detectPitch(audioData, sampleRate);
+          PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchMPM(audioData, sampleRate);
         double detectedPitch = result.pitch();
         assertTrue(detectedPitch > 0, "Detected pitch should be a positive number for simple input");
     }

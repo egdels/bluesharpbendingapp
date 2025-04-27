@@ -23,6 +23,8 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
@@ -79,6 +81,8 @@ public class HarpViewDesktopFX {
      * - RuntimeException if there is an issue loading the FXML file.
      */
     public HarpViewDesktopFX() {
+        LoggingContext.setComponent("HarpViewDesktopFX");
+        LoggingUtils.logInitializing("Harp View");
         try {
             // Load the FXML file for the "Harp" view
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/harp-view.fxml"));
@@ -92,11 +96,13 @@ public class HarpViewDesktopFX {
             // Bind the size directly to the parent container
             root.setManaged(true);
             root.setVisible(true);
+
+            LoggingUtils.logInitialized("Harp View");
         } catch (IOException e) {
+            LoggingUtils.logError("Failed to load Harp View FXML file", e);
             throw new FxmlLoadingException("Failed to load FXML file", e);
         }
     }
 
 
 }
-

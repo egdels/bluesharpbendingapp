@@ -133,6 +133,11 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
         });
     }
 
+    /**
+     * Clears the visual indicators in both the note pane and the enlarged pane (if present).
+     * This method makes the line elements in both panes invisible, effectively resetting
+     * the visual state of the note element.
+     */
     @Override
     public void clear() {
         if (enlargedPane != null) {
@@ -164,6 +169,15 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
         });
     }
 
+    /**
+     * Updates the visual representation of the note element based on the specified pitch offset.
+     * This method updates both the note pane and the enlarged pane (if present) to reflect
+     * the current pitch offset in cents. The visual update includes adjusting the position
+     * of line indicators and updating any associated labels.
+     *
+     * @param cents the pitch offset in cents, where positive values indicate a sharper pitch
+     *              and negative values indicate a flatter pitch
+     */
     @Override
     public void update(double cents) {
         if (enlargedPane != null) {

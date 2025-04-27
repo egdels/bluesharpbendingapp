@@ -26,7 +26,6 @@ package de.schliweb.bluesharpbendingapp.app;
 import android.app.Application;
 import de.schliweb.bluesharpbendingapp.di.*;
 import de.schliweb.bluesharpbendingapp.model.mircophone.android.MicrophoneAndroid;
-import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import lombok.Getter;
 
@@ -35,12 +34,6 @@ import lombok.Getter;
  * Initializes the dependency injection framework (Dagger) and provides access to the component.
  */
 public class BlueSharpBendingApplication extends Application {
-
-    /**
-     * Represents the filename used for storing and retrieving a temporary model file.
-     * This file is typically located in the application's cache directory.
-     */
-    private static final String TEMP_FILE = "Model.tmp";
 
     /**
      * The Dagger component instance used for dependency injection throughout the application.
@@ -55,7 +48,8 @@ public class BlueSharpBendingApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LoggingUtils.logAppStartup("BlueSharp Bending Application");
+        // Log application startup
+        DependencyInjectionInitializer.logAppStartup("BlueSharpBendingApplication", "BlueSharp Bending Application");
 
         // Initialize dependency injection
         initializeDependencyInjection(null);
@@ -73,13 +67,18 @@ public class BlueSharpBendingApplication extends Application {
         String tempDirectory = this.getApplicationContext().getFilesDir().getAbsolutePath();
 
         // Create modules with the provided dependencies
-        BaseModule baseModule = new BaseModule(tempDirectory, TEMP_FILE);
-        ViewModule viewModule = new ViewModule(mainWindow);
-        MicrophoneModule microphoneModule = new MicrophoneModule(new MicrophoneAndroid());
+        BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
+        ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
+        MicrophoneModule microphoneModule = DependencyInjectionInitializer.createMicrophoneModule(new MicrophoneAndroid());
 
         // Create the Dagger component with all required modules
-        appComponent = DaggerAndroidAppComponent.builder().baseModule(baseModule).viewModule(viewModule).microphoneModule(microphoneModule).build();
+        appComponent = DaggerAndroidAppComponent.builder()
+                .baseModule(baseModule)
+                .viewModule(viewModule)
+                .microphoneModule(microphoneModule)
+                .build();
 
-        LoggingUtils.logInitialized("Dependency injection");
+        // Log that dependency injection has been initialized
+        DependencyInjectionInitializer.logDependencyInjectionInitialized("BlueSharpBendingApplication");
     }
 }

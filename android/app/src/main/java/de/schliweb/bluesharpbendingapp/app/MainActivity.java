@@ -287,7 +287,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
                 microphoneSettingsViewHandler.initMicrophoneList();
                 microphoneSettingsViewHandler.initConfidenceList();
                 noteSettingsViewHandler.initConcertPitchList();
-                androidSettingsHandler.initLockScreen();     }
+                androidSettingsHandler.initLockScreen();
+            }
             if (item.getInstance() instanceof HarpFragment harpFragment) {
                 harpViewHandler.initNotes();
             }

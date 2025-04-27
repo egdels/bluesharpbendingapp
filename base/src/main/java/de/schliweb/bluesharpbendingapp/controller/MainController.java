@@ -32,9 +32,6 @@ import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * The MainController class is responsible for managing the primary workflow and logic
  * of the application. It acts as a mediator between the user interface, model, and other
@@ -50,8 +47,6 @@ public class MainController implements AndroidSettingsHandler {
 
     private final MainWindow window;
 
-    private ExecutorService executorService;
-
     private final MicrophoneController microphoneController;
 
     /**
@@ -62,14 +57,13 @@ public class MainController implements AndroidSettingsHandler {
      * @param modelStorageService  The ModelStorageService instance used to retrieve and store model data.
      * @param microphoneController The controller for microphone-related functionality.
      */
-    public MainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, MicrophoneController microphoneController, ExecutorService executorService) {
+    public MainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, MicrophoneController microphoneController) {
         LoggingContext.setComponent("MainController");
         LoggingUtils.logInitializing("MainController");
         this.model = model;
         this.microphoneController = microphoneController;
         this.modelStorageService = modelStorageService;
         this.window = window;
-        this.executorService = executorService;
 
         LoggingUtils.logDebug("Setting stored reference pitch based on the model's stored concert pitch index");
         NoteLookup.setConcertPitchByIndex(model.getStoredConcertPitchIndex());
@@ -94,11 +88,6 @@ public class MainController implements AndroidSettingsHandler {
         LoggingUtils.logDebug("Opening main application window");
         this.window.open();
 
-        if (executorService.isShutdown()) {
-            executorService = Executors.newCachedThreadPool();
-            LoggingUtils.logDebug("Recreated executor service");
-        }
-
         LoggingUtils.logOperationCompleted("Application startup");
     }
 
@@ -115,11 +104,6 @@ public class MainController implements AndroidSettingsHandler {
 
         LoggingUtils.logDebug("Closing microphone");
         microphoneController.close();
-
-        LoggingUtils.logDebug("Shutting down executor service");
-        if (executorService != null && !executorService.isShutdown()) {
-            executorService.shutdownNow();
-        }
 
         LoggingUtils.logDebug("Storing model");
         long startTime = System.currentTimeMillis();

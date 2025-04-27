@@ -24,6 +24,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  */
 
 import de.schliweb.bluesharpbendingapp.model.VersionService;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.AboutView;
 import javafx.fxml.FXML;
@@ -102,17 +103,27 @@ public class AboutViewDesktopFXController implements AboutView {
      */
     @FXML
     public void initialize() {
+        LoggingContext.setComponent("AboutViewDesktopFXController");
+        LoggingUtils.logInitializing("About View Controller");
+
         // Load the image for the "About" view
         aboutImage.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/ic_about.png"))));
+        LoggingUtils.logDebug("About image loaded");
 
         // Set the application version in the label
         // The version is retrieved from the package implementation details and compared with the latest version from the host
         String latestVersion = VersionService.getVersionFromHost();
         if (latestVersion != null) {
-            versionLabel.setText("Version " + getClass().getPackage().getImplementationVersion() + " (Latest: " + VersionService.getVersionFromHost() + ")");
+            String versionText = "Version " + getClass().getPackage().getImplementationVersion() + " (Latest: " + VersionService.getVersionFromHost() + ")";
+            versionLabel.setText(versionText);
+            LoggingUtils.logDebug("Version label set", versionText);
         } else {
-            versionLabel.setText("Version " + getClass().getPackage().getImplementationVersion());
+            String versionText = "Version " + getClass().getPackage().getImplementationVersion();
+            versionLabel.setText(versionText);
+            LoggingUtils.logDebug("Version label set", versionText);
         }
+
+        LoggingUtils.logInitialized("About View Controller");
     }
 
     /**
@@ -126,6 +137,8 @@ public class AboutViewDesktopFXController implements AboutView {
      */
     @FXML
     private void handleDownloadClick() {
+        LoggingContext.setComponent("AboutViewDesktopFXController");
+        LoggingUtils.logUserAction("Download Click", "Opening download link");
         openLink(DOWNLOAD);
     }
 
@@ -143,6 +156,8 @@ public class AboutViewDesktopFXController implements AboutView {
      */
     @FXML
     private void handlePaypalClick() {
+        LoggingContext.setComponent("AboutViewDesktopFXController");
+        LoggingUtils.logUserAction("PayPal Click", "Opening PayPal donation link");
         openLink(PAYPAL);
     }
 
@@ -161,6 +176,8 @@ public class AboutViewDesktopFXController implements AboutView {
      */
     @FXML
     private void handleMailClick() {
+        LoggingContext.setComponent("AboutViewDesktopFXController");
+        LoggingUtils.logUserAction("Mail Click", "Opening mail client");
         openLink(MAILTO);
     }
 
@@ -172,10 +189,13 @@ public class AboutViewDesktopFXController implements AboutView {
      *            will result in logging an error.
      */
     private void openLink(String uri) {
+        LoggingContext.setComponent("AboutViewDesktopFXController");
+        LoggingUtils.logDebug("Opening link", uri);
         try {
             Desktop.getDesktop().browse(new URI(uri));
+            LoggingUtils.logOperationCompleted("Link opened successfully");
         } catch (Exception ex) {
-            LoggingUtils.logError("Error while opening the link: {}", uri);
+            LoggingUtils.logError("Error while opening the link", ex);
         }
     }
 

@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Test class for the YINPitchDetector.
+ * Test class for the PitchDetector.
  * This class tests the functionality of the YIN algorithm implementation.
  */
 class YINPitchDetectorTest {
@@ -48,8 +48,8 @@ class YINPitchDetectorTest {
 
     @BeforeEach
     void setUp() {
-        YINPitchDetector.setMinFrequency(YINPitchDetector.getDefaultMinFrequency());
-        YINPitchDetector.setMaxFrequency(YINPitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
     }
 
     @ParameterizedTest
@@ -66,7 +66,7 @@ class YINPitchDetectorTest {
         double[] mixedWave = generateMixedSineWaveWithAmplitudes(mainFrequency, mainAmplitude, subharmonicFrequency, subharmonicAmplitude, SAMPLE_RATE, duration);
 
         // Invoke the pitch detection algorithm to find the dominant frequency
-        YINPitchDetector.PitchDetectionResult result = YINPitchDetector.detectPitch(mixedWave, SAMPLE_RATE);
+        PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchYIN(mixedWave, SAMPLE_RATE);
 
         // Assert that the detected frequency is within the tolerance of the main frequency
         assertEquals(mainFrequency, result.pitch(), tolerance,
@@ -80,19 +80,19 @@ class YINPitchDetectorTest {
     @MethodSource("provideHarmonicaParameters")
     void testYIN_Edges_Harmonica(AbstractHarmonica.KEY key, AbstractHarmonica.TUNE tune, double maxFrequencyTolerance, double minFrequencyTolerance) {
         Harmonica harmonica = AbstractHarmonica.create(key, tune);
-        YINPitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
-        YINPitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
+        PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
+        PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
 
         // Test for max frequency
         double[] sineWave = generateSineWave(harmonica.getHarmonicaMaxFrequency(), SAMPLE_RATE, 1.0);
-        YINPitchDetector.PitchDetectionResult result = YINPitchDetector.detectPitch(sineWave, SAMPLE_RATE);
+        PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchYIN(sineWave, SAMPLE_RATE);
         assertTrue(result.confidence() >= 0.95);
         assertEquals(harmonica.getHarmonicaMaxFrequency(), result.pitch(), maxFrequencyTolerance,
                 "Detected pitch should match the sine wave max frequency");
 
         // Test for min frequency
         sineWave = generateSineWave(harmonica.getHarmonicaMinFrequency(), SAMPLE_RATE, 1.0);
-        result = YINPitchDetector.detectPitch(sineWave, SAMPLE_RATE);
+        result = PitchDetector.detectPitchYIN(sineWave, SAMPLE_RATE);
         assertTrue(result.confidence() >= 0.95);
         assertEquals(harmonica.getHarmonicaMinFrequency(), result.pitch(), minFrequencyTolerance,
                 "Detected pitch should match the sine wave min frequency");
@@ -129,7 +129,7 @@ class YINPitchDetectorTest {
         double noiseLevel = 0.1; // White noise as 10% of the signal amplitude
         double[] noisyWave = generateSineWaveWithNoise(frequency, SAMPLE_RATE, durationMs, noiseLevel);
 
-        YINPitchDetector.PitchDetectionResult result = YINPitchDetector.detectPitch(noisyWave, SAMPLE_RATE);
+        PitchDetector.PitchDetectionResult result = PitchDetector.detectPitchYIN(noisyWave, SAMPLE_RATE);
 
         assertEquals(frequency, result.pitch(), TOLERANCE,
                 "The detected frequency should still be 934.6 Hz, even with white noise.");
@@ -147,7 +147,7 @@ class YINPitchDetectorTest {
             audioData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
 
-        double detectedPitch = YINPitchDetector.detectPitch(audioData, sampleRate).pitch();
+        double detectedPitch = PitchDetector.detectPitchYIN(audioData, sampleRate).pitch();
         assertEquals(frequency, detectedPitch, 0.02, "Detected pitch should match the input sine wave frequency");
     }
 
@@ -157,8 +157,8 @@ class YINPitchDetectorTest {
         int sampleRate = 44100;
         double[] audioData = new double[sampleSize];
 
-        double detectedPitch = YINPitchDetector.detectPitch(audioData, sampleRate).pitch();
-        assertEquals(YINPitchDetector.NO_DETECTED_PITCH, detectedPitch, "Detected pitch should be -1 for silence");
+        double detectedPitch = PitchDetector.detectPitchYIN(audioData, sampleRate).pitch();
+        assertEquals(PitchDetector.NO_DETECTED_PITCH, detectedPitch, "Detected pitch should be -1 for silence");
     }
 
     @Test
@@ -169,8 +169,8 @@ class YINPitchDetectorTest {
             audioData[i] = Math.random() * 2 - 1; // Random noise between -1 and 1
         }
 
-        double detectedPitch = YINPitchDetector.detectPitch(audioData, sampleRate).pitch();
-        assertEquals(YINPitchDetector.NO_DETECTED_PITCH, detectedPitch, "Detected pitch should be -1 for noise");
+        double detectedPitch = PitchDetector.detectPitchYIN(audioData, sampleRate).pitch();
+        assertEquals(PitchDetector.NO_DETECTED_PITCH, detectedPitch, "Detected pitch should be -1 for noise");
     }
 
     /**

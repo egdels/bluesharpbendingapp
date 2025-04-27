@@ -61,16 +61,6 @@ import java.util.Objects;
 public class MainDesktop extends Application {
 
     /**
-     * Represents the name of the temporary file used by the application.
-     * This file is utilized to store intermediate or transient data that
-     * may be required during the runtime of the application.
-     * <p>
-     * The file is located in the application's working directory or a
-     * predefined directory, as needed, and is named "Model.tmp".
-     */
-    private static final String TEMP_FILE = "Model.tmp";
-
-    /**
      * Specifies the path for the temporary directory used by the application.
      * The directory is located in the user's home directory and named "BluesHarpBendingApp.tmp".
      * The path includes the system-specific file separator.
@@ -104,10 +94,25 @@ public class MainDesktop extends Application {
      *             configuration or initialization purposes.
      */
     public static void main(String[] args) {
+        LoggingContext.setComponent("MainDesktop");
+        LoggingUtils.logAppStartup("Desktop Application");
         VersionService.getVersionFromHost();
         launch(args);
     }
 
+    /**
+     * Initializes and starts the application's user interface.
+     * This method is called automatically by the JavaFX runtime after the application
+     * has been launched. It performs the following operations:
+     * - Loads the main window FXML layout
+     * - Sets up the scene with appropriate stylesheets
+     * - Initializes dependency injection
+     * - Configures the main controller
+     * - Displays the primary stage
+     *
+     * @param primaryStage the primary stage for this application, onto which
+     *                     the application scene can be set
+     */
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -137,6 +142,10 @@ public class MainDesktop extends Application {
             primaryStage.setScene(scene);
             primaryStage.setTitle("Let's Bend - Desktop");
             primaryStage.show();
+
+            // Log successful application startup
+            LoggingContext.setComponent("MainDesktop");
+            LoggingUtils.logInitialized("Desktop Application UI");
         } catch (Exception e) {
             // Log an error if something goes wrong during application startup
             LoggingContext.setComponent("MainDesktop");
@@ -144,6 +153,14 @@ public class MainDesktop extends Application {
         }
     }
 
+    /**
+     * Performs cleanup operations when the application is about to stop.
+     * This method is called automatically by the JavaFX runtime when the application
+     * is shutting down. It handles the following tasks:
+     * - Logs the application shutdown event
+     * - Calls the controller's stop method to perform any necessary cleanup
+     * - Terminates the application process
+     */
     @Override
     public void stop() {
         LoggingContext.setComponent("MainDesktop");

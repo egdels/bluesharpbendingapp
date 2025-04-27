@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,10 +22,12 @@ private static final int TEST_ITERATIONS = 10;
  */
 @BeforeEach
 void warmUp() {
+    PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+    PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
     double[] audioData = generateSineWave(440.0, DEFAULT_SAMPLE_RATE, 0.1);
     for (int i = 0; i < WARMUP_ITERATIONS; i++) {
-        YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
-        MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE);
+        PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE);
     }
 }
 
@@ -42,7 +43,7 @@ void testYINPerformanceWithDifferentBufferSizes(double duration) {
 
     long startTime = System.nanoTime();
     for (int i = 0; i < TEST_ITERATIONS; i++) {
-        YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE);
     }
     long endTime = System.nanoTime();
 
@@ -65,7 +66,7 @@ void testMPMPerformanceWithDifferentBufferSizes(double duration) {
 
     long startTime = System.nanoTime();
     for (int i = 0; i < TEST_ITERATIONS; i++) {
-        MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE);
     }
     long endTime = System.nanoTime();
 
@@ -89,7 +90,7 @@ void compareYINAndMPMPerformance() {
         // Measure YIN performance
         long yinStartTime = System.nanoTime();
         for (int i = 0; i < TEST_ITERATIONS; i++) {
-            YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+            PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE);
         }
         long yinEndTime = System.nanoTime();
         double yinAverageTimeMs = (yinEndTime - yinStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -97,7 +98,7 @@ void compareYINAndMPMPerformance() {
         // Measure MPM performance
         long mpmStartTime = System.nanoTime();
         for (int i = 0; i < TEST_ITERATIONS; i++) {
-            MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+            PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE);
         }
         long mpmEndTime = System.nanoTime();
         double mpmAverageTimeMs = (mpmEndTime - mpmStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -137,7 +138,7 @@ void testPerformanceWithDifferentSignalTypes() {
         // Measure YIN performance
         long yinStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            YINPitchDetector.detectPitch(signal, DEFAULT_SAMPLE_RATE);
+            PitchDetector.detectPitchYIN(signal, DEFAULT_SAMPLE_RATE);
         }
         long yinEndTime = System.nanoTime();
         double yinAverageTimeMs = (yinEndTime - yinStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -145,7 +146,7 @@ void testPerformanceWithDifferentSignalTypes() {
         // Measure MPM performance
         long mpmStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            MPMPitchDetector.detectPitch(signal, DEFAULT_SAMPLE_RATE);
+            PitchDetector.detectPitchMPM(signal, DEFAULT_SAMPLE_RATE);
         }
         long mpmEndTime = System.nanoTime();
         double mpmAverageTimeMs = (mpmEndTime - mpmStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -295,7 +296,7 @@ void testHarmonicaFrequencyPerformance(double frequency, String noteName) {
     long yinStartTime = System.nanoTime();
     PitchDetector.PitchDetectionResult yinResult = null;
     for (int i = 0; i < TEST_ITERATIONS; i++) {
-        yinResult = YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        yinResult = PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE);
     }
     long yinEndTime = System.nanoTime();
     double yinAverageTimeMs = (yinEndTime - yinStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -304,7 +305,7 @@ void testHarmonicaFrequencyPerformance(double frequency, String noteName) {
     long mpmStartTime = System.nanoTime();
     PitchDetector.PitchDetectionResult mpmResult = null;
     for (int i = 0; i < TEST_ITERATIONS; i++) {
-        mpmResult = MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        mpmResult = PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE);
     }
     long mpmEndTime = System.nanoTime();
     double mpmAverageTimeMs = (mpmEndTime - mpmStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -351,7 +352,7 @@ void testHarmonicaBendNotePerformance(double startFreq, double targetFreq, Strin
     long yinStartTime = System.nanoTime();
     PitchDetector.PitchDetectionResult yinResult = null;
     for (int i = 0; i < TEST_ITERATIONS; i++) {
-        yinResult = YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        yinResult = PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE);
     }
     long yinEndTime = System.nanoTime();
     double yinAverageTimeMs = (yinEndTime - yinStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -360,7 +361,7 @@ void testHarmonicaBendNotePerformance(double startFreq, double targetFreq, Strin
     long mpmStartTime = System.nanoTime();
     PitchDetector.PitchDetectionResult mpmResult = null;
     for (int i = 0; i < TEST_ITERATIONS; i++) {
-        mpmResult = MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        mpmResult = PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE);
     }
     long mpmEndTime = System.nanoTime();
     double mpmAverageTimeMs = (mpmEndTime - mpmStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -463,7 +464,7 @@ void testHarmonicaOverblowPerformance(double baseFreq, double overblowFreq, Stri
     long yinStartTime = System.nanoTime();
     PitchDetector.PitchDetectionResult yinResult = null;
     for (int i = 0; i < TEST_ITERATIONS; i++) {
-        yinResult = YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        yinResult = PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE);
     }
     long yinEndTime = System.nanoTime();
     double yinAverageTimeMs = (yinEndTime - yinStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -472,7 +473,7 @@ void testHarmonicaOverblowPerformance(double baseFreq, double overblowFreq, Stri
     long mpmStartTime = System.nanoTime();
     PitchDetector.PitchDetectionResult mpmResult = null;
     for (int i = 0; i < TEST_ITERATIONS; i++) {
-        mpmResult = MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+        mpmResult = PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE);
     }
     long mpmEndTime = System.nanoTime();
     double mpmAverageTimeMs = (mpmEndTime - mpmStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -539,22 +540,22 @@ void testMPMOptimizationPerformance() {
         double[] audioData = generateSineWave(frequency, DEFAULT_SAMPLE_RATE, duration);
 
         // Measure standard MPM performance
-        MPMPitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
-        MPMPitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
+        PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
         long standardStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            double pitch = MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE).pitch();
+            double pitch = PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE).pitch();
             assertEquals(frequency, pitch, 0.01);
         }
         long standardEndTime = System.nanoTime();
         double standardTimeMs = (standardEndTime - standardStartTime) / (TEST_ITERATIONS * 1_000_000.0);
 
         // Measure optimized MPM performance
-        MPMPitchDetector.setMaxFrequency(frequencies[frequencies.length - 1]);
-        MPMPitchDetector.setMinFrequency(frequencies[0]);
+        PitchDetector.setMaxFrequency(frequencies[frequencies.length - 1]);
+        PitchDetector.setMinFrequency(frequencies[0]);
         long optimizedStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            double pitch = MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE).pitch();
+            double pitch = PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE).pitch();
             assertEquals(frequency, pitch, 0.01);
         }
         long optimizedEndTime = System.nanoTime();
@@ -592,22 +593,22 @@ void testMPMOptimizationPerformance() {
         double[] audioData = generateHarmonicaBendNote(startFreq, targetFreq, DEFAULT_SAMPLE_RATE, duration);
 
         // Measure standard MPM performance
-        MPMPitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
-        MPMPitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
+        PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
         long standardStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            double pitch = MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE).pitch();
+            double pitch = PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE).pitch();
             assertEquals(targetFreq, pitch, 1.0);
         }
         long standardEndTime = System.nanoTime();
         double standardTimeMs = (standardEndTime - standardStartTime) / (TEST_ITERATIONS * 1_000_000.0);
 
         // Measure optimized MPM performance
-        MPMPitchDetector.setMinFrequency(startFreq);
-        MPMPitchDetector.setMaxFrequency(targetFreq);
+        PitchDetector.setMinFrequency(startFreq);
+        PitchDetector.setMaxFrequency(targetFreq);
         long optimizedStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            double pitch = MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE).pitch();
+            double pitch = PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE).pitch();
             assertEquals(targetFreq, pitch, 1.0);
         }
         long optimizedEndTime = System.nanoTime();
@@ -640,8 +641,8 @@ void testMPMOptimizationPerformance() {
     // Assert that the optimized version is faster
     assertTrue(avgOptimizedTimeMs < avgStandardTimeMs,
             "Optimized MPM should be faster than standard MPM for harmonica sounds");
-    MPMPitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
-    MPMPitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+    PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
+    PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
 }
 
 /**
@@ -672,22 +673,22 @@ void testYINOptimizationPerformance() {
         double[] audioData = generateSineWave(frequency, DEFAULT_SAMPLE_RATE, duration);
 
         // Measure standard YIN performance
-        YINPitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
-        YINPitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
+        PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
         long standardStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            double pitch = YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE).pitch();
+            double pitch = PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE).pitch();
             assertEquals(frequency, pitch, 0.2);
         }
         long standardEndTime = System.nanoTime();
         double standardTimeMs = (standardEndTime - standardStartTime) / (TEST_ITERATIONS * 1_000_000.0);
 
         // Measure optimized YIN performance
-        YINPitchDetector.setMinFrequency(frequencies[0]);
-        YINPitchDetector.setMaxFrequency(frequencies[frequencies.length - 1]);
+        PitchDetector.setMinFrequency(frequencies[0]);
+        PitchDetector.setMaxFrequency(frequencies[frequencies.length - 1]);
         long optimizedStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            double pitch = YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE).pitch();
+            double pitch = PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE).pitch();
             assertEquals(frequency, pitch, 0.2);
         }
         long optimizedEndTime = System.nanoTime();
@@ -725,21 +726,21 @@ void testYINOptimizationPerformance() {
         double[] audioData = generateHarmonicaBendNote(startFreq, targetFreq, DEFAULT_SAMPLE_RATE, duration);
 
         // Measure standard YIN performance
-        YINPitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
-        YINPitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+        PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
+        PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
         long standardStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            double pitch = YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE).pitch();
+            double pitch = PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE).pitch();
         }
         long standardEndTime = System.nanoTime();
         double standardTimeMs = (standardEndTime - standardStartTime) / (TEST_ITERATIONS * 1_000_000.0);
 
         // Measure optimized YIN performance
-        YINPitchDetector.setMinFrequency(startFreq);
-        YINPitchDetector.setMaxFrequency(targetFreq);
+        PitchDetector.setMinFrequency(startFreq);
+        PitchDetector.setMaxFrequency(targetFreq);
         long optimizedStartTime = System.nanoTime();
         for (int j = 0; j < TEST_ITERATIONS; j++) {
-            YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+            PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE);
         }
         long optimizedEndTime = System.nanoTime();
         double optimizedTimeMs = (optimizedEndTime - optimizedStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -771,8 +772,8 @@ void testYINOptimizationPerformance() {
     // Assert that the optimized version is faster
     assertTrue(avgOptimizedTimeMs < avgStandardTimeMs,
             "Optimized YIN should be faster than standard YIN for harmonica sounds");
-    YINPitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
-    YINPitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
+    PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
+    PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
 }
 
 /**
@@ -813,7 +814,7 @@ void testRealTimeHarmonicaPerformance() {
             long yinStartTime = System.nanoTime();
             PitchDetector.PitchDetectionResult yinResult = null;
             for (int i = 0; i < TEST_ITERATIONS; i++) {
-                yinResult = YINPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+                yinResult = PitchDetector.detectPitchYIN(audioData, DEFAULT_SAMPLE_RATE);
             }
             long yinEndTime = System.nanoTime();
             double yinAverageTimeMs = (yinEndTime - yinStartTime) / (TEST_ITERATIONS * 1_000_000.0);
@@ -822,7 +823,7 @@ void testRealTimeHarmonicaPerformance() {
             long mpmStartTime = System.nanoTime();
             PitchDetector.PitchDetectionResult mpmResult = null;
             for (int i = 0; i < TEST_ITERATIONS; i++) {
-                mpmResult = MPMPitchDetector.detectPitch(audioData, DEFAULT_SAMPLE_RATE);
+                mpmResult = PitchDetector.detectPitchMPM(audioData, DEFAULT_SAMPLE_RATE);
             }
             long mpmEndTime = System.nanoTime();
             double mpmAverageTimeMs = (mpmEndTime - mpmStartTime) / (TEST_ITERATIONS * 1_000_000.0);

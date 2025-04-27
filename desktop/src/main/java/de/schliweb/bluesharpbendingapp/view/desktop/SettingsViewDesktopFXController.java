@@ -28,6 +28,7 @@ import de.schliweb.bluesharpbendingapp.controller.MicrophoneSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteSettingsViewHandler;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
@@ -226,22 +227,45 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      */
     @FXML
     public void initialize() {
-        LoggingUtils.logInitialized(this.getClass().getSimpleName());
+        LoggingContext.setComponent("SettingsViewDesktopFXController");
+        LoggingUtils.logInitializing("Settings View Controller");
+
         for (ComboBox<String> stringComboBox : Arrays.asList(comboKeys, comboTunes, comboAlgorithms, comboMicrophones, comboConfidences, comboConcertPitches)) {
             addChangeListenerToComboBox(stringComboBox);
         }
+
+        LoggingUtils.logInitialized("Settings View Controller");
     }
 
+    /**
+     * Sets the available keys in the keys ComboBox.
+     * This method populates the ComboBox with the provided array of key names,
+     * allowing users to select from the available harmonica keys.
+     *
+     * @param keys an array of strings representing the available harmonica keys
+     */
     @Override
     public void setKeys(String[] keys) {
         initComboBox(comboKeys, keys);
     }
 
+    /**
+     * Sets the selected key in the keys ComboBox based on the provided index.
+     * This method updates the UI to reflect the currently selected harmonica key.
+     *
+     * @param selectedKeyIndex the index of the key to be selected in the ComboBox
+     */
     @Override
     public void setSelectedKey(int selectedKeyIndex) {
         setSelected(selectedKeyIndex, comboKeys);
     }
 
+    /**
+     * Sets the selected tune in the tunes ComboBox based on the provided index.
+     * This method updates the UI to reflect the currently selected harmonica tuning.
+     *
+     * @param selectedTuneIndex the index of the tune to be selected in the ComboBox
+     */
     @Override
     public void setSelectedTune(int selectedTuneIndex) {
         setSelected(selectedTuneIndex, comboTunes);
@@ -257,20 +281,23 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      * @param combo         the ComboBox in which to select the specified item
      */
     private void setSelected(int selectedIndex, ComboBox<String> combo) {
+        LoggingContext.setComponent("SettingsViewDesktopFXController");
+
         // Check if the ComboBox is null
         if (combo == null) {
-            LoggingUtils.logError(this.getClass().getSimpleName(), "setSelected() called with null ComboBox!");
+            LoggingUtils.logError("setSelected() called with null ComboBox!");
             return; // Exit the method as there's nothing to work with
         }
 
         // Validate the selected index is within valid bounds of the ComboBox items
         if (selectedIndex < 0 || selectedIndex >= combo.getItems().size()) {
-            LoggingUtils.logError("Invalid index");
+            LoggingUtils.logError("Invalid index for ComboBox selection: " + selectedIndex);
             return; // Exit the method as the index is out of range
         }
 
         // Select the item in the ComboBox based on the provided index
         combo.getSelectionModel().select(selectedIndex);
+        LoggingUtils.logDebug("Selected item at index " + selectedIndex + " in ComboBox");
     }
 
 
@@ -285,9 +312,11 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      * @param items an array of strings representing the items to be added to the ComboBox
      */
     private void initComboBox(ComboBox<String> combo, String[] items) {
+        LoggingContext.setComponent("SettingsViewDesktopFXController");
+
         // Check if the ComboBox is null
         if (combo == null) {
-            LoggingUtils.logError(this.getClass().getSimpleName(), "initComboBox() called with null ComboBox!");
+            LoggingUtils.logError("initComboBox() called with null ComboBox!");
             return; // Exit the method as there's nothing to work with
         }
 
@@ -296,6 +325,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
 
         // Add all provided items to the ComboBox
         combo.getItems().addAll(items);
+        LoggingUtils.logDebug("Initialized ComboBox with " + (items != null ? items.length : 0) + " items");
     }
 
     /**
@@ -339,29 +369,63 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
         }
     }
 
+    /**
+     * Sets the available tunes in the tunes ComboBox.
+     * This method populates the ComboBox with the provided array of tune names,
+     * allowing users to select from the available harmonica tunings.
+     *
+     * @param tunes an array of strings representing the available harmonica tunings
+     */
     @Override
     public void setTunes(String[] tunes) {
         initComboBox(comboTunes, tunes);
     }
 
 
+    /**
+     * Sets the available concert pitches in the concert pitches ComboBox.
+     * This method populates the ComboBox with the provided array of pitch values,
+     * allowing users to select from the available reference tuning frequencies.
+     *
+     * @param pitches an array of strings representing the available concert pitches
+     */
     @Override
     public void setConcertPitches(String[] pitches) {
         initComboBox(comboConcertPitches, pitches);
     }
 
 
+    /**
+     * Sets the selected concert pitch in the concert pitches ComboBox based on the provided index.
+     * This method updates the UI to reflect the currently selected reference tuning frequency.
+     *
+     * @param selectedConcertPitchIndex the index of the concert pitch to be selected in the ComboBox
+     */
     @Override
     public void setSelectedConcertPitch(int selectedConcertPitchIndex) {
         setSelected(selectedConcertPitchIndex, comboConcertPitches);
     }
 
 
+    /**
+     * Sets the available pitch detection algorithms in the algorithms ComboBox.
+     * This method populates the ComboBox with the provided array of algorithm names,
+     * allowing users to select from the available pitch detection methods.
+     *
+     * @param algorithms an array of strings representing the available pitch detection algorithms
+     */
     @Override
     public void setAlgorithms(String[] algorithms) {
         initComboBox(comboAlgorithms, algorithms);
     }
 
+    /**
+     * Updates the UI to display the current frequency and related note information.
+     * This method updates the frequency value label, determines the corresponding musical note,
+     * updates the note label, and adjusts the tuning meter to show the pitch deviation in cents.
+     *
+     * @param frequency the current frequency value in Hz to be displayed
+     */
     @Override
     public void setFrequency(double frequency) {
         javafx.application.Platform.runLater(() -> valueFrequency.setText(String.format("%.2f", frequency)));
@@ -376,31 +440,70 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
         }
     }
 
+    /**
+     * Sets the selected confidence level in the confidences ComboBox based on the provided index.
+     * This method updates the UI to reflect the currently selected pitch detection confidence threshold.
+     *
+     * @param confidenceIndex the index of the confidence level to be selected in the ComboBox
+     */
     @Override
     public void setSelectedConfidence(int confidenceIndex) {
         setSelected(confidenceIndex, comboConfidences);
     }
 
+    /**
+     * Sets the available confidence levels in the confidences ComboBox.
+     * This method populates the ComboBox with the provided array of confidence level values,
+     * allowing users to select from the available pitch detection confidence thresholds.
+     *
+     * @param confidences an array of strings representing the available confidence levels
+     */
     @Override
     public void setConfidences(String[] confidences) {
         initComboBox(comboConfidences, confidences);
     }
 
+    /**
+     * Sets the available microphones in the microphones ComboBox.
+     * This method populates the ComboBox with the provided array of microphone names,
+     * allowing users to select from the available audio input devices.
+     *
+     * @param microphones an array of strings representing the available microphones
+     */
     @Override
     public void setMicrophones(String[] microphones) {
         initComboBox(comboMicrophones, microphones);
     }
 
+    /**
+     * Sets the selected algorithm in the algorithms ComboBox based on the provided index.
+     * This method updates the UI to reflect the currently selected pitch detection algorithm.
+     *
+     * @param selectedAlgorithmIndex the index of the algorithm to be selected in the ComboBox
+     */
     @Override
     public void setSelectedAlgorithm(int selectedAlgorithmIndex) {
         setSelected(selectedAlgorithmIndex, comboAlgorithms);
     }
 
+    /**
+     * Sets the selected microphone in the microphones ComboBox based on the provided index.
+     * This method updates the UI to reflect the currently selected audio input device.
+     *
+     * @param selectedMicrophoneIndex the index of the microphone to be selected in the ComboBox
+     */
     @Override
     public void setSelectedMicrophone(int selectedMicrophoneIndex) {
         setSelected(selectedMicrophoneIndex, comboMicrophones);
     }
 
+    /**
+     * Updates the UI to display the current volume level.
+     * This method updates the volume value label with the formatted volume value.
+     * The update is performed on the JavaFX application thread to ensure thread safety.
+     *
+     * @param volume the current volume level to be displayed
+     */
     @Override
     public void setVolume(double volume) {
         Platform.runLater(() -> valueVolume.setText(String.format("%.2f", volume)));
@@ -418,6 +521,9 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      * methods for updating UI components to reflect the stored defaults.
      */
     public void handleResetButton() {
+        LoggingContext.setComponent("SettingsViewDesktopFXController");
+        LoggingUtils.logUserAction("Reset Settings", "Resetting all settings to stored defaults");
+
         MainModel model = new MainModel();
         setSelectedConcertPitch(model.getStoredConcertPitchIndex());
         setSelectedKey(model.getStoredKeyIndex());
@@ -425,5 +531,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
         setSelectedMicrophone(model.getStoredMicrophoneIndex());
         setSelectedTune(model.getStoredTuneIndex());
         setSelectedConfidence(model.getStoredConfidenceIndex());
+
+        LoggingUtils.logOperationCompleted("Settings reset to defaults");
     }
 }

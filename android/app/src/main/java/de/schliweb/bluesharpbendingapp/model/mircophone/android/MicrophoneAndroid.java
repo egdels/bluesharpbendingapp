@@ -218,6 +218,16 @@ public class MicrophoneAndroid extends AbstractMicrophone {
         }
     }
 
+    /**
+     * Closes the microphone and releases associated resources.
+     * <p>
+     * This method shuts down the executor services used for audio recording and processing,
+     * effectively stopping all audio capture and analysis operations. It ensures proper
+     * cleanup of system resources when the microphone is no longer needed.
+     * <p>
+     * This implementation gracefully terminates the thread pools without forcibly
+     * interrupting running tasks, allowing them to complete their current work.
+     */
     @Override
     public void close() {
         if (executor != null) {
@@ -228,22 +238,74 @@ public class MicrophoneAndroid extends AbstractMicrophone {
         }
     }
 
+    /**
+     * Returns an array of supported microphone device names.
+     * <p>
+     * In the Android implementation, this method returns an empty array as
+     * microphone selection is typically handled by the Android system rather
+     * than the application. The default microphone is used for audio capture.
+     * <p>
+     * This method is primarily implemented to satisfy the interface contract
+     * defined in the {@link Microphone} interface.
+     *
+     * @return an empty array of strings, as microphone selection is not
+     *         supported in the Android implementation
+     */
     @Override
     public String[] getSupportedMicrophones() {
         return new String[0];
     }
 
 
+    /**
+     * Sets the handler for microphone data processing.
+     * <p>
+     * This method assigns a {@link MicrophoneHandler} instance that will receive
+     * and process the audio data captured by the microphone. The handler is responsible
+     * for managing the detected pitch (frequency) and amplitude (RMS) values.
+     * <p>
+     * The handler is stored as a volatile field to ensure thread safety and visibility
+     * across different threads involved in audio processing.
+     *
+     * @param microphoneHandler the handler instance that will receive microphone data,
+     *                         or null to remove the current handler
+     */
     @Override
     public void setMicrophoneHandler(MicrophoneHandler microphoneHandler) {
         this.microphoneHandler = microphoneHandler;
     }
 
+    /**
+     * Returns the name of the currently selected microphone device.
+     * <p>
+     * In the Android implementation, this method returns an empty string as
+     * microphone selection is typically handled by the Android system rather
+     * than the application. The default microphone is used for audio capture.
+     * <p>
+     * This method is primarily implemented to satisfy the interface contract
+     * defined in the {@link Microphone} interface.
+     *
+     * @return an empty string, as microphone naming is not supported in the
+     *         Android implementation
+     */
     @Override
     public String getName() {
         return "";
     }
 
+    /**
+     * Sets the microphone device by index.
+     * <p>
+     * In the Android implementation, this method has no effect as microphone
+     * selection is typically handled by the Android system rather than the
+     * application. The default microphone is used for audio capture regardless
+     * of the provided index.
+     * <p>
+     * This method is primarily implemented to satisfy the interface contract
+     * defined in the {@link Microphone} interface.
+     *
+     * @param microphoneIndex the index of the microphone to select (ignored in Android implementation)
+     */
     @Override
     public void setName(int microphoneIndex) {
         // Not needed on Android
@@ -281,11 +343,11 @@ public class MicrophoneAndroid extends AbstractMicrophone {
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
-            result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+            result = PitchDetector.detectPitchYIN(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         } else if ("MPM".equals(getAlgorithm())) {
-            result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+            result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
         }
