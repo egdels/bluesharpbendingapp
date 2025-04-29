@@ -30,11 +30,11 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.widget.TextView;
+import de.schliweb.bluesharpbendingapp.R;
 
 /**
  * Utility class for manipulating and updating properties of TextView objects,
@@ -54,27 +54,50 @@ public class TextViewUtils {
      *                     color intensity, and other visual attributes of the line.
      */
     public static void updateEnlargedTextViewLine(TextView noteTextView, double cents) {
-        LayerDrawable layout = (LayerDrawable) noteTextView.getBackground();
+        // Check if the background is a LayerDrawable before attempting to cast
+        if (!(noteTextView.getBackground() instanceof LayerDrawable layout)) {
+            return; // Exit if not a LayerDrawable
+        }
+
+        // Check if the LayerDrawable has enough layers
+        if (layout.getNumberOfLayers() <= 1) {
+            return; // Exit if not enough layers
+        }
 
         GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-        line.setAlpha(255);
+        line.setAlpha(255); // Make line fully visible
 
         double height = noteTextView.getHeight();
+        double width = noteTextView.getWidth();
 
-        int lineWidth = Math.max((int) (noteTextView.getHeight() / 10.0), 10);
+        // Calculate line height (thickness)
+        int lineHeight = Math.max((int) (noteTextView.getHeight() / 10.0), 4);
 
-        line.setStroke(lineWidth, Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0));
+        // Set stroke color based on cents value
+        int lineColor = Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0);
 
-        // Limit the cents values to the range -44 to 44
-        double limitedCents = Math.clamp(cents, -44, 44);
-        double position = height - height * (limitedCents / 50.0);
+        double limitedCents = Math.clamp(cents, -50, 50);
 
+        // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
+        // For positive cents, move up from the middle; for negative cents, move down from the middle
+        double middleY = height / 2.0;
+        double offsetY = (limitedCents / 50.0) * (height / 2.0); // Scale to half the height
+        double lineY = middleY - offsetY; // Subtract offset to move up for positive cents
 
-        line.setBounds(line.getBounds().left - lineWidth / 2,    // Move left edge further left
-                line.getBounds().top,                   // Keep top position
-                line.getBounds().right + lineWidth / 2,   // Move right edge further right
-                (int) position                          // Set bottom position based on touch/movement
+        int lineWidth = (int) (width);
+        // Calculate left position to center the line
+        int leftPosition = (int) ((width - lineWidth) / 2.0);
+
+        // Set bounds for a horizontal line at the calculated position
+        line.setBounds(leftPosition,                       // Left position (centered)
+                (int) (lineY - lineHeight / 2.0),   // Top position (centered around lineY)
+                leftPosition + lineWidth,           // Right position (left + width)
+                (int) (lineY + lineHeight / 2.0)    // Bottom position (centered around lineY)
         );
+
+        // Set the stroke to make the line visible
+        line.setStroke(0, Color.TRANSPARENT); // Clear any existing stroke
+        line.setColor(lineColor); // Set the fill color instead
     }
 
     /**
@@ -87,29 +110,57 @@ public class TextViewUtils {
      *                     intensity, and attributes. Values are constrained within the range -44 to 44.
      */
     public static void updateTextViewLine(TextView noteTextView, double cents) {
-        LayerDrawable layout = (LayerDrawable) noteTextView.getBackground();
+        // Get the background drawable
+        android.graphics.drawable.Drawable background = noteTextView.getBackground();
+
+        // Check if the background is a LayerDrawable before attempting to cast
+        if (!(background instanceof LayerDrawable layout)) {
+            return; // Exit if not a LayerDrawable
+        }
+
+        // Check if the LayerDrawable has enough layers
+        if (layout.getNumberOfLayers() <= 1) {
+            return; // Exit if not enough layers
+        }
 
         GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-        line.setAlpha(255);
+        line.setAlpha(255); // Make line fully visible
 
         double height = noteTextView.getHeight();
+        double width = noteTextView.getWidth();
 
-        int lineWidth = Math.max((int) (noteTextView.getHeight() / 10.0), 10);
+        // Calculate line height (thickness)
+        int lineHeight = Math.max((int) (noteTextView.getHeight() / 10.0), 3);
 
-        line.setStroke(lineWidth, Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0));
+        // Set stroke color based on cents value
+        int lineColor = Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0);
 
-        // Limit the cents values to the range -44 to 44
-        double limitedCents = Math.clamp(cents, -44, 44);
-        double position = height - height * (limitedCents / 50.0);
+        double limitedCents = Math.clamp(cents, -50, 50);
 
+        // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
+        // For positive cents, move up from the middle; for negative cents, move down from the middle
+        double middleY = height / 2.0;
+        double offsetY = (limitedCents / 50.0) * (height / 2.0); // Scale to half the height
+        double lineY = middleY - offsetY; // Subtract offset to move up for positive cents
 
-        // For normal (non-enlarged) view, keep original horizontal bounds
-        // Only update vertical position of the line
-        line.setBounds(line.getBounds().left,    // Keep original left position
-                line.getBounds().top,     // Keep top position
-                line.getBounds().right,   // Keep original right position
-                (int) position           // Set bottom position based on touch/movement
+        // Get the corner radius from resources
+        float cornerRadius = noteTextView.getContext().getResources().getDimension(R.dimen.note_corner_radius);
+
+        int lineWidth = (int) (width - cornerRadius / 2);
+
+        // Calculate left position to center the line
+        int leftPosition = (int) ((width - lineWidth) / 2.0);
+
+        // Set bounds for a horizontal line at the calculated position
+        line.setBounds(leftPosition,                       // Left position (centered)
+                (int) (lineY - lineHeight / 2.0),   // Top position (centered around lineY)
+                leftPosition + lineWidth,           // Right position (left + width)
+                (int) (lineY + lineHeight / 2.0)    // Bottom position (centered around lineY)
         );
+
+        // Set the stroke to make the line visible
+        line.setStroke(0, Color.TRANSPARENT); // Clear any existing stroke
+        line.setColor(lineColor); // Set the fill color instead
     }
 
 
@@ -119,17 +170,30 @@ public class TextViewUtils {
      * @param noteTextView The TextView whose background line layer will be modified to become transparent.
      */
     public static void clearTextViewLine(TextView noteTextView) {
-        // Get the LayerDrawable and extract the line layer (index 1)
-        LayerDrawable layout = (LayerDrawable) noteTextView.getBackground();
-        GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
+        // Get the background drawable
+        android.graphics.drawable.Drawable background = noteTextView.getBackground();
 
-        // Make the line completely transparent
-        line.setAlpha(0);
+        // Check the type of background drawable before attempting to cast
+        if (background instanceof LayerDrawable layout) {
+            // Get the LayerDrawable and extract the line layer (index 1)
+            if (layout.getNumberOfLayers() > 1) {
+                GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
+                // Make the line completely transparent
+                line.setAlpha(0);
+
+                // Reset both stroke and fill color to transparent to ensure it's not visible
+                line.setStroke(0, Color.TRANSPARENT);
+                line.setColor(Color.TRANSPARENT);
+            }
+        }
+        // If the background is not a LayerDrawable or doesn't have enough layers,
+        // we don't need to do anything as there's no line to clear
     }
 
     /**
      * Updates the content and style of a `TextView` to display a note text and a cent value with specific formatting.
      * This includes styling text appearance, setting fonts, and adjusting text sizes.
+     * Uses modern text styling approaches with SpannableStringBuilder.
      *
      * @param noteTextView The `TextView` that will display the formatted note text and cent value.
      * @param noteText     The note text to be displayed, which will appear in bold and enlarged.
@@ -137,31 +201,34 @@ public class TextViewUtils {
      *                     as part of the displayed text.
      */
     public static void updateTextViewCent(TextView noteTextView, String noteText, double cents) {
-
         // Format cents with leading spaces and sign (+/-), suppress lint warning
         @SuppressLint("DefaultLocale") String centsString = String.format("%+3d", (int) cents);
         centsString = "ct:" + centsString;
 
-        // Create a SpannableString combining note text and cents with a line break
-        SpannableString spannableString = new SpannableString(noteText + "\n" + centsString);
+        // Use SpannableStringBuilder for more efficient span operations
+        Spannable spannableString = new SpannableString(noteText + "\n" + centsString);
 
-        // Set the color for the entire text to black
-        spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // Apply Material Design text appearance
+        // Set the color for the entire text to use the theme's text color
+        noteTextView.setTextColor(noteTextView.getContext().getResources().getColor(android.R.color.black, noteTextView.getContext().getTheme()));
 
         // Make the note text bold (first part only)
         spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Increase size of note text by factor 2.0
-        spannableString.setSpan(new RelativeSizeSpan(2.0f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // Increase size of note text by factor 1.5
+        spannableString.setSpan(new RelativeSizeSpan(1.5f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Apply monospace font to the cents part (including "Cents:")
+        // Apply monospace font to the cents part
         spannableString.setSpan(new TypefaceSpan("monospace"), noteText.length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Make cents part 1.5 times larger than normal text
-        spannableString.setSpan(new RelativeSizeSpan(1.5f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // Make cents part 1.2 times larger than normal text
+        spannableString.setSpan(new RelativeSizeSpan(1.2f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Set the final formatted text to the TextView
         noteTextView.setText(spannableString);
+
+        // Apply modern elevation for a subtle shadow effect
+        noteTextView.setElevation(4f);
     }
 
 }

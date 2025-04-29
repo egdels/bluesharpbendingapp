@@ -25,10 +25,25 @@
  */
 -->
 <resources>
+    <!-- Base colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="orange">#ff9800</color>
+
+    <!-- Material Design colors -->
+    <color name="primary">#1976D2</color>
+    <color name="primary_variant">#004BA0</color>
+    <color name="secondary">#FF5722</color>
+    <color name="secondary_variant">#C41C00</color>
+
+    <!-- Note colors -->
+    <color name="orange">#FF9800</color>
     <color name="blue">#6efdfd</color>
     <color name="grey">#9c9ba1</color>
     <color name="magenta">#ff00ff</color>
+
+    <!-- Additional colors for potential future use -->
+    <color name="success">#4CAF50</color>
+    <color name="error">#F44336</color>
+    <color name="warning">#FFC107</color>
+    <color name="info">#2196F3</color>
 </resources>

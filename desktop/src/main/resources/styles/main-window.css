@@ -25,111 +25,172 @@
 .main-window {
     -fx-pref-width: 800; /* Set the preferred width */
     -fx-pref-height: 600; /* Set the preferred height */
-    -fx-background-color: #313540; /* Background color */
+    -fx-background-color: #1E1E1E; /* Modern dark background color */
+    -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Modern font family */
 }
 
 /* Default label styling */
 Label {
-    -fx-text-fill: #CCD5DE; /* Text color */
+    -fx-text-fill: #E0E0E0; /* Slightly brighter text color for better contrast */
+    -fx-font-smoothing-type: lcd; /* Improved text rendering */
 }
 
 /* Styling for Hyperlinks */
 Hyperlink {
-    -fx-text-fill: #CCD5DE; /* Default text color */
+    -fx-text-fill: #4FC3F7; /* Modern blue color for links */
     -fx-font-weight: bold; /* Bold font */
-    -fx-underline: true; /* Enable underline */
+    -fx-underline: false; /* Modern links often don't use underlines by default */
     -fx-font-size: 14px; /* Font size */
-    -fx-font-family: Arial, sans-serif; /* Font family */
+    -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Modern font family */
+    -fx-padding: 5; /* Add some padding */
+    -fx-cursor: hand; /* Hand cursor on hover */
 }
 
 /* Hover state for Hyperlinks */
 Hyperlink:hover {
-    -fx-text-fill: #FE6E21; /* Change text color on hover */
-    -fx-underline: true; /* Keep underline on hover */
+    -fx-text-fill: #81D4FA; /* Lighter blue on hover */
+    -fx-underline: true; /* Show underline on hover for better UX */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 1, 0, 0, 1); /* Subtle shadow effect */
 }
 
 /* Visited state for Hyperlinks */
 Hyperlink:visited {
-    -fx-text-fill: #CCD5DE; /* Retain original color for visited hyperlinks */
+    -fx-text-fill: #4FC3F7; /* Keep consistent with normal state */
 }
 
 /* Toolbar Menu styles */
 .menu-toolbar {
-    -fx-background-color: transparent; /* Transparent background */
+    -fx-background-color: #2D2D2D; /* Slightly lighter than main background */
+    -fx-padding: 8px; /* Add some padding */
+    -fx-spacing: 10; /* Space between buttons */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2); /* Subtle shadow for depth */
 }
 
 /* Styling for buttons in the menu */
 .menu-button {
     -fx-background-color: transparent; /* Transparent background */
-    -fx-text-fill: white; /* White text color */
+    -fx-text-fill: #E0E0E0; /* Light text color */
     -fx-border-color: transparent; /* No border color */
     -fx-cursor: hand; /* Change cursor to pointer (hand) */
-    -fx-background-radius: 0; /* No background radius */
-    -fx-border-radius: 0; /* No border radius */
+    -fx-background-radius: 4; /* Slightly rounded corners */
+    -fx-border-radius: 4; /* Match border radius */
+    -fx-padding: 8 16; /* More padding for better touch targets */
+    -fx-font-size: 14px; /* Slightly larger font */
+    -fx-font-weight: normal; /* Normal weight for modern look */
+    -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Modern font */
+    -fx-transition: all 0.2s ease-in-out; /* Smooth transition for hover effects */
 }
 
 /* Hover effect for menu buttons */
 .menu-button:hover {
-    -fx-background-color: #444A5B; /* Gray background on hover */
+    -fx-background-color: #3D3D3D; /* Subtle background on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1); /* Subtle shadow on hover */
+    -fx-text-fill: #4FC3F7; /* Highlight text with accent color */
 }
 
 /* Pressed state for menu buttons */
 .menu-button:pressed {
-    -fx-background-color: #FE6E21; /* Orange background on press */
+    -fx-background-color: #4FC3F7; /* Use accent color for pressed state */
+    -fx-text-fill: #1E1E1E; /* Dark text for contrast */
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.2), 1, 0, 0, 1); /* Inner shadow for pressed effect */
 }
 
 /* HarpView cell panel styles */
 .cell-pane {
-    -fx-border-color: black; /* Black border for cells */
-    -fx-border-width: 1px; /* Border thickness */
+    -fx-border-color: #3D3D3D; /* Subtle border for cells */
+    -fx-border-width: 1; /* Border thickness - AppDimensions.NOTE_STROKE_WIDTH */
+    -fx-background-radius: 8; /* Corner radius - AppDimensions.NOTE_CORNER_RADIUS */
+    -fx-border-radius: 8; /* Corner radius - AppDimensions.NOTE_CORNER_RADIUS */
+    -fx-padding: 12; /* Padding - AppDimensions.NOTE_PADDING */
+    -fx-margin: 4; /* Margin - AppDimensions.NOTE_MARGIN */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1); /* Subtle shadow for depth */
+    -fx-transition: all 0.2s ease-in-out; /* Smooth transition for hover/active states */
+}
+
+.cell-pane-training {
+    -fx-border-color: #3D3D3D; /* Subtle border for cells */
+    -fx-border-width: 1; /* Border thickness - AppDimensions.NOTE_STROKE_WIDTH */
+    -fx-background-radius: 8; /* Corner radius - AppDimensions.NOTE_CORNER_RADIUS */
+    -fx-border-radius: 8; /* Corner radius - AppDimensions.NOTE_CORNER_RADIUS */
+    -fx-padding: 12; /* Padding - AppDimensions.NOTE_PADDING */
+    -fx-margin: 4; /* Margin - AppDimensions.NOTE_MARGIN */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1); /* Subtle shadow for depth */
+}
+
+/* Hover effect for cell panes */
+.cell-pane:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2); /* Enhanced shadow on hover */
+    -fx-scale-x: 1.02; /* Slight scale effect on hover */
+    -fx-scale-y: 1.02; /* Slight scale effect on hover */
 }
 
 /* Styling labels inside the cell pane */
 .cell-pane > Label {
-    -fx-text-fill: black; /* Black text color */
+    -fx-text-fill: #1E1E1E; /* Dark text color for contrast */
     -fx-font-size: 15px; /* Font size */
     -fx-font-weight: bold; /* Bold text */
+    -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Modern font */
+    -fx-font-smoothing-type: lcd; /* Improved text rendering */
 }
 
 /* Channel styling */
 .channel {
     -fx-border-color: transparent; /* Transparent border */
+    -fx-padding: 5; /* Add some padding */
 }
 
 /* Labels within the channel */
 .channel > Label {
-    -fx-text-fill: #CCD5DE; /* Text color for channel labels */
+    -fx-text-fill: #E0E0E0; /* Light text color for channel labels */
+    -fx-font-size: 14px; /* Font size */
+    -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Modern font */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 1, 0, 0, 1); /* Text shadow for better readability */
 }
 
-/* Notes styling */
+/* Notes styling - Using colors from AppColors.java */
+
 /* Styling for blow notes */
 .blowNote {
-    -fx-background-color: #9c9ba1; /* Gray background */
+    -fx-background-color: #9c9ba1; /* Grey - AppColors.BLOW_NOTE */
+    -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for draw notes */
 .drawNote {
-    -fx-background-color: #9c9ba1; /* Gray background */
+    -fx-background-color: #9c9ba1; /* Grey - AppColors.DRAW_NOTE */
+    -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for draw bend notes */
 .drawBendNote {
-    -fx-background-color: #6efdfd; /* Light blue background */
+    -fx-background-color: #6efdfd; /* Light blue - AppColors.DRAW_BEND_NOTE */
+    -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for blow bend notes */
 .blowBendNote {
-    -fx-background-color: #ff9800; /* Orange background */
+    -fx-background-color: #ff9800; /* Orange - AppColors.BLOW_BEND_NOTE */
+    -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for overblow notes */
 .overBlowNote {
-    -fx-background-color: #ff00ff; /* Pink background */
+    -fx-background-color: #ff00ff; /* Magenta - AppColors.OVERBLOW_NOTE */
+    -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for overdraw notes */
 .overDrawNote {
-    -fx-background-color: #ff00ff; /* Pink background */
+    -fx-background-color: #ff00ff; /* Magenta - AppColors.OVERDRAW_NOTE */
+    -fx-background-radius: 8; /* Ensure consistent radius */
+}
+
+/* Active note styling */
+.cell-pane.active {
+    -fx-border-color: #4FC3F7; /* Accent color border for active notes */
+    -fx-border-width: 2; /* Thicker border for active notes */
+    -fx-effect: dropshadow(gaussian, rgba(79,195,247,0.5), 10, 0, 0, 0); /* Glow effect for active notes */
 }
 
 .overlay-container {
@@ -139,65 +200,110 @@ Hyperlink:visited {
 
 /* ComboBox styles */
 .combo-box {
-    -fx-background-color: #313540; /* Dark background for the ComboBox */
-    -fx-text-fill: white; /* White text color */
-    -fx-border-color: #444A5B; /* Gray border color */
+    -fx-background-color: #2D2D2D; /* Match toolbar background */
+    -fx-text-fill: #E0E0E0; /* Light text color */
+    -fx-border-color: #3D3D3D; /* Subtle border */
     -fx-border-width: 1; /* Border thickness */
+    -fx-border-radius: 4; /* Rounded corners */
+    -fx-background-radius: 4; /* Rounded corners */
+    -fx-padding: 4; /* Add some padding */
+    -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Modern font */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1); /* Subtle shadow */
 }
 
 /* Styling for list cells in the ComboBox */
 .combo-box .list-cell {
     -fx-background-color: transparent; /* Transparent background */
-    -fx-text-fill: #CCD5DE; /* Light gray text color */
+    -fx-text-fill: #E0E0E0; /* Light text color */
+    -fx-padding: 6 10; /* More padding for better readability */
+    -fx-font-size: 13px; /* Slightly larger font */
 }
 
 /* Styling for the ComboBox list view */
 .combo-box .list-view {
-    -fx-background-color: #313540; /* Dark background */
-    -fx-border-color: #444A5B; /* Gray border */
+    -fx-background-color: #2D2D2D; /* Match ComboBox background */
+    -fx-border-color: #3D3D3D; /* Subtle border */
+    -fx-border-radius: 4; /* Rounded corners */
+    -fx-background-radius: 4; /* Rounded corners */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2); /* Shadow for depth */
 }
 
 /* Hover effect for list cells in the ComboBox */
 .combo-box .list-cell:hover {
-    -fx-background-color: #444A5B; /* Gray background on hover */
+    -fx-background-color: #3D3D3D; /* Subtle background on hover */
+    -fx-text-fill: #4FC3F7; /* Accent color on hover */
+}
+
+/* Selected item in ComboBox */
+.combo-box .list-cell:selected {
+    -fx-background-color: #4FC3F7; /* Accent color for selected item */
+    -fx-text-fill: #1E1E1E; /* Dark text for contrast */
 }
 
 /* Styling for the ComboBox arrow button */
 .combo-box .arrow-button {
     -fx-background-color: transparent; /* Transparent background */
+    -fx-padding: 0 6; /* Add some padding */
 }
 
 /* Styling for the arrow inside the arrow button */
 .combo-box .arrow {
-    -fx-background-color: #CCD5DE; /* Light gray arrow color */
+    -fx-background-color: #4FC3F7; /* Accent color for arrow */
+    -fx-shape: "M0 0 L6 6 L12 0 Z"; /* Modern triangle shape */
+}
+
+/* Hover state for ComboBox */
+.combo-box:hover {
+    -fx-border-color: #4FC3F7; /* Accent color border on hover */
+    -fx-effect: dropshadow(gaussian, rgba(79,195,247,0.2), 5, 0, 0, 0); /* Subtle glow effect */
 }
 
 /* Footer styles */
 .footer {
-    -fx-background-color: #313540; /* Dark background for footer */
+    -fx-background-color: #2D2D2D; /* Match toolbar background */
     -fx-border-width: 1 0 0 0; /* Border at the top */
-    -fx-border-color: #444A5B; /* Gray border color */
+    -fx-border-color: #3D3D3D; /* Subtle border color */
+    -fx-padding: 10; /* Add more padding */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, -2); /* Top shadow for depth */
 }
 
 /* Button styling inside the footer */
 .footer .button {
-    -fx-background-color: transparent; /* Transparent background */
-    -fx-text-fill: #CCD5DE; /* Text color */
-    -fx-border-color: #444A5B; /* Gray border */
-    -fx-border-width: 1; /* Border thickness */
+    -fx-background-color: #3D3D3D; /* Subtle background */
+    -fx-text-fill: #E0E0E0; /* Light text color */
+    -fx-border-color: transparent; /* No border by default */
     -fx-cursor: hand; /* Pointer cursor */
-    -fx-padding: 5 15 5 15; /* Padding for buttons */
+    -fx-padding: 8 16; /* More padding for better touch targets */
+    -fx-background-radius: 4; /* Rounded corners */
+    -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Modern font */
+    -fx-font-size: 13px; /* Slightly larger font */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1); /* Subtle shadow */
+    -fx-transition: all 0.2s ease-in-out; /* Smooth transition */
 }
 
 /* Hover effect for footer buttons */
 .footer .button:hover {
-    -fx-background-color: #444A5B; /* Gray background on hover */
-    -fx-text-fill: white; /* White text color */
+    -fx-background-color: #4D4D4D; /* Lighter background on hover */
+    -fx-text-fill: #4FC3F7; /* Accent color text */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0, 0, 1); /* Enhanced shadow on hover */
 }
 
 /* Pressed state for footer buttons */
 .footer .button:pressed {
-    -fx-background-color: #FE6E21; /* Orange background when pressed */
-    -fx-border-color: #FE6E21; /* Match border color to background */
-    -fx-text-fill: white; /* White text color */
+    -fx-background-color: #4FC3F7; /* Accent color background when pressed */
+    -fx-text-fill: #1E1E1E; /* Dark text for contrast */
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.2), 1, 0, 0, 1); /* Inner shadow for pressed effect */
+}
+
+/* Primary action button */
+.button.primary {
+    -fx-background-color: #4FC3F7; /* Accent color for primary actions */
+    -fx-text-fill: #1E1E1E; /* Dark text for contrast */
+    -fx-font-weight: bold; /* Bold text */
+}
+
+/* Primary action button hover */
+.button.primary:hover {
+    -fx-background-color: #81D4FA; /* Lighter accent color on hover */
+    -fx-effect: dropshadow(gaussian, rgba(79,195,247,0.5), 5, 0, 0, 0); /* Glow effect */
 }

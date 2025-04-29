@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ */
+-->
+<resources>
+    <!-- Channel IDs for testing -->
+    <item type="id" name="channel_1"/>
+    <item type="id" name="channel_2"/>
+    <item type="id" name="channel_3"/>
+    <item type="id" name="channel_4"/>
+    <item type="id" name="channel_5"/>
+    <item type="id" name="channel_6"/>
+    <item type="id" name="channel_7"/>
+    <item type="id" name="channel_8"/>
+    <item type="id" name="channel_9"/>
+    <item type="id" name="channel_10"/>
+
+    <!-- Note IDs for testing -->
+
+    <!-- Channel 1 Note IDs -->
+    <item type="id" name="channel_1_note_minus3"/>
+    <item type="id" name="channel_1_note_minus2"/>
+    <item type="id" name="channel_1_note_minus1"/>
+    <item type="id" name="channel_1_note_0"/>
+    <item type="id" name="channel_1_note_1"/>
+    <item type="id" name="channel_1_note_2"/>
+    <item type="id" name="channel_1_note_3"/>
+    <item type="id" name="channel_1_note_4"/>
+
+    <!-- Channel 2 Note IDs -->
+    <item type="id" name="channel_2_note_minus3"/>
+    <item type="id" name="channel_2_note_minus2"/>
+    <item type="id" name="channel_2_note_minus1"/>
+    <item type="id" name="channel_2_note_0"/>
+    <item type="id" name="channel_2_note_1"/>
+    <item type="id" name="channel_2_note_2"/>
+    <item type="id" name="channel_2_note_3"/>
+    <item type="id" name="channel_2_note_4"/>
+
+    <!-- Channel 3 Note IDs -->
+    <item type="id" name="channel_3_note_minus3"/>
+    <item type="id" name="channel_3_note_minus2"/>
+    <item type="id" name="channel_3_note_minus1"/>
+    <item type="id" name="channel_3_note_0"/>
+    <item type="id" name="channel_3_note_1"/>
+    <item type="id" name="channel_3_note_2"/>
+    <item type="id" name="channel_3_note_3"/>
+    <item type="id" name="channel_3_note_4"/>
+
+    <!-- Channel 4 Note IDs -->
+    <item type="id" name="channel_4_note_minus3"/>
+    <item type="id" name="channel_4_note_minus2"/>
+    <item type="id" name="channel_4_note_minus1"/>
+    <item type="id" name="channel_4_note_0"/>
+    <item type="id" name="channel_4_note_1"/>
+    <item type="id" name="channel_4_note_2"/>
+    <item type="id" name="channel_4_note_3"/>
+    <item type="id" name="channel_4_note_4"/>
+
+    <!-- Channel 5 Note IDs -->
+    <item type="id" name="channel_5_note_minus3"/>
+    <item type="id" name="channel_5_note_minus2"/>
+    <item type="id" name="channel_5_note_minus1"/>
+    <item type="id" name="channel_5_note_0"/>
+    <item type="id" name="channel_5_note_1"/>
+    <item type="id" name="channel_5_note_2"/>
+    <item type="id" name="channel_5_note_3"/>
+    <item type="id" name="channel_5_note_4"/>
+
+    <!-- Channel 6 Note IDs -->
+    <item type="id" name="channel_6_note_minus3"/>
+    <item type="id" name="channel_6_note_minus2"/>
+    <item type="id" name="channel_6_note_minus1"/>
+    <item type="id" name="channel_6_note_0"/>
+    <item type="id" name="channel_6_note_1"/>
+    <item type="id" name="channel_6_note_2"/>
+    <item type="id" name="channel_6_note_3"/>
+    <item type="id" name="channel_6_note_4"/>
+
+    <!-- Channel 7 Note IDs -->
+    <item type="id" name="channel_7_note_minus3"/>
+    <item type="id" name="channel_7_note_minus2"/>
+    <item type="id" name="channel_7_note_minus1"/>
+    <item type="id" name="channel_7_note_0"/>
+    <item type="id" name="channel_7_note_1"/>
+    <item type="id" name="channel_7_note_2"/>
+    <item type="id" name="channel_7_note_3"/>
+    <item type="id" name="channel_7_note_4"/>
+
+    <!-- Channel 8 Note IDs -->
+    <item type="id" name="channel_8_note_minus3"/>
+    <item type="id" name="channel_8_note_minus2"/>
+    <item type="id" name="channel_8_note_minus1"/>
+    <item type="id" name="channel_8_note_0"/>
+    <item type="id" name="channel_8_note_1"/>
+    <item type="id" name="channel_8_note_2"/>
+    <item type="id" name="channel_8_note_3"/>
+    <item type="id" name="channel_8_note_4"/>
+
+    <!-- Channel 9 Note IDs -->
+    <item type="id" name="channel_9_note_minus3"/>
+    <item type="id" name="channel_9_note_minus2"/>
+    <item type="id" name="channel_9_note_minus1"/>
+    <item type="id" name="channel_9_note_0"/>
+    <item type="id" name="channel_9_note_1"/>
+    <item type="id" name="channel_9_note_2"/>
+    <item type="id" name="channel_9_note_3"/>
+    <item type="id" name="channel_9_note_4"/>
+
+    <!-- Channel 10 Note IDs -->
+    <item type="id" name="channel_10_note_minus3"/>
+    <item type="id" name="channel_10_note_minus2"/>
+    <item type="id" name="channel_10_note_minus1"/>
+    <item type="id" name="channel_10_note_0"/>
+    <item type="id" name="channel_10_note_1"/>
+    <item type="id" name="channel_10_note_2"/>
+    <item type="id" name="channel_10_note_3"/>
+    <item type="id" name="channel_10_note_4"/>
+</resources>
+ 

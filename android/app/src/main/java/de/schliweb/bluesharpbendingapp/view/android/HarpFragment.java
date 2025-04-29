@@ -23,8 +23,6 @@ package de.schliweb.bluesharpbendingapp.view.android;
  *
  */
 
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,54 +31,113 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.schliweb.bluesharpbendingapp.R;
-import de.schliweb.bluesharpbendingapp.controller.HarpViewHandler;
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
 import de.schliweb.bluesharpbendingapp.databinding.FragmentHarpBinding;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
-import lombok.Getter;
-import lombok.Setter;
+import de.schliweb.bluesharpbendingapp.view.style.StyleUtils;
 
+import java.util.Map;
 import java.util.Set;
 
 
 /**
- * The HarpFragment class represents a fragment responsible for visualizing and interacting
- * with a virtual harp layout in the application. This class is primarily responsible
- * for rendering the notes of the harp, handling user interactions such as touch events
- * on the notes, and updating the UI accordingly.
+ * The HarpFragment class is responsible for managing and displaying the user interface
+ * of a virtual harp within a fragment. This class is a specialized fragment that handles
+ * the creation and interaction of harp note elements and manages their states, including
+ * the ability to display notes in an enlarged view mode.
  * <p>
- * HarpFragment integrates with other components, specifically via the HarpView
- * and FragmentView interfaces, and interacts with a ViewModel for sharing state
- * and data between fragments.
+ * HarpFragment inherits functionality from Android Fragment, HarpView, and FragmentView,
+ * integrating both fragment lifecycle management and interactive harp note behaviors.
  * <p>
- * Key functionality includes:
- * - Rendering a grid of notes represented as TextViews.
- * - Enlarging a pressed note for better visibility and reverting it back upon overlay click.
- * - Initializing and updating note properties such as text and background color.
- * - Managing visibility states for UI elements tied to note interactions.
+ * Fields:
+ * - noteViews: An array used to store references to TextView elements representing notes.
+ * - binding: Manages the View binding for the fragment layout.
+ * - isNoteEnlarged: A flag indicating whether a note is currently displayed in enlarged view.
+ * - enlargedTextView: The TextView that displays the enlarged version of a selected note.
  * <p>
- * This class also includes lifecycle methods such as onCreateView and onDestroyView
- * to manage view-related operations, cleaning up resources and binding references when necessary.
+ * Lifecycle Methods:
+ * - onCreateView: Handles inflation of the fragment's layout.
+ * - onViewCreated: Initializes UI elements, sets up note interaction behaviors, and manages
+ * connections to the ViewModel for state handling.
+ * - onDestroyView: Cleans up resources used by the fragment when its view is destroyed.
  * <p>
- * Implements:
- * - HarpView: For interacting with the harp's data model and updating the UI.
- * - FragmentView: For integrating with ViewModel to manage fragment-specific state and behaviors.
+ * HarpView Methods:
+ * - initNotes: Initializes the notes for the view using an array of NoteContainer objects.
+ * - getHarpViewElement: Retrieves a HarpViewNoteElement corresponding to a specified channel
+ * and note in the UI.
+ * <p>
+ * FragmentView Methods:
+ * - getInstance: Provides the current instance of the fragment view for external references.
+ * <p>
+ * Additional Private Methods:
+ * - showEnlargedTextView: Displays the selected note in an overlay in enlarged form.
+ * - hideEnlargedTextView: Hides the overlay showing the enlarged note and resets state.
+ * - createHarpTableLayout: Dynamically generates the layout for harp notes within a table.
+ * - configureOverlayNoteView: Sets up the overlay TextView for enlarged note display.
+ * - configureNoteClickListeners: Assigns click listeners to notes within the TableLayout to
+ * handle note selection and enlargement.
+ * - setNoteClickListenersOnRow: Adds click listeners specifically to the notes in a TableRow.
+ * - isChannelIdentifier: Checks if a given view ID corresponds to a channel identifier.
+ * - setNoteColor: Updates the appearance of a note by changing its background color.
+ * - initNote: Displays and initializes a note in the UI with its name and appearance.
+ * - getNote: Retrieves the TextView representing a note from the noteViews array.
  */
 public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
-
+    /**
+     * A static mapping of channel numbers to their corresponding view resource IDs.
+     * This map is used to associate each channel with a specific UI element represented
+     * by its resource identifier in the layout.
+     * <p>
+     * Key: Integer representing the channel number (1-based index).
+     * Value: Integer representing the resource ID of the corresponding channel view.
+     * <p>
+     * The map includes predefined mappings for specific channels used within the application.
+     */
+    private static final Map<Integer, Integer> channelIds = Map.of(1, R.id.channel_1, 2, R.id.channel_2, 3, R.id.channel_3, 4, R.id.channel_4, 5, R.id.channel_5, 6, R.id.channel_6, 7, R.id.channel_8, 9, R.id.channel_9, 10, R.id.channel_10);
+    /**
+     * A static and final map that associates channel identifiers with their corresponding
+     * notes and resource IDs. Each channel is represented by an integer key, and its value
+     * is another map. The inner map pairs note offsets (integers) with resource IDs (integers).
+     * <p>
+     * The key in the outer map represents the channel number (e.g., 1 to 10).
+     * The key in the inner map represents the note offset relative to a base note (e.g., -3 to 4).
+     * The value in the inner map represents the resource ID associated with the respective note.
+     * <p>
+     * This structure is useful for managing and accessing view or other resource identifiers
+     * based on the combination of a channel and a note offset.
+     */
+    private static final Map<Integer, Map<Integer, Integer>> channelNoteIds = Map.of(1, Map.of(-3, R.id.channel_1_note_minus3, -2, R.id.channel_1_note_minus2, -1, R.id.channel_1_note_minus1, 0, R.id.channel_1_note_0, 1, R.id.channel_1_note_1, 2, R.id.channel_1_note_2, 3, R.id.channel_1_note_3, 4, R.id.channel_1_note_4), 2, Map.of(-3, R.id.channel_2_note_minus3, -2, R.id.channel_2_note_minus2, -1, R.id.channel_2_note_minus1, 0, R.id.channel_2_note_0, 1, R.id.channel_2_note_1, 2, R.id.channel_2_note_2, 3, R.id.channel_2_note_3, 4, R.id.channel_2_note_4), 3, Map.of(-3, R.id.channel_3_note_minus3, -2, R.id.channel_3_note_minus2, -1, R.id.channel_3_note_minus1, 0, R.id.channel_3_note_0, 1, R.id.channel_3_note_1, 2, R.id.channel_3_note_2, 3, R.id.channel_3_note_3, 4, R.id.channel_3_note_4), 4, Map.of(-3, R.id.channel_4_note_minus3, -2, R.id.channel_4_note_minus2, -1, R.id.channel_4_note_minus1, 0, R.id.channel_4_note_0, 1, R.id.channel_4_note_1, 2, R.id.channel_4_note_2, 3, R.id.channel_4_note_3, 4, R.id.channel_4_note_4), 5, Map.of(-3, R.id.channel_5_note_minus3, -2, R.id.channel_5_note_minus2, -1, R.id.channel_5_note_minus1, 0, R.id.channel_5_note_0, 1, R.id.channel_5_note_1, 2, R.id.channel_5_note_2, 3, R.id.channel_5_note_3, 4, R.id.channel_5_note_4), 6, Map.of(-3, R.id.channel_6_note_minus3, -2, R.id.channel_6_note_minus2, -1, R.id.channel_6_note_minus1, 0, R.id.channel_6_note_0, 1, R.id.channel_6_note_1, 2, R.id.channel_6_note_2, 3, R.id.channel_6_note_3, 4, R.id.channel_6_note_4), 7, Map.of(-3, R.id.channel_7_note_minus3, -2, R.id.channel_7_note_minus2, -1, R.id.channel_7_note_minus1, 0, R.id.channel_7_note_0, 1, R.id.channel_7_note_1, 2, R.id.channel_7_note_2, 3, R.id.channel_7_note_3, 4, R.id.channel_7_note_4), 8, Map.of(-3, R.id.channel_8_note_minus3, -2, R.id.channel_8_note_minus2, -1, R.id.channel_8_note_minus1, 0, R.id.channel_8_note_0, 1, R.id.channel_8_note_1, 2, R.id.channel_8_note_2, 3, R.id.channel_8_note_3, 4, R.id.channel_8_note_4), 9, Map.of(-3, R.id.channel_9_note_minus3, -2, R.id.channel_9_note_minus2, -1, R.id.channel_9_note_minus1, 0, R.id.channel_9_note_0, 1, R.id.channel_9_note_1, 2, R.id.channel_9_note_2, 3, R.id.channel_9_note_3, 4, R.id.channel_9_note_4), 10, Map.of(-3, R.id.channel_10_note_minus3, -2, R.id.channel_10_note_minus2, -1, R.id.channel_10_note_minus1, 0, R.id.channel_10_note_0, 1, R.id.channel_10_note_1, 2, R.id.channel_10_note_2, 3, R.id.channel_10_note_3, 4, R.id.channel_10_note_4));
+    /**
+     * A two-dimensional array of TextView objects representing the notes
+     * displayed in the user interface of the harp fragment. Each element in the
+     * first dimension corresponds to a channel, and each element in the second
+     * dimension corresponds to a specific note within that channel.
+     * <p>
+     * Channels: Represented by the first dimension of the array (0 to 9), where
+     * each index corresponds to a harp channel.
+     * <p>
+     * Notes: Represented by the second dimension of the array (0 to 7),
+     * corresponding to note positions within the channel.
+     * <p>
+     * The array is initialized with a fixed size and is populated with
+     * TextView objects that are dynamically generated and bound to the UI.
+     * These TextViews display note information and allow user interactions such
+     * as clicking to enlarge or highlight individual notes.
+     * <p>
+     * This variable is immutable and cannot be reassigned after its initialization.
+     */
+    private final TextView[][] noteViews = new TextView[10][8];
     /**
      * Represents the binding for the HarpFragment layout, enabling access to UI elements defined in the corresponding XML layout file.
      * The binding provides an abstraction to access and manipulate views without directly interacting with `findViewById`.
      * It is used to manage and interact with the UI components within the fragment more efficiently.
      */
     private FragmentHarpBinding binding;
-
     /**
      * Tracks whether a musical note is currently enlarged in the UI.
      * <p>
@@ -90,7 +147,6 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * visibility and interaction of the note enlargement feature.
      */
     private boolean isNoteEnlarged = false;
-
     /**
      * Stores a reference to the currently enlarged TextView element in the harp view.
      * This field is used to track the state of the note that is visually highlighted or emphasized.
@@ -98,7 +154,6 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * A null value indicates that no note is currently enlarged.
      */
     private TextView enlargedTextView = null;
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,10 +163,9 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
     }
 
-
     /**
      * Displays an enlarged view of the given note in the overlay note TextView.
-     * Copies the text from the original note and displays it in the overlay view.
+     * Copies the text and background from the original note and displays it in the overlay view.
      * Updates the state to track the enlarged note and associates it with the overlay.
      * If a note is already enlarged, the method will return without any operations.
      *
@@ -125,8 +179,12 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         // Copy the text from the original note to the overlay view
         overlayNote.setText(note.getText());
 
-        // Make the overlay note visible
-        overlayNote.setVisibility(View.VISIBLE);
+        // Copy the background from the original note to the overlay view
+        overlayNote.setBackground(note.getBackground().getConstantState().newDrawable().mutate());
+
+        // Make the overlay note card visible
+        View overlayCard = requireView().findViewById(R.id.overlay_note_card);
+        overlayCard.setVisibility(View.VISIBLE);
 
         // Get the original note element and link it with the enlarged view
         HarpViewNoteElementAndroid originalElement = HarpViewNoteElementAndroid.getInstance(note);
@@ -136,7 +194,6 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         isNoteEnlarged = true;
         enlargedTextView = note;
     }
-
 
     /**
      * Hides the enlarged view of a note displayed in the overlay TextView.
@@ -154,14 +211,14 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         // Remove the reference to enlarged view in the original element
         originalElement.setEnlargedTextView(null);
 
-        // Hide the overlay note view
-        overlayNote.setVisibility(View.GONE);
+        // Hide the overlay note card
+        View overlayCard = requireView().findViewById(R.id.overlay_note_card);
+        overlayCard.setVisibility(View.GONE);
 
         // Reset enlarged view state
         isNoteEnlarged = false;
         enlargedTextView = null;
     }
-
 
     /**
      * Called after the fragment's view has been created. This method initializes the UI elements
@@ -179,6 +236,9 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         TableLayout tableLayout = view.findViewById(R.id.harp_table);
         TextView overlayNote = view.findViewById(R.id.overlay_note);
 
+        // Create the harp table layout
+        createHarpTableLayout(tableLayout, overlayNote);
+
         configureOverlayNoteView(overlayNote);
         configureNoteClickListeners(tableLayout, overlayNote);
 
@@ -187,14 +247,145 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     }
 
     /**
-     * Configures the overlay note TextView by adding behavior for hiding the view
+     * Creates the harp table layout programmatically.
+     *
+     * @param tableLayout The TableLayout to populate with rows and cells
+     * @param overlayNote The TextView to use for the overlay note display
+     */
+    private void createHarpTableLayout(TableLayout tableLayout, TextView overlayNote) {
+        // Create rows for notes (-3 to 0)
+        for (int noteIndex = -3; noteIndex <= 0; noteIndex++) {
+            TableRow row = new TableRow(requireContext());
+            row.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1.0f));
+
+            // Create cells for channels (1 to 10)
+            for (int channel = 1; channel <= 10; channel++) {
+                TextView noteView = createNoteTextView(noteIndex, channel);
+
+                row.addView(noteView);
+
+                // Store the view for later access
+                noteViews[channel - 1][noteIndex + 3] = noteView;
+            }
+
+            tableLayout.addView(row);
+        }
+
+        // Create the channel label row
+        TableRow labelRow = new TableRow(requireContext());
+        labelRow.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1.0f));
+
+        for (int channel = 1; channel <= 10; channel++) {
+            TextView labelView = new TextView(requireContext());
+            TableRow.LayoutParams params = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+            int margin = StyleUtils.getNoteMargin();
+            params.setMargins(margin, margin, margin, margin); // Add margins for better spacing
+            labelView.setLayoutParams(params);
+
+            labelView.setGravity(android.view.Gravity.CENTER);
+            labelView.setText(String.valueOf(channel));
+
+            // Use Material Design text appearance
+            labelView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Subtitle1);
+            labelView.setTypeface(labelView.getTypeface(), android.graphics.Typeface.BOLD);
+
+            // Use fixed IDs for channel labels to support testing
+            int channelId;
+            if (channelIds.containsKey(channel)) {
+                channelId = channelIds.get(channel);
+            } else {
+                channelId = View.generateViewId();
+            }
+            labelView.setId(channelId);
+
+            // Add a subtle background
+            labelView.setBackgroundResource(R.drawable.label_channel);
+
+            // Add padding for better appearance
+            int padding = StyleUtils.getNotePadding();
+            labelView.setPadding(padding, padding, padding, padding);
+
+            labelRow.addView(labelView);
+        }
+
+        tableLayout.addView(labelRow);
+
+        // Create rows for notes (1 to 4)
+        for (int noteIndex = 1; noteIndex <= 4; noteIndex++) {
+            TableRow row = new TableRow(requireContext());
+            row.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1.0f));
+
+            // Create cells for channels (1 to 10)
+            for (int channel = 1; channel <= 10; channel++) {
+                TextView noteView = createNoteTextView(noteIndex, channel);
+
+                row.addView(noteView);
+
+                // Store the view for later access
+                noteViews[channel - 1][noteIndex + 3] = noteView;
+            }
+
+            tableLayout.addView(row);
+        }
+
+        // Set up click listeners for the notes
+        configureNoteClickListeners(tableLayout, overlayNote);
+    }
+
+    private TextView createNoteTextView(int note, int channel) {
+        TextView textView = new TextView(requireContext());
+        TableRow.LayoutParams params = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+        int margin = StyleUtils.getNoteMargin();
+        params.setMargins(margin, margin, margin, margin); // Add margins for better spacing
+        textView.setLayoutParams(params);
+
+        // Set the background based on the note type
+        int backgroundResId;
+        if (note < 0) {
+            backgroundResId = R.drawable.note_blow;
+        } else if (note == 0 || note == 1) {
+            backgroundResId = R.drawable.note_channel;
+        } else {
+            backgroundResId = R.drawable.note_draw;
+        }
+        textView.setBackgroundResource(backgroundResId);
+
+        // Use Material Design text appearance
+        // textView.setTextColor(getResources().getColor(R.color.black, null));
+        textView.setGravity(android.view.Gravity.CENTER);
+        textView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
+        textView.setTextColor(getResources().getColor(R.color.black, null));
+        textView.setVisibility(View.INVISIBLE);
+        int id;
+        if (channelNoteIds.containsKey(channel) && channelNoteIds.get(channel).containsKey(note)) {
+            id = channelNoteIds.get(channel).get(note);
+        } else {
+            id = View.generateViewId();
+        }
+        textView.setId(id);
+
+        // Add padding for better touch target size
+        int padding = StyleUtils.getNotePadding();
+        textView.setPadding(padding, padding, padding, padding);
+        // textView.setPadding(8,8,8,8);
+        // Make text bold for better readability
+        textView.setTypeface(textView.getTypeface(), android.graphics.Typeface.BOLD);
+
+        return textView;
+    }
+
+    /**
+     * Configures the overlay note view by adding behavior for hiding the view
      * when it is clicked. This method also ensures the overlay note is hidden initially.
      *
      * @param overlayNote The TextView used to display the overlay view for enlarged notes.
      */
     private void configureOverlayNoteView(TextView overlayNote) {
         hideEnlargedTextView(overlayNote);
-        overlayNote.setOnClickListener(v -> hideEnlargedTextView(overlayNote));
+
+        // Set click listener on the card instead of just the TextView
+        View overlayCard = requireView().findViewById(R.id.overlay_note_card);
+        overlayCard.setOnClickListener(v -> hideEnlargedTextView(overlayNote));
     }
 
     /**
@@ -246,8 +437,8 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      */
     private boolean isChannelIdentifier(int viewId) {
         // Use a Set for faster lookups
-        Set<Integer> channelIds = Set.of(R.id.channel_1, R.id.channel_2, R.id.channel_3, R.id.channel_4, R.id.channel_5, R.id.channel_6, R.id.channel_7, R.id.channel_8, R.id.channel_9, R.id.channel_10);
-        return channelIds.contains(viewId);
+        Set<Integer> ids = Set.of(R.id.channel_1, R.id.channel_2, R.id.channel_3, R.id.channel_4, R.id.channel_5, R.id.channel_6, R.id.channel_7, R.id.channel_8, R.id.channel_9, R.id.channel_10);
+        return ids.contains(viewId);
     }
 
     @Override
@@ -280,7 +471,8 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      */
     private void setNoteColor(int channel, int note) {
         TextView textView = getNote(channel, note);
-        textView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.note_overblowoverdraw, requireContext().getTheme()));
+        // Use the appropriate background resource for overblow/overdraw notes
+        textView.setBackgroundResource(R.drawable.note_overblowoverdraw);
     }
 
 
@@ -298,114 +490,19 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
         textView.setText(noteName);
         textView.setVisibility(View.VISIBLE);
-        LayerDrawable layout = (LayerDrawable) textView.getBackground();
-        GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-        line.setAlpha(0); // hide line
     }
 
 
     /**
-     * Retrieves the TextView corresponding to the specified channel and note.
+     * Retrieves the TextView corresponding to a specific note and channel in the noteViews array.
      *
-     * @param channel The channel number from which to retrieve the note (1-based index).
-     * @param note    The position of the note within the channel (-3 to 4, where 0 is the central note position).
-     * @return The TextView that represents the specified note in the specified channel.
+     * @param channel The 1-based index of the channel containing the note.
+     * @param note    The positional index of the note within the channel, relative to -3.
+     * @return The TextView representing the specified note within the given channel.
      */
     private TextView getNote(int channel, int note) {
-        TextView[][] textViews = new TextView[10][8];
-        textViews[0][0] = binding.channel1NoteM3;
-        textViews[0][1] = binding.channel1NoteM2;
-        textViews[0][2] = binding.channel1NoteM1;
-        textViews[0][3] = binding.channel1Note0;
-        textViews[0][4] = binding.channel1Note1;
-        textViews[0][5] = binding.channel1Note2;
-        textViews[0][6] = binding.channel1Note3;
-        textViews[0][7] = binding.channel1Note4;
-
-        textViews[1][0] = binding.channel2NoteM3;
-        textViews[1][1] = binding.channel2NoteM2;
-        textViews[1][2] = binding.channel2NoteM1;
-        textViews[1][3] = binding.channel2Note0;
-        textViews[1][4] = binding.channel2Note1;
-        textViews[1][5] = binding.channel2Note2;
-        textViews[1][6] = binding.channel2Note3;
-        textViews[1][7] = binding.channel2Note4;
-
-        textViews[2][0] = binding.channel3NoteM3;
-        textViews[2][1] = binding.channel3NoteM2;
-        textViews[2][2] = binding.channel3NoteM1;
-        textViews[2][3] = binding.channel3Note0;
-        textViews[2][4] = binding.channel3Note1;
-        textViews[2][5] = binding.channel3Note2;
-        textViews[2][6] = binding.channel3Note3;
-        textViews[2][7] = binding.channel3Note4;
-
-        textViews[3][0] = binding.channel4NoteM3;
-        textViews[3][1] = binding.channel4NoteM2;
-        textViews[3][2] = binding.channel4NoteM1;
-        textViews[3][3] = binding.channel4Note0;
-        textViews[3][4] = binding.channel4Note1;
-        textViews[3][5] = binding.channel4Note2;
-        textViews[3][6] = binding.channel4Note3;
-        textViews[3][7] = binding.channel4Note4;
-
-        textViews[4][0] = binding.channel5NoteM3;
-        textViews[4][1] = binding.channel5NoteM2;
-        textViews[4][2] = binding.channel5NoteM1;
-        textViews[4][3] = binding.channel5Note0;
-        textViews[4][4] = binding.channel5Note1;
-        textViews[4][5] = binding.channel5Note2;
-        textViews[4][6] = binding.channel5Note3;
-        textViews[4][7] = binding.channel5Note4;
-
-        textViews[5][0] = binding.channel6NoteM3;
-        textViews[5][1] = binding.channel6NoteM2;
-        textViews[5][2] = binding.channel6NoteM1;
-        textViews[5][3] = binding.channel6Note0;
-        textViews[5][4] = binding.channel6Note1;
-        textViews[5][5] = binding.channel6Note2;
-        textViews[5][6] = binding.channel6Note3;
-        textViews[5][7] = binding.channel6Note4;
-
-        textViews[6][0] = binding.channel7NoteM3;
-        textViews[6][1] = binding.channel7NoteM2;
-        textViews[6][2] = binding.channel7NoteM1;
-        textViews[6][3] = binding.channel7Note0;
-        textViews[6][4] = binding.channel7Note1;
-        textViews[6][5] = binding.channel7Note2;
-        textViews[6][6] = binding.channel7Note3;
-        textViews[6][7] = binding.channel7Note4;
-
-        textViews[7][0] = binding.channel8NoteM3;
-        textViews[7][1] = binding.channel8NoteM2;
-        textViews[7][2] = binding.channel8NoteM1;
-        textViews[7][3] = binding.channel8Note0;
-        textViews[7][4] = binding.channel8Note1;
-        textViews[7][5] = binding.channel8Note2;
-        textViews[7][6] = binding.channel8Note3;
-        textViews[7][7] = binding.channel8Note4;
-
-        textViews[8][0] = binding.channel9NoteM3;
-        textViews[8][1] = binding.channel9NoteM2;
-        textViews[8][2] = binding.channel9NoteM1;
-        textViews[8][3] = binding.channel9Note0;
-        textViews[8][4] = binding.channel9Note1;
-        textViews[8][5] = binding.channel9Note2;
-        textViews[8][6] = binding.channel9Note3;
-        textViews[8][7] = binding.channel9Note4;
-
-        textViews[9][0] = binding.channel10NoteM3;
-        textViews[9][1] = binding.channel10NoteM2;
-        textViews[9][2] = binding.channel10NoteM1;
-        textViews[9][3] = binding.channel10Note0;
-        textViews[9][4] = binding.channel10Note1;
-        textViews[9][5] = binding.channel10Note2;
-        textViews[9][6] = binding.channel10Note3;
-        textViews[9][7] = binding.channel10Note4;
-
-        return textViews[channel - 1][note + 3];
+        return noteViews[channel - 1][note + 3];
     }
-
 
     @Override
     public Object getInstance() {

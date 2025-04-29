@@ -24,9 +24,11 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
  */
 
 /**
- * The Microphone interface represents a model for audio input devices. It defines methods
- * for controlling microphone operations and managing configurations such as supported
- * algorithms, device selection, and handlers for audio processing.
+ * This interface represents a Microphone that can be used for audio input
+ * in applications. It allows configuration of various properties such as
+ * the microphone name, audio processing algorithm, and confidence level,
+ * while also providing methods for retrieving supported options and
+ * managing audio resources.
  */
 public interface Microphone {
 

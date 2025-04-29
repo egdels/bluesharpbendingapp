@@ -138,6 +138,16 @@ public class MainDesktop extends Application {
             // Start the controller
             controller.start();
 
+            primaryStage.iconifiedProperty().addListener((obs, wasIconified, isIconified) -> {
+                if (isIconified) {
+                    LoggingUtils.logDebug("Application minimized");
+                    controller.stop();
+                } else {
+                    LoggingUtils.logDebug("Application restored");
+                    controller.start();
+                }
+            });
+
             // Set the scene and show the stage
             primaryStage.setScene(scene);
             primaryStage.setTitle("Let's Bend - Desktop");

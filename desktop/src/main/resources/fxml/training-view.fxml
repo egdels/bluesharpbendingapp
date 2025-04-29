@@ -63,7 +63,7 @@
             <padding>
                 <Insets top="10" right="20" bottom="10" left="20"/>
             </padding>
-            <Pane fx:id="trainingNote" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane, blowBendNote"
+            <Pane fx:id="trainingNote" maxHeight="Infinity" maxWidth="Infinity" styleClass="cell-pane-training, blowBendNote"
                   VBox.vgrow="ALWAYS">
                 <Line/>
                 <Label/>
@@ -77,8 +77,8 @@
             <padding>
                 <Insets top="10" right="20" bottom="20" left="20"/>
             </padding>
-            <Button fx:id="startButton" text="Start" onAction="#handleStartButton"/>
-            <Button fx:id="stopButton" text="Stop" onAction="#handleStopButton" disable="true"/>
+            <Button fx:id="startButton" text="Start" onAction="#handleStartButton" styleClass="button, primary"/>
+            <Button fx:id="stopButton" text="Stop" onAction="#handleStopButton" disable="true" styleClass="button"/>
         </HBox>
     </bottom>
 

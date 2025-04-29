@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dimensions for extra-large screen sizes (tablets, etc.) -->
+    <dimen name="note_corner_radius">24dp</dimen>
+    <dimen name="note_stroke_width">2dp</dimen>
+    <dimen name="note_margin">8dp</dimen>
+    <dimen name="note_padding">16dp</dimen>
+    
+    <dimen name="overlay_corner_radius">40dp</dimen>
+    <dimen name="overlay_padding">40dp</dimen>
+    <dimen name="overlay_stroke_width">2dp</dimen>
+</resources>

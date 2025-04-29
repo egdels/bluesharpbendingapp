@@ -162,17 +162,6 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
 
         // Only proceed if a valid TextView was provided
         if (enlargedTextView != null) {
-            // Extract the background layers and shapes
-            LayerDrawable layout = (LayerDrawable) textView.getBackground();
-            GradientDrawable shape = (GradientDrawable) layout.getDrawable(0);
-
-            // Get the color from the note TextView's background
-            LayerDrawable noteLayout = (LayerDrawable) noteTextView.getBackground();
-            GradientDrawable noteShape = (GradientDrawable) noteLayout.getDrawable(0);
-
-            // Apply the note's background color to the enlarged TextView
-            shape.setColor(noteShape.getColor());
-
             // Clear any existing text and line in the enlarged TextView
             TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
             TextViewUtils.clearTextViewLine(enlargedTextView);

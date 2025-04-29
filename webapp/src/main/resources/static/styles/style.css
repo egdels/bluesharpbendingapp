@@ -160,7 +160,10 @@ footer {
 .grid-cell {
     position: relative;
     border: 1px solid black;
-    padding: 0;
+    border-radius: 8px; /* AppDimensions.NOTE_CORNER_RADIUS */
+    border-width: 1px; /* AppDimensions.NOTE_STROKE_WIDTH */
+    padding: 12px; /* AppDimensions.NOTE_PADDING */
+    margin: 4px; /* AppDimensions.NOTE_MARGIN */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -227,28 +230,29 @@ footer {
     border: 0;
 }
 
+
 .blow-bend-note {
-    background-color: #ff9800;
+    background-color: #ff9800; /* AppColors.BLOW_BEND_NOTE */
 }
 
 .blow-note {
-    background-color: #9c9ba1;
+    background-color: #9c9ba1; /* AppColors.BLOW_NOTE */
 }
 
 .draw-note {
-    background-color: #9c9ba1;
+    background-color: #9c9ba1; /* AppColors.DRAW_NOTE */
 }
 
 .draw-bend-note {
-    background-color: #6efdfd;
+    background-color: #6efdfd; /* AppColors.DRAW_BEND_NOTE */
 }
 
 .overblow-note {
-    background-color: magenta;
+    background-color: #ff00ff; /* AppColors.OVERBLOW_NOTE */
 }
 
 .overdraw-note {
-    background-color: magenta;
+    background-color: #ff00ff; /* AppColors.OVERDRAW_NOTE */
 }
 
 .highlight {

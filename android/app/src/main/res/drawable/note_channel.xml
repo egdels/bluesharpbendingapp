@@ -25,31 +25,12 @@
  */
 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-            android:bottom="2dp"
-            android:left="2dp"
-            android:right="2dp"
-            android:top="2dp">
+    <item>
         <shape android:shape="rectangle">
             <solid android:color="?attr/channelBackgroundColor"/>
-            <corners android:radius="4dp"/>
+            <corners android:radius="@dimen/note_corner_radius"/>
+            <stroke android:width="@dimen/note_stroke_width" android:color="?attr/colorOutline"/>
         </shape>
     </item>
-    <item>
-        <shape android:shape="line">
-            <stroke/>
-        </shape>
-    </item>
-    <item
-            android:bottom="2dp"
-            android:left="2dp"
-            android:right="2dp"
-            android:top="2dp">
-        <shape android:shape="rectangle">
-            <stroke
-                    android:width="5px" android:color="?attr/borderColor"/>
-            <corners android:radius="4dp"/>
-        </shape>
-    </item>
+    <item android:drawable="@drawable/line_layer" />
 </layer-list>
-

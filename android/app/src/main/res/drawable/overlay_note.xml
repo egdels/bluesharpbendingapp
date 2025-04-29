@@ -25,32 +25,21 @@
  */
 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-            android:bottom="2dp"
-            android:left="2dp"
-            android:right="2dp"
-            android:top="2dp">
-        <shape android:shape="rectangle">
-            <solid android:color="?attr/blowBackgroundColor"/>
-            <corners android:radius="4dp"/>
-        </shape>
+    <item>
+        <ripple android:color="?attr/colorControlHighlight">
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="?attr/colorPrimaryContainer"/>
+                    <corners android:radius="@dimen/overlay_corner_radius"/>
+                    <stroke android:width="@dimen/overlay_stroke_width" android:color="?attr/colorOutline"/>
+                    <padding
+                        android:left="@dimen/overlay_padding"
+                        android:top="@dimen/overlay_padding"
+                        android:right="@dimen/overlay_padding"
+                        android:bottom="@dimen/overlay_padding" />
+                </shape>
+            </item>
+        </ripple>
     </item>
-    <item android:left="0dp" android:right="0dp">
-        <shape android:shape="line">
-            <stroke/>
-        </shape>
-
-    </item>
-    <item
-            android:bottom="2dp"
-            android:left="2dp"
-            android:right="2dp"
-            android:top="2dp">
-        <shape android:shape="rectangle">
-            <stroke
-                    android:width="5px" android:color="?attr/borderColor"/>
-            <corners android:radius="4dp"/>
-        </shape>
-    </item>
+    <item android:drawable="@drawable/line_layer" />
 </layer-list>
-
