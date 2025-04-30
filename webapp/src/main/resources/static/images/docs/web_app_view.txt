@@ -1,0 +1,1 @@
+This image should show the web version of the app, which allows users to practice bending notes directly in their browser. The view should show the harmonica grid, controls for selecting key and tuning, and the expert mode options for algorithm, concert pitch, and confidence level. It should also show the start/stop buttons and the result display area.

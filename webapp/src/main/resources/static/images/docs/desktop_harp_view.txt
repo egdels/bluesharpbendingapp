@@ -1,0 +1,1 @@
+This image should show the desktop application's main harmonica view, displaying a harmonica with its holes and notes. The view should show how the app visualizes the notes being played, with indicators for when a note is bent correctly. The desktop version might have a different layout or additional features compared to the Android version.

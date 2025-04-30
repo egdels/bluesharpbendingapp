@@ -285,11 +285,17 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
             labelView.setGravity(android.view.Gravity.CENTER);
             labelView.setText(String.valueOf(channel));
+            labelView.setAutoSizeTextTypeUniformWithConfiguration(
+                    8, // Min text size in SP
+                    14, // Max text size in SP
+                    1, // Step granularity in SP
+                    TypedValue.COMPLEX_UNIT_SP // Unit of measurement
+            );
 
             // Use Material Design text appearance
-            labelView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Subtitle1);
+            labelView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
+            // Make text bold for better readability
             labelView.setTypeface(labelView.getTypeface(), android.graphics.Typeface.BOLD);
-
             // Use fixed IDs for channel labels to support testing
             int channelId;
             if (channelIds.containsKey(channel)) {
@@ -354,7 +360,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         // Use Material Design text appearance
         textView.setGravity(android.view.Gravity.CENTER);
         textView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
-        textView.setTextColor(getResources().getColor(R.color.black, null));
+        // textView.setTextColor(getResources().getColor(R.color.black, null));
         textView.setSingleLine(true); // Prevent text from wrapping to a new line
         // Set auto-size with min and max text sizes to ensure readability
         textView.setAutoSizeTextTypeUniformWithConfiguration(

@@ -85,7 +85,7 @@ This document contains a list of actionable improvement tasks for the Bluesharp 
 
 18. [ ] Improve user documentation
     - [ ] Create user guides for each platform
-    - [ ] Add screenshots and examples
+    - [x] Add screenshots and examples
     - [ ] Document all features and settings
 
 19. [ ] Add developer onboarding documentation

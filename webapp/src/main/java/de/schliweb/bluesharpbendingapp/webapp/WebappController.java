@@ -58,6 +58,20 @@ public class WebappController {
     }
 
     /**
+     * Handles GET requests to the "/doc.html" endpoint and returns a view named "doc".
+     *
+     * @return a ModelAndView object with the view name set to "doc"
+     */
+    @GetMapping("/doc.html")
+    public ModelAndView doc() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("doc");
+
+        return modelAndView;
+    }
+
+    /**
      * Handles requests for the impressum (imprint) page, which contains legal information
      * about the website operator, contact details, and other information required by
      * German law for website operators.

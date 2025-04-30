@@ -208,10 +208,6 @@ public class TextViewUtils {
         // Use SpannableStringBuilder for more efficient span operations
         Spannable spannableString = new SpannableString(noteText + "\n" + centsString);
 
-        // Apply Material Design text appearance
-        // Set the color for the entire text to use the theme's text color
-        noteTextView.setTextColor(noteTextView.getContext().getResources().getColor(android.R.color.black, noteTextView.getContext().getTheme()));
-
         // Make the note text bold (first part only)
         spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
