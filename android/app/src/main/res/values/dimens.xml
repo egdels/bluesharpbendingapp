@@ -9,4 +9,14 @@
     <dimen name="overlay_corner_radius">24dp</dimen>
     <dimen name="overlay_padding">24dp</dimen>
     <dimen name="overlay_stroke_width">1dp</dimen>
+
+    <!-- Settings screen dimensions -->
+    <dimen name="settings_margin">16dp</dimen>
+    <dimen name="settings_padding">16dp</dimen>
+    <dimen name="settings_group_margin">12dp</dimen>
+    <dimen name="settings_item_margin">8dp</dimen>
+    <dimen name="settings_card_corner_radius">8dp</dimen>
+    <dimen name="settings_card_elevation">2dp</dimen>
+    <dimen name="settings_header_margin">16dp</dimen>
+    <dimen name="settings_divider_height">1dp</dimen>
 </resources>

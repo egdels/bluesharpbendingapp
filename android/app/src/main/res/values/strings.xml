@@ -50,4 +50,14 @@
     <string name="training_precision_label">Precision</string>
     <string name="training_progress_label">Progress</string>
     <string name="settings_conf_label">Confidences</string>
+
+    <!-- Settings screen section headers -->
+    <string name="settings_harp_header">Harp Settings</string>
+    <string name="settings_microphone_header">Microphone Settings</string>
+    <string name="settings_app_header">App Settings</string>
+
+    <!-- Training screen section headers -->
+    <string name="training_note_header">Note Display</string>
+    <string name="training_settings_header">Training Settings</string>
+    <string name="training_control_header">Training Control</string>
 </resources>

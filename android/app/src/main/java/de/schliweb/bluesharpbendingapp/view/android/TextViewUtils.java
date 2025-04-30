@@ -215,14 +215,14 @@ public class TextViewUtils {
         // Make the note text bold (first part only)
         spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Increase size of note text by factor 1.5
-        spannableString.setSpan(new RelativeSizeSpan(1.5f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // Increase size of note text by factor 1.0
+        spannableString.setSpan(new RelativeSizeSpan(1.0f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Apply monospace font to the cents part
         spannableString.setSpan(new TypefaceSpan("monospace"), noteText.length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        // Make cents part 1.2 times larger than normal text
-        spannableString.setSpan(new RelativeSizeSpan(1.2f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // Make cents part 0.5 times smaller than normal text
+        spannableString.setSpan(new RelativeSizeSpan(0.5f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Set the final formatted text to the TextView
         noteTextView.setText(spannableString);

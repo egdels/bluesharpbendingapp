@@ -18,7 +18,7 @@ Colors are defined in the `AppColors` class (`de.schliweb.bluesharpbendingapp.vi
 Example usage:
 ```java
 // Get the color for a blow bend note
-String blowBendColor = AppColors.BLOW_BEND_NOTE; // Returns "#ff9800"
+String blowBendColor = AppColors.BLOW_BEND_NOTE; // Returns "#FF6A00"
 ```
 
 ### Dimensions
@@ -44,7 +44,7 @@ The `StyleUtils` class (`de.schliweb.bluesharpbendingapp.view.style.StyleUtils`)
 Example usage:
 ```java
 // Get the background color for a blow bend note
-String color = StyleUtils.getNoteBackgroundColor(true, true, false); // Returns "#ff9800"
+String color = StyleUtils.getNoteBackgroundColor(true, true, false); // Returns "#FF6A00"
 
 // Get the corner radius for a note
 int cornerRadius = StyleUtils.getNoteCornerRadius(); // Returns 8

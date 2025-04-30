@@ -152,37 +152,37 @@ Hyperlink:visited {
 
 /* Styling for blow notes */
 .blowNote {
-    -fx-background-color: #9c9ba1; /* Grey - AppColors.BLOW_NOTE */
+    -fx-background-color: #5B5A60; /* Darker Grey - AppColors.BLOW_NOTE */
     -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for draw notes */
 .drawNote {
-    -fx-background-color: #9c9ba1; /* Grey - AppColors.DRAW_NOTE */
+    -fx-background-color: #5B5A60; /* Darker Grey - AppColors.DRAW_NOTE */
     -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for draw bend notes */
 .drawBendNote {
-    -fx-background-color: #6efdfd; /* Light blue - AppColors.DRAW_BEND_NOTE */
+    -fx-background-color: #0057FF; /* Lighter and stronger Blue - AppColors.DRAW_BEND_NOTE */
     -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for blow bend notes */
 .blowBendNote {
-    -fx-background-color: #ff9800; /* Orange - AppColors.BLOW_BEND_NOTE */
+    -fx-background-color: #FF6A00; /* More intense Orange - AppColors.BLOW_BEND_NOTE */
     -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for overblow notes */
 .overBlowNote {
-    -fx-background-color: #ff00ff; /* Magenta - AppColors.OVERBLOW_NOTE */
+    -fx-background-color: #E100E1; /* Magenta - AppColors.OVERBLOW_NOTE */
     -fx-background-radius: 8; /* Ensure consistent radius */
 }
 
 /* Styling for overdraw notes */
 .overDrawNote {
-    -fx-background-color: #ff00ff; /* Magenta - AppColors.OVERDRAW_NOTE */
+    -fx-background-color: #E100E1; /* Magenta - AppColors.OVERDRAW_NOTE */
     -fx-background-radius: 8; /* Ensure consistent radius */
 }
 

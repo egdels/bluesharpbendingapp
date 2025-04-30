@@ -32,95 +32,111 @@
     tools:context=".view.android.TrainingFragment">
 
     <LinearLayout
-        android:id="@+id/training_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/settings_padding">
+        android:orientation="horizontal">
 
-        <!-- Note Display Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/settings_group_margin"
-            app:cardCornerRadius="@dimen/settings_card_corner_radius"
-            app:cardElevation="@dimen/settings_card_elevation">
+        <!-- Left Section: Note Display -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/settings_padding">
 
-            <LinearLayout
+            <!-- Note Display Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="@dimen/settings_card_corner_radius"
+                app:cardElevation="@dimen/settings_card_elevation">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/settings_padding">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_header_margin"
+                        android:text="@string/training_note_header"
+                        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/settings_divider_height"
+                        android:layout_marginBottom="@dimen/settings_item_margin"
+                        android:background="?attr/colorOutline" />
+
+                    <TextView
+                        android:id="@+id/training_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/note_blow"
+                        android:gravity="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:visibility="visible" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Right Section: Training Settings and Control -->
+        <LinearLayout
+            android:id="@+id/training_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/settings_padding">
+
+            <!-- Training Settings Card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/settings_padding">
+                android:layout_marginBottom="@dimen/settings_group_margin"
+                app:cardCornerRadius="@dimen/settings_card_corner_radius"
+                app:cardElevation="@dimen/settings_card_elevation">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/settings_header_margin"
-                    android:text="@string/training_note_header"
-                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                    android:textColor="?attr/colorPrimary" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_divider_height"
-                    android:layout_marginBottom="@dimen/settings_item_margin"
-                    android:background="?attr/colorOutline" />
-
-                <TextView
-                    android:id="@+id/training_note"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:background="@drawable/note_blow"
-                    android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:visibility="visible" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Training Settings Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/settings_group_margin"
-            app:cardCornerRadius="@dimen/settings_card_corner_radius"
-            app:cardElevation="@dimen/settings_card_elevation">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/settings_padding">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/settings_header_margin"
-                    android:text="@string/training_settings_header"
-                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                    android:textColor="?attr/colorPrimary" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_divider_height"
-                    android:layout_marginBottom="@dimen/settings_item_margin"
-                    android:background="?attr/colorOutline" />
-
-                <!-- Training Type Setting -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/settings_item_margin"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:padding="@dimen/settings_padding">
 
                     <TextView
-                        android:id="@+id/training_trainings_label"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/training_trainings_label"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:layout_marginBottom="@dimen/settings_header_margin"
+                        android:text="@string/training_settings_header"
+                        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                        android:textColor="?attr/colorPrimary" />
 
-                    <Spinner
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/settings_divider_height"
+                        android:layout_marginBottom="@dimen/settings_item_margin"
+                        android:background="?attr/colorOutline" />
+
+                    <!-- Training Type Setting -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_item_margin"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/training_trainings_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/training_trainings_label"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                        <Spinner
                         android:id="@+id/training_trainings_list"
                         style="@style/ModernSpinner"
                         android:layout_width="wrap_content"
@@ -216,5 +232,6 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>

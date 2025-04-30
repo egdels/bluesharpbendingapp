@@ -36,10 +36,10 @@
     <color name="secondary_variant">#C41C00</color>
 
     <!-- Note colors -->
-    <color name="orange">#FF9800</color>
-    <color name="blue">#6efdfd</color>
-    <color name="grey">#9c9ba1</color>
-    <color name="magenta">#ff00ff</color>
+    <color name="orange">#FF6A00</color> <!-- Intensiveres Orange -->
+    <color name="blue">#0057FF</color>   <!-- Helleres und stärkeres Blau -->
+    <color name="grey">#5B5A60</color>   <!-- Dunkleres Grau für besseren Kontrast -->
+    <color name="magenta">#E100E1</color>
 
     <!-- Additional colors for potential future use -->
     <color name="success">#4CAF50</color>

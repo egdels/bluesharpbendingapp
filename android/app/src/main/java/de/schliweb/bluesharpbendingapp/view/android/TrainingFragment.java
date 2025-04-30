@@ -26,6 +26,7 @@ package de.schliweb.bluesharpbendingapp.view.android;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,6 +167,13 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
     @Override
     public void initTrainingContainer(TrainingContainer trainingContainer) {
         TextView textView = binding.trainingNote;
+        // Set auto-size with min and max text sizes to ensure readability
+        textView.setAutoSizeTextTypeUniformWithConfiguration(
+                16, // Min text size in SP
+                100, // Max text size in SP
+                2, // Step granularity in SP
+                TypedValue.COMPLEX_UNIT_SP // Unit of measurement
+        );
         textView.setVisibility(View.VISIBLE);
         LayerDrawable layout = (LayerDrawable) textView.getBackground();
         GradientDrawable line = (GradientDrawable) layout.getDrawable(1);

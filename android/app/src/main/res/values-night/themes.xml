@@ -67,7 +67,6 @@
         <item name="drawBackgroundColor">@color/blue</item>
         <item name="blowBackgroundColor">@color/orange</item>
         <item name="overblowOverflowBackgroundColor">@color/magenta</item>
-        <item name="blowTextColor">@color/md_theme_dark_onTertiaryContainer</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">

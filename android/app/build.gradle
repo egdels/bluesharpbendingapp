@@ -89,7 +89,7 @@ dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.core:core-ktx:1.16.0'
     testImplementation 'junit:junit:4.13.2'
     debugImplementation "androidx.fragment:fragment-testing:1.8.6"
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

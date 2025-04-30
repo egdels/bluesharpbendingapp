@@ -27,6 +27,5 @@
     <attr name="drawBackgroundColor" format="color"/>
     <attr name="blowBackgroundColor" format="color"/>
     <attr name="channelBackgroundColor" format="color"/>
-    <attr name="blowTextColor" format="color"/>
     <attr name="overblowOverflowBackgroundColor" format="color"/>
 </resources>

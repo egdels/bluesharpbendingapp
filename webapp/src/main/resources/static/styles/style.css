@@ -55,7 +55,7 @@ main {
 
 /* ---------------- Start Header Styles --------------------------- */
 header {
-    background-color: #ff9800;
+    background-color: #FF6A00;
     padding: 20px 0 20px 0;
 }
 
@@ -128,8 +128,8 @@ nav {
 
 /* ---------------- Start Footer Styles ---------------- */
 footer {
-    background-color: #6efdfd;
-    color: black;
+    background-color: #0057FF;
+    color: white;
     text-align: center;
     margin-top: auto;
     width: 100%;
@@ -232,27 +232,27 @@ footer {
 
 
 .blow-bend-note {
-    background-color: #ff9800; /* AppColors.BLOW_BEND_NOTE */
+    background-color: #FF6A00; /* AppColors.BLOW_BEND_NOTE - More intense Orange */
 }
 
 .blow-note {
-    background-color: #9c9ba1; /* AppColors.BLOW_NOTE */
+    background-color: #5B5A60; /* AppColors.BLOW_NOTE - Darker Grey for better contrast */
 }
 
 .draw-note {
-    background-color: #9c9ba1; /* AppColors.DRAW_NOTE */
+    background-color: #5B5A60; /* AppColors.DRAW_NOTE - Darker Grey for better contrast */
 }
 
 .draw-bend-note {
-    background-color: #6efdfd; /* AppColors.DRAW_BEND_NOTE */
+    background-color: #0057FF; /* AppColors.DRAW_BEND_NOTE - Lighter and stronger Blue */
 }
 
 .overblow-note {
-    background-color: #ff00ff; /* AppColors.OVERBLOW_NOTE */
+    background-color: #E100E1; /* AppColors.OVERBLOW_NOTE - Magenta */
 }
 
 .overdraw-note {
-    background-color: #ff00ff; /* AppColors.OVERDRAW_NOTE */
+    background-color: #E100E1; /* AppColors.OVERDRAW_NOTE - Magenta */
 }
 
 .highlight {

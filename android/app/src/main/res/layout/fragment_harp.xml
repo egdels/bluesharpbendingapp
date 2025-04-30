@@ -67,7 +67,11 @@
             android:layout_height="match_parent"
             android:background="@drawable/overlay_note"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeMaxTextSize="100sp"
+            android:autoSizeStepGranularity="2sp"/>
 
     </com.google.android.material.card.MaterialCardView>
 

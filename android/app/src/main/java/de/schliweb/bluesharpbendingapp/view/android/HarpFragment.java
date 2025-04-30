@@ -24,6 +24,7 @@ package de.schliweb.bluesharpbendingapp.view.android;
  */
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +99,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * <p>
      * The map includes predefined mappings for specific channels used within the application.
      */
-    private static final Map<Integer, Integer> channelIds = Map.of(1, R.id.channel_1, 2, R.id.channel_2, 3, R.id.channel_3, 4, R.id.channel_4, 5, R.id.channel_5, 6, R.id.channel_6, 7, R.id.channel_8, 9, R.id.channel_9, 10, R.id.channel_10);
+    private static final Map<Integer, Integer> channelIds = Map.of(1, R.id.channel_1, 2, R.id.channel_2, 3, R.id.channel_3, 4, R.id.channel_4, 5, R.id.channel_5, 6, R.id.channel_6, 7, R.id.channel_7, 8, R.id.channel_8, 9, R.id.channel_9, 10, R.id.channel_10);
     /**
      * A static and final map that associates channel identifiers with their corresponding
      * notes and resource IDs. Each channel is represented by an integer key, and its value
@@ -351,10 +352,17 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         textView.setBackgroundResource(backgroundResId);
 
         // Use Material Design text appearance
-        // textView.setTextColor(getResources().getColor(R.color.black, null));
         textView.setGravity(android.view.Gravity.CENTER);
         textView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
         textView.setTextColor(getResources().getColor(R.color.black, null));
+        textView.setSingleLine(true); // Prevent text from wrapping to a new line
+        // Set auto-size with min and max text sizes to ensure readability
+        textView.setAutoSizeTextTypeUniformWithConfiguration(
+            8, // Min text size in SP
+            14, // Max text size in SP
+            1, // Step granularity in SP
+            TypedValue.COMPLEX_UNIT_SP // Unit of measurement
+        );
         textView.setVisibility(View.INVISIBLE);
         int id;
         if (channelNoteIds.containsKey(channel) && channelNoteIds.get(channel).containsKey(note)) {
@@ -367,7 +375,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         // Add padding for better touch target size
         int padding = StyleUtils.getNotePadding();
         textView.setPadding(padding, padding, padding, padding);
-        // textView.setPadding(8,8,8,8);
+
         // Make text bold for better readability
         textView.setTypeface(textView.getTypeface(), android.graphics.Typeface.BOLD);
 

@@ -26,11 +26,15 @@
 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape android:shape="rectangle">
-            <solid android:color="?attr/channelBackgroundColor"/>
-            <corners android:radius="@dimen/note_corner_radius"/>
-            <stroke android:width="@dimen/note_stroke_width" android:color="?attr/colorOutline"/>
-        </shape>
+        <ripple android:color="?attr/colorControlHighlight">
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="?attr/channelBackgroundColor"/>
+                    <corners android:radius="@dimen/note_corner_radius"/>
+                    <stroke android:width="@dimen/note_stroke_width" android:color="?attr/colorOutline"/>
+                </shape>
+            </item>
+        </ripple>
     </item>
     <item android:drawable="@drawable/line_layer" />
 </layer-list>
