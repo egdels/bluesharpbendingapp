@@ -57,4 +57,44 @@
         <item name="android:paddingBottom">6dp</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
+
+    <!-- Popup menu styles for larger menu items -->
+    <style name="LargePopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">?attr/colorSurface</item>
+        <item name="android:dropDownWidth">@dimen/menu_min_width</item>
+        <item name="android:popupElevation">8dp</item>
+    </style>
+
+    <!-- Popup menu item styles for larger menu items -->
+    <style name="LargePopupMenuTextAppearance" parent="TextAppearance.AppCompat.Widget.PopupMenu.Large">
+        <item name="android:textSize">@dimen/menu_text_size</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <!-- Popup menu item styles for larger menu items -->
+    <style name="LargePopupMenuItem" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:paddingStart">@dimen/menu_item_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/menu_item_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/menu_item_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/menu_item_padding_vertical</item>
+        <item name="android:minHeight">@dimen/menu_item_height</item>
+        <item name="android:divider">@android:color/transparent</item>
+        <item name="android:dividerHeight">0dp</item>
+    </style>
+
+    <!-- Style for individual menu items -->
+    <style name="LargeMenuItemStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:minWidth">@dimen/menu_min_width</item>
+        <item name="android:minHeight">@dimen/menu_item_height</item>
+    </style>
+
+    <!-- Style for overflow button (three dots) -->
+    <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:minWidth">56dp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:scaleX">1.0</item>
+        <item name="android:scaleY">1.0</item>
+    </style>
 </resources>

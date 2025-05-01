@@ -31,9 +31,9 @@
     <string name="action_harp">Let\'s Bend</string>
     <string name="about_description">Android version of BluesHarpBendingApp</string>
     <string name="about_version">%1$s (%2$d)</string>
-    <string name="settings_key_label">Key of your harp</string>
-    <string name="settings_tune_label">Tuning of your harp</string>
-    <string name="settings_pitches_label">Concert Pitch (Hz)</string>
+    <string name="settings_key_label">Key</string>
+    <string name="settings_tune_label">Tuning</string>
+    <string name="settings_pitches_label">Concert Pitch</string>
     <string name="settings_reset_label">Reset Settings</string>
     <string name="settings_reset_button">Reset</string>
     <string name="settings_screenlock_label">Keep screen on</string>
@@ -42,14 +42,15 @@
     </string>
     <string name="permission_information_title">Information</string>
     <string name="permission_information_button_label">Proceed anyway</string>
-    <string name="settings_algo_label">Algorithms</string>
+    <string name="settings_algo_label">Algorithm</string>
     <string name="action_training">Training</string>
+    <string name="action_tuner">Tuner</string>
     <string name="training_start_button">Start</string>
     <string name="training_stop_button">Stop</string>
-    <string name="training_trainings_label">Trainings</string>
+    <string name="training_trainings_label">Scale</string>
     <string name="training_precision_label">Precision</string>
     <string name="training_progress_label">Progress</string>
-    <string name="settings_conf_label">Confidences</string>
+    <string name="settings_conf_label">Confidence</string>
 
     <!-- Settings screen section headers -->
     <string name="settings_harp_header">Harp Settings</string>
@@ -60,4 +61,19 @@
     <string name="training_note_header">Note Display</string>
     <string name="training_settings_header">Training Settings</string>
     <string name="training_control_header">Training Control</string>
+
+    <!-- Tuner screen strings -->
+    <string name="tuner_start_button">Start Tuning</string>
+    <string name="tuner_stop_button">Stop Tuning</string>
+    <string name="tuner_listening">Listening...</string>
+    <string name="tuner_start_prompt">Start tuning to detect notes</string>
+    <string name="tuner_in_tune">In tune!</string>
+    <string name="tuner_slightly_flat">Slightly flat</string>
+    <string name="tuner_slightly_sharp">Slightly sharp</string>
+    <string name="tuner_too_flat">Too flat</string>
+    <string name="tuner_too_sharp">Too sharp</string>
+    <string name="tuner_stopped">Tuning stopped</string>
+    <string name="tuner_cents_format">%d cents</string>
+    <string name="tuner_note_format">Note: %s</string>
+    <string name="tuner_frequency_format">Frequency: %d Hz</string>
 </resources>

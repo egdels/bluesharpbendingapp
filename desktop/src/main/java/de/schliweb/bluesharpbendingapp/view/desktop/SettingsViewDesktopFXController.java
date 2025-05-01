@@ -30,7 +30,6 @@ import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
-import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
@@ -83,23 +82,6 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
      */
     @FXML
     public Label valueNote;
-
-    /**
-     * Represents a tuning meter integrated into the application's user interface.
-     * This variable is an instance of {@link TuningMeterFX}, which provides a graphical
-     * display for visualizing the deviation in musical pitch.
-     * <p>
-     * The tuning meter is used as part of the settings interface to help users
-     * adjust and monitor pitch accuracy. It visually displays the deviation in
-     * cents, ranging from -50 to +50, with a needle indicating the current value.
-     * The meter is designed to respond in real time to changes in pitch.
-     * <p>
-     * This variable is annotated with {@code @FXML}, indicating that it is
-     * injected and controlled by the associated FXML file for the
-     * {@code SettingsViewDesktopFXController}.
-     */
-    @FXML
-    public TuningMeterFX tuningMeter;
 
     /**
      * Represents a ComboBox UI element for selecting algorithm options in the
@@ -433,9 +415,6 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
             String note = NoteLookup.getNoteName(frequency);
             if (note != null) {
                 javafx.application.Platform.runLater(() -> valueNote.setText(note));
-                double referenceFrequency = NoteLookup.getNoteFrequency(note);
-                double cents = NoteUtils.getCents(frequency, referenceFrequency);
-                tuningMeter.setCents(cents);
             }
         }
     }

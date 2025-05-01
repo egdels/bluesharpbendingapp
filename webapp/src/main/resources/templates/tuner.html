@@ -1,0 +1,509 @@
+<!--
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+-->
+<!DOCTYPE html>
+<html th:lang="#{language}" th:xmllang="#{language}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/general :: head}">
+    <!-- This content will be replaced by the fragment, but we include it here for clarity -->
+    <!-- Polyfills for older browsers will be added in the fragment -->
+</head>
+<body>
+<header th:replace="~{fragments/general :: header}"></header>
+
+<main>
+    <div class="container">
+        <h2>Tuner</h2>
+        <div class="select-container">
+            <div class="select-group">
+                <label for="supportedAlgorithms">Algorithm:</label>
+                <select class="form-control" id="supportedAlgorithms" onchange="handleSelectionChange()"
+                        th:name="supportedAlgorithms">
+                    <option disabled selected th:if="${selectedAlgorithm == null}" value="">Please select...</option>
+                    <option th:each="algorithm : ${supportedAlgorithms}"
+                            th:selected="${algorithm == selectedAlgorithm}"
+                            th:text="${algorithm}"
+                            th:value="${algorithm}">
+                    </option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="supportedConcertPitches">Concert Pitch:</label>
+                <select class="form-control" id="supportedConcertPitches" onchange="handleSelectionChange()"
+                        th:name="supportedConcertPitches">
+                    <option disabled selected th:if="${selectedConcertPitch == null}" value="">Please select...</option>
+                    <option th:each="concertPitch : ${supportedConcertPitches}"
+                            th:selected="${concertPitch == selectedConcertPitch}"
+                            th:text="${concertPitch}"
+                            th:value="${concertPitch}">
+                    </option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="supportedConfidences">Confidence:</label>
+                <select class="form-control" id="supportedConfidences" onchange="handleSelectionChange()"
+                        th:name="supportedConfidences">
+                    <option disabled selected th:if="${selectedConfidence == null}" value="">Please select...</option>
+                    <option th:each="confidence : ${supportedConfidences}"
+                            th:selected="${confidence == selectedConfidence}"
+                            th:text="${confidence}"
+                            th:value="${confidence}">
+                    </option>
+                </select>
+            </div>
+            <div class="select-group button-group single-select">
+                <div class="form-check button-container">
+                    <button id="start">Start</button>
+                    <button disabled id="stop">Stop</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tuner Display -->
+        <div class="tuner-display">
+            <div class="note-display">
+                <h1 id="note-name">--</h1>
+                <p id="frequency">-- Hz</p>
+            </div>
+            <div class="tuning-meter">
+                <div class="meter-container">
+                    <div class="meter-scale">
+                        <div class="scale-mark" style="left: 0%;">-50</div>
+                        <div class="scale-mark" style="left: 25%;">-25</div>
+                        <div class="scale-mark" style="left: 50%;">0</div>
+                        <div class="scale-mark" style="left: 75%;">+25</div>
+                        <div class="scale-mark" style="left: 100%;">+50</div>
+                    </div>
+                    <div class="meter-indicator" id="meter-indicator"></div>
+                    <div class="meter-needle" id="meter-needle"></div>
+                </div>
+                <p id="cents-value">0 cents</p>
+                <p id="tuning-status">Start tuning to detect notes</p>
+            </div>
+        </div>
+        
+        <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd;">
+            Result will be displayed here...
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/general :: footer}"></footer>
+
+<script th:inline="javascript" type="module">
+    import YINPitchDetector from './scripts/YINPitchDetector.js';
+    import MPMPitchDetector from './scripts/MPMPitchDetector.js';
+    import NoteLookup from './scripts/NoteLookup.js';
+    import NoteUtils from './scripts/NoteUtils.js';
+
+    let confidence = 0.7;
+    let concertPitch = 442;
+    let resultDiv;
+    let mediaStream;
+    let audioContext;
+    let processingNode;
+    let algorithm = 'YIN';
+    
+    // Tuner display elements
+    let noteNameElement;
+    let frequencyElement;
+    let centsValueElement;
+    let tuningStatusElement;
+    let meterNeedle;
+
+    function isAudioWorkletSupported() {
+        return window.AudioContext && 'audioWorklet' in AudioContext.prototype;
+    }
+
+    function isSafari() {
+        return !!navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+            navigator.userAgent.indexOf('CriOS') === -1 &&
+            navigator.userAgent.indexOf('FxiOS') === -1;
+    }
+
+    function isGetUserMediaSupported() {
+        return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    }
+
+    function isWebAudioSupported() {
+        return !!(window.AudioContext || window.webkitAudioContext);
+    }
+
+    function isScriptProcessorSupported() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return false;
+
+        const ctx = new AudioContext();
+        const isSupported = typeof ctx.createScriptProcessor === 'function';
+        ctx.close();
+        return isSupported;
+    }
+
+    function handleSelectionChange() {
+        // Update settings when selections change
+        algorithm = document.getElementById('supportedAlgorithms').value;
+        concertPitch = document.getElementById('supportedConcertPitches').value;
+        confidence = document.getElementById('supportedConfidences').value;
+        
+        NoteLookup.concertPitch = concertPitch;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize UI elements
+        resultDiv = document.getElementById('result');
+        noteNameElement = document.getElementById('note-name');
+        frequencyElement = document.getElementById('frequency');
+        centsValueElement = document.getElementById('cents-value');
+        tuningStatusElement = document.getElementById('tuning-status');
+        meterNeedle = document.getElementById('meter-needle');
+        
+        // Hide result div initially
+        resultDiv.style.visibility = 'hidden';
+        resultDiv.style.display = 'none';
+
+        // Check browser compatibility
+        const hasGetUserMedia = isGetUserMediaSupported();
+        const hasWebAudio = isWebAudioSupported();
+        const hasAudioWorklet = isAudioWorkletSupported();
+        const hasScriptProcessor = isScriptProcessorSupported();
+        const isSafariBrowser = isSafari();
+
+        // Display appropriate warnings based on browser capabilities
+        if (!hasGetUserMedia) {
+            showError('Your browser does not support microphone access. Please use a modern browser like Chrome, Firefox, or Edge.', '#ffcc00');
+        } else if (!hasWebAudio) {
+            showError('Your browser does not support audio processing. Please use a modern browser like Chrome, Firefox, or Edge.', '#ffcc00');
+        } else if (!hasAudioWorklet && !hasScriptProcessor) {
+            showError('Your browser does not support required audio processing features. Please use a modern browser like Chrome, Firefox, or Edge.', '#ffcc00');
+        } else if (isSafariBrowser) {
+            showError('Safari has limited support for audio processing. The app will use a fallback method which may affect performance.', '#ffcc00');
+        }
+
+        document.getElementById('start').addEventListener('click', async () => {
+            document.getElementById('start').disabled = true;
+            document.getElementById('stop').disabled = false;
+
+            resultDiv.style.visibility = 'hidden';
+            resultDiv.style.display = 'none';
+
+            // Update settings from UI
+            concertPitch = document.getElementById('supportedConcertPitches').value;
+            NoteLookup.concertPitch = concertPitch;
+            confidence = document.getElementById('supportedConfidences').value;
+            algorithm = document.getElementById('supportedAlgorithms').value;
+
+            try {
+                // Request microphone access with error handling
+                try {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
+                } catch (micError) {
+                    handleError(new Error(`Microphone access denied: ${micError.message}`));
+                    return;
+                }
+
+                // Initialize AudioContext with fallback
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioContextClass();
+
+                // Resume AudioContext if it's suspended (needed for some browsers)
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+
+                // Feature-based processing
+                if (isAudioWorkletSupported() && !isSafari()) {
+                    try {
+                        // Modern approach with AudioWorkletNode
+                        await audioContext.audioWorklet.addModule('./scripts/PitchProcessor.js');
+
+                        processingNode = new AudioWorkletNode(audioContext, 'pitch-processor', {
+                            numberOfInputs: 1,
+                            numberOfOutputs: 1,
+                            processorOptions: {
+                                sampleRate: audioContext.sampleRate,
+                                algorithm: algorithm
+                            },
+                        });
+
+                        processingNode.port.onmessage = (event) => {
+                            processAudioResult(event.data);
+                        };
+                    } catch (workletError) {
+                        console.warn("AudioWorklet failed to initialize, falling back to ScriptProcessor:", workletError);
+                        // If AudioWorklet fails, fall back to ScriptProcessor
+                        if (isScriptProcessorSupported()) {
+                            initializeScriptProcessor();
+                        } else {
+                            throw new Error("Neither AudioWorklet nor ScriptProcessor are available");
+                        }
+                    }
+                } else if (isScriptProcessorSupported()) {
+                    // Fallback to the old ScriptProcessorNode
+                    initializeScriptProcessor();
+                } else {
+                    throw new Error("Your browser doesn't support required audio processing features");
+                }
+
+                // Helper function to initialize ScriptProcessor
+                function initializeScriptProcessor() {
+                    processingNode = audioContext.createScriptProcessor(8192, 1, 1);
+
+                    processingNode.onaudioprocess = (e) => {
+                        const audioData = e.inputBuffer.getChannelData(0);
+                        let result;
+                        if(algorithm === 'YIN') {
+                            result = YINPitchDetector.detectPitch(audioData, audioContext.sampleRate);
+                        }
+                        if(algorithm === 'MPM') {
+                            result = MPMPitchDetector.detectPitch(audioData, audioContext.sampleRate);
+                        }
+                        processAudioResult(result);
+                    };
+                }
+
+                const source = audioContext.createMediaStreamSource(mediaStream);
+                source.connect(processingNode);
+                processingNode.connect(audioContext.destination);
+
+                // Update UI
+                tuningStatusElement.textContent = "Listening...";
+
+            } catch (err) {
+                handleError(err);
+            }
+        });
+
+        function processAudioResult(result) {
+            if (result.pitch && result.confidence >= confidence) {
+                const pitch = result.pitch;
+                const noteName = NoteLookup.getNoteName(pitch);
+                
+                if (noteName) {
+                    const noteFrequency = NoteLookup.getNoteFrequency(noteName);
+                    const cents = NoteUtils.getCents(pitch, noteFrequency);
+                    
+                    // Update UI elements
+                    noteNameElement.textContent = noteName;
+                    frequencyElement.textContent = Math.round(pitch) + " Hz";
+                    centsValueElement.textContent = Math.round(cents) + " cents";
+                    
+                    // Update tuning meter
+                    updateTuningMeter(cents);
+                    
+                    // Update result div for debugging
+                    resultDiv.innerHTML = `Note: ${noteName}, Frequency: ${Math.round(pitch)} Hz, Cents: ${Math.round(cents)}, Confidence: ${result.confidence}`;
+                }
+            }
+        }
+        
+        function updateTuningMeter(cents) {
+            // Normalize cents value to position the needle
+            // Cents range from -50 to +50, with 0 being perfectly in tune
+            const normalizedPosition = (cents + 50) / 100; // Convert to 0-1 range
+            const position = Math.max(0, Math.min(1, normalizedPosition)) * 100; // Convert to percentage and clamp
+            
+            // Position the needle
+            meterNeedle.style.left = `${position}%`;
+            
+            // Determine color based on how close to being in tune
+            let color;
+            if (Math.abs(cents) < 5) {
+                color = 'green';
+                tuningStatusElement.textContent = "In tune!";
+            } else if (Math.abs(cents) < 15) {
+                color = 'yellow';
+                tuningStatusElement.textContent = cents < 0 ? "Slightly flat" : "Slightly sharp";
+            } else {
+                color = 'red';
+                tuningStatusElement.textContent = cents < 0 ? "Too flat" : "Too sharp";
+            }
+            
+            meterNeedle.style.backgroundColor = color;
+        }
+
+        function handleError(err) {
+            console.error("Audio processing error:", err);
+
+            let errorMessage = err.message;
+            let errorColor = 'red';
+
+            // Provide more user-friendly error messages based on error type
+            if (errorMessage.includes('Permission denied') || errorMessage.includes('access denied') || 
+                errorMessage.includes('NotAllowedError') || errorMessage.includes('PermissionDeniedError')) {
+                errorMessage = "Microphone access was denied. Please allow microphone access and try again.";
+            } else if (errorMessage.includes('NotFoundError') || errorMessage.includes('DevicesNotFoundError')) {
+                errorMessage = "No microphone was found. Please connect a microphone and try again.";
+            } else if (errorMessage.includes('NotReadableError') || errorMessage.includes('TrackStartError')) {
+                errorMessage = "Could not access your microphone. It may be in use by another application.";
+            } else if (errorMessage.includes('AbortError')) {
+                errorMessage = "Microphone access was aborted. Please try again.";
+            } else if (errorMessage.includes('SecurityError')) {
+                errorMessage = "Microphone access was blocked due to security restrictions. Please use HTTPS or localhost.";
+            } else if (errorMessage.includes('support')) {
+                // For browser support issues, use yellow instead of red
+                errorColor = '#ffcc00';
+            }
+
+            showError(errorMessage, errorColor);
+
+            // Reset button states
+            document.getElementById('start').disabled = false;
+            document.getElementById('stop').disabled = true;
+
+            // Clean up any existing audio resources
+            cleanupAudio();
+        }
+        
+        function showError(message, color) {
+            resultDiv.style.visibility = 'visible';
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = color;
+            resultDiv.innerHTML = message;
+        }
+        
+        function cleanupAudio() {
+            if (processingNode) {
+                processingNode.disconnect();
+                processingNode = null;
+            }
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            if (audioContext) {
+                audioContext.close().catch(e => console.warn("Error closing AudioContext:", e));
+                audioContext = null;
+            }
+        }
+
+        // Stop button handler
+        document.getElementById('stop').addEventListener('click', () => {
+            cleanupAudio();
+            
+            // Reset UI
+            noteNameElement.textContent = "--";
+            frequencyElement.textContent = "-- Hz";
+            centsValueElement.textContent = "0 cents";
+            tuningStatusElement.textContent = "Start tuning to detect notes";
+            meterNeedle.style.left = "50%";
+            meterNeedle.style.backgroundColor = "gray";
+            
+            resultDiv.innerHTML = "Tuning stopped.";
+            document.getElementById('start').disabled = false;
+            document.getElementById('stop').disabled = true;
+        });
+    });
+</script>
+
+<style>
+    .tuner-display {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .note-display {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .note-display h1 {
+        font-size: 5rem;
+        margin: 0;
+    }
+    
+    .note-display p {
+        font-size: 1.5rem;
+        margin: 0;
+    }
+    
+    .tuning-meter {
+        width: 100%;
+        max-width: 600px;
+        text-align: center;
+    }
+    
+    .meter-container {
+        position: relative;
+        height: 60px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    
+    .meter-scale {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 0 10px;
+    }
+    
+    .scale-mark {
+        position: absolute;
+        bottom: 5px;
+        transform: translateX(-50%);
+        font-size: 12px;
+        color: #666;
+    }
+    
+    .meter-indicator {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 2px;
+        height: 100%;
+        background-color: #000;
+        z-index: 1;
+    }
+    
+    .meter-needle {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 4px;
+        height: 100%;
+        background-color: gray;
+        transform: translateX(-50%);
+        z-index: 2;
+        transition: left 0.1s ease-out;
+    }
+    
+    #cents-value {
+        font-size: 1.2rem;
+        margin: 10px 0;
+    }
+    
+    #tuning-status {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+</style>
+</body>
+</html>

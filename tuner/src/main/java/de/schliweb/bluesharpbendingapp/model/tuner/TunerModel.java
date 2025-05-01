@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+package de.schliweb.bluesharpbendingapp.model.tuner;
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the “Software”),
+ * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
@@ -13,7 +12,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -23,11 +22,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
--->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          style="@style/ModernSpinnerItem"
-          android:textAppearance="?android:attr/textAppearanceMedium"
-          android:maxLines="1"
-          android:ellipsize="end"/>
+
+/**
+ * Model class for the tuner application.
+ * This is a placeholder class to maintain the same package structure as the Desktop and Android applications.
+ */
+public class TunerModel {
+    // Placeholder class
+}

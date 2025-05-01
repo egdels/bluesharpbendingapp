@@ -275,7 +275,6 @@ public class MainWindowDesktopFXController implements MainWindow {
      */
     private TrainingViewDesktopFX trainingView;
 
-
     /**
      * Initializes the main controller by preparing the views and their respective containers.
      * <p>
@@ -494,6 +493,15 @@ public class MainWindowDesktopFXController implements MainWindow {
     @Override
     public boolean isTrainingViewActive() {
         return trainingViewContainer.isVisible();
+    }
+
+    /**
+     * Checks if the tuner view is currently active (visible).
+     *
+     * @return true if the tuner view is visible, false otherwise
+     */
+    public boolean isTunerViewActive() {
+        return false;
     }
 
     @Override

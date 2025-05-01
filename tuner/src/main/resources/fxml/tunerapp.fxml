@@ -23,27 +23,32 @@
 <?import de.schliweb.bluesharpbendingapp.view.desktop.TuningMeterFX?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             xmlns="http://javafx.com/javafx"
             fx:controller="de.schliweb.bluesharpbendingapp.tuner.RealTimeTuner" stylesheets="/styles/tunerapp.css" styleClass="tunerapp">
     <top>
-        <HBox spacing="20">
+        <VBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
-            <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <HBox spacing="20" alignment="CENTER">
                 <Label fx:id="noteLabel" styleClass="note-label" text="Note: --"/>
             </HBox>
-            <HBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <HBox spacing="20" alignment="CENTER">
                 <Label fx:id="frequencyLabel" styleClass="frequency-label" text="Frequency: --"/>
             </HBox>
-        </HBox>
+        </VBox>
     </top>
 
     <center>
-        <TuningMeterFX fx:id="tuningMeter"
-                       BorderPane.alignment="CENTER"/>
+        <VBox spacing="10" alignment="CENTER">
+            <TuningMeterFX fx:id="tuningMeter" VBox.vgrow="ALWAYS"/>
+            <Label fx:id="centsValueLabel" text="Cents: 0" styleClass="cents-label"/>
+            <Label fx:id="tuningStatusLabel" text="Stopped" styleClass="status-label"/>
+            <Button fx:id="startStopButton" text="Start" onAction="#toggleTuning" styleClass="start-stop-button"/>
+        </VBox>
     </center>
 
 </BorderPane>

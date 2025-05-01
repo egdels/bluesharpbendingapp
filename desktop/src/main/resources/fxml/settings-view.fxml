@@ -60,13 +60,6 @@
             <Label text="Note" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
             <Label fx:id="valueNote" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-            <Label text="Tuner" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <TuningMeterFX fx:id="tuningMeter"
-                           prefWidth="200"
-                           prefHeight="120"
-                           GridPane.rowIndex="4" GridPane.columnIndex="1"
-            />
-
             <Label text="Frequency" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
             <Label fx:id="valueFrequency" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 

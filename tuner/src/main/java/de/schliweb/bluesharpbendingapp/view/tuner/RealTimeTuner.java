@@ -1,4 +1,4 @@
-package de.schliweb.bluesharpbendingapp.tuner;
+package de.schliweb.bluesharpbendingapp.view.tuner;
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -27,11 +27,10 @@ import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.model.microphone.desktop.MicrophoneDesktop;
-import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.desktop.TuningMeterFX;
+import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.util.List;
@@ -55,42 +54,11 @@ public class RealTimeTuner implements MicrophoneHandler {
     private Label frequencyLabel;
 
     @FXML
-    private Label centsValueLabel;
-
-    @FXML
-    private Label tuningStatusLabel;
-
-    @FXML
-    private Button startStopButton;
-
-    @FXML
     private TuningMeterFX tuningMeter;
 
     @FXML
     private void initialize() {
         initializeMicrophone();
-        updateUIForStoppedState();
-    }
-
-    @FXML
-    public void toggleTuning() {
-        if (isTuning) {
-            stopTuning();
-            updateUIForStoppedState();
-        } else {
-            startTuning();
-            updateUIForListeningState();
-        }
-    }
-
-    private void updateUIForStoppedState() {
-        startStopButton.setText("Start");
-        tuningStatusLabel.setText("Stopped");
-    }
-
-    private void updateUIForListeningState() {
-        startStopButton.setText("Stop");
-        tuningStatusLabel.setText("Listening...");
     }
 
     public void startTuning() {
@@ -115,11 +83,11 @@ public class RealTimeTuner implements MicrophoneHandler {
     private void initializeMicrophone() {
         microphone = new MicrophoneDesktop();
         List<String> supportedAlgorithms = List.of(AbstractMicrophone.getSupportedAlgorithms());
-        int algorithmIndex = supportedAlgorithms.indexOf(DEFAULT_ALGORITHM);
+        int algorithmIndex = supportedAlgorithms.indexOf(DEFAULT_ALGORITHM); // Gibt den Index oder -1 zurück
         microphone.setAlgorithm(algorithmIndex);
         microphone.setName(DEFAULT_NAME);
         List<String> supportedConfidences = List.of(AbstractMicrophone.getSupportedConfidences());
-        int confidenceIndex = supportedConfidences.indexOf(DEFAULT_CONFIDENCE + "");
+        int confidenceIndex = supportedConfidences.indexOf(DEFAULT_CONFIDENCE + ""); // Gibt den Index oder -1 zurück
         microphone.setConfidence(confidenceIndex);
         microphone.setMicrophoneHandler(this);
     }
@@ -134,28 +102,15 @@ public class RealTimeTuner implements MicrophoneHandler {
         return pitch > 0;
     }
 
+
     private void processPitchData(double pitch) {
         String note = NoteLookup.getNoteName(pitch);
         double referenceFrequency = NoteLookup.getNoteFrequency(note);
         double cents = NoteUtils.getCents(pitch, referenceFrequency);
-
         Platform.runLater(() -> {
             noteLabel.setText("Note: " + note);
-            frequencyLabel.setText("Frequency: " + Math.round(pitch) + " Hz");
-            centsValueLabel.setText("Cents: " + Math.round(cents));
-            updateTuningStatus(cents);
+            frequencyLabel.setText("Frequency: " + Math.round(pitch));
         });
-
         tuningMeter.setCents(cents);
-    }
-
-    private void updateTuningStatus(double cents) {
-        if (Math.abs(cents) < 5) {
-            tuningStatusLabel.setText("In Tune");
-        } else if (Math.abs(cents) < 15) {
-            tuningStatusLabel.setText(cents < 0 ? "Slightly Flat" : "Slightly Sharp");
-        } else {
-            tuningStatusLabel.setText(cents < 0 ? "Too Flat" : "Too Sharp");
-        }
     }
 }

@@ -84,8 +84,9 @@
                     <Spinner
                         android:id="@+id/settings_key_list"
                         style="@style/ModernSpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:minHeight="48dp"
                         android:spinnerMode="dropdown" />
                 </LinearLayout>
@@ -108,8 +109,9 @@
                     <Spinner
                         android:id="@+id/settings_tune_list"
                         style="@style/ModernSpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:minHeight="48dp"
                         android:spinnerMode="dropdown" />
                 </LinearLayout>
@@ -131,8 +133,9 @@
                     <Spinner
                         android:id="@+id/settings_pitches_list"
                         style="@style/ModernSpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:minHeight="48dp"
                         android:spinnerMode="dropdown" />
                 </LinearLayout>
@@ -185,8 +188,9 @@
                     <Spinner
                         android:id="@+id/settings_algo_list"
                         style="@style/ModernSpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:minHeight="48dp"
                         android:spinnerMode="dropdown" />
                 </LinearLayout>
@@ -208,8 +212,9 @@
                     <Spinner
                         android:id="@+id/settings_conf_list"
                         style="@style/ModernSpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:minHeight="48dp"
                         android:spinnerMode="dropdown" />
                 </LinearLayout>

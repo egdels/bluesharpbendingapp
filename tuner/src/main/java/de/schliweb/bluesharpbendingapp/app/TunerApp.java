@@ -1,4 +1,4 @@
-package de.schliweb.bluesharpbendingapp.tuner;
+package de.schliweb.bluesharpbendingapp.app;
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +23,7 @@ package de.schliweb.bluesharpbendingapp.tuner;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.view.tuner.RealTimeTuner;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -49,7 +50,7 @@ public class TunerApp extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // Tuning is now started/stopped via the UI button
+        controller.startTuning();
     }
 
     @Override

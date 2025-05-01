@@ -37,7 +37,11 @@
             android:orderInCategory="100"
             android:title="@string/action_training"
             app:showAsAction="never"/>
-
+    <!--<item
+            android:id="@+id/action_tuner"
+            android:orderInCategory="100"
+            android:title="@string/action_tuner"
+            app:showAsAction="never"/>-->
     <item
             android:id="@+id/action_settings"
             android:orderInCategory="100"

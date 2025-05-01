@@ -23,7 +23,7 @@ package de.schliweb.bluesharpbendingapp.view;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.controller.*;
+
 
 /**
  * MainWindow serves as an interface for managing and interacting with different
@@ -130,5 +130,12 @@ public interface MainWindow {
      * @return true if the Android settings view is active; false otherwise
      */
     boolean isAndroidSettingsViewActive();
+
+    /**
+     * Determines if the tuner view is currently active.
+     *
+     * @return true if the tuner view is active; false otherwise
+     */
+    boolean isTunerViewActive();
 
 }

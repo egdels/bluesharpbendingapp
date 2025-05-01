@@ -139,7 +139,8 @@
                         <Spinner
                         android:id="@+id/training_trainings_list"
                         style="@style/ModernSpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
                         android:spinnerMode="dropdown" />
@@ -163,7 +164,8 @@
                     <Spinner
                         android:id="@+id/training_precision_list"
                         style="@style/ModernSpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
                         android:spinnerMode="dropdown" />

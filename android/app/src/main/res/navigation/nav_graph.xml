@@ -49,6 +49,9 @@
         <action
                 android:id="@+id/action_to_TrainingFragment"
                 app:destination="@id/TrainingFragment"/>
+        <action
+                android:id="@+id/action_to_TunerFragment"
+                app:destination="@id/TunerFragment"/>
     </fragment>
     <fragment
             android:id="@+id/SettingsFragment"
@@ -91,6 +94,9 @@
         <action
                 android:id="@+id/action_to_TrainingFragment"
                 app:destination="@id/TrainingFragment"/>
+        <action
+                android:id="@+id/action_to_TunerFragment"
+                app:destination="@id/TunerFragment"/>
     </fragment>
     <fragment
             android:id="@+id/TrainingFragment"
@@ -113,5 +119,35 @@
         <action
                 android:id="@+id/action_to_TrainingFragment"
                 app:destination="@id/TrainingFragment"/>
+
+        <action
+                android:id="@+id/action_to_TunerFragment"
+                app:destination="@id/TunerFragment"/>
+    </fragment>
+    <fragment
+            android:id="@+id/TunerFragment"
+            android:name="de.schliweb.bluesharpbendingapp.view.android.TunerFragment"
+            android:label="@string/action_tuner"
+            tools:layout="@layout/fragment_tuner">
+
+        <action
+                android:id="@+id/action_to_HarpFragment"
+                app:destination="@id/HarpFragment"/>
+
+        <action
+                android:id="@+id/action_to_SettingsFragment"
+                app:destination="@id/SettingsFragment"/>
+
+        <action
+                android:id="@+id/action_to_AboutFragment"
+                app:destination="@id/AboutFragment"/>
+
+        <action
+                android:id="@+id/action_to_TrainingFragment"
+                app:destination="@id/TrainingFragment"/>
+
+        <action
+                android:id="@+id/action_to_TunerFragment"
+                app:destination="@id/TunerFragment"/>
     </fragment>
 </navigation>

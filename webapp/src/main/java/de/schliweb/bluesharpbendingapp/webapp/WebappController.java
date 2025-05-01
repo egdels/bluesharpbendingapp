@@ -136,6 +136,59 @@ public class WebappController {
     }
 
     /**
+     * Handles requests for the tuner page, which provides functionality for tuning
+     * musical instruments. This page allows users to detect the pitch of notes played
+     * into their microphone and displays visual feedback to help with tuning.
+     *
+     * @param session the HTTP session used to retrieve or save settings
+     * @return a ModelAndView object configured to render the tuner page
+     */
+    @GetMapping("/tuner.html")
+    public ModelAndView getTunerPage(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
+
+        // Add necessary objects for the tuner page
+        Object supportedConfidences = session.getAttribute("supportedConfidences");
+        if(supportedConfidences==null) {
+            supportedConfidences = new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
+        }
+        modelAndView.addObject("supportedConfidences", supportedConfidences);
+
+        Object selectedConfidence = session.getAttribute("selectedConfidence");
+        if(selectedConfidence==null) {
+            selectedConfidence = "0.7";
+        }
+        modelAndView.addObject("selectedConfidence", selectedConfidence);
+
+        Object supportedAlgorithms = session.getAttribute("supportedAlgorithms");
+        if(supportedAlgorithms==null) {
+            supportedAlgorithms = new String[]{"YIN", "MPM"};
+        }
+        modelAndView.addObject("supportedAlgorithms", supportedAlgorithms);
+
+        Object selectedAlgorithm = session.getAttribute("selectedAlgorithm");
+        if(selectedAlgorithm==null) {
+            selectedAlgorithm= "YIN";
+        }
+        modelAndView.addObject("selectedAlgorithm", selectedAlgorithm);
+
+        Object supportedConcertPitches = session.getAttribute("supportedConcertPitches");
+        if(supportedConcertPitches==null) {
+            supportedConcertPitches = NoteLookup.getSupportedConcertPitches();
+        }
+        modelAndView.addObject("supportedConcertPitches", supportedConcertPitches);
+
+        Object selectedConcertPitch = session.getAttribute("selectedConcertPitch");
+        if(selectedConcertPitch==null) {
+            selectedConcertPitch = "442";
+        }
+        modelAndView.addObject("selectedConcertPitch", selectedConcertPitch);
+
+        modelAndView.setViewName("tuner");
+        return modelAndView;
+    }
+
+    /**
      * Handles the request to display the audio stream page. This method initializes
      * the harmonica object in the session if it is not already present and adds necessary
      * data to the ModelAndView for rendering the audio stream page.

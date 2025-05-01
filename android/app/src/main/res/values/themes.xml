@@ -28,8 +28,6 @@
     <style name="Base.Theme.BluesHarpBendingApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Enable dynamic colors on Android 12+ -->
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
 
         <!-- Material 3 color attributes -->
         <item name="colorPrimary">@color/md_theme_light_primary</item>
@@ -67,6 +65,18 @@
         <item name="drawBackgroundColor">@color/blue</item>
         <item name="blowBackgroundColor">@color/orange</item>
         <item name="overblowOverflowBackgroundColor">@color/magenta</item>
+
+        <!-- Popup menu styles -->
+        <item name="popupMenuStyle">@style/LargePopupMenu</item>
+        <item name="android:itemTextAppearance">@style/LargePopupMenuTextAppearance</item>
+        <item name="textAppearanceLargePopupMenu">@style/LargePopupMenuTextAppearance</item>
+        <item name="textAppearanceSmallPopupMenu">@style/LargePopupMenuTextAppearance</item>
+        <item name="android:dropDownListViewStyle">@style/LargePopupMenuItem</item>
+        <item name="actionOverflowMenuStyle">@style/LargePopupMenu</item>
+        <item name="actionButtonStyle">@style/LargeMenuItemStyle</item>
+        <item name="android:actionMenuTextAppearance">@style/LargePopupMenuTextAppearance</item>
+        <item name="android:actionMenuTextColor">?attr/colorOnSurface</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
     </style>
 
     <style name="Theme.BluesHarpBendingApp" parent="Base.Theme.BluesHarpBendingApp"/>
