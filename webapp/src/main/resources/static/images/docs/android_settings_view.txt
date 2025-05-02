@@ -1,1 +1,0 @@
-This image should show the Android app's settings view, where users can configure the app. The settings should include options for selecting the harmonica key, tuning, and other preferences like algorithm, concert pitch, and confidence level.

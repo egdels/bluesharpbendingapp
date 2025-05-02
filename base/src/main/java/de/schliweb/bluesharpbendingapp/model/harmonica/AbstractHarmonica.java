@@ -314,23 +314,19 @@ public abstract class AbstractHarmonica implements Harmonica {
     abstract int[] getHalfTonesOut();
 
     /**
-     * Retrieves the name of the musical key in which this harmonica is tuned.
-     * The method searches through the available keys to find the one that matches
-     * the current harmonica's key frequency.
+     * Retrieves the name of the key corresponding to the current note frequency.
      *
-     * @return the name of the musical key as a string, or null if no matching key is found
+     * @return the name of the key if found in the enumeration of keys; otherwise, returns the note name derived from the note frequency.
      */
     @Override
     public String getKeyName() {
-        KEY[] values = KEY.values();
-        String name = null;
-        for (KEY value : values) {
-            if (value.getFrequency() == keyFrequency) {
-                name = value.name();
-                break;
+        String noteName = NoteLookup.getNoteName(keyFrequency);
+        for (KEY key : KEY.values()) {
+            if(key.getName().equals(noteName) ) {
+                return key.name();
             }
         }
-        return name;
+        return noteName;
     }
 
     /**
@@ -688,6 +684,13 @@ public abstract class AbstractHarmonica implements Harmonica {
         public double getFrequency() {
             return NoteLookup.getNoteFrequency(name);
         }
+
+        /**
+         * Retrieves the name associated with this instance of the musical key.
+         *
+         * @return the name of the musical key as a string
+         */
+        public String getName() { return name;}
     }
 
     /**

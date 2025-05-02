@@ -1,1 +1,0 @@
-This image should show the Android app's training view, which helps users practice specific notes or scales. The view should display the current note to play, training settings (type and precision), and a progress bar showing the user's progress through the training session.

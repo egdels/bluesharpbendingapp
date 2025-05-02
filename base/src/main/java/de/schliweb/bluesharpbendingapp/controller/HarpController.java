@@ -223,6 +223,13 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
         LoggingUtils.logDebug("Initializing notes in the harp view");
         harpView.initNotes(noteContainers);
+
+        // Update the tuning and key information display
+        String keyName = this.harmonica.getKeyName();
+        String tuningName = this.harmonica.getTuneName();
+        LoggingUtils.logDebug("Updating tuning and key information: Key=" + keyName + ", Tuning=" + tuningName);
+        harpView.updateTuningKeyInfo(keyName, tuningName);
+
         LoggingUtils.logOperationCompleted("Notes initialization");
     }
 

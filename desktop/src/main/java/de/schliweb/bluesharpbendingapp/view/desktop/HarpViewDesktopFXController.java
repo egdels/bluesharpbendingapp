@@ -37,6 +37,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.control.Label;
 import javafx.util.Duration;
 
 import java.util.List;
@@ -269,6 +271,12 @@ public class HarpViewDesktopFXController implements HarpView {
     private Pane enlargedPane;
 
     /**
+     * Label to display the current tuning and key information.
+     * This label is created programmatically and positioned at the top of the harp grid.
+     */
+    private Label tuningKeyInfoLabel;
+
+    /**
      * Initializes the layout and event handlers for the harp view controller.
      * <p>
      * This method configures the user interface elements within the harp view,
@@ -298,6 +306,32 @@ public class HarpViewDesktopFXController implements HarpView {
 
         enlargedPane.setOnMouseClicked(e -> closeEnlargedPane());
         LoggingUtils.logDebug("Click handler set up for enlarged pane");
+
+        // Create and configure the tuning and key information label
+        tuningKeyInfoLabel = new Label();
+        tuningKeyInfoLabel.getStyleClass().add("tuning-key-info");
+        tuningKeyInfoLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 5 0 10 0;");
+
+        // Get the parent StackPane and add the label at the top
+        StackPane parent = (StackPane) harpGrid.getParent();
+        if (parent != null) {
+            // Create a VBox to hold the label and grid
+            javafx.scene.layout.VBox vbox = new javafx.scene.layout.VBox(5); // 5px spacing
+            vbox.setAlignment(javafx.geometry.Pos.TOP_CENTER);
+
+            // Remove the grid from the StackPane
+            parent.getChildren().remove(harpGrid);
+
+            // Add the label and grid to the VBox
+            vbox.getChildren().addAll(tuningKeyInfoLabel, harpGrid);
+
+            // Add the VBox to the StackPane
+            parent.getChildren().add(0, vbox);
+
+            LoggingUtils.logDebug("Tuning and key information label added to the UI");
+        } else {
+            LoggingUtils.logWarning("Could not add tuning and key information label", "Parent StackPane not found");
+        }
 
         LoggingUtils.logInitialized("Harp View Controller");
     }
@@ -605,5 +639,28 @@ public class HarpViewDesktopFXController implements HarpView {
         }
 
         LoggingUtils.logOperationCompleted("Notes initialized successfully");
+    }
+
+    /**
+     * Updates the display of tuning and key information in the harp view.
+     * This method sets the text of the tuningKeyInfoLabel to show the current key and tuning.
+     *
+     * @param keyName    the name of the currently selected key
+     * @param tuningName the name of the currently selected tuning
+     */
+    @Override
+    public void updateTuningKeyInfo(String keyName, String tuningName) {
+        LoggingContext.setComponent("HarpViewDesktopFXController");
+        LoggingUtils.logOperationStarted("Update tuning and key information");
+
+        if (tuningKeyInfoLabel != null) {
+            String infoText = String.format("%s | %s", keyName, tuningName);
+            tuningKeyInfoLabel.setText(infoText);
+            LoggingUtils.logDebug("Updated tuning and key information: " + infoText);
+        } else {
+            LoggingUtils.logWarning("Could not update tuning and key information", "Label is null");
+        }
+
+        LoggingUtils.logOperationCompleted("Tuning and key information updated");
     }
 }

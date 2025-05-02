@@ -76,4 +76,5 @@
     <string name="tuner_cents_format">%d cents</string>
     <string name="tuner_note_format">Note: %s</string>
     <string name="tuner_frequency_format">Frequency: %d Hz</string>
+    <string name="tuning_key_info_format">%1$s | %2$s</string>
 </resources>

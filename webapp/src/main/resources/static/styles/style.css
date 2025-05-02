@@ -303,6 +303,11 @@ footer {
     visibility: hidden;
 }
 
+.screenshot {
+    width: 100%;
+    height: auto;
+}
+
 /* Responsive adjustments for smaller screens */
 @media screen and (max-width: 768px) {
     header {

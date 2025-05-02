@@ -197,12 +197,22 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     }
 
     /**
-     * Hides the enlarged view of a note displayed in the overlay TextView.
-     * Resets the state, clears references, and hides the overlay view.
-     *
-     * @param overlayNote The TextView that displays the overlay view of the enlarged note.
+     * Hides the currently enlarged note TextView and resets the associated
+     * state. This method performs the necessary operations to reverse the
+     * enlargement process, such as removing references, hiding the overlay
+     * view, and updating relevant state properties.
+     * <p>
+     * If no note is currently enlarged, this method returns immediately
+     * without performing any actions.
+     * <p>
+     * The method performs the following steps:
+     * - Checks if a note is enlarged. If not, exits the method.
+     * - Retrieves the original note element associated with the enlarged view.
+     * - Removes the reference to the enlarged view from the original element.
+     * - Hides the overlay note card used for displaying the enlarged view.
+     * - Resets the state variables tracking the enlarged view.
      */
-    private void hideEnlargedTextView(TextView overlayNote) {
+    private void hideEnlargedTextView() {
         // Early return if no note is currently enlarged
         if (!isNoteEnlarged) return;
 
@@ -360,7 +370,6 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         // Use Material Design text appearance
         textView.setGravity(android.view.Gravity.CENTER);
         textView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
-        // textView.setTextColor(getResources().getColor(R.color.black, null));
         textView.setSingleLine(true); // Prevent text from wrapping to a new line
         // Set auto-size with min and max text sizes to ensure readability
         textView.setAutoSizeTextTypeUniformWithConfiguration(
@@ -395,11 +404,11 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
      * @param overlayNote The TextView used to display the overlay view for enlarged notes.
      */
     private void configureOverlayNoteView(TextView overlayNote) {
-        hideEnlargedTextView(overlayNote);
+        hideEnlargedTextView();
 
         // Set click listener on the card instead of just the TextView
         View overlayCard = requireView().findViewById(R.id.overlay_note_card);
-        overlayCard.setOnClickListener(v -> hideEnlargedTextView(overlayNote));
+        overlayCard.setOnClickListener(v -> hideEnlargedTextView());
     }
 
     /**
@@ -527,5 +536,16 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     @Override
     public HarpViewNoteElement getHarpViewElement(int channel, int note) {
         return HarpViewNoteElementAndroid.getInstance(getNote(channel, note));
+    }
+
+    @Override
+    public void updateTuningKeyInfo(String keyName, String tuningName) {
+        if (binding != null) {
+            TextView tuningKeyInfoView = binding.getRoot().findViewById(R.id.tuning_key_info);
+            if (tuningKeyInfoView != null) {
+                String infoText = getString(R.string.tuning_key_info_format, keyName, tuningName);
+                tuningKeyInfoView.setText(infoText);
+            }
+        }
     }
 }

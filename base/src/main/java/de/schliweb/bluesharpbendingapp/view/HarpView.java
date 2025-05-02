@@ -47,4 +47,11 @@ public interface HarpView {
      */
     void initNotes(NoteContainer[] noteContainers);
 
+    /**
+     * Updates the display of tuning and key information in the harp view.
+     *
+     * @param keyName   the name of the currently selected key
+     * @param tuningName the name of the currently selected tuning
+     */
+    void updateTuningKeyInfo(String keyName, String tuningName);
 }
