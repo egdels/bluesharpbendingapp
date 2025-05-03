@@ -23,7 +23,7 @@
     <!-- Menu dimensions -->
     <dimen name="menu_item_height">64dp</dimen>
     <dimen name="menu_item_padding_vertical">22dp</dimen>
-    <dimen name="menu_item_padding_horizontal">32dp</dimen>
+    <dimen name="menu_item_padding_horizontal">16dp</dimen>
     <dimen name="menu_text_size">22sp</dimen>
-    <dimen name="menu_min_width">240dp</dimen>
+    <dimen name="menu_min_width">280dp</dimen>
 </resources>

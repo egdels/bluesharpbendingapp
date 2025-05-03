@@ -24,7 +24,7 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;

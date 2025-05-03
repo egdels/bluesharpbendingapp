@@ -24,44 +24,71 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       xmlns="http://javafx.com/javafx"
       fx:controller="de.schliweb.bluesharpbendingapp.view.desktop.AboutViewDesktopFXController"
       alignment="CENTER"
-      spacing="10"
+      spacing="15"
+      styleClass="about-container"
       VBox.vgrow="ALWAYS">
 
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets top="30" right="30" bottom="30" left="30"/>
     </padding>
 
-    <Label
-            text="Desktop version of Let's Bend - BluesHarpBendingApp"
-            VBox.vgrow="ALWAYS"/>
+    <Label text="Let's Bend - BluesHarpBendingApp"
+           styleClass="title-label"
+           VBox.vgrow="ALWAYS">
+        <font>
+            <Font name="System Bold" size="18.0"/>
+        </font>
+    </Label>
+
+    <Label text="Desktop Edition"
+           styleClass="subtitle-label"
+           VBox.vgrow="ALWAYS">
+        <font>
+            <Font name="System Italic" size="14.0"/>
+        </font>
+    </Label>
 
     <ImageView fx:id="aboutImage"
-               fitHeight="-1"
-               fitWidth="-1"
+               fitHeight="120"
+               fitWidth="120"
                preserveRatio="true"
                VBox.vgrow="ALWAYS"/>
 
-
     <Label fx:id="versionLabel"
+           styleClass="version-label"
            VBox.vgrow="ALWAYS"/>
 
-    <Hyperlink
-            text="Download latest version"
-            onAction="#handleDownloadClick"
-            VBox.vgrow="ALWAYS"/>
+    <TitledPane text="Resources" expanded="true" collapsible="false">
+        <VBox spacing="10" alignment="CENTER">
+            <Hyperlink text="User Guide"
+                    onAction="#handleUserGuideClick"
+                    styleClass="resource-link"
+                    VBox.vgrow="ALWAYS"/>
 
-    <Hyperlink
-            text="Buy me a coffee"
-            onAction="#handlePaypalClick"
-            VBox.vgrow="ALWAYS"/>
+            <Hyperlink text="Download latest version"
+                    onAction="#handleDownloadClick"
+                    styleClass="resource-link"
+                    VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </TitledPane>
 
-    <Hyperlink
-            text="Mail me"
-            onAction="#handleMailClick"
-            VBox.vgrow="ALWAYS"/>
+    <TitledPane text="Contact" expanded="true" collapsible="false">
+        <VBox spacing="10" alignment="CENTER">
+            <Hyperlink text="Mail me"
+                    onAction="#handleMailClick"
+                    styleClass="contact-link"
+                    VBox.vgrow="ALWAYS"/>
+
+            <Hyperlink text="Buy me a coffee"
+                    onAction="#handlePaypalClick"
+                    styleClass="contact-link"
+                    VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </TitledPane>
 
 </VBox>

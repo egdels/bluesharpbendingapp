@@ -24,7 +24,7 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
 import de.schliweb.bluesharpbendingapp.model.training.Training;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;

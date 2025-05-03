@@ -27,12 +27,23 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: white;
+    background-image:
+        linear-gradient(rgba(91, 90, 96, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91, 90, 96, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
     min-height: 100vh;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
 }
 
 main {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
     flex: 1;
 }
 
@@ -55,8 +66,11 @@ main {
 
 /* ---------------- Start Header Styles --------------------------- */
 header {
-    background-color: #FF6A00;
-    padding: 20px 0 20px 0;
+    background-color: #FF6A00; /* Orange als Hintergrundfarbe */
+    background-image: linear-gradient(to bottom, #FF6A00, #E05A00); /* Verlauf mit dunklerem Orange */
+    padding: 15px 0 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid #5B5A60; /* Grau als Akzentfarbe für den unteren Rand */
 }
 
 nav {
@@ -64,10 +78,25 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
+    width: 100%;
+    border-radius: 5px;
+    background-color: rgba(91, 90, 96, 0.9);
+    box-sizing: border-box;
+    border-left: 3px solid #0057FF;
+    border-right: 3px solid #E100E1;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 15px auto;
+    text-align: center;
 }
 
 .logo img {
-    max-width: 100px;
+    max-width: 140px;
+    transition: all 0.3s ease;
 }
 
 .menu ul {
@@ -88,23 +117,127 @@ nav {
     text-align: center;
     padding: 10px 15px;
     text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.menu li a:hover {
+    background-color: rgba(255, 106, 0, 0.2);
+    border-bottom: 2px solid #FF6A00;
+}
+
+.menu li:nth-child(3n+1) a:hover {
+    background-color: rgba(255, 106, 0, 0.2);
+    border-bottom: 2px solid #FF6A00;
+}
+
+.menu li:nth-child(3n+2) a:hover {
+    background-color: rgba(0, 87, 255, 0.2);
+    border-bottom: 2px solid #0057FF;
+}
+
+.menu li:nth-child(3n+3) a:hover {
+    background-color: rgba(225, 0, 225, 0.2);
+    border-bottom: 2px solid #E100E1;
 }
 
 /* Hidden by default, for responsive menus */
 .navbar-toggler {
     display: none;
     cursor: pointer;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    position: relative;
+    z-index: 101;
+    width: 40px;
+    height: 40px;
 }
 
 .navbar-toggler span {
     display: block;
     width: 20px;
     height: 2px;
-    background-color: #333;
-    margin-bottom: 4px;
+    background-color: white;
+    margin: 0 auto 4px auto;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hamburger animation */
+.navbar-toggler.active span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    transform-origin: center;
+}
+
+.navbar-toggler.active span:nth-child(1) {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.navbar-toggler.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar-toggler.active span:nth-child(3) {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Touch-specific styles */
+.touch-device a:hover {
+    /* Disable hover effects on touch devices */
+    background-color: transparent !important;
+}
+
+.touch-active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 /* ---------------- End Header Styles --------------------------- */
+
+/* ---------------- Start Link Styles --------------------------- */
+/* General link styling */
+a {
+    color: #0057FF; /* Draw bend note color - blue */
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+a:visited {
+    color: #7B00B5; /* Darker variant of overblow/overdraw color for better contrast */
+}
+
+a:hover, a:focus {
+    color: #0040CC; /* Darker blue for better contrast */
+    border-bottom: 1px solid currentColor;
+    outline: none;
+}
+
+a:active {
+    color: #FF6A00; /* Blow bend note color - orange */
+}
+
+/* Ensure links in dark backgrounds have appropriate contrast */
+.dark-bg a, footer a {
+    color: #80AAFF; /* Lighter blue for dark backgrounds */
+}
+
+.dark-bg a:visited, footer a:visited {
+    color: #E5B3FF; /* Lighter purple for dark backgrounds */
+}
+
+.dark-bg a:hover, .dark-bg a:focus, footer a:hover, footer a:focus {
+    color: #FFFFFF;
+    border-bottom: 1px solid currentColor;
+}
+
+.dark-bg a:active, footer a:active {
+    color: #FFAA80; /* Lighter orange for dark backgrounds */
+}
+
+/* ---------------- End Link Styles --------------------------- */
 
 /* ---------------- Start Main Content Styles --------------------------- */
 .video-container {
@@ -124,15 +257,33 @@ nav {
     width: 100%;
 }
 
+/* Fallback for browsers that don't support aspect-ratio */
+@supports not (aspect-ratio: 16 / 9) {
+    .video {
+        position: relative;
+        padding-top: 56.25%; /* 9/16 = 0.5625 */
+    }
+    .video > * {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
 /* ---------------- End Main Content Styles --------------------------- */
 
 /* ---------------- Start Footer Styles ---------------- */
 footer {
     background-color: #0057FF;
+    background-image: linear-gradient(to bottom, #0057FF, #0040CC);
     color: white;
     text-align: center;
     margin-top: auto;
     width: 100%;
+    border-top: 3px solid #E100E1;
+    padding: 15px 0;
 }
 
 .version {
@@ -144,16 +295,40 @@ footer {
 /* Harp - Grid container styles */
 .grid-container {
     position: relative;
+    display: -ms-grid;
     display: grid;
+    -ms-grid-columns: 1fr 8px 1fr 8px 1fr 8px 1fr 8px 1fr 8px 1fr 8px 1fr 8px 1fr 8px 1fr 8px 1fr; /* IE fallback */
     grid-template-columns: repeat(10, 1fr); /* 10 evenly spaced columns */
-    grid-template-rows: repeat(9, minmax(0, 1fr)); /* 9 rows with minimum height */
-    gap: 10px;
+    -ms-grid-rows: minmax(30px, 1fr) 8px minmax(30px, 1fr) 8px minmax(30px, 1fr) 8px minmax(30px, 1fr) 8px minmax(30px, 1fr) 8px minmax(30px, 1fr) 8px minmax(30px, 1fr) 8px minmax(30px, 1fr) 8px minmax(30px, 1fr); /* IE fallback */
+    grid-template-rows: repeat(9, minmax(30px, 1fr)); /* 9 rows with minimum height of 30px */
+    gap: 8px; /* Slightly reduced gap */
     width: 100%;
-    height: 50vh; /* Container height grows dynamically */
-    min-height: 350px;
+    height: auto; /* Auto height to fit all content */
+    min-height: 400px; /* Increased minimum height */
+    max-height: 60vh; /* Maximum height as percentage of viewport */
     padding: 10px;
     background-color: #ffffff;
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    overflow: visible; /* Allow content to be visible even if it overflows */
+}
+
+/* Fallback for browsers that don't support CSS Grid */
+@supports not (display: grid) {
+    .grid-container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .grid-cell {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 calc(10% - 16px);
+        flex: 0 0 calc(10% - 16px);
+        margin: 8px;
+    }
 }
 
 /* Individual grid cell styles */
@@ -161,7 +336,6 @@ footer {
     position: relative;
     border: 1px solid black;
     border-radius: 8px; /* AppDimensions.NOTE_CORNER_RADIUS */
-    border-width: 1px; /* AppDimensions.NOTE_STROKE_WIDTH */
     padding: 12px; /* AppDimensions.NOTE_PADDING */
     margin: 4px; /* AppDimensions.NOTE_MARGIN */
     display: flex;
@@ -172,8 +346,14 @@ footer {
     overflow: hidden;
 }
 
+/* Modern browsers with :has() support */
 .grid-cell:has(span:empty) {
     visibility: hidden; /* Hides cells if span inside is empty */
+}
+
+/* Class added via JavaScript for browsers without :has() support */
+.empty-cell {
+    visibility: hidden;
 }
 
 /* Expanded styles for specific elements */
@@ -181,6 +361,7 @@ footer {
     position: absolute;
     top: 50%;
     left: 50%;
+    -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     height: 60%; /* Height adapts proportionally based on parent */
     aspect-ratio: 1 / 1; /* Ensures a square */
@@ -189,9 +370,42 @@ footer {
     font-size: 2rem;
 }
 
+/* Fallback for browsers that don't support aspect-ratio */
+@supports not (aspect-ratio: 1 / 1) {
+    .grid-cell.expanded {
+        width: 60%;
+    }
+    .grid-cell.expanded::before {
+        content: "";
+        display: block;
+        padding-top: 100%; /* Creates a 1:1 aspect ratio */
+    }
+}
+
 [cents-border-text] {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+/* Fallback for browsers that don't support attribute selectors with custom names */
+.cents-border-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
 }
 
@@ -296,6 +510,31 @@ footer {
 
 .form-control {
     margin-top: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(91, 90, 96, 0.5);
+    border-color: #5B5A60;
+}
+
+.form-control:nth-of-type(3n+1):focus {
+    box-shadow: 0 0 0 2px rgba(255, 106, 0, 0.5);
+    border-color: #FF6A00;
+}
+
+.form-control:nth-of-type(3n+2):focus {
+    box-shadow: 0 0 0 2px rgba(0, 87, 255, 0.5);
+    border-color: #0057FF;
+}
+
+.form-control:nth-of-type(3n+3):focus {
+    box-shadow: 0 0 0 2px rgba(225, 0, 225, 0.5);
+    border-color: #E100E1;
 }
 
 .expert-mode-hidden {
@@ -308,24 +547,60 @@ footer {
     height: auto;
 }
 
-/* Responsive adjustments for smaller screens */
+/* Classes for JavaScript-based responsive adjustments */
+.grid-container.landscape {
+    /* Landscape-specific adjustments */
+    max-height: 45vh;
+}
+
+.grid-container.portrait {
+    /* Portrait-specific adjustments */
+    max-height: 60vh;
+}
+
+.grid-container.mobile {
+    /* Mobile-specific adjustments */
+    min-height: 300px;
+    max-height: 50vh;
+    gap: 3px;
+    padding: 3px;
+    grid-template-rows: repeat(9, minmax(20px, 1fr));
+}
+
+.grid-container.tablet {
+    /* Tablet-specific adjustments */
+    min-height: 350px;
+    max-height: 55vh;
+    gap: 5px;
+    padding: 5px;
+    grid-template-rows: repeat(9, minmax(25px, 1fr));
+}
+
+/* Responsive adjustments for tablets */
 @media screen and (max-width: 768px) {
     header {
         width: 100%;
     }
 
     .container {
-        padding: 0 10px;
+        padding: 0 15px;
     }
 
     .navbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .logo {
+        margin: 0 auto 10px auto;
     }
 
     .logo img {
-        max-width: 85px;
+        max-width: 120px;
     }
 
     .menu ul {
@@ -337,37 +612,292 @@ footer {
     }
 
     .menu li a {
-        padding: 0 0;
+        padding: 12px 15px;
+        font-size: 16px;
     }
 
     .navbar-toggler {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .navbar-toggler span {
-        width: 20px;
-        height: 2px;
-        margin-bottom: 4px;
-        background-color: #333;
+        width: 25px;
+        height: 3px;
+        margin: 0 auto 5px auto;
+        background-color: white;
+        transition: transform 0.3s ease;
     }
 
     .menu.open {
         display: flex;
         flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: rgba(91, 90, 96, 0.95);
+        z-index: 100;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+        animation: slideDown 0.3s ease;
+        border-radius: 0 0 5px 5px;
+        border-left: 3px solid #0057FF;
+        border-right: 3px solid #E100E1;
+        border-bottom: 3px solid #FF6A00;
     }
 
     .menu.open ul {
-        margin-top: 10px;
+        margin-top: 0;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0;
+    }
+
+    .menu.open ul li {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        box-sizing: border-box;
+    }
+
+    .menu.open ul li a {
+        width: 100%;
+        box-sizing: border-box;
         display: block;
     }
 
+    .menu.open ul li:last-child {
+        border-bottom: none;
+    }
+
     .grid-cell {
-        min-height: 10px; /* Das könnte ein Problem sein */
+        min-height: 30px;
+        padding: 8px;
     }
 
     .grid-container {
         gap: 5px;
         padding: 5px;
+        height: auto; /* Auto height to fit all content */
+        min-height: 350px; /* Adjusted minimum height */
+        max-height: 55vh; /* Maximum height as percentage of viewport */
+        grid-template-rows: repeat(9, minmax(25px, 1fr)); /* Adjusted minimum row height */
+        overflow: visible; /* Allow content to be visible even if it overflows */
     }
 
+    .select-group {
+        flex: 1 1 100%;
+    }
+
+    /* Improve form controls for touch */
+    .form-control {
+        height: 40px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+
+    /* Improve touch targets */
+    button, select, input[type="checkbox"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+/* Button styles */
+button {
+    background-color: #5B5A60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #6B6A70;
+}
+
+button.primary {
+    background-color: #0057FF;
+}
+
+button.primary:hover {
+    background-color: #0040CC;
+}
+
+button.secondary {
+    background-color: #FF6A00;
+}
+
+button.secondary:hover {
+    background-color: #E05A00;
+}
+
+button.accent {
+    background-color: #E100E1;
+}
+
+button.accent:hover {
+    background-color: #C000C0;
+}
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Responsive adjustments for very narrow devices */
+@media screen and (max-width: 350px) {
+    .container {
+        padding: 0 5px;
+    }
+
+    .grid-container {
+        min-height: 250px;
+        max-height: 45vh;
+        gap: 2px;
+        padding: 2px;
+        grid-template-rows: repeat(9, minmax(15px, 1fr));
+    }
+
+    .grid-cell {
+        padding: 3px;
+        margin: 1px;
+    }
+
+    .grid-cell span {
+        font-size: 12px;
+    }
+
+    [cents-border-text]::before {
+        font-size: 10px;
+    }
+
+    [cents-border-text] span {
+        font-size: 18px;
+    }
+
+    /* Reduce font sizes further for better readability on very small screens */
+    body {
+        font-size: 12px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    /* Optimize form controls for very small screens */
+    .select-container {
+        gap: 3px;
+    }
+
+    .select-group {
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        height: 36px;
+        font-size: 14px;
+    }
+}
+
+/* Responsive adjustments for mobile phones */
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .navbar {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        position: relative;
+    }
+
+    .logo {
+        margin: 0 auto 8px auto;
+    }
+
+    .logo img {
+        max-width: 100px;
+    }
+
+    .grid-container {
+        height: auto; /* Auto height to fit all content */
+        min-height: 300px; /* Adjusted minimum height */
+        max-height: 50vh; /* Maximum height as percentage of viewport */
+        gap: 3px;
+        padding: 3px;
+        grid-template-rows: repeat(9, minmax(20px, 1fr)); /* Adjusted minimum row height */
+        overflow: visible; /* Allow content to be visible even if it overflows */
+    }
+
+    .grid-cell {
+        padding: 5px;
+        margin: 2px;
+    }
+
+    .grid-cell span {
+        font-size: 14px;
+    }
+
+    [cents-border-text]::before {
+        font-size: 12px;
+    }
+
+    [cents-border-text] span {
+        font-size: 24px;
+    }
+
+    .grid-cell.expanded {
+        height: 50%;
+    }
+
+    /* Adjust font sizes for better readability */
+    body {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    /* Improve spacing for touch */
+    .select-container {
+        gap: 5px;
+    }
+
+    /* Stack form elements vertically */
+    .select-group {
+        margin-bottom: 10px;
+    }
 }

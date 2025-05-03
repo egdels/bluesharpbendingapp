@@ -25,7 +25,7 @@ package de.schliweb.bluesharpbendingapp.di;
 
 import dagger.Component;
 import de.schliweb.bluesharpbendingapp.controller.MainController;
-import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 

@@ -76,13 +76,13 @@
 
 <header th:fragment="header">
     <div class="container">
+        <div class="logo">
+            <a href="/index.html">
+                <img alt="Logo" src="/images/logo.png">
+            </a>
+        </div>
 
         <nav class="navbar">
-            <div class="logo">
-                <a href="/index.html">
-                    <img alt="Logo" src="/images/logo.png">
-                </a>
-            </div>
             <div class="menu">
                 <ul>
                     <li><a data-th-text="#{menu.Home}" href="/index.html"></a></li>

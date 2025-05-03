@@ -1,0 +1,2 @@
+* Fixed edge-to-edge view in Android 15+
+* Added label for selected harp in harp view

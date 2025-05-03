@@ -48,7 +48,7 @@ import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.*;
 import de.schliweb.bluesharpbendingapp.databinding.ActivityMainBinding;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.*;
 import de.schliweb.bluesharpbendingapp.view.android.*;
 import lombok.extern.slf4j.Slf4j;

@@ -37,7 +37,7 @@ Label {
 
 /* Styling for Hyperlinks */
 Hyperlink {
-    -fx-text-fill: #4FC3F7; /* Modern blue color for links */
+    -fx-text-fill: #1976D2; /* Android primary color for links */
     -fx-font-weight: bold; /* Bold font */
     -fx-underline: false; /* Modern links often don't use underlines by default */
     -fx-font-size: 14px; /* Font size */
@@ -48,14 +48,14 @@ Hyperlink {
 
 /* Hover state for Hyperlinks */
 Hyperlink:hover {
-    -fx-text-fill: #81D4FA; /* Lighter blue on hover */
+    -fx-text-fill: #004BA0; /* Android primary variant color on hover */
     -fx-underline: true; /* Show underline on hover for better UX */
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 1, 0, 0, 1); /* Subtle shadow effect */
 }
 
 /* Visited state for Hyperlinks */
 Hyperlink:visited {
-    -fx-text-fill: #4FC3F7; /* Keep consistent with normal state */
+    -fx-text-fill: #1976D2; /* Keep consistent with normal state */
 }
 
 /* Toolbar Menu styles */
@@ -306,4 +306,73 @@ Hyperlink:visited {
 .button.primary:hover {
     -fx-background-color: #81D4FA; /* Lighter accent color on hover */
     -fx-effect: dropshadow(gaussian, rgba(79,195,247,0.5), 5, 0, 0, 0); /* Glow effect */
+}
+
+/* About section styles - matching Android styling */
+.about-container {
+    -fx-background-color: #1E1E1E; /* Match main background */
+    -fx-padding: 24; /* Match Android padding */
+    -fx-spacing: 16; /* Consistent spacing */
+}
+
+/* Title label in About section */
+.title-label {
+    -fx-text-fill: #E0E0E0; /* Light text color */
+    -fx-font-size: 20px; /* Larger size for title */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-alignment: center; /* Center alignment */
+}
+
+/* Subtitle label in About section */
+.subtitle-label {
+    -fx-text-fill: #E0E0E0; /* Light text color */
+    -fx-font-size: 16px; /* Medium size for subtitle */
+    -fx-font-style: italic; /* Italic text */
+    -fx-alignment: center; /* Center alignment */
+}
+
+/* Version label in About section */
+.version-label {
+    -fx-text-fill: #E0E0E0; /* Light text color */
+    -fx-font-size: 14px; /* Smaller size for version */
+    -fx-alignment: center; /* Center alignment */
+}
+
+/* Resource links in About section */
+.resource-link {
+    -fx-text-fill: #1976D2; /* Android primary color */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-font-size: 15px; /* Slightly larger font */
+}
+
+/* Contact links in About section */
+.contact-link {
+    -fx-text-fill: #1976D2; /* Android primary color */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-font-size: 15px; /* Slightly larger font */
+}
+
+/* TitledPane styling for About section */
+.about-container .titled-pane {
+    -fx-text-fill: #E0E0E0; /* Light text color */
+    -fx-background-color: #2D2D2D; /* Slightly lighter than main background */
+    -fx-border-color: #3D3D3D; /* Subtle border */
+    -fx-border-radius: 8; /* Rounded corners */
+    -fx-background-radius: 8; /* Rounded corners */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0, 0, 2); /* Shadow for card-like appearance */
+}
+
+/* TitledPane header styling */
+.about-container .titled-pane > .title {
+    -fx-background-color: #2D2D2D; /* Match pane background */
+    -fx-border-color: transparent transparent #3D3D3D transparent; /* Bottom border only */
+    -fx-text-fill: #1976D2; /* Android primary color */
+    -fx-font-weight: bold; /* Bold text */
+}
+
+/* TitledPane content styling */
+.about-container .titled-pane > *.content {
+    -fx-background-color: #2D2D2D; /* Match pane background */
+    -fx-border-color: transparent; /* No border */
+    -fx-padding: 10; /* Add padding */
 }

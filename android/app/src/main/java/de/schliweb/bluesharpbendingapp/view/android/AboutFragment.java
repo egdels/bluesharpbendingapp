@@ -24,7 +24,9 @@ package de.schliweb.bluesharpbendingapp.view.android;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +108,12 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
         } catch (PackageManager.NameNotFoundException e) {
             LoggingUtils.logError("Failed to get package information", e);
         }
+
+        // Set up click listener for user guide link
+        binding.aboutUserGuide.setOnClickListener(v -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://letsbend.de/doc.html"));
+            startActivity(browserIntent);
+        });
 
         FragmentViewModel viewModel = new ViewModelProvider(requireActivity()).get(FragmentViewModel.class);
         viewModel.selectFragmentView(this);

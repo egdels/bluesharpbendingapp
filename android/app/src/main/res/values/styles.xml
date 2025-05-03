@@ -26,7 +26,7 @@
 -->
 <resources>
     <!-- Button styles matching desktop project -->
-    <style name="ModernButton" parent="Widget.MaterialComponents.Button">
+    <style name="ModernButton" parent="Widget.Material3.Button">
         <item name="android:textColor">@color/white</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
@@ -47,10 +47,12 @@
         <item name="android:paddingBottom">4dp</item>
         <item name="android:minWidth">100dp</item>
         <item name="android:background">@drawable/modern_spinner_background</item>
+        <item name="android:popupBackground">?attr/colorSurface</item>
+        <item name="android:dropDownSelector">?attr/colorControlHighlight</item>
     </style>
 
     <!-- Spinner dropdown item style matching desktop project -->
-    <style name="ModernSpinnerItem" parent="TextAppearance.AppCompat.Widget.TextView.SpinnerItem">
+    <style name="ModernSpinnerItem" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:paddingStart">10dp</item>
         <item name="android:paddingEnd">10dp</item>
         <item name="android:paddingTop">6dp</item>
@@ -59,14 +61,14 @@
     </style>
 
     <!-- Popup menu styles for larger menu items -->
-    <style name="LargePopupMenu" parent="Widget.AppCompat.PopupMenu">
+    <style name="LargePopupMenu" parent="Widget.Material3.PopupMenu">
         <item name="android:popupBackground">?attr/colorSurface</item>
         <item name="android:dropDownWidth">@dimen/menu_min_width</item>
         <item name="android:popupElevation">8dp</item>
     </style>
 
     <!-- Popup menu item styles for larger menu items -->
-    <style name="LargePopupMenuTextAppearance" parent="TextAppearance.AppCompat.Widget.PopupMenu.Large">
+    <style name="LargePopupMenuTextAppearance" parent="TextAppearance.Material3.BodyLarge">
         <item name="android:textSize">@dimen/menu_text_size</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:fontFamily">sans-serif</item>
@@ -81,10 +83,11 @@
         <item name="android:minHeight">@dimen/menu_item_height</item>
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">0dp</item>
+        <item name="android:background">?attr/colorSurface</item>
     </style>
 
     <!-- Style for individual menu items -->
-    <style name="LargeMenuItemStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+    <style name="LargeMenuItemStyle" parent="Widget.Material3.PopupMenu.Overflow">
         <item name="android:minWidth">@dimen/menu_min_width</item>
         <item name="android:minHeight">@dimen/menu_item_height</item>
     </style>
@@ -96,5 +99,17 @@
         <item name="android:scaleType">center</item>
         <item name="android:scaleX">1.0</item>
         <item name="android:scaleY">1.0</item>
+        <item name="android:tint">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- Material 3 text appearance style for medium text -->
+    <style name="TextAppearanceMedium" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- AppBarLayout style using Material 3 -->
+    <style name="ModernAppBarLayout" parent="Widget.Material3.AppBarLayout">
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="elevation">4dp</item>
     </style>
 </resources>

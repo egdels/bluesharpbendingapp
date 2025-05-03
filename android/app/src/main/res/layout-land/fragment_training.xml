@@ -45,7 +45,7 @@
             android:padding="@dimen/settings_padding">
 
             <!-- Note Display Card -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:cardCornerRadius="@dimen/settings_card_corner_radius"
@@ -81,7 +81,7 @@
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:visibility="visible" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <!-- Right Section: Training Settings and Control -->
@@ -94,7 +94,7 @@
             android:padding="@dimen/settings_padding">
 
             <!-- Training Settings Card -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/settings_group_margin"
@@ -172,10 +172,10 @@
                 </LinearLayout>
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Control Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/settings_card_corner_radius"
@@ -233,7 +233,7 @@
                     android:text="@string/training_start_button"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -23,7 +23,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.model.VersionService;
+import de.schliweb.bluesharpbendingapp.service.VersionService;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.AboutView;
@@ -56,7 +56,7 @@ public class AboutViewDesktopFXController implements AboutView {
      * the URL remains unchanged throughout the application's lifecycle and can be
      * used globally within the AboutViewDesktopFXController class.
      */
-    private static final String DOWNLOAD = "https://www.letsbend.de/download";
+    private static final String DOWNLOAD = "https://www.letsbend.de/";
 
     /**
      * A constant that represents a "mailto" URL string used to generate an email link.
@@ -75,6 +75,13 @@ public class AboutViewDesktopFXController implements AboutView {
      * PayPal.me page, allowing users to support development through donations.
      */
     private static final String PAYPAL = "https://paypal.me/egdels";
+
+    /**
+     * Represents the User-Guide link for the application.
+     * This static constant holds the URL to the application's User-Guide page,
+     * providing users with comprehensive documentation on how to use the application.
+     */
+    private static final String USER_GUIDE = "https://www.letsbend.de/user-guide";
 
     /**
      * FXML-bound JavaFX ImageView component used to display the "About" image
@@ -179,6 +186,25 @@ public class AboutViewDesktopFXController implements AboutView {
         LoggingContext.setComponent("AboutViewDesktopFXController");
         LoggingUtils.logUserAction("Mail Click", "Opening mail client");
         openLink(MAILTO);
+    }
+
+    /**
+     * Handles the click event for the User-Guide link in the "About" view.
+     * <p>
+     * This method is triggered when a user clicks on the User-Guide link in the UI.
+     * It opens the application's User-Guide in the system's default web browser
+     * by delegating the task to the {@code openLink} method with the predefined
+     * User-Guide URL.
+     * <p>
+     * If any issue occurs while trying to open the web browser, such as an invalid
+     * URI or problems with the desktop environment, it is logged by the application's
+     * logging mechanism.
+     */
+    @FXML
+    private void handleUserGuideClick() {
+        LoggingContext.setComponent("AboutViewDesktopFXController");
+        LoggingUtils.logUserAction("User-Guide Click", "Opening User-Guide");
+        openLink(USER_GUIDE);
     }
 
     /**

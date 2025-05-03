@@ -1,4 +1,4 @@
-package de.schliweb.bluesharpbendingapp.model;
+package de.schliweb.bluesharpbendingapp.service;
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +23,7 @@ package de.schliweb.bluesharpbendingapp.model;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 

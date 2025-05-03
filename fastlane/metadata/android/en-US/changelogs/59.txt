@@ -1,0 +1,4 @@
+* Modernized UI with Material 3 components
+* Improved "About" section with better styling and layout
+* Added User Guide link for easier access to documentation
+* Enhanced UI consistency and design across the app

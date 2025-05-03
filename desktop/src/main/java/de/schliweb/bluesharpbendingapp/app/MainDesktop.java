@@ -24,7 +24,7 @@ package de.schliweb.bluesharpbendingapp.app;
  */
 
 import de.schliweb.bluesharpbendingapp.controller.MainController;
-import de.schliweb.bluesharpbendingapp.model.VersionService;
+import de.schliweb.bluesharpbendingapp.service.VersionService;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController;

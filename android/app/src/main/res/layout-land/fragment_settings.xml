@@ -47,7 +47,7 @@
             android:orientation="vertical">
 
             <!-- Harp Settings Group -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/settings_group_margin"
@@ -148,10 +148,10 @@
                             android:spinnerMode="dropdown" />
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- App Settings Group -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/settings_card_corner_radius"
@@ -192,7 +192,7 @@
                             android:text="@string/settings_screenlock_label"
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                        <androidx.appcompat.widget.SwitchCompat
+                        <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/settings_screenlock"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
                             android:textAppearance="?android:attr/textAppearanceMedium" />
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <!-- Right Column -->
@@ -234,7 +234,7 @@
             android:orientation="vertical">
 
             <!-- Microphone Settings Group -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/settings_card_corner_radius"
@@ -309,7 +309,7 @@
                             android:spinnerMode="dropdown" />
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -23,6 +23,7 @@ package de.schliweb.bluesharpbendingapp.model;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.service.VersionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

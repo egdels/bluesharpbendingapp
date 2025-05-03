@@ -4,7 +4,7 @@
  * Copyright (c) 2023 Christian Kierdorf
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the “Software”),
+ * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
@@ -13,7 +13,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -24,56 +24,88 @@
  *
  */
 -->
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:id="@+id/about_container"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".view.android.AboutFragment"
-             android:stretchColumns="*">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/about_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".view.android.AboutFragment">
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/about_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4">
 
-    <TableRow android:layout_weight="1" android:layout_width="0dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp">
 
-        <TextView
+            <TextView
                 android:id="@+id/about_title"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="@string/about_title"
                 android:textAlignment="center"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceLarge"/>
-    </TableRow>
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TableRow android:layout_weight="1" android:layout_width="0dp">
-
-        <TextView
+            <TextView
                 android:id="@+id/about_description"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
                 android:text="@string/about_description"
                 android:textAlignment="center"
-                android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_title" />
 
-    </TableRow>
-
-    <TableRow android:layout_weight="1" android:layout_width="0dp">
-
-        <TextView
+            <TextView
                 android:id="@+id/about_version"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
                 android:text="@string/about_version"
                 android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_description" />
+
+            <TextView
+                android:id="@+id/about_user_guide"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+                android:text="@string/about_user_guide"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_version" />
 
-    </TableRow>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-</TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

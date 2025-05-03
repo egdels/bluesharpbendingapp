@@ -77,4 +77,5 @@
     <string name="tuner_note_format">Note: %s</string>
     <string name="tuner_frequency_format">Frequency: %d Hz</string>
     <string name="tuning_key_info_format">%1$s | %2$s</string>
+    <string name="about_user_guide">User Guide</string>
 </resources>

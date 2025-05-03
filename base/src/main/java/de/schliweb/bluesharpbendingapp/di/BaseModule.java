@@ -27,7 +27,7 @@ import dagger.Module;
 import dagger.Provides;
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.model.ModelStorageService;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 
 import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;

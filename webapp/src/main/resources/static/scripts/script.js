@@ -23,16 +23,124 @@
  */
 
 document.addEventListener("DOMContentLoaded", function () {
-    let navbarToggler = document.querySelector(".navbar-toggler");
-    let menu = document.querySelector(".menu ul");
-    navbarToggler.addEventListener("click", function () {
-        if (!menu.style.display || menu.style.display === "none") {
-            menu.style.display = "block";
+    // Apply empty-cell class for browsers without :has() support
+    applyEmptyCellClass();
+
+    // Mobile menu functionality
+    const navbarToggler = document.querySelector(".navbar-toggler");
+    const menu = document.querySelector(".menu");
+    const menuUl = document.querySelector(".menu ul");
+
+    // Toggle menu when hamburger icon is clicked
+    navbarToggler.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menu.classList.toggle("open");
+
+        // Toggle aria-expanded for accessibility
+        const isExpanded = menu.classList.contains("open");
+        navbarToggler.setAttribute("aria-expanded", isExpanded);
+
+        // Add animation to hamburger icon
+        if (isExpanded) {
+            navbarToggler.classList.add("active");
         } else {
-            menu.style.display = "none";
+            navbarToggler.classList.remove("active");
         }
     });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", function (e) {
+        if (menu.classList.contains("open") && !menu.contains(e.target)) {
+            menu.classList.remove("open");
+            navbarToggler.classList.remove("active");
+            navbarToggler.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    // Close menu when pressing Escape key
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && menu.classList.contains("open")) {
+            menu.classList.remove("open");
+            navbarToggler.classList.remove("active");
+            navbarToggler.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    // Handle orientation changes
+    window.addEventListener("orientationchange", function () {
+        // Close menu on orientation change
+        if (menu.classList.contains("open")) {
+            menu.classList.remove("open");
+            navbarToggler.classList.remove("active");
+            navbarToggler.setAttribute("aria-expanded", "false");
+        }
+
+        // Adjust UI after orientation change
+        setTimeout(function() {
+            adjustUIForOrientation();
+        }, 300); // Small delay to allow orientation to complete
+    });
+
+    // Add touch events for mobile
+    if ('ontouchstart' in window) {
+        // Add touch-specific classes
+        document.body.classList.add("touch-device");
+
+        // Make menu items work better with touch
+        const menuItems = document.querySelectorAll(".menu ul li a");
+        menuItems.forEach(function(item) {
+            item.addEventListener("touchstart", function() {
+                this.classList.add("touch-active");
+            });
+
+            item.addEventListener("touchend", function() {
+                this.classList.remove("touch-active");
+            });
+        });
+    }
+
+    // Initial UI adjustment
+    adjustUIForOrientation();
 });
+
+/**
+ * Adjusts UI elements based on current orientation and screen size
+ */
+function adjustUIForOrientation() {
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const isMobile = window.innerWidth <= 480;
+    const isTablet = window.innerWidth <= 768 && window.innerWidth > 480;
+
+    // Get the grid container
+    const gridContainer = document.querySelector(".grid-container");
+
+    if (gridContainer) {
+        // Clear any previously set inline styles to let CSS handle the base styling
+        gridContainer.style.height = "";
+
+        // Add classes based on device width and orientation instead of setting inline styles
+        gridContainer.classList.remove("landscape", "portrait", "mobile", "tablet");
+
+        if (isLandscape) {
+            gridContainer.classList.add("landscape");
+        } else {
+            gridContainer.classList.add("portrait");
+        }
+
+        if (isMobile) {
+            gridContainer.classList.add("mobile");
+        } else if (isTablet) {
+            gridContainer.classList.add("tablet");
+        }
+
+        // Adjust container width for very narrow devices
+        if (window.innerWidth < 350) {
+            gridContainer.style.width = "100%";
+            gridContainer.style.padding = "2px";
+            gridContainer.style.gap = "2px";
+        }
+    }
+}
 
 
 /**
@@ -106,4 +214,90 @@ function updateInterfaceWithHarmonica(harmonica) {
 
     console.log('Interface updated with new Harmonica values.');
     */
+}
+
+/**
+ * Applies the 'empty-cell' class to grid cells with empty spans.
+ * This provides a fallback for browsers that don't support the :has() selector.
+ */
+function applyEmptyCellClass() {
+    // Get all grid cells
+    const gridCells = document.querySelectorAll('.grid-cell');
+
+    // Check each cell for empty spans
+    gridCells.forEach(function(cell) {
+        const span = cell.querySelector('span');
+        if (span && span.textContent.trim() === '') {
+            cell.classList.add('empty-cell');
+        }
+    });
+
+    // Apply cents-border-container class to elements with cents-border-text attribute
+    applyCentsBorderClass();
+
+    // Set up a MutationObserver to handle dynamically added cells
+    if (window.MutationObserver) {
+        const gridContainer = document.querySelector('.grid-container');
+        if (gridContainer) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1) {
+                                // Handle empty cells
+                                if (node.classList.contains('grid-cell')) {
+                                    const span = node.querySelector('span');
+                                    if (span && span.textContent.trim() === '') {
+                                        node.classList.add('empty-cell');
+                                    }
+                                }
+
+                                // Handle cents-border-text elements
+                                if (node.hasAttribute && node.hasAttribute('cents-border-text')) {
+                                    node.classList.add('cents-border-container');
+                                }
+
+                                // Check children for cents-border-text attribute
+                                const centsBorderElements = node.querySelectorAll 
+                                    ? node.querySelectorAll('[cents-border-text]') 
+                                    : [];
+
+                                for (let i = 0; i < centsBorderElements.length; i++) {
+                                    centsBorderElements[i].classList.add('cents-border-container');
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            observer.observe(gridContainer, { childList: true, subtree: true });
+        }
+    }
+}
+
+/**
+ * Applies the 'cents-border-container' class to elements with the 'cents-border-text' attribute.
+ * This provides a fallback for browsers that don't support custom attribute selectors.
+ */
+function applyCentsBorderClass() {
+    try {
+        // Get all elements with cents-border-text attribute
+        const centsBorderElements = document.querySelectorAll('[cents-border-text]');
+
+        // Add cents-border-container class to each element
+        centsBorderElements.forEach(function(element) {
+            element.classList.add('cents-border-container');
+        });
+    } catch (e) {
+        console.log('Browser may not support custom attribute selectors. Using alternative method.');
+
+        // Alternative approach for older browsers
+        const allElements = document.getElementsByTagName('*');
+        for (let i = 0; i < allElements.length; i++) {
+            if (allElements[i].getAttribute && allElements[i].getAttribute('cents-border-text') !== null) {
+                allElements[i].classList.add('cents-border-container');
+            }
+        }
+    }
 }

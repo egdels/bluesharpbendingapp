@@ -41,7 +41,7 @@ allprojects {
     // Defines the group ID used for all projects
     group = 'de.schliweb.bluesharpbendingapp'
     // Sets the version of the project, matching ${revision}
-    version = '3.2.2'
+    version = '3.2.3'
 
     repositories {
         google()
