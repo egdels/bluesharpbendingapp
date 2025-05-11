@@ -44,7 +44,6 @@
     <string name="permission_information_button_label">Proceed anyway</string>
     <string name="settings_algo_label">Algorithm</string>
     <string name="action_training">Training</string>
-    <string name="action_tuner">Tuner</string>
     <string name="training_start_button">Start</string>
     <string name="training_stop_button">Stop</string>
     <string name="training_trainings_label">Scale</string>
@@ -62,20 +61,6 @@
     <string name="training_settings_header">Training Settings</string>
     <string name="training_control_header">Training Control</string>
 
-    <!-- Tuner screen strings -->
-    <string name="tuner_start_button">Start Tuning</string>
-    <string name="tuner_stop_button">Stop Tuning</string>
-    <string name="tuner_listening">Listening...</string>
-    <string name="tuner_start_prompt">Start tuning to detect notes</string>
-    <string name="tuner_in_tune">In tune!</string>
-    <string name="tuner_slightly_flat">Slightly flat</string>
-    <string name="tuner_slightly_sharp">Slightly sharp</string>
-    <string name="tuner_too_flat">Too flat</string>
-    <string name="tuner_too_sharp">Too sharp</string>
-    <string name="tuner_stopped">Tuning stopped</string>
-    <string name="tuner_cents_format">%d cents</string>
-    <string name="tuner_note_format">Note: %s</string>
-    <string name="tuner_frequency_format">Frequency: %d Hz</string>
     <string name="tuning_key_info_format">%1$s | %2$s</string>
     <string name="about_user_guide">User Guide</string>
 </resources>

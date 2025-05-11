@@ -131,11 +131,4 @@ public interface MainWindow {
      */
     boolean isAndroidSettingsViewActive();
 
-    /**
-     * Determines if the tuner view is currently active.
-     *
-     * @return true if the tuner view is active; false otherwise
-     */
-    boolean isTunerViewActive();
-
 }

@@ -24,9 +24,11 @@ package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
  */
 
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
+import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 import org.junit.jupiter.api.Test;
 
 import javax.sound.sampled.TargetDataLine;
+import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -112,9 +114,10 @@ class MicrophoneDesktopTest {
             testAudioData[i] = (byte) i;
         }
 
-        doNothing().when(mockHandler).handle(anyDouble(), anyDouble());
+        ChordDetectionResult chordResult = new ChordDetectionResult(Collections.emptyList(), 0.0);
+        doNothing().when(mockHandler).handle(anyDouble(), anyDouble(), any(ChordDetectionResult.class));
         microphoneDesktop.processAudioData(testAudioData, testAudioData.length);
 
-        verify(mockHandler, atLeastOnce()).handle(anyDouble(), anyDouble());
+        verify(mockHandler, atLeastOnce()).handle(anyDouble(), anyDouble(), any(ChordDetectionResult.class));
     }
 }

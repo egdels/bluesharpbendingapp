@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
                 settingsFragment.setAndroidSettingsViewHandler(androidSettingsHandler);
                 harpSettingsViewHandler.initKeyList();
                 harpSettingsViewHandler.initTuneList();
+                harpSettingsViewHandler.initShowChordSetting();
                 microphoneSettingsViewHandler.initAlgorithmList();
                 microphoneSettingsViewHandler.initMicrophoneList();
                 microphoneSettingsViewHandler.initConfidenceList();
@@ -466,12 +467,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
             Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_to_TrainingFragment);
             return true;
         }
-        /*
-        if (id == R.id.action_tuner) {
-            Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.action_to_TunerFragment);
-            return true;
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -534,13 +529,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
     public boolean isTrainingViewActive() {
         return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof TrainingFragment;
     }
-
-
-    @Override
-    public boolean isTunerViewActive() {
-        return selectedFragmentView != null && selectedFragmentView.getInstance() instanceof TunerFragment;
-    }
-
 
     @Override
     public void open() {

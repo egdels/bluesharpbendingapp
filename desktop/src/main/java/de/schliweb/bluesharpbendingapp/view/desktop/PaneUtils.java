@@ -67,6 +67,19 @@ public class PaneUtils {
     }
 
     /**
+     * Clamps a value between a minimum and maximum value.
+     * This is a replacement for Math.clamp which is only available in Java 21+.
+     *
+     * @param value the value to clamp
+     * @param min the minimum value
+     * @param max the maximum value
+     * @return the clamped value
+     */
+    private static double clamp(double value, double min, double max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    /**
      * Binds the second child `Label` within the given `Pane` to the center of the `Pane`.
      * The method dynamically adjusts the label's position by binding its `layoutX` and `layoutY`
      * properties to the center coordinates of the `Pane`, based on its width and height.
@@ -115,7 +128,7 @@ public class PaneUtils {
         double height = pane.getHeight();
 
         // Clamp the cents value between -50 and 50 to ensure valid input
-        double clampedCents = Math.clamp(cents, -50, 50);
+        double clampedCents = clamp(cents, -50, 50);
 
         // Calculate the line thickness, ensuring it is at least 5 pixels
         int lineHeight = Math.max((int) (height / 10.0), 5);

@@ -51,18 +51,6 @@ import java.util.ArrayList;
 public class MainModel implements Serializable {
 
     /**
-     * Constructs a new MainModel with default values.
-     * This constructor initializes the model with predefined default values
-     * for various settings like algorithm, key, microphone, etc.
-     */
-    public MainModel() {
-        LoggingContext.setComponent("MainModel");
-        LoggingUtils.logInitializing("MainModel");
-        LoggingUtils.logDebug("Creating new MainModel instance with default values");
-        LoggingUtils.logInitialized("MainModel");
-    }
-
-    /**
      * Represents the index of the currently selected or stored algorithm.
      * This variable is used to track and reference the specific algorithm
      * configuration or implementation within the application's context.
@@ -71,7 +59,6 @@ public class MainModel implements Serializable {
      * algorithm selection before any user modifications or settings are applied.
      */
     private int storedAlgorithmIndex = 0;
-
     /**
      * Represents an integer index used to store or retrieve a specific key
      * in the context of a storage or data management operation. This variable
@@ -79,7 +66,6 @@ public class MainModel implements Serializable {
      * within a larger dataset or system.
      */
     private int storedKeyIndex = 4;
-
     /**
      * Represents the index of the currently selected or stored microphone.
      * This variable is used to track the microphone's position or identifier
@@ -89,7 +75,6 @@ public class MainModel implements Serializable {
      * primary or default microphone in most systems unless specifically updated.
      */
     private int storedMicrophoneIndex = 0;
-
     /**
      * Represents the index for a stored tune configuration.
      * This variable is used to maintain the index of a specific tune
@@ -97,7 +82,6 @@ public class MainModel implements Serializable {
      * It serves as a default or reference point for tune-related operations.
      */
     private int storedTuneIndex = 6;
-
     /**
      * Represents the index value of the currently stored concert pitch setting.
      * This variable typically refers to a predefined scale of concert pitch values,
@@ -108,7 +92,6 @@ public class MainModel implements Serializable {
      * pitch-related data.
      */
     private int storedConcertPitchIndex = 11;
-
     /**
      * Represents the index of the currently stored training session.
      * This variable is used to track and manage the storage or retrieval
@@ -118,7 +101,6 @@ public class MainModel implements Serializable {
      * is currently actively stored or indexed.
      */
     private int storedTrainingIndex = 0;
-
     /**
      * Represents the index value that determines the level of precision
      * stored or used for data handling within the application's logic.
@@ -126,7 +108,6 @@ public class MainModel implements Serializable {
      * the precision level in numerical or operational contexts.
      */
     private int storedPrecisionIndex = 2;
-
     /**
      * Represents a confidence index used by the application to store
      * or track a numeric value associated with a particular level
@@ -141,7 +122,6 @@ public class MainModel implements Serializable {
      * application's runtime based on specific processing or input.
      */
     private int storedConfidenceIndex = 0;
-
     /**
      * The `storedLockScreenIndex` variable represents the index of the currently
      * stored lock screen configuration. It is used to track or reference a
@@ -153,7 +133,12 @@ public class MainModel implements Serializable {
      * to reflect changes in the selected or stored lock screen index.
      */
     private int storedLockScreenIndex = 0;
-
+    /**
+     * Represents the index of a stored "Show Chord" configuration.
+     * This variable holds a default value of 0, which can be updated to reflect
+     * the state or option chosen by the user for displaying chord-related information.
+     */
+    private int storedShowChordIndex = 0;
     /**
      * Represents the index of the currently selected lock screen option.
      * This variable holds an integer value corresponding to the selected
@@ -161,6 +146,14 @@ public class MainModel implements Serializable {
      * manage the user's lock screen choice within the application's state.
      */
     private int selectedLockScreenIndex;
+    /**
+     * Represents the index of the currently selected chord display mode
+     * within the application's user interface or functionality.
+     * This value determines which chord-related information is shown
+     * or emphasized to the user, typically associated with a specific
+     * display or processing configuration.
+     */
+    private int selectedShowChordIndex;
     /**
      * Represents the index of the selected algorithm within a collection or list of algorithms.
      * This variable is used to track and identify the currently chosen algorithm
@@ -234,6 +227,17 @@ public class MainModel implements Serializable {
      * which it is applied within the application.
      */
     private int selectedPrecisionIndex;
+    /**
+     * Constructs a new MainModel with default values.
+     * This constructor initializes the model with predefined default values
+     * for various settings like algorithm, key, microphone, etc.
+     */
+    public MainModel() {
+        LoggingContext.setComponent("MainModel");
+        LoggingUtils.logInitializing("MainModel");
+        LoggingUtils.logDebug("Creating new MainModel instance with default values");
+        LoggingUtils.logInitialized("MainModel");
+    }
 
     /**
      * Retrieves the index of the selected lock screen configuration.
@@ -245,6 +249,18 @@ public class MainModel implements Serializable {
      */
     public int getSelectedLockScreenIndex() {
         return selectedLockScreenIndex != 0 ? selectedLockScreenIndex : storedLockScreenIndex;
+    }
+
+    /**
+     * Retrieves the index of the selected "show chord" configuration.
+     * If a specific "show chord" index is selected, it returns that value.
+     * Otherwise, it falls back to the stored "show chord" index.
+     *
+     * @return the index of the selected "show chord" if set (non-zero),
+     * or the stored "show chord" index as a default.
+     */
+    public int getSelectedShowChordIndex() {
+        return selectedShowChordIndex != 0 ? selectedShowChordIndex : storedShowChordIndex;
     }
 
     /**
@@ -337,7 +353,7 @@ public class MainModel implements Serializable {
 
     /**
      * Generates a string representation of the object's state by dynamically
-     * invoking all getter methods that start with "getStored" and have a return type of int.
+     * invoking all getter methods that start with "getStored" and have a return type of int or boolean.
      * The resulting string contains key-value pairs, where each key corresponds
      * to a method name and its value is the method's returned result.
      *

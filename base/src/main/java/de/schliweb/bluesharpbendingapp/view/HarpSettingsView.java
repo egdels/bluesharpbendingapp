@@ -57,4 +57,11 @@ public interface HarpSettingsView {
      */
     void setTunes(String[] tunes);
 
+    /**
+     * Sets the selected chord display option in the harp settings view based on the specified index.
+     *
+     * @param selectedShowChordIndex the index representing the selected chord display option
+     */
+    void setSelectedShowChord(int selectedShowChordIndex);
+
 }

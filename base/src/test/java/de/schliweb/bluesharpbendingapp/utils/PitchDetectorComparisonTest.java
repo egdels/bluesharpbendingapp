@@ -19,7 +19,7 @@ import java.util.Map;
  * This test evaluates and compares the performance, accuracy, and confidence of each algorithm
  * across all combinations of harmonica keys and tunes.
  */
-public class PitchDetectorComparisonTest {
+class PitchDetectorComparisonTest {
 
     private static final int SAMPLE_RATE = 44100;
     private static final double DURATION = 1.0; // 1 second of audio

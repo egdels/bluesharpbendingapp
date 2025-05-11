@@ -15,4 +15,6 @@ public class AppDimensions {
     public static final int OVERLAY_CORNER_RADIUS = 24;  // Corner radius for overlays
     public static final int OVERLAY_PADDING = 24;        // Padding for overlays
     public static final int OVERLAY_STROKE_WIDTH = 1;    // Stroke width for overlays
+
+    private AppDimensions() {}
 }

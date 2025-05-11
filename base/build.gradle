@@ -22,6 +22,14 @@
  *
  */
 
+dependencies {
+    testImplementation 'org.mockito:mockito-inline:5.2.0'
+
+    // TensorFlow dependencies
+    implementation 'org.tensorflow:tensorflow-core-platform:1.0.0'
+    implementation 'org.tensorflow:tensorflow-framework:1.0.0'
+}
+
 test {
     useJUnitPlatform() // Enables the use of JUnit 5 (JUnit Platform) for testing
     exclude '**/PitchDetectorComparisonTest.class'

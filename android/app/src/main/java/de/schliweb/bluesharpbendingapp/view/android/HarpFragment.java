@@ -250,7 +250,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         // Create the harp table layout
         createHarpTableLayout(tableLayout, overlayNote);
 
-        configureOverlayNoteView(overlayNote);
+        configureOverlayNoteView();
         configureNoteClickListeners(tableLayout, overlayNote);
 
         FragmentViewModel viewModel = new ViewModelProvider(requireActivity()).get(FragmentViewModel.class);
@@ -400,10 +400,8 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     /**
      * Configures the overlay note view by adding behavior for hiding the view
      * when it is clicked. This method also ensures the overlay note is hidden initially.
-     *
-     * @param overlayNote The TextView used to display the overlay view for enlarged notes.
      */
-    private void configureOverlayNoteView(TextView overlayNote) {
+    private void configureOverlayNoteView() {
         hideEnlargedTextView();
 
         // Set click listener on the card instead of just the TextView

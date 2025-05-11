@@ -33,6 +33,7 @@ import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.utils.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -340,6 +341,7 @@ public class MicrophoneAndroid extends AbstractMicrophone {
         double conf = 0;
         double pitch = -1;
         PitchDetector.PitchDetectionResult result;
+        ChordDetectionResult chordResult = PitchDetector.detectChord(audioData, SAMPLE_RATE);
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
@@ -354,7 +356,7 @@ public class MicrophoneAndroid extends AbstractMicrophone {
 
         if (conf < confidence) pitch = -1;
         if (microphoneHandler != null) {
-            microphoneHandler.handle(pitch, PitchDetector.calcRMS(audioData)); // frequency, RMS
+            microphoneHandler.handle(pitch, PitchDetector.calcRMS(audioData), chordResult); // frequency, RMS
         }
     }
 

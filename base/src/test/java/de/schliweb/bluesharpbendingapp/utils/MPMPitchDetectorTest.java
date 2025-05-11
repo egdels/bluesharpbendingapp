@@ -318,39 +318,6 @@ class MPMPitchDetectorTest {
     }
 
     /**
-     * Helper method: Generates a sine wave with added white noise
-     */
-    private double[] generateSineWaveWithNoise(double frequency, int sampleRate, int durationMs, double noiseLevel) {
-        int sampleCount = sampleRate * durationMs / 1000;
-        double[] noisyWave = new double[sampleCount];
-        for (int i = 0; i < sampleCount; i++) {
-            noisyWave[i] = Math.sin(2.0 * Math.PI * frequency * i / sampleRate) + noiseLevel * (Math.random() - 0.5);
-        }
-        return noisyWave;
-    }
-
-    /**
-     * Generates a sine wave signal that combines two overlapping sine waves with different frequencies and amplitudes.
-     *
-     * @param frequency1 The frequency of the first sine wave in Hertz.
-     * @param amplitude1 The amplitude of the first sine wave.
-     * @param frequency2 The frequency of the second sine wave in Hertz.
-     * @param amplitude2 The amplitude of the second sine wave.
-     * @param sampleRate The number of samples per second (sample rate) in Hertz.
-     * @param duration The duration of the generated wave in seconds.
-     * @return An array of doubles representing the overlapping sine wave signal.
-     */
-    private double[] generateOverlappingSineWave(double frequency1, double amplitude1, double frequency2, double amplitude2, int sampleRate, double duration) {
-        int samples = (int) (sampleRate * duration);
-        double[] sineWave = new double[samples];
-        for (int i = 0; i < samples; i++) {
-            sineWave[i] = amplitude1 * Math.sin(2 * Math.PI * frequency1 * i / sampleRate)
-                    + amplitude2 * Math.sin(2 * Math.PI * frequency2 * i / sampleRate);
-        }
-        return sineWave;
-    }
-
-    /**
      * Verifies that the detectPitch method accurately detects the pitch of a sine wave
      * with zero-crossing behavior. The test generates a square-like waveform with alternating
      * positive and negative amplitudes at a specified frequency using a given sampling rate.

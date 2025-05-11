@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Tests basic UI interactions with the settings view.
  */
 @ExtendWith(ApplicationExtension.class)
-public class SettingsViewDesktopFXTest {
+class SettingsViewDesktopFXTest {
 
     private SettingsViewDesktopFX settingsView;
 
@@ -66,7 +66,7 @@ public class SettingsViewDesktopFXTest {
      * Test that the settings view is properly initialized.
      */
     @Test
-    public void testSettingsViewInitialization() {
+    void testSettingsViewInitialization() {
         // Verify that the settings view is not null
         assertNotNull(settingsView, "Settings view should not be null");
         assertNotNull(settingsView.getRoot(), "Settings view root should not be null");
@@ -77,7 +77,7 @@ public class SettingsViewDesktopFXTest {
      * Test that the settings view can be displayed.
      */
     @Test
-    public void testSettingsViewDisplay(FxRobot robot) {
+    void testSettingsViewDisplay(FxRobot robot) {
         // Verify that the settings view is visible
         assertNotNull(settingsView.getRoot().getScene(), "Settings view should be in a scene");
         assertNotNull(settingsView.getRoot().getScene().getWindow(), "Settings view scene should be in a window");

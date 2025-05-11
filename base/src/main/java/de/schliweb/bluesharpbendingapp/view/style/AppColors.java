@@ -28,4 +28,6 @@ public class AppColors {
     public static final String ERROR = "#F44336";  // Red
     public static final String WARNING = "#FFC107";  // Amber
     public static final String INFO = "#2196F3";  // Light blue
+
+    private AppColors () {}
 }

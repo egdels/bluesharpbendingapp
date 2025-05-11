@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Tests basic UI interactions with the training view.
  */
 @ExtendWith(ApplicationExtension.class)
-public class TrainingViewDesktopFXTest {
+class TrainingViewDesktopFXTest {
 
     private TrainingViewDesktopFX trainingView;
 
@@ -66,7 +66,7 @@ public class TrainingViewDesktopFXTest {
      * Test that the training view is properly initialized.
      */
     @Test
-    public void testTrainingViewInitialization() {
+    void testTrainingViewInitialization() {
         // Verify that the training view is not null
         assertNotNull(trainingView, "Training view should not be null");
         assertNotNull(trainingView.getRoot(), "Training view root should not be null");
@@ -77,7 +77,7 @@ public class TrainingViewDesktopFXTest {
      * Test that the training view can be displayed.
      */
     @Test
-    public void testTrainingViewDisplay(FxRobot robot) {
+    void testTrainingViewDisplay(FxRobot robot) {
         // Verify that the training view is visible
         assertNotNull(trainingView.getRoot().getScene(), "Training view should be in a scene");
         assertNotNull(trainingView.getRoot().getScene().getWindow(), "Training view scene should be in a window");

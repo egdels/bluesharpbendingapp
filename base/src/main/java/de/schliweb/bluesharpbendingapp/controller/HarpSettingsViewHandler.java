@@ -58,4 +58,20 @@ public interface HarpSettingsViewHandler {
      * Provides users with a list of tunings they can select and apply.
      */
     void initTuneList();
+
+    /**
+     * Processes the selection of a show chord option in the harp settings.
+     * This method is invoked when the user interacts with the show chord setting,
+     * allowing the application to update its state or UI accordingly.
+     *
+     * @param showChordIndex the index of the selected show chord option
+     */
+    void handleShowChordSelection(int showChordIndex);
+
+    /**
+     * Initializes and sets up the available options for the "Show Chord" setting
+     * in the harp settings view. This method prepares the necessary state or data
+     * to enable users to configure their preferences related to displaying chords.
+     */
+    void initShowChordSetting();
 }

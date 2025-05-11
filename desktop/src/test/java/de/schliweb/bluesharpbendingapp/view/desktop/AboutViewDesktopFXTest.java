@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Tests basic UI interactions with the about view.
  */
 @ExtendWith(ApplicationExtension.class)
-public class AboutViewDesktopFXTest {
+class AboutViewDesktopFXTest {
 
     private AboutViewDesktopFX aboutView;
 
@@ -66,7 +66,7 @@ public class AboutViewDesktopFXTest {
      * Test that the about view is properly initialized.
      */
     @Test
-    public void testAboutViewInitialization() {
+    void testAboutViewInitialization() {
         // Verify that the about view is not null
         assertNotNull(aboutView, "About view should not be null");
         assertNotNull(aboutView.getRoot(), "About view root should not be null");
@@ -77,7 +77,7 @@ public class AboutViewDesktopFXTest {
      * Test that the about view can be displayed.
      */
     @Test
-    public void testAboutViewDisplay(FxRobot robot) {
+    void testAboutViewDisplay(FxRobot robot) {
         // Verify that the about view is visible
         assertNotNull(aboutView.getRoot().getScene(), "About view should be in a scene");
         assertNotNull(aboutView.getRoot().getScene().getWindow(), "About view scene should be in a window");

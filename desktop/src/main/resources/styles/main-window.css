@@ -198,6 +198,11 @@ Hyperlink:visited {
     -fx-mouse-transparent: true;
 }
 
+.highlight-chord {
+    -fx-background-color: yellow;
+}
+
+
 /* ComboBox styles */
 .combo-box {
     -fx-background-color: #2D2D2D; /* Match toolbar background */
@@ -375,4 +380,47 @@ Hyperlink:visited {
     -fx-background-color: #2D2D2D; /* Match pane background */
     -fx-border-color: transparent; /* No border */
     -fx-padding: 10; /* Add padding */
+}
+
+/* Custom CheckBox styling without checkmark */
+.custom-checkbox {
+    -fx-font-size: 14px;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-text-fill: #E0E0E0;
+    -fx-cursor: hand;
+}
+
+/* Hide the default mark */
+.custom-checkbox .box {
+    -fx-background-color: #3D3D3D;
+    -fx-border-color: #4FC3F7;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-border-width: 1;
+    -fx-padding: 3;
+}
+
+/* Style for selected state */
+.custom-checkbox:selected .box {
+    -fx-background-color: #4FC3F7;
+}
+
+/* Add a cross (X) mark instead of the default checkmark */
+.custom-checkbox .mark {
+    -fx-shape: "M 0 0 L 1 0 L 1 0.3 L 0.7 0.3 L 0.7 0.7 L 0.3 0.7 L 0.3 0.3 L 0 0.3 Z";
+    -fx-background-color: transparent;
+}
+
+/* Show the cross mark only when selected */
+.custom-checkbox:selected .mark {
+    -fx-shape: "M 0 0.3 L 0.3 0 L 0.5 0.2 L 0.7 0 L 1 0.3 L 0.8 0.5 L 1 0.7 L 0.7 1 L 0.5 0.8 L 0.3 1 L 0 0.7 L 0.2 0.5 Z";
+    -fx-background-color: #1E1E1E;
+    -fx-scale-x: 0.8;
+    -fx-scale-y: 0.8;
+}
+
+/* Hover effect */
+.custom-checkbox:hover .box {
+    -fx-effect: dropshadow(gaussian, rgba(79,195,247,0.5), 5, 0, 0, 0);
+    -fx-border-color: #81D4FA;
 }

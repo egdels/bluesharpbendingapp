@@ -34,10 +34,11 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * HarpViewNoteElementDesktopFX is a concrete implementation of the HarpViewNoteElement interface,
- * tailored for JavaFX desktop applications. It represents a visual element in the harp view
- * that dynamically displays a note's name and provides visual feedback using a line indicator.
- * The element is associated with a specific JavaFX {@code Pane}, which acts as its container.
+ * The HarpViewNoteElementDesktopFX class represents a graphical user interface
+ * element for displaying and interacting with musical notes in a harp-related
+ * application. It implements the HarpViewNoteElement interface, providing
+ * functionality for dynamically updating and styling note-related panes in a
+ * JavaFX application.
  */
 public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
 
@@ -108,26 +109,28 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
 
     /**
      * Binds a Label element within the provided Pane to be centered dynamically as the Pane's size changes.
-     * The method assumes that the Pane contains a Label as its first child, and it sets up bindings on the
+     * The method assumes that the Pane contains a Label as its second child, and it sets up bindings on the
      * Label's layoutX and layoutY properties to keep it centered within the Pane.
      *
      * @param pane The Pane containing the Label to be centered. The Pane is expected to have a specific
-     *             structure where the first child is a Label element.
+     *             structure where the second child is a Label element.
      */
     private void bindLabelToPane(Pane pane) {
         PaneUtils.bindLabelToPane(pane);
     }
 
     /**
-     * Clears the specified {@code Pane} by making its second child,
-     * which is expected to be a {@code Line}, invisible.
-     * This operation is scheduled to run on the JavaFX Application Thread.
+     * Clears the visual state of the given {@code Pane}.
+     * This method removes specific CSS class styles and hides visual elements associated
+     * with the pane, effectively resetting its appearance. It ensures that the operation
+     * is performed on the JavaFX Application Thread for thread safety.
      *
-     * @param pane The {@code Pane} to be cleared. It is expected to have
-     *             a specific structure where the second child is a {@code Line}.
+     * @param pane The {@code Pane} to be cleared. It is expected to have a specific structure
+     *             where the first child is a {@code Line} element.
      */
     private void clearPane(Pane pane) {
         Platform.runLater(() -> {
+            pane.getStyleClass().remove("highlight-chord");
             Line line = (Line) pane.getChildren().get(0);
             line.setVisible(false);
         });
@@ -159,7 +162,6 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      */
     private void updatePane(Pane pane, double cents) {
         javafx.application.Platform.runLater(() -> {
-
             PaneUtils.updateLine(pane, cents);
 
             if (pane.equals(enlargedPane)) {
@@ -184,6 +186,18 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
             updatePane(enlargedPane, cents);
         }
         updatePane(notePane, cents);
+    }
+
+    /**
+     * Highlights the note pane to visually represent a chord.
+     * This method utilizes JavaFX's Platform.runLater to ensure thread safety
+     * and adds the "highlight-chord" CSS class to the note pane's style class list.
+     * The applied CSS class is responsible for configuring the visual appearance
+     * of the note pane to indicate a chord highlight state.
+     */
+    @Override
+    public void highlightAsChord() {
+        Platform.runLater(() -> notePane.getStyleClass().add("highlight-chord"));
     }
 
 
@@ -238,7 +252,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      * adjustments to display an enlarged version of a note element.
      *
      * @param pane The Pane to be set as the enlarged pane. It is expected to have a specific
-     *             structure, where the first child is a Label, the second child is a Line,
+     *             structure, where the first child is a Line, the second child is a Label,
      *             and subsequent children may include other necessary components.
      */
     public void setEnlargedPane(Pane pane) {
@@ -258,7 +272,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      * Updates the label text of the enlarged pane to reflect the specified pitch offset in cents.
      * This method utilizes {@code PaneUtils.updateLabelCent()} to dynamically adjust the label
      * text based on the provided {@code cents} value. The label to be updated is expected to be
-     * the first child within the corresponding {@code notePane}.
+     * the second child within the corresponding {@code notePane}.
      *
      * @param cents The pitch offset to be displayed on the label, expressed in cents. Positive values
      *              indicate a sharper pitch, while negative values represent a flatter pitch.

@@ -24,13 +24,12 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.harmonica.*;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
-import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
-import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
-import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
-import de.schliweb.bluesharpbendingapp.utils.PitchDetector;
+import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
+import de.schliweb.bluesharpbendingapp.utils.PitchDetector;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
@@ -38,11 +37,22 @@ import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
- * The HarpController class handles all harmonica-related functionality.
- * It manages harmonica settings, view updates, and note processing.
+ * The HarpController class is responsible for managing and coordinating
+ * the logic of the harp application. It integrates multiple functionalities,
+ * including updating the harp view, handling note-related settings, and
+ * managing frequency and chord detection. This class interacts with
+ * the application state, model storage services, and user interface modules
+ * to ensure the seamless operation of the harp application.
+ * <p>
+ * It extends functionality from the following handler interfaces:
+ * - HarpSettingsViewHandler: for managing key and tuning settings.
+ * - HarpViewHandler: for managing notes in the harp view.
+ * - NoteSettingsViewHandler: for handling concert pitch-related settings.
+ * - HarpFrequencyHandler: for updating frequency and chord-related display.
  */
 public class HarpController implements HarpSettingsViewHandler, HarpViewHandler, NoteSettingsViewHandler, HarpFrequencyHandler {
 
@@ -62,6 +72,7 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
     private final ExecutorService executorService;
     private Harmonica harmonica;
     private NoteContainer[] noteContainers;
+    private final ChordAndDetectionResultComparator chordComparator = new ChordAndDetectionResultComparator();
 
     /**
      * Constructs a new HarpController with the specified dependencies.
@@ -88,29 +99,115 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
     }
 
     /**
-     * Updates the harp view based on the provided frequency.
+     * Updates the harp view with the provided frequency and chord detection results.
+     * This method resets note container states and processes either chord highlighting or
+     * single frequency updates based on the chord detection result, but not both simultaneously.
+     * Chord detection can be enabled or disabled via the showChord setting.
      *
-     * @param frequency the frequency value to update the harp view with
+     * @param frequency   the frequency to update in the harp view in Hz
+     * @param chordResult the result of chord detection containing detected pitches
      */
-    public void updateHarpView(double frequency) {
+    public void updateHarpView(double frequency, ChordDetectionResult chordResult) {
         LoggingContext.setComponent("HarpController");
         LoggingUtils.logAudioProcessing("Updating harp view", "frequency=" + frequency);
 
         if (!executorService.isShutdown() && isHarpViewActiveAndInitialized()) {
             LoggingUtils.logDebug("Executor service is active, and harp view is initialized. Proceeding to update note containers");
 
-            for (NoteContainer noteContainer : noteContainers) {
-                LoggingUtils.logDebug("Setting frequency " + frequency + " to handle for note container: " + noteContainer);
-                noteContainer.setFrequencyToHandle(frequency);
+            boolean chordDetected = false;
 
-                LoggingUtils.logDebug("Submitting note container to executor service: " + noteContainer);
+            // Check if we're in chord mode (showChordIndex = 1) or individual note mode (showChordIndex = 0)
+            if (model.getSelectedShowChordIndex() == 1) {
+                // Chord mode: Only process chords, no individual notes
+                LoggingUtils.logDebug("Chord display mode is enabled. Processing chord detection.");
+                chordDetected = processChords(frequency, chordResult);
+            }
+
+            if (!chordDetected) {
+                // Individual note mode: Only process individual notes, no chords
+                updateNoteContainersForNote(frequency);
+            }
+
+            for (NoteContainer noteContainer : noteContainers) {
                 executorService.submit(noteContainer);
+                LoggingUtils.logDebug("Submitting note container to executor service: " + noteContainer);
             }
 
             LoggingUtils.logDebug("Harp view update completed successfully");
         } else {
             LoggingUtils.logDebug("Harp view update skipped. Either executor service is shut down or harp view is not active/initialized");
         }
+    }
+
+    /**
+     * Processes chord detection results for the provided frequency. This method
+     * checks if there are detected pitches in the chord detection result. If so,
+     * it evaluates possible chords and updates related note containers for matched chords.
+     *
+     * @param frequency   the frequency in Hz to process for chord detection
+     * @param chordResult the result of chord detection containing detected pitches
+     * @return true if a matching chord is detected and processed, false otherwise
+     */
+    private boolean processChords(double frequency, ChordDetectionResult chordResult) {
+        if (!chordResult.hasPitches()) {
+            return false;
+        }
+
+        boolean chordDetected = false;
+        List<ChordHarmonica> chords = harmonica.getPossibleChords();
+
+        for (ChordHarmonica chord : chords) {
+            if (chordComparator.compare(chord, chordResult) == 0) {
+                chordDetected = true;
+                updateNoteContainersForChord(chord, frequency);
+            }
+        }
+
+        return chordDetected;
+    }
+
+    /**
+     * Updates the note containers with the specified chord and frequency.
+     * If a note container is part of the provided chord, its state is updated
+     * to mark it as part of the chord, and its frequency is set to the provided value.
+     * A debug log is generated for each updated note container.
+     *
+     * @param chord     the chord used to determine which note containers are part of it
+     * @param frequency the frequency to assign to the note containers that are part of the chord, in Hz
+     */
+    private void updateNoteContainersForChord(ChordHarmonica chord, double frequency) {
+        for (NoteContainer noteContainer : noteContainers) {
+            if (isPartOfChord(noteContainer, chord)) {
+                noteContainer.setPartOfChord(true);
+                noteContainer.setFrequencyToHandle(frequency);
+                LoggingUtils.logDebug("Setting frequency " + frequency + " for chord note container: " + noteContainer);
+            }
+        }
+    }
+
+    /**
+     * Updates all note containers with the specified frequency.
+     * Each note container's frequency is set to the provided value,
+     * and a debug log is generated for each updated note container.
+     *
+     * @param frequency the frequency value to assign to each note container, in Hz
+     */
+    private void updateNoteContainersForNote(double frequency) {
+        for (NoteContainer noteContainer : noteContainers) {
+            noteContainer.setFrequencyToHandle(frequency);
+            LoggingUtils.logDebug("Setting frequency " + frequency + " for note container: " + noteContainer);
+        }
+    }
+
+    /**
+     * Determines whether the given NoteContainer is part of the specified ChordHarmonica.
+     *
+     * @param noteContainer the NoteContainer to check
+     * @param chord         the ChordHarmonica to compare against
+     * @return true if the NoteContainer's note and channel match the chord's properties, false otherwise
+     */
+    private boolean isPartOfChord(NoteContainer noteContainer, ChordHarmonica chord) {
+        return noteContainer.getNote() == chord.getNoteIndex() && chord.getChannels().contains(noteContainer.getChannel());
     }
 
     @Override
@@ -196,6 +293,32 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
             LoggingUtils.logOperationCompleted("Tune list initialization");
         } else {
             LoggingUtils.logWarning("Tune list initialization skipped", "Harp settings view is not active");
+        }
+    }
+
+    @Override
+    public void handleShowChordSelection(int showChordIndex) {
+        this.model.setSelectedShowChordIndex(showChordIndex);
+        this.model.setStoredShowChordIndex(showChordIndex);
+        modelStorageService.storeModel(model);
+    }
+
+    @Override
+    public void initShowChordSetting() {
+        LoggingContext.setComponent("HarpController");
+        LoggingUtils.logOperationStarted("Show chord setting initialization");
+
+        if (window.isHarpSettingsViewActive()) {
+            LoggingUtils.logDebug("Harp settings view is active. Proceeding to initialize the show chord setting");
+
+            HarpSettingsView harpSettingsView = window.getHarpSettingsView();
+
+            LoggingUtils.logDebug("Setting the show chord state in the harp settings view");
+            harpSettingsView.setSelectedShowChord(model.getSelectedShowChordIndex());
+
+            LoggingUtils.logOperationCompleted("Show chord setting initialization");
+        } else {
+            LoggingUtils.logWarning("Show chord setting initialization skipped", "Harp settings view is not active");
         }
     }
 
@@ -290,9 +413,7 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
         int blowBendingCount = harmonica.getBlowBendingTonesCount(channel);
         int drawBendingCount = harmonica.getDrawBendingTonesCount(channel);
-        LoggingUtils.logDebug("Processing bending notes for channel " + channel +
-                " with blow bending count: " + blowBendingCount +
-                ", draw bending count: " + drawBendingCount);
+        LoggingUtils.logDebug("Processing bending notes for channel " + channel + " with blow bending count: " + blowBendingCount + ", draw bending count: " + drawBendingCount);
 
         for (int note = 2; note < 2 + drawBendingCount; note++) {
             addNoteToList(channel, note, harmonica, harpView, notesList, "drawing bending");
@@ -334,12 +455,10 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
         String note = NoteLookup.getNoteName(frequency);
 
         if (note != null) {
-            LoggingUtils.logDebug("Adding " + logMessage + " note for channel " + channel +
-                    " with frequency: " + frequency + " and note: " + note);
+            LoggingUtils.logDebug("Adding " + logMessage + " note for channel " + channel + " with frequency: " + frequency + " and note: " + note);
             notesList.add(new NoteContainer(channel, noteIndex, note, harmonica, harpView));
         } else {
-            LoggingUtils.logWarning(logMessage + " note lookup failed",
-                    "Channel " + channel + ", frequency " + frequency);
+            LoggingUtils.logWarning(logMessage + " note lookup failed", "Channel " + channel + ", frequency " + frequency);
         }
     }
 
@@ -363,7 +482,6 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
         harmonica = AbstractHarmonica.create(storedKeyIndex, storedTuneIndex);
         PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
         PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
-
         long startTime = System.currentTimeMillis();
         modelStorageService.storeModel(model);
         long duration = System.currentTimeMillis() - startTime;
@@ -415,4 +533,5 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
             return false;
         }
     }
+
 }

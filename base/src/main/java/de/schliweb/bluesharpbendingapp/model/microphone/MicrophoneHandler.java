@@ -3,7 +3,7 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
  * Copyright (c) 2023 Christian Kierdorf
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the “Software”),
+ * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
@@ -12,7 +12,7 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -23,6 +23,8 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
+
 /**
  * The interface Microphone handler.
  */
@@ -31,8 +33,10 @@ public interface MicrophoneHandler {
     /**
      * Handle all.
      *
-     * @param frequency the frequency
-     * @param volume    the volume
+     * @param frequency   the frequency
+     * @param volume      the volume
+     * @param chordResult
      */
-    void handle(double frequency, double volume);
+    void handle(double frequency, double volume, ChordDetectionResult chordResult);
+
 }

@@ -359,6 +359,7 @@ public class MainWindowDesktopFXController implements MainWindow {
         LoggingUtils.logDebug("Initializing harp settings");
         harpSettingsViewHandler.initKeyList();
         harpSettingsViewHandler.initTuneList();
+        harpSettingsViewHandler.initShowChordSetting();
 
         LoggingUtils.logDebug("Initializing note settings");
         noteSettingsViewHandler.initConcertPitchList();
@@ -495,14 +496,6 @@ public class MainWindowDesktopFXController implements MainWindow {
         return trainingViewContainer.isVisible();
     }
 
-    /**
-     * Checks if the tuner view is currently active (visible).
-     *
-     * @return true if the tuner view is visible, false otherwise
-     */
-    public boolean isTunerViewActive() {
-        return false;
-    }
 
     @Override
     public void open() {

@@ -1,4 +1,9 @@
 package de.schliweb.bluesharpbendingapp.model.harmonica;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -713,6 +718,99 @@ public abstract class AbstractHarmonica implements Harmonica {
     @Override
     public double getHarmonicaMaxFrequency() {
         return NoteUtils.addCentsToFrequency(50.0, getChannelOutFrequency(10));
+    }
+
+    /**
+     * Generates a list of all possible two-note chords for harmonica channels
+     * based on specific channel pair combinations. The chords are constructed
+     * using two different pairings:
+     * 1. Each pair of adjacent channels.
+     * 2. Channels separated by three steps, forming an interval across four channels.
+     *
+     * @return a list of ChordHarmonica instances representing all reachable two-note chords
+     *         for the defined harmonica channel configurations.
+     */
+    private List<ChordHarmonica> getPossibleTwoNoteChords() {
+        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
+
+        // For each pair of adjacent channels (1-2, 2-3, ..., 9-10)
+        for (int channel = CHANNEL_MIN; channel < CHANNEL_MAX; channel++) {
+            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1), 0);
+            chordHarmonicas.add(chordHarmonica);
+            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1), 1);
+            chordHarmonicas.add(chordHarmonica);
+        }
+
+        // For each quartet of adjacent channels (1-2-3-4, 2-3-4-5, ..., 7-8-9-10)
+        // where the middle two channels are covered
+        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 3; channel++) {
+            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 3), 0);
+            chordHarmonicas.add(chordHarmonica);
+            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 3), 1);
+            chordHarmonicas.add(chordHarmonica);
+        }
+
+        return chordHarmonicas;
+    }
+
+    /**
+     * Generates a list of all possible three-note chords constructed from adjacent channels.
+     * For each triplet of adjacent channels, it creates two types of chords:
+     * one built using "in-frequency" channels and another using "out-frequency" channels.
+     *
+     * @return a list of ChordHarmonica objects, each representing a possible combination of three adjacent channels.
+     */
+    private List<ChordHarmonica> getPossibleThreeNoteChords() {
+        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
+
+        // For each triplet of adjacent channels (1-2-3, 2-3-4, ..., 8-9-10)
+        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 2; channel++) {
+            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2), 0);
+            chordHarmonicas.add(chordHarmonica);
+            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2), 1);
+            chordHarmonicas.add(chordHarmonica);
+        }
+
+        return chordHarmonicas;
+    }
+
+    /**
+     * Generates a list of possible four-note chords by grouping adjacent channels into quartets
+     * and combining their respective in and out frequencies.
+     *
+     * @return a list of ChordHarmonica objects, each representing a group of four frequencies from adjacent channels
+     */
+    private List<ChordHarmonica> getPossibleFourNoteChords() {
+        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
+
+        // For each quartet of adjacent channels (1-2-3-4, 2-3-4-5, ..., 7-8-9-10)
+        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 3; channel++) {
+            ChordHarmonica chordHarmonica = new ChordHarmonica( this , Arrays.asList(channel, channel + 1, channel + 2, channel + 3), 0);
+            chordHarmonicas.add(chordHarmonica);
+            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2, channel + 3), 1);
+            chordHarmonicas.add(chordHarmonica);
+        }
+
+        return chordHarmonicas;
+    }
+
+
+    /**
+     * Retrieves a list of all possible chords that can be formed.
+     * The method aggregates two-note, three-note, and four-note chords
+     * to create the complete list of possible chords.
+     *
+     * @return a list containing all possible chords, combining two-note,
+     *         three-note, and four-note chords.
+     */
+    @Override
+    public List<ChordHarmonica> getPossibleChords() {
+        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
+        chordHarmonicas.addAll(getPossibleTwoNoteChords());
+        chordHarmonicas.addAll(getPossibleThreeNoteChords());
+        chordHarmonicas.addAll(getPossibleFourNoteChords());
+
+        return chordHarmonicas;
     }
 
     /**

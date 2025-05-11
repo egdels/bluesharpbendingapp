@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Tests basic UI interactions with the harp view.
  */
 @ExtendWith(ApplicationExtension.class)
-public class HarpViewDesktopFXTest {
+class HarpViewDesktopFXTest {
 
     private HarpViewDesktopFX harpView;
 
@@ -66,7 +66,7 @@ public class HarpViewDesktopFXTest {
      * Test that the harp view is properly initialized.
      */
     @Test
-    public void testHarpViewInitialization() {
+    void testHarpViewInitialization() {
         // Verify that the harp view is not null
         assertNotNull(harpView, "Harp view should not be null");
         assertNotNull(harpView.getRoot(), "Harp view root should not be null");
@@ -77,7 +77,7 @@ public class HarpViewDesktopFXTest {
      * Test that the harp view can be displayed.
      */
     @Test
-    public void testHarpViewDisplay(FxRobot robot) {
+    void testHarpViewDisplay(FxRobot robot) {
         // Verify that the harp view is visible
         assertNotNull(harpView.getRoot().getScene(), "Harp view should be in a scene");
         assertNotNull(harpView.getRoot().getScene().getWindow(), "Harp view scene should be in a window");

@@ -28,6 +28,7 @@ import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
+import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
@@ -154,7 +155,7 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
     }
 
     @Override
-    public void handle(double frequency, double volume) {
+    public void handle(double frequency, double volume, ChordDetectionResult chordResult) {
         LoggingContext.setComponent("MicrophoneController");
         LoggingUtils.logAudioProcessing("Microphone input", "frequency=" + frequency + ", volume=" + volume);
 
@@ -162,7 +163,7 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
         updateMicrophoneSettingsViewFrequency(frequency);
 
         // Forward the frequency to other controllers
-        harpFrequencyHandler.updateHarpView(frequency);
+        harpFrequencyHandler.updateHarpView(frequency,chordResult);
         trainingFrequencyHandler.updateTrainingView(frequency);
     }
 

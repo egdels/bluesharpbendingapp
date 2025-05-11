@@ -27,6 +27,7 @@ import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import org.junit.jupiter.api.AfterEach;
@@ -50,6 +51,7 @@ class MicrophoneControllerTest {
     private String[] supportedAlgorithms = {"Algorithm1", "Algorithm2"};
     private String[] supportedConfidences = {"Confidence1", "Confidence2"};
     private String[] supportedMicrophones = {"Microphone1", "Microphone2"};
+    private ChordDetectionResult chordResult;
 
     @BeforeEach
     void setup() {
@@ -72,6 +74,9 @@ class MicrophoneControllerTest {
         abstractMicrophoneMock = mockStatic(AbstractMicrophone.class);
         when(AbstractMicrophone.getSupportedAlgorithms()).thenReturn(supportedAlgorithms);
         when(AbstractMicrophone.getSupportedConfidences()).thenReturn(supportedConfidences);
+
+        // Initialize ChordDetectionResult with test values
+        chordResult = new ChordDetectionResult(java.util.List.of(440.0), 0.8);
 
         // Create controller
         microphoneController = new MicrophoneController(
@@ -195,10 +200,10 @@ class MicrophoneControllerTest {
         double volume = 0.8;
 
         // Act
-        microphoneController.handle(frequency, volume);
+        microphoneController.handle(frequency, volume, chordResult);
 
         // Assert
-        verify(harpFrequencyHandler).updateHarpView(frequency);
+        verify(harpFrequencyHandler).updateHarpView(frequency, chordResult);
         verify(trainingFrequencyHandler).updateTrainingView(frequency);
     }
 
@@ -210,7 +215,7 @@ class MicrophoneControllerTest {
         when(window.isMicrophoneSettingsViewActive()).thenReturn(true);
 
         // Act
-        microphoneController.handle(frequency, volume);
+        microphoneController.handle(frequency, volume, chordResult);
 
         // Assert - verify that the view was updated with frequency and volume
         verify(microphoneSettingsView).setFrequency(frequency);
@@ -225,7 +230,7 @@ class MicrophoneControllerTest {
         when(window.isMicrophoneSettingsViewActive()).thenReturn(false);
 
         // Act
-        microphoneController.handle(frequency, volume);
+        microphoneController.handle(frequency, volume, chordResult);
 
         // Assert - verify that the view was not updated
         verify(microphoneSettingsView, never()).setFrequency(anyDouble());

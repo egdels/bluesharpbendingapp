@@ -67,11 +67,6 @@ The project is divided into several subprojects to keep development modular and 
         - Temporary analysis of audio data without storing it, ensuring privacy.
         - Support for understanding and improving note bending techniques.
 
-### 5. **Tuner** ([tuner](tuner))
-
-The **Tuner** subproject serves as an example of pitch detection and can be used as a tuning tool.
-
-
 ---
 
 ## Build Instructions

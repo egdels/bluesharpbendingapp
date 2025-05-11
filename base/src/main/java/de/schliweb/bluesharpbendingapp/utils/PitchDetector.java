@@ -94,6 +94,40 @@ public abstract class PitchDetector {
     }
 
     /**
+     * Static method for detecting multiple pitches (chord) using spectral analysis.
+     * This method creates a temporary ChordDetector instance and delegates to it.
+     * <p>
+     * This is a modern approach that can detect chords (multiple simultaneous pitches)
+     * in an audio signal, unlike the YIN and MPM algorithms which are designed for
+     * monophonic (single-pitch) detection.
+     *
+     * @param audioData  an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a ChordDetectionResult containing the detected pitches and confidence value.
+     */
+    public static ChordDetectionResult detectChord(double[] audioData, int sampleRate) {
+        ChordDetector detector = new ChordDetector();
+        return detector.detectChordInternal(audioData, sampleRate);
+    }
+
+    /**
+     * Static method for detecting multiple pitches (chord) using TensorFlow with Magenta models.
+     * This method creates a temporary TensorFlowMagentaChordDetector instance and delegates to it.
+     * <p>
+     * This is an advanced approach that uses machine learning to detect chords in an audio signal.
+     * It may provide better results for complex chords and in noisy environments compared to
+     * traditional spectral analysis methods.
+     *
+     * @param audioData  an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a ChordDetectionResult containing the detected pitches and confidence value.
+     */
+    public static ChordDetectionResult detectChordWithTensorFlowMagenta(double[] audioData, int sampleRate) {
+        TensorFlowMagentaChordDetector detector = new TensorFlowMagentaChordDetector();
+        return detector.detectChordInternal(audioData, sampleRate);
+    }
+
+    /**
      * Detects the pitch of an audio signal using the specific algorithm implemented by the subclass.
      *
      * @param audioData  an array of double values representing the audio signal.
@@ -166,6 +200,105 @@ public abstract class PitchDetector {
         }
 
         return peakIndex + adjustment;
+    }
+
+    /**
+     * Performs an in-place Fast Fourier Transform (FFT) on the input data.
+     * This is a radix-2 decimation-in-time FFT algorithm.
+     *
+     * @param data the input/output data array (complex numbers as pairs of real, imaginary)
+     * @param n    the size of the FFT (number of complex numbers)
+     */
+    protected static void fft(double[] data, int n) {
+        // Bit-reversal permutation
+        int shift = 1;
+        while (shift < n) {
+            shift <<= 1;
+        }
+        shift >>= 1;
+
+        // Bit reversal
+        int i, j;
+        for (i = 0; i < n; i++) {
+            j = bitReverse(i, shift);
+            if (j > i) {
+                // Swap real parts
+                double temp = data[i * 2];
+                data[i * 2] = data[j * 2];
+                data[j * 2] = temp;
+
+                // Swap imaginary parts
+                temp = data[i * 2 + 1];
+                data[i * 2 + 1] = data[j * 2 + 1];
+                data[j * 2 + 1] = temp;
+            }
+        }
+
+        // Cooley-Tukey FFT
+        for (int len = 2; len <= n; len <<= 1) {
+            double angle = -2 * Math.PI / len;
+            double wReal = Math.cos(angle);
+            double wImag = Math.sin(angle);
+
+            for (i = 0; i < n; i += len) {
+                double uReal = 1.0;
+                double uImag = 0.0;
+
+                for (j = 0; j < len / 2; j++) {
+                    int p = i + j;
+                    int q = i + j + len / 2;
+
+                    double pReal = data[p * 2];
+                    double pImag = data[p * 2 + 1];
+                    double qReal = data[q * 2];
+                    double qImag = data[q * 2 + 1];
+
+                    // Temporary values for the multiplication
+                    double tempReal = uReal * qReal - uImag * qImag;
+                    double tempImag = uReal * qImag + uImag * qReal;
+
+                    // Update data
+                    data[q * 2] = pReal - tempReal;
+                    data[q * 2 + 1] = pImag - tempImag;
+                    data[p * 2] = pReal + tempReal;
+                    data[p * 2 + 1] = pImag + tempImag;
+
+                    // Update u
+                    double nextUReal = uReal * wReal - uImag * wImag;
+                    double nextUImag = uReal * wImag + uImag * wReal;
+                    uReal = nextUReal;
+                    uImag = nextUImag;
+                }
+            }
+        }
+    }
+
+    /**
+     * Applies a Hann window function to the sample at the given index.
+     *
+     * @param index the index of the sample
+     * @param size  the total number of samples
+     * @return the window coefficient
+     */
+    protected static double hannWindow(int index, int size) {
+        return 0.5 * (1 - Math.cos(2 * Math.PI * index / (size - 1)));
+    }
+
+    /**
+     * Reverses the bits of an integer value up to the given shift.
+     *
+     * @param value the value to reverse
+     * @param shift the bit position to reverse up to
+     * @return the bit-reversed value
+     */
+    protected static int bitReverse(int value, int shift) {
+        int result = 0;
+        while (shift > 0) {
+            result = (result << 1) | (value & 1);
+            value >>= 1;
+            shift >>= 1;
+        }
+        return result;
     }
 
     /**

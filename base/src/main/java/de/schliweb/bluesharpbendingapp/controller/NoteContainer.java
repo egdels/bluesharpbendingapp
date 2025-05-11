@@ -36,12 +36,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * The NoteContainer class represents a musical note within a specific channel
- * and provides functionality to handle frequency updates, harmonic adjustments,
- * and interaction with a visual representation of a harp.
- * <p>
- * This class implements the {@link Runnable} interface to periodically update
- * its associated harp view element based on the frequency handling.
+ * This class represents a container for musical notes, designed to handle various
+ * functionalities such as caching note data, managing note frequency changes, and
+ * interacting with visual or processing elements like harmonicas and harp views.
+ * The class also supports handling single notes and chords while providing
+ * thread-safe mechanisms for state management.
+ * Implements the {@code Runnable} interface for task scheduling and execution.
  */
 public class NoteContainer implements Runnable {
 
@@ -52,7 +52,6 @@ public class NoteContainer implements Runnable {
      */
     // Cache for the most recently updated cents values, indexed by channel and note
     private static final Map<String, Double> centsCache = new HashMap<>();
-
 
     @Getter
     private final int channel;
@@ -78,6 +77,7 @@ public class NoteContainer implements Runnable {
      * The value is managed in a thread-safe manner using an AtomicBoolean.
      */
     private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
+    private final AtomicBoolean toBeClearedChord = new AtomicBoolean(false);
     /**
      * Represents a unique identifier used for caching operations in the NoteContainer.
      * The cacheKey is utilized to distinguish specific instances of notes and their
@@ -88,6 +88,15 @@ public class NoteContainer implements Runnable {
 
     @Setter
     protected volatile double frequencyToHandle;
+
+    /**
+     * Flag indicating whether this note is part of a chord.
+     * When set to true, the note will be highlighted as part of a chord
+     * rather than showing a line indicator.
+     */
+    @Setter
+    private boolean isPartOfChord = false;
+
     /**
      * Represents a harmonica instance used within a NoteContainer.
      * This field enables operations involving various harmonica-related
@@ -112,12 +121,14 @@ public class NoteContainer implements Runnable {
      * Represents the maximum frequency that can be handled within the NoteContainer.
      * This value is used to enforce an upper limit on frequency-related operations.
      */
+    @Getter
     private double maxFrequency;
     /**
      * Represents the minimum frequency that a NoteContainer can handle.
      * This value is used to define the lower boundary for frequency processing
      * or identification.
      */
+    @Getter
     private double minFrequency;
 
 
@@ -168,44 +179,80 @@ public class NoteContainer implements Runnable {
         this.hasInverseCentsHandling = hasInverseCentsHandling;
     }
 
+    /**
+     * Executes actions related to frequency handling and state management.
+     * <p>
+     * When invoked, this method checks and processes frequency changes or chord state updates.
+     * If the current frequency is within the permissible range and the note is not part of a
+     * chord, it invokes {@code handleFrequencyChange()} to manage the frequency update. For
+     * notes that are part of a chord, {@code handleChordFrequencyChange()} is called to handle
+     * chord-specific frequency changes.
+     * <p>
+     * Additionally, if the {@code toBeCleared} flag is set, it resets the associated state by
+     * clearing any cached frequency deviation and schedules a UI element clear operation with
+     * a delay of 100 milliseconds. Similarly, if the {@code toBeClearedChord} flag is set, this
+     * method processes the chord state, resets the {@code isPartOfChord} flag to false, and
+     * schedules a UI element clear operation with a delay of 200 milliseconds.
+     * <p>
+     * This method ensures that updates to the note's state and its visual representation are
+     * performed consistently based on the current frequency and chord participation status.
+     */
     @Override
     public void run() {
-        if (frequencyToHandle <= maxFrequency && minFrequency <= frequencyToHandle) {
+        if (!isPartOfChord && frequencyToHandle <= maxFrequency && minFrequency <= frequencyToHandle) {
             handleFrequencyChange();
-        } else {
-            // execute once
-            if (toBeCleared.compareAndSet(true, false)) {
-                centsCache.remove(cacheKey);
-                exec.schedule(harpViewElement::clear, 100, TimeUnit.MILLISECONDS);
-            }
-
+        }
+        if (isPartOfChord) {
+            handleChordFrequencyChange();
+        }
+        // execute once
+        if (toBeCleared.compareAndSet(true, false)) {
+            centsCache.remove(cacheKey);
+            exec.schedule(harpViewElement::clear, 100, TimeUnit.MILLISECONDS);
+        }
+        if (toBeClearedChord.compareAndSet(true, false)) {
+            isPartOfChord = false;
+            exec.schedule(harpViewElement::clear, 200, TimeUnit.MILLISECONDS);
         }
     }
 
     /**
-     * Handles the change in frequency for a specific note by calculating the deviation in cents,
-     * checking for significant changes, and updating the associated harp view element if needed.
+     * Handles frequency change events for a specific note and updates the internal and visual state accordingly.
      * <p>
-     * This method performs the following steps:
-     * 1. Calculates the cents deviation for the note using the current frequency and retrieves
-     * the last cached cents value for comparison.
-     * 2. Determines whether the change in cents exceeds a predefined threshold of significance.
-     * 3. Updates the cached cents value and the harp view element accordingly, while applying
-     * inversion logic if specified.
-     * 4. Flags the state to indicate that updates are required for subsequent operations.
+     * This method calculates the deviation in cents for the given note using a reference frequency and
+     * checks if the deviation has changed significantly (by at least 2 cents) compared to the previously
+     * cached value. If a significant change is detected, the cached value is updated, and the harp view
+     * element is updated to visually reflect the new frequency's deviation. The method also sets an internal
+     * flag to indicate that further processing or cleanup may be required.
+     * <p>
+     * The deviation can be inverted based on the configuration of the {@code hasInverseCentsHandling} flag.
      */
     private void handleFrequencyChange() {
-        // Calculation of the current cents
         double cents = harmonica.getCentsNote(channel, note, frequencyToHandle);
-        // Retrieve the last cached value (use default value - Double.MAX_VALUE if not present)
         double lastCents = centsCache.getOrDefault(cacheKey, Double.MAX_VALUE);
-        // Check if there's a significant change (≥ 5 cents deviation)
         if (Math.abs(cents - lastCents) >= 2) {
-            // Update the cache
             centsCache.put(cacheKey, cents);
-            // Pass the value to HarpViewElement and invert it if necessary
             harpViewElement.update(hasInverseCentsHandling ? -cents : cents);
             toBeCleared.set(true);
+        }
+    }
+
+    /**
+     * Handles the state update when a chord frequency change is detected.
+     * <p>
+     * This method checks if the {@code toBeClearedChord} flag is not set. If the flag is unset,
+     * it updates the visual state of the associated UI element by highlighting it as a chord
+     * using {@code harpViewElement.highlightAsChord()}. It then sets the {@code toBeClearedChord}
+     * flag to {@code true} to indicate that the chord has been processed and further cleanup
+     * or updates may be necessary.
+     * <p>
+     * This method is primarily used to manage the UI and internal state when a chord frequency
+     * change event occurs.
+     */
+    private void handleChordFrequencyChange() {
+        if (!toBeClearedChord.get()) {
+            harpViewElement.highlightAsChord();
+            toBeClearedChord.set(true);
         }
     }
 

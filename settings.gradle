@@ -17,6 +17,5 @@ rootProject.name = 'bluesharpbendingapp'
 include ':base'
 include ':desktop'
 include ':webapp'
-include ':tuner'
 include ':android'
 project(':android').projectDir = file('./android/app')

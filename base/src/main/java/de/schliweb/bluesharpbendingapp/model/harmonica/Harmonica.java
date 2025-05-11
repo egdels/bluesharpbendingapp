@@ -23,6 +23,8 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  *
  */
 
+import java.util.List;
+
 /**
  * Represents the functionality of a Harmonica, including methods
  * for retrieving note frequencies, detecting bending, overblowing,
@@ -65,6 +67,13 @@ public interface Harmonica {
      */
     String getKeyName();
 
+    /**
+     * Retrieves the name of a specific note on a given channel of the harmonica.
+     *
+     * @param channel the channel of the harmonica where the note is located
+     * @param note    the specific note on the given channel whose name is to be retrieved
+     * @return the name of the specified note as a string
+     */
     String getNoteName(int channel, int note);
 
     /**
@@ -140,4 +149,13 @@ public interface Harmonica {
      * @return the maximum frequency of the harmonica in hertz
      */
     double getHarmonicaMaxFrequency();
+
+    /**
+     * Retrieves the list of possible chords that can be produced with the harmonica.
+     *
+     * @return a list of {@link ChordHarmonica} objects, where each chord represents
+     *         a possible combination of tones (frequencies) that comply with
+     *         the defined constraints for chords (containing 2, 3, or 4 tones).
+     */
+    List<ChordHarmonica> getPossibleChords();
 }

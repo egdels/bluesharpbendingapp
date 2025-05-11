@@ -59,4 +59,6 @@ public class StyleUtils {
     public static int getNotePadding() {
         return AppDimensions.NOTE_PADDING;
     }
+
+    private StyleUtils() {}
 }

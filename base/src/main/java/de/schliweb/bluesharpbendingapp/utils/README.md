@@ -69,7 +69,7 @@ DependencyInjectionInitializer.logDependencyInjectionInitialized("ComponentName"
 The `PitchDetector` abstract class provides a common interface and shared functionality for different pitch detection algorithms. It defines the basic structure and methods that all pitch detectors use, allowing for consistent configuration and usage across different implementations.
 
 Key features:
-- Abstract base class for different pitch detection algorithms (YIN, MPM)
+- Abstract base class for different pitch detection algorithms (YIN, MPM, FFT)
 - Configurable frequency range (minimum and maximum frequencies)
 - Common utility methods for audio processing (RMS calculation, silence detection)
 - Parabolic interpolation for improved peak detection accuracy
@@ -106,6 +106,18 @@ Key features:
 - Normalized Square Difference Function (NSDF) for peak detection
 - Frequency range is set via `PitchDetector`
 - Confidence measure for detected pitches
+
+### FFTPitchDetector
+
+The `FFTPitchDetector` class implements an FFT-based pitch detection algorithm. It uses Fast Fourier Transform to analyze the frequency spectrum of an audio signal and detect the fundamental frequency (pitch).
+
+Key features:
+- Implementation of FFT-based pitch detection using the JTransforms library
+- Window function application to reduce spectral leakage
+- Peak detection in the frequency spectrum
+- Parabolic interpolation for improved frequency estimation
+- Confidence measure based on peak prominence
+- Particularly efficient for larger buffer sizes and harmonic sounds
 
 ## How to Add New Utility Classes
 

@@ -26,14 +26,14 @@ package de.schliweb.bluesharpbendingapp.view.android;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.*;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import de.schliweb.bluesharpbendingapp.R;
 
 /**
@@ -42,7 +42,56 @@ import de.schliweb.bluesharpbendingapp.R;
  */
 public class TextViewUtils {
 
+
+    public static int saveBackgroundColor(TextView textView) {
+        // Get the background drawable
+        android.graphics.drawable.Drawable background = textView.getBackground();
+
+        // Check if the background is a LayerDrawable before attempting to cast
+        if (!(background instanceof LayerDrawable layout)) {
+            return 0 ; // Exit if not a LayerDrawable
+        }
+
+        // Check if the LayerDrawable has enough layers
+        if (layout.getNumberOfLayers() <= 0) {
+            return 0; // Exit if not enough layers
+        }
+
+        // Get the first layer (background)
+        android.graphics.drawable.Drawable firstLayer = layout.getDrawable(0);
+
+        // Handle different drawable types
+        if (firstLayer instanceof android.graphics.drawable.RippleDrawable ripple) {
+            // Get the content drawable (usually at index 0)
+            android.graphics.drawable.Drawable content = ripple.getDrawable(0);
+            return ((GradientDrawable) content).getColor().getDefaultColor();
+
+            // If it's not a GradientDrawable, we can't modify it directly
+        }
+        // For other drawable types, we can't modify them directly
+
+        return 0;
+    }
+
+
+    public static void restoreBackgroundColor(TextView textView, int color) {
+        setBackgroundColor(textView, color);
+    }
+
     private TextViewUtils() {
+    }
+
+    /**
+     * Clamps a value between a minimum and maximum value.
+     * This is a replacement for Math.clamp which is only available in Java 21+.
+     *
+     * @param value the value to clamp
+     * @param min the minimum value
+     * @param max the maximum value
+     * @return the clamped value
+     */
+    private static double clamp(double value, double min, double max) {
+        return Math.min(Math.max(value, min), max);
     }
 
     /**
@@ -76,7 +125,7 @@ public class TextViewUtils {
         // Set stroke color based on cents value
         int lineColor = Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0);
 
-        double limitedCents = Math.clamp(cents, -50, 50);
+        double limitedCents = clamp(cents, -50, 50);
 
         // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
         // For positive cents, move up from the middle; for negative cents, move down from the middle
@@ -135,7 +184,7 @@ public class TextViewUtils {
         // Set stroke color based on cents value
         int lineColor = Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0);
 
-        double limitedCents = Math.clamp(cents, -50, 50);
+        double limitedCents = clamp(cents, -50, 50);
 
         // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
         // For positive cents, move up from the middle; for negative cents, move down from the middle
@@ -227,4 +276,43 @@ public class TextViewUtils {
         noteTextView.setElevation(4f);
     }
 
+    /**
+     * Highlights a TextView to visually represent a chord.
+     * This method modifies the background of the TextView to indicate a chord highlight state.
+     * It uses the warning color (yellow/amber) from the color resources.
+     *
+     * @param noteTextView The TextView to be highlighted as a chord.
+     */
+    public static void highlightAsChord(TextView noteTextView) {
+        setBackgroundColor(noteTextView, ContextCompat.getColor(noteTextView.getContext(), R.color.warning));
+    }
+
+
+    private static void setBackgroundColor(TextView noteTextView, int color) {
+            // Get the background drawable
+            android.graphics.drawable.Drawable background = noteTextView.getBackground();
+
+            // Check if the background is a LayerDrawable before attempting to cast
+            if (!(background instanceof LayerDrawable layout)) {
+                return; // Exit if not a LayerDrawable
+            }
+
+            // Check if the LayerDrawable has enough layers
+            if (layout.getNumberOfLayers() <= 0) {
+                return; // Exit if not enough layers
+            }
+
+            // Get the first layer (background)
+            android.graphics.drawable.Drawable firstLayer = layout.getDrawable(0);
+
+            // Handle different drawable types
+            if (firstLayer instanceof android.graphics.drawable.RippleDrawable ripple) {
+                // Get the content drawable (usually at index 0)
+                android.graphics.drawable.Drawable content = ripple.getDrawable(0);
+                ((GradientDrawable) content).setColor(color);
+
+                // If it's not a GradientDrawable, we can't modify it directly
+            }
+            // For other drawable types, we can't modify them directly
+    }
 }

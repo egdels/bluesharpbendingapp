@@ -47,7 +47,6 @@ import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
 import lombok.Setter;
 
 
-
 /**
  * SettingsFragment is responsible for managing the UI and interactions related to the app settings.
  * It implements various interfaces to handle specific settings functionalities, such as harp settings,
@@ -156,9 +155,12 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
             setSelectedAlgorithm(model.getStoredAlgorithmIndex());
             setSelectedConfidence(model.getStoredConfidenceIndex());
             setSelectedLockScreen(model.getStoredLockScreenIndex());
+            setSelectedShowChord(model.getStoredShowChordIndex());
             androidSettingsViewHandler.handleLockScreenSelection(model.getStoredLockScreenIndex());
+            harpSettingsViewHandler.handleShowChordSelection(model.getStoredShowChordIndex());
         });
         binding.settingsScreenlock.setOnClickListener(v -> androidSettingsViewHandler.handleLockScreenSelection(binding.settingsScreenlock.isChecked() ? 1 : 0));
+        binding.settingsShowChord.setOnClickListener(v -> harpSettingsViewHandler.handleShowChordSelection(binding.settingsShowChord.isChecked() ? 1 : 0));
     }
 
 
@@ -349,4 +351,10 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
     public void setSelectedLockScreen(int selectedLockScreenIndex) {
         binding.settingsScreenlock.setChecked(selectedLockScreenIndex > 0);
     }
+
+    @Override
+    public void setSelectedShowChord(int selectedShowChordIndex) {
+        binding.settingsShowChord.setChecked(selectedShowChordIndex > 0);
+    }
+
 }

@@ -216,25 +216,5 @@ class YINPitchDetectorTest {
         }
         return sineWave;
     }
-
-    /**
-     * Generates a sine wave signal that combines two overlapping sine waves with different frequencies and amplitudes.
-     *
-     * @param frequency1 The frequency of the first sine wave in Hertz.
-     * @param amplitude1 The amplitude of the first sine wave.
-     * @param frequency2 The frequency of the second sine wave in Hertz.
-     * @param amplitude2 The amplitude of the second sine wave.
-     * @param sampleRate The number of samples per second (sample rate) in Hertz.
-     * @param duration The duration of the generated wave in seconds.
-     * @return An array of doubles representing the overlapping sine wave signal.
-     */
-    private double[] generateOverlappingSineWave(double frequency1, double amplitude1, double frequency2, double amplitude2, int sampleRate, double duration) {
-        int samples = (int) (sampleRate * duration);
-        double[] sineWave = new double[samples];
-        for (int i = 0; i < samples; i++) {
-            sineWave[i] = amplitude1 * Math.sin(2 * Math.PI * frequency1 * i / sampleRate)
-                    + amplitude2 * Math.sin(2 * Math.PI * frequency2 * i / sampleRate);
-        }
-        return sineWave;
-    }
+    
 }

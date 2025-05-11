@@ -35,6 +35,7 @@ import de.schliweb.bluesharpbendingapp.view.MicrophoneSettingsView;
 import de.schliweb.bluesharpbendingapp.view.NoteSettingsView;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import lombok.Getter;
@@ -146,6 +147,15 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     private ComboBox<String> comboTunes;
 
     /**
+     * Represents a CheckBox component for enabling or disabling chord detection and visualization.
+     * When checked, the application will detect and display chords.
+     * When unchecked, only individual notes will be displayed.
+     * This is an experimental feature.
+     */
+    @FXML
+    private CheckBox checkShowChord;
+
+    /**
      * Represents a handler for managing harp settings in the view layer.
      * This variable is tied to an instance of {@link HarpSettingsViewHandler},
      * which provides functionality to handle key and tuning selections,
@@ -214,6 +224,20 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
 
         for (ComboBox<String> stringComboBox : Arrays.asList(comboKeys, comboTunes, comboAlgorithms, comboMicrophones, comboConfidences, comboConcertPitches)) {
             addChangeListenerToComboBox(stringComboBox);
+        }
+
+        // Add event handler for the show chord checkbox
+        if (checkShowChord != null) {
+            checkShowChord.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                LoggingUtils.logUserAction("Show Chord Checkbox", "New state: " + newValue);
+                if (harpSettingsViewHandler != null) {
+                    harpSettingsViewHandler.handleShowChordSelection(newValue ? 1 : 0);
+                } else {
+                    LoggingUtils.logError("harpSettingsViewHandler is null when handling show chord selection");
+                }
+            });
+        } else {
+            LoggingUtils.logError("checkShowChord is null during initialization");
         }
 
         LoggingUtils.logInitialized("Settings View Controller");
@@ -363,6 +387,23 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
         initComboBox(comboTunes, tunes);
     }
 
+    /**
+     * Sets the selected state of the show chord toggle button based on the provided index.
+     * This method updates the UI to reflect the current show chord setting.
+     * 
+     * @param selectedShowChordIndex the index representing the show chord state (0 for off, 1 for on)
+     */
+    @Override
+    public void setSelectedShowChord(int selectedShowChordIndex) {
+        LoggingContext.setComponent("SettingsViewDesktopFXController");
+        LoggingUtils.logDebug("Setting show chord state to: " + selectedShowChordIndex);
+
+        if (checkShowChord != null) {
+            checkShowChord.setSelected(selectedShowChordIndex > 0);
+        } else {
+            LoggingUtils.logError("checkShowChord is null when trying to set selected state");
+        }
+    }
 
     /**
      * Sets the available concert pitches in the concert pitches ComboBox.
@@ -510,7 +551,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
         setSelectedMicrophone(model.getStoredMicrophoneIndex());
         setSelectedTune(model.getStoredTuneIndex());
         setSelectedConfidence(model.getStoredConfidenceIndex());
-
+        setSelectedShowChord(model.getStoredShowChordIndex());
         LoggingUtils.logOperationCompleted("Settings reset to defaults");
     }
 }

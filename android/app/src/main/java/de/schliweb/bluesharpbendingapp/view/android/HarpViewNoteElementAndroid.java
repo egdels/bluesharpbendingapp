@@ -23,8 +23,6 @@ package de.schliweb.bluesharpbendingapp.view.android;
  *
  */
 
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.widget.TextView;
 import androidx.fragment.app.FragmentActivity;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
@@ -52,7 +50,6 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
      */
     private static final HashMap<TextView, HarpViewNoteElementAndroid> instances = new HashMap<>();
 
-
     /**
      * A `TextView` instance used to display note-related information,
      * including graphical and textual updates representing musical notes
@@ -75,7 +72,6 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
      */
     private final TextView noteTextView;
 
-
     /**
      * Represents the activity context associated with the current note element.
      * Used to execute operations on the UI thread or retrieve additional resources
@@ -86,6 +82,12 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
      * with Android framework UI components.
      */
     private final FragmentActivity activity;
+    /**
+     * Represents the initial background color assigned to the note element.
+     * This value is immutable and used to define the starting color state
+     * of a note TextView within the {@code HarpViewNoteElementAndroid} class.
+     */
+    private final int initialBackgroundColor;
 
     /**
      * Represents a specialized TextView element that is visually emphasized
@@ -111,6 +113,7 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
     private HarpViewNoteElementAndroid(TextView textView) {
         this.noteTextView = textView;
         this.activity = (FragmentActivity) textView.getContext();
+        this.initialBackgroundColor = TextViewUtils.saveBackgroundColor(textView);
     }
 
 
@@ -145,7 +148,10 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
                 TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
             });
         }
-        activity.runOnUiThread(() -> TextViewUtils.clearTextViewLine(noteTextView));
+        activity.runOnUiThread(() -> {
+            TextViewUtils.restoreBackgroundColor(noteTextView, initialBackgroundColor);
+            TextViewUtils.clearTextViewLine(noteTextView);
+        });
     }
 
     /**
@@ -166,6 +172,17 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
             TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
             TextViewUtils.clearTextViewLine(enlargedTextView);
         }
+    }
+
+    /**
+     * Highlights the note TextView to visually represent a chord.
+     * This method utilizes Android's runOnUiThread to ensure thread safety
+     * and calls TextViewUtils.highlightAsChord to modify the background color
+     * of the note TextView to indicate a chord highlight state.
+     */
+    @Override
+    public void highlightAsChord() {
+        activity.runOnUiThread(() -> TextViewUtils.highlightAsChord(noteTextView));
     }
 
 }

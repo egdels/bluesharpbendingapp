@@ -61,7 +61,7 @@ public class MPMPitchDetector extends PitchDetector {
         double[] nsdf = calculateNSDF(audioData, n, minLag, maxLag);
 
         // Find peaks in the NSDF
-        List<Integer> candidatePeaks = findPeaks(nsdf, minLag, maxLag);
+        List<Integer> candidatePeaks = findPeaks(nsdf, minLag);
 
         // Select the most significant peak
         int peakIndex = selectPeak(candidatePeaks);
@@ -78,7 +78,7 @@ public class MPMPitchDetector extends PitchDetector {
         double refinedPeakIndex = PitchDetector.parabolicInterpolation(nsdf, peakIndex - minLag) + minLag;
 
         // Calculate the pitch from the refined peak index
-        double pitch = (double) sampleRate / refinedPeakIndex;
+        double pitch = sampleRate / refinedPeakIndex;
 
         return new PitchDetectionResult(pitch, confidence);
     }
@@ -124,10 +124,9 @@ public class MPMPitchDetector extends PitchDetector {
      *
      * @param nsdf   an array of double values representing the Normalized Square Difference Function (NSDF)
      * @param minLag the minimum lag value to consider (corresponding to the maximum frequency)
-     * @param maxLag the maximum lag value to consider (corresponding to the minimum frequency)
      * @return a list of integers where each integer represents the index of a detected peak
      */
-    private List<Integer> findPeaks(double[] nsdf, int minLag, int maxLag) {
+    private List<Integer> findPeaks(double[] nsdf, int minLag) {
         List<Integer> candidatePeaks = new ArrayList<>();
 
         // Ensure we don't go out of bounds

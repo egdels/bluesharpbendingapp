@@ -41,4 +41,14 @@ public interface HarpViewNoteElement {
      */
     void update(double cents);
 
+    /**
+     * Highlights the note element as part of a chord.
+     * This method should provide a visual indication that the note is part of a chord,
+     * such as highlighting it in yellow without showing a line indicator.
+     */
+    default void highlightAsChord() {
+        // Default implementation does nothing
+        // Concrete implementations should override this method to provide chord highlighting
+    }
+
 }

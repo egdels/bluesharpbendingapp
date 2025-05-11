@@ -77,6 +77,9 @@
             <Label text="Concert Pitch (Hz)" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboConcertPitches" GridPane.rowIndex="9" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Show Chord (Experimental)" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+            <CheckBox fx:id="checkShowChord" text="Show Chord" styleClass="custom-checkbox" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
         </GridPane>
     </center>
 

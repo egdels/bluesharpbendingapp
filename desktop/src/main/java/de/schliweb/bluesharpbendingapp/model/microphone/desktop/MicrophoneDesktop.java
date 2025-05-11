@@ -30,7 +30,7 @@ import de.schliweb.bluesharpbendingapp.utils.*;
 
 import javax.sound.sampled.*;
 import javax.sound.sampled.Mixer.Info;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -446,7 +446,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
 
     /**
      * Processes the given audio data buffer to detect the pitch and calculate the RMS (Root Mean Square).
-     * It uses the selected pitch detection algorithm (YIN or MPM) and sends the frequency and
+     * It uses the selected pitch detection algorithm (YIN, MPM, or FFT) and sends the frequency and
      * amplitude data to the microphone handler.
      *
      * @param buffer    the audio buffer containing raw audio data
@@ -457,6 +457,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
         double pitch = -1;
         double conf = 0;
         PitchDetector.PitchDetectionResult result;
+        ChordDetectionResult chordResult = PitchDetector.detectChord(audioData, SAMPLE_RATE);
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
@@ -471,7 +472,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
         if (conf < confidence) pitch = -1;
 
         if (microphoneHandler.get() != null) {
-            microphoneHandler.get().handle(pitch, PitchDetector.calcRMS(audioData)); // frequency, RMS
+            microphoneHandler.get().handle(pitch, PitchDetector.calcRMS(audioData), chordResult); // frequency, RMS
         }
     }
 }
