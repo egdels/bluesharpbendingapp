@@ -428,7 +428,7 @@ class NoteContainerTest {
         noteContainer.run();
 
         // Simulate minimal change that does not exceed threshold
-        when(mockHarmonica.getCentsNote(CHANNEL, NOTE, validFrequency)).thenReturn(unchangedCents + 1);
+        when(mockHarmonica.getCentsNote(CHANNEL, NOTE, validFrequency)).thenReturn(unchangedCents + 0.1);
 
         // Act
         noteContainer.run();

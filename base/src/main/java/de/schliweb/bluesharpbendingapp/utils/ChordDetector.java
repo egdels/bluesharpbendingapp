@@ -117,7 +117,8 @@ public class ChordDetector extends PitchDetector {
     public ChordDetectionResult detectChordInternal(double[] audioData, int sampleRate) {
 
         // Prepare for FFT (needs power of 2 size)
-        int fftSize = nextPowerOfTwo(audioData.length);
+        int fftSize = Math.max(1024, nextPowerOfTwo(audioData.length));
+
         double[] fftInput = new double[fftSize * 2]; // Complex numbers (real, imag)
 
         // Apply window function and prepare FFT input

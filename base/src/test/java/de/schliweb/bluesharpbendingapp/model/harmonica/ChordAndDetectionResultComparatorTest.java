@@ -1,7 +1,31 @@
 package de.schliweb.bluesharpbendingapp.model.harmonica;
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
 
 import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -9,6 +33,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,12 +43,14 @@ import static org.mockito.Mockito.when;
  * Test class for {@link ChordAndDetectionResultComparator}.
  * Tests the comparison functionality between ChordHarmonica and ChordDetectionResult objects.
  */
+@DisplayName("ChordAndDetectionResultComparator Tests")
 class ChordAndDetectionResultComparatorTest {
 
     private ChordAndDetectionResultComparator comparator;
 
     @BeforeEach
     void setUp() {
+        // Initialize the comparator before each test
         comparator = new ChordAndDetectionResultComparator();
     }
 
@@ -48,88 +75,122 @@ class ChordAndDetectionResultComparatorTest {
     }
 
     @Test
+    @DisplayName("Compare chords with different note counts")
     void testCompareWithDifferentNoteCount() {
+        // Arrange
         // Create chords with different number of notes
         ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // A4, C5 - 2 notes
         ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25, 659.25)); // A4, C5, E5 - 3 notes
 
+        // Act
         // The chord with fewer notes should be "less than" the chord with more notes
         int result = comparator.compare(chordHarmonica1, chordHarmonica2);
+
+        // Assert
         assertTrue(result < 0, "ChordHarmonica with 2 notes should be less than chord with 3 notes");
 
-        // Test the reverse comparison
+        // Act - Test the reverse comparison
         result = comparator.compare(chordHarmonica2, chordHarmonica1);
+
+        // Assert
         assertTrue(result > 0, "ChordHarmonica with 3 notes should be greater than chord with 2 notes");
     }
 
     @Test
+    @DisplayName("Compare chords with same note count and equal frequencies")
     void testCompareWithSameNoteCountAndEqualFrequencies() {
+        // Arrange
         // Create chords with the same number of notes and equal frequencies
         ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // A4, C5
         ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // A4, C5
 
+        // Act
         // The chords should be equal
         int result = comparator.compare(chordHarmonica1, chordHarmonica2);
+
+        // Assert
         assertEquals(0, result, "Chords with same frequencies should be equal");
     }
 
     @Test
+    @DisplayName("Compare chords with same note count and frequencies within tolerance")
     void testCompareWithSameNoteCountAndFrequenciesWithinTolerance() {
+        // Arrange
         // Create chords with the same number of notes and frequencies within tolerance (±50 cents)
         // 440.0 Hz * 1.029302 ≈ 452.89 Hz (50 cents higher than A4)
         ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // A4, C5
         ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(Arrays.asList(452.89, 538.55)); // A4+50cents, C5+50cents
 
+        // Act
         // The chords should be equal within the tolerance
         int result = comparator.compare(chordHarmonica1, chordHarmonica2);
+
+        // Assert
         assertEquals(0, result, "Chords with frequencies within tolerance should be equal");
     }
 
     @Test
+    @DisplayName("Compare chords with same note count but different frequencies")
     void testCompareWithSameNoteCountAndDifferentFrequencies() {
+        // Arrange
         // Create chords with the same number of notes but different frequencies
         ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // A4, C5
         ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(Arrays.asList(466.16, 587.33)); // A#4/Bb4, D5
 
+        // Act
         // The chord with lower frequency sum should be "less than" the chord with higher frequency sum
         int result = comparator.compare(chordHarmonica1, chordHarmonica2);
+
+        // Assert
         assertTrue(result < 0, "ChordHarmonica with lower frequency sum should be less than chord with higher frequency sum");
 
-        // Test the reverse comparison
+        // Act - Test the reverse comparison
         result = comparator.compare(chordHarmonica2, chordHarmonica1);
+
+        // Assert
         assertTrue(result > 0, "ChordHarmonica with higher frequency sum should be greater than chord with lower frequency sum");
     }
 
     @Test
+    @DisplayName("Compare ChordHarmonica with ChordDetectionResult having same frequencies")
     void testCompareWithChordAndChordDetectionResult() {
+        // Arrange
         // Create a ChordHarmonica and a ChordDetectionResult with the same frequencies
         ChordHarmonica chordHarmonica = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // A4, C5
         ChordDetectionResult detectionResult = new ChordDetectionResult(Arrays.asList(440.0, 523.25), 0.95);
 
-        // They should be equal
+        // Act
         int result = comparator.compare(chordHarmonica, detectionResult);
+
+        // Assert
         assertEquals(0, result, "ChordHarmonica and ChordDetectionResult with same frequencies should be equal");
 
-        // Test the reverse comparison
+        // Act - Test the reverse comparison
         result = comparator.compare(detectionResult, chordHarmonica);
+
+        // Assert
         assertEquals(0, result, "ChordDetectionResult and ChordHarmonica with same frequencies should be equal");
     }
 
     @Test
+    @DisplayName("Compare with invalid object types should throw IllegalArgumentException")
     void testCompareWithInvalidObjectTypes() {
+        // Arrange
         // Create a ChordHarmonica and an object of invalid type
         ChordHarmonica chordHarmonica = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25));
         String invalidObject = "Not a ChordHarmonica or ChordDetectionResult";
 
+        // Act & Assert
         // Should throw IllegalArgumentException
-        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, invalidObject),
-                "Should throw IllegalArgumentException for invalid object type");
-        assertThrows(IllegalArgumentException.class, () -> comparator.compare(invalidObject, chordHarmonica),
-                "Should throw IllegalArgumentException for invalid object type");
+        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, invalidObject), "Should throw IllegalArgumentException for invalid object type");
+
+        assertThrows(IllegalArgumentException.class, () -> comparator.compare(invalidObject, chordHarmonica), "Should throw IllegalArgumentException for invalid object type");
     }
 
     @Test
+    @DisplayName("Compare with various invalid second argument types")
     void testCompareWithFirstArgumentChordAndSecondArgumentNotChord() {
+        // Arrange
         // Create a ChordHarmonica as the first argument
         ChordHarmonica chordHarmonica = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // A4, C5
 
@@ -139,34 +200,38 @@ class ChordAndDetectionResultComparatorTest {
         Double doubleObject = 440.0;
         List<Double> listObject = Arrays.asList(440.0, 523.25);
 
+        // Act & Assert
         // All should throw IllegalArgumentException
-        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, stringObject),
-                "Should throw IllegalArgumentException when second argument is a String");
-        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, integerObject),
-                "Should throw IllegalArgumentException when second argument is an Integer");
-        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, doubleObject),
-                "Should throw IllegalArgumentException when second argument is a Double");
-        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, listObject),
-                "Should throw IllegalArgumentException when second argument is a List");
-        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, null),
-                "Should throw IllegalArgumentException when second argument is null");
+        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, stringObject), "Should throw IllegalArgumentException when second argument is a String");
+
+        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, integerObject), "Should throw IllegalArgumentException when second argument is an Integer");
+
+        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, doubleObject), "Should throw IllegalArgumentException when second argument is a Double");
+
+        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, listObject), "Should throw IllegalArgumentException when second argument is a List");
+
+        assertThrows(IllegalArgumentException.class, () -> comparator.compare(chordHarmonica, null), "Should throw IllegalArgumentException when second argument is null");
     }
 
     @ParameterizedTest
-    @CsvSource({
-            "440.0, 440.0, true",      // Exact same frequency
+    @DisplayName("Test frequency comparison with various tolerance levels")
+    @CsvSource({"440.0, 440.0, true",      // Exact same frequency
             "440.0, 452.89, true",     // Within tolerance (50 cents higher)
             "440.0, 427.48, true",     // Within tolerance (50 cents lower)
             "440.0, 466.16, false",    // Outside tolerance (A#4/Bb4)
             "440.0, 415.30, false"     // Outside tolerance (G#4/Ab4)
     })
     void testIsWithinCents(double f1, double f2, boolean expected) {
+        // Arrange
         // Create chords with the test frequencies
         ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(Arrays.asList(f1, 523.25));
         ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(Arrays.asList(f2, 523.25));
 
+        // Act
         // Test if frequencies are within tolerance
         int result = comparator.compare(chordHarmonica1, chordHarmonica2);
+
+        // Assert
         if (expected) {
             assertEquals(0, result, "Frequencies " + f1 + " and " + f2 + " should be within tolerance");
         } else {
@@ -175,7 +240,9 @@ class ChordAndDetectionResultComparatorTest {
     }
 
     @Test
+    @DisplayName("Test note count comparison with different numbers of notes")
     void testGetNoteCount() {
+        // Arrange
         // Create objects with different note counts
         ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // 2 notes
         ChordHarmonica chordHarmonica3 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25, 659.25)); // 3 notes
@@ -185,6 +252,7 @@ class ChordAndDetectionResultComparatorTest {
         ChordDetectionResult result3 = new ChordDetectionResult(Arrays.asList(440.0, 523.25, 659.25), 0.95); // 3 notes
         ChordDetectionResult result4 = new ChordDetectionResult(Arrays.asList(440.0, 523.25, 659.25, 783.99), 0.95); // 4 notes
 
+        // Act & Assert
         // Compare objects with different note counts
         assertTrue(comparator.compare(chordHarmonica2, chordHarmonica3) < 0, "2-note chord should be less than 3-note chord");
         assertTrue(comparator.compare(chordHarmonica3, chordHarmonica4) < 0, "3-note chord should be less than 4-note chord");
@@ -197,21 +265,31 @@ class ChordAndDetectionResultComparatorTest {
         assertEquals(0, comparator.compare(chordHarmonica4, result4), "4-note chord should equal 4-note result with same frequencies");
     }
 
+    // Note: This test is redundant with testCompareWithChordAndChordDetectionResult
+    // It's kept for completeness but could be removed
     @Test
+    @DisplayName("Test getFrequencies method with same frequencies")
     void testGetFrequencies() {
+        // Arrange
         // Create a ChordHarmonica and a ChordDetectionResult with the same frequencies
         List<Double> frequencies = Arrays.asList(440.0, 523.25, 659.25);
         ChordHarmonica chordHarmonica = createChordHarmonicaWithTones(frequencies);
         ChordDetectionResult detectionResult = new ChordDetectionResult(frequencies, 0.95);
 
+        // Act
         // Compare them - they should be equal
         int result = comparator.compare(chordHarmonica, detectionResult);
+
+        // Assert
         assertEquals(0, result, "ChordHarmonica and ChordDetectionResult with same frequencies should be equal");
     }
 
+    // Note: This test is partially redundant with testCompareWithSameNoteCountAndFrequenciesWithinTolerance
+    // But it adds value by testing multiple frequencies and different tolerance levels
     @Test
+    @DisplayName("Test areFrequenciesEqual method with various frequency comparisons")
     void testAreFrequenciesEqual() {
-        // Test with frequencies that are exactly the same
+        // Arrange & Act & Assert - Test with frequencies that are exactly the same
         List<Double> frequencies1 = Arrays.asList(440.0, 523.25, 659.25);
         List<Double> frequencies2 = Arrays.asList(440.0, 523.25, 659.25);
         ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(frequencies1);
@@ -219,16 +297,56 @@ class ChordAndDetectionResultComparatorTest {
 
         assertEquals(0, comparator.compare(chordHarmonica1, chordHarmonica2), "Chords with identical frequencies should be equal");
 
-        // Test with frequencies that are within tolerance
+        // Arrange & Act & Assert - Test with frequencies that are within tolerance
         List<Double> frequencies3 = Arrays.asList(452.89, 538.55, 678.45); // Each about 50 cents higher
         ChordHarmonica chordHarmonica3 = createChordHarmonicaWithTones(frequencies3);
 
         assertEquals(0, comparator.compare(chordHarmonica1, chordHarmonica3), "Chords with frequencies within tolerance should be equal");
 
-        // Test with frequencies that are outside tolerance
+        // Arrange & Act & Assert - Test with frequencies that are outside tolerance
         List<Double> frequencies4 = Arrays.asList(466.16, 554.37, 698.46); // Each about 100 cents (semitone) higher
         ChordHarmonica chordHarmonica4 = createChordHarmonicaWithTones(frequencies4);
 
         assertNotEquals(0, comparator.compare(chordHarmonica1, chordHarmonica4), "Chords with frequencies outside tolerance should not be equal");
+    }
+
+    @Test
+    @DisplayName("Test comparison with different order of same frequencies")
+    void testCompareWithDifferentOrderOfSameFrequencies() {
+        // Arrange
+        // Create chords with the same frequencies but in different order
+        List<Double> frequencies1 = Arrays.asList(440.0, 523.25, 659.25); // A4, C5, E5
+        List<Double> frequencies2 = Arrays.asList(659.25, 440.0, 523.25); // E5, A4, C5
+        ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(frequencies1);
+        ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(frequencies2);
+
+        // Act
+        int result = comparator.compare(chordHarmonica1, chordHarmonica2);
+
+        // Assert
+        // The areFrequenciesEqual method sorts the frequencies before comparison (O(n log n))
+        assertEquals(0, result, "Chords with same frequencies in different order should be equal");
+    }
+
+    @Test
+    @DisplayName("Test comparison with empty frequency lists")
+    void testCompareWithEmptyFrequencyLists() {
+        // Arrange
+        // Create chords with empty frequency lists
+        ChordHarmonica emptyChord1 = createChordHarmonicaWithTones(Collections.emptyList());
+        ChordHarmonica emptyChord2 = createChordHarmonicaWithTones(Collections.emptyList());
+        ChordDetectionResult emptyResult = new ChordDetectionResult(Collections.emptyList(), 0.0);
+
+        // Act & Assert
+        // Empty chords should be equal to each other
+        assertEquals(0, comparator.compare(emptyChord1, emptyChord2), "Empty chords should be equal to each other");
+
+        // Empty chord should be equal to empty detection result
+        assertEquals(0, comparator.compare(emptyChord1, emptyResult), "Empty chord should be equal to empty detection result");
+
+        // Empty chord should be less than non-empty chord
+        ChordHarmonica nonEmptyChord = createChordHarmonicaWithTones(Arrays.asList(440.0));
+        assertTrue(comparator.compare(emptyChord1, nonEmptyChord) < 0, "Empty chord should be less than non-empty chord");
+        assertTrue(comparator.compare(nonEmptyChord, emptyChord1) > 0, "Non-empty chord should be greater than empty chord");
     }
 }

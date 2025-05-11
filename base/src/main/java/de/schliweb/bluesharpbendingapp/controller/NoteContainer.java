@@ -207,12 +207,16 @@ public class NoteContainer implements Runnable {
         }
         // execute once
         if (toBeCleared.compareAndSet(true, false)) {
-            centsCache.remove(cacheKey);
-            exec.schedule(harpViewElement::clear, 100, TimeUnit.MILLISECONDS);
+            exec.schedule(() -> {
+                harpViewElement.clear();
+                centsCache.remove(cacheKey);
+            }, 100, TimeUnit.MILLISECONDS);
         }
         if (toBeClearedChord.compareAndSet(true, false)) {
-            isPartOfChord = false;
-            exec.schedule(harpViewElement::clear, 200, TimeUnit.MILLISECONDS);
+            exec.schedule(() ->{
+                isPartOfChord = false;
+                harpViewElement.clear();
+            }, 200, TimeUnit.MILLISECONDS);
         }
     }
 

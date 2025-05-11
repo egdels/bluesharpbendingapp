@@ -1,4 +1,27 @@
 package de.schliweb.bluesharpbendingapp.controller;
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
@@ -168,6 +191,9 @@ class HarpControllerChordTest {
 
     /**
      * Helper method to set up frequency ranges for specific channels.
+     *
+     * @param channel   The channel number to set up frequency ranges for
+     * @param frequency The center frequency to use for the range
      */
     private void setupFrequencyRanges(int channel, double frequency) {
         for (NoteContainer noteContainer : noteContainers) {
@@ -180,177 +206,234 @@ class HarpControllerChordTest {
 
     /**
      * Helper method to create a ChordDetectionResult with the given frequencies.
+     *
+     * @param frequencies The frequencies to include in the chord detection result
+     * @return A ChordDetectionResult instance with the specified frequencies
      */
     private ChordDetectionResult createChordDetectionResult(double... frequencies) {
         return ChordDetectionResult.of(frequencies, 1.0);
     }
 
+    /**
+     * Helper method to set up a chord test with the specified channels and frequencies.
+     * This method configures the frequency ranges for the specified channels and enables chord display mode.
+     *
+     * @param channels    Array of channel numbers to set up
+     * @param frequencies Array of frequencies corresponding to the channels
+     * @return A ChordDetectionResult containing the specified frequencies
+     */
+    private ChordDetectionResult setupChordTest(int[] channels, double[] frequencies) {
+        // Validate input
+        if (channels.length != frequencies.length) {
+            throw new IllegalArgumentException("Channels and frequencies arrays must have the same length");
+        }
+
+        // Create chord detection result
+        ChordDetectionResult chordResult = createChordDetectionResult(frequencies);
+
+        // Setup frequency ranges for each channel
+        for (int i = 0; i < channels.length; i++) {
+            setupFrequencyRanges(channels[i], frequencies[i]);
+        }
+
+        // Enable chord display mode
+        when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+
+        return chordResult;
+    }
+
+    /**
+     * Helper method to verify that the specified channels are marked as part of a chord,
+     * and optionally verify that other channels are not marked as part of a chord.
+     *
+     * @param chordChannels    Array of channel numbers that should be part of the chord
+     * @param excludedChannels Array of channel numbers that should not be part of the chord (optional)
+     */
+    private void verifyChordNotes(int[] chordChannels, int[] excludedChannels) {
+        for (NoteContainer noteContainer : noteContainers) {
+            // Check if the note container's channel is in the chord channels
+            boolean isChordChannel = false;
+            for (int channel : chordChannels) {
+                if (noteContainer.getChannel() == channel && noteContainer.getNote() == 0) {
+                    isChordChannel = true;
+                    break;
+                }
+            }
+
+            if (isChordChannel) {
+                // Verify that chord channels are marked as part of the chord
+                verify(noteContainer, atLeastOnce()).setPartOfChord(true);  // Should be part of chord
+            } else if (excludedChannels != null) {
+                // Check if the note container's channel is in the excluded channels
+                boolean isExcludedChannel = false;
+                for (int channel : excludedChannels) {
+                    if (noteContainer.getChannel() == channel && noteContainer.getNote() == 0) {
+                        isExcludedChannel = true;
+                        break;
+                    }
+                }
+
+                if (isExcludedChannel) {
+                    // Verify that excluded channels are not marked as part of the chord
+                    verify(noteContainer, never()).setPartOfChord(true); // Should not be part of chord
+                }
+            }
+        }
+    }
+
+    /**
+     * Tests that 2-note chords with adjacent channels are correctly highlighted in the harp view.
+     *
+     * <p>This test verifies that when a 2-note chord is detected (C4 and E4 frequencies),
+     * the corresponding note containers for channels 1 and 2 are properly marked as part of the chord.
+     *
+     * <p>Test Steps:
+     * 1. Set up a chord test with channels 1 and 2 and frequencies C4 and E4
+     * 2. Call updateHarpView with the chord detection result
+     * 3. Verify that note containers for channels 1 and 2 are marked as part of the chord
+     */
     @Test
     @DisplayName("Test that 2-note chords (adjacent channels) are correctly highlighted")
     void testTwoNoteChordHighlighting() {
         // Arrange
-        int channel1 = 1;
-        int channel2 = 2;
+        int[] channels = {1, 2};
+        double[] frequencies = {FREQ_C4, FREQ_E4};
 
-        ChordDetectionResult chordResult = createChordDetectionResult(FREQ_C4, FREQ_E4);
-
-        // Setup the frequency ranges for the note containers
-        setupFrequencyRanges(channel1, FREQ_C4);
-        setupFrequencyRanges(channel2, FREQ_E4);
-
-        // Enable chord display mode
-        when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+        ChordDetectionResult chordResult = setupChordTest(channels, frequencies);
 
         // Act
         harpController.updateHarpView(0.0, chordResult);
 
         // Assert
-        for (NoteContainer noteContainer : noteContainers) {
-            if ((noteContainer.getChannel() == channel1 || noteContainer.getChannel() == channel2) && 
-                noteContainer.getNote() == 0) {
-                verify(noteContainer).setPartOfChord(false); // First reset all flags
-                verify(noteContainer).setPartOfChord(true);  // Then set for chord notes
-            }
-        }
+        verifyChordNotes(channels, null);
     }
 
+    /**
+     * Tests that 3-note chords with adjacent channels are correctly highlighted in the harp view.
+     *
+     * <p>This test verifies that when a 3-note chord is detected (C4, E4, and G4 frequencies),
+     * the corresponding note containers for channels 1, 2, and 3 are properly marked as part of the chord.
+     *
+     * <p>Test Steps:
+     * 1. Set up a chord test with channels 1, 2, and 3 and frequencies C4, E4, and G4
+     * 2. Call updateHarpView with the chord detection result
+     * 3. Verify that note containers for channels 1, 2, and 3 are marked as part of the chord
+     */
     @Test
     @DisplayName("Test that 3-note chords (adjacent channels) are correctly highlighted")
     void testThreeNoteChordHighlighting() {
         // Arrange
-        int channel1 = 1;
-        int channel2 = 2;
-        int channel3 = 3;
+        int[] channels = {1, 2, 3};
+        double[] frequencies = {FREQ_C4, FREQ_E4, FREQ_G4};
 
-        ChordDetectionResult chordResult = createChordDetectionResult(FREQ_C4, FREQ_E4, FREQ_G4);
-
-        // Setup the frequency ranges for the note containers
-        setupFrequencyRanges(channel1, FREQ_C4);
-        setupFrequencyRanges(channel2, FREQ_E4);
-        setupFrequencyRanges(channel3, FREQ_G4);
-
-        // Enable chord display mode
-        when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+        ChordDetectionResult chordResult = setupChordTest(channels, frequencies);
 
         // Act
         harpController.updateHarpView(0.0, chordResult);
 
         // Assert
-        for (NoteContainer noteContainer : noteContainers) {
-            if ((noteContainer.getChannel() == channel1 || 
-                 noteContainer.getChannel() == channel2 || 
-                 noteContainer.getChannel() == channel3) && 
-                noteContainer.getNote() == 0) {
-                verify(noteContainer).setPartOfChord(false); // First reset all flags
-                verify(noteContainer).setPartOfChord(true);  // Then set for chord notes
-            }
-        }
+        verifyChordNotes(channels, null);
     }
 
+    /**
+     * Tests that 4-note chords with adjacent channels are correctly highlighted in the harp view.
+     *
+     * <p>This test verifies that when a 4-note chord is detected (C4, E4, G4, and C5 frequencies),
+     * the corresponding note containers for channels 1, 2, 3, and 4 are properly marked as part of the chord.
+     *
+     * <p>Test Steps:
+     * 1. Set up a chord test with channels 1, 2, 3, and 4 and frequencies C4, E4, G4, and C5
+     * 2. Call updateHarpView with the chord detection result
+     * 3. Verify that note containers for channels 1, 2, 3, and 4 are marked as part of the chord
+     */
     @Test
     @DisplayName("Test that 4-note chords (adjacent channels) are correctly highlighted")
     void testFourNoteChordHighlighting() {
         // Arrange
-        int channel1 = 1;
-        int channel2 = 2;
-        int channel3 = 3;
-        int channel4 = 4;
+        int[] channels = {1, 2, 3, 4};
+        double[] frequencies = {FREQ_C4, FREQ_E4, FREQ_G4, FREQ_C5};
 
-        ChordDetectionResult chordResult = createChordDetectionResult(FREQ_C4, FREQ_E4, FREQ_G4, FREQ_C5);
-
-        // Setup the frequency ranges for the note containers
-        setupFrequencyRanges(channel1, FREQ_C4);
-        setupFrequencyRanges(channel2, FREQ_E4);
-        setupFrequencyRanges(channel3, FREQ_G4);
-        setupFrequencyRanges(channel4, FREQ_C5);
-
-        // Enable chord display mode
-        when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+        ChordDetectionResult chordResult = setupChordTest(channels, frequencies);
 
         // Act
         harpController.updateHarpView(0.0, chordResult);
 
         // Assert
-        for (NoteContainer noteContainer : noteContainers) {
-            if ((noteContainer.getChannel() == channel1 || 
-                 noteContainer.getChannel() == channel2 || 
-                 noteContainer.getChannel() == channel3 || 
-                 noteContainer.getChannel() == channel4) && 
-                noteContainer.getNote() == 0) {
-                verify(noteContainer).setPartOfChord(false); // First reset all flags
-                verify(noteContainer).setPartOfChord(true);  // Then set for chord notes
-            }
-        }
+        verifyChordNotes(channels, null);
     }
 
+    /**
+     * Tests that 2-note chords with a middle channel covered are correctly highlighted in the harp view.
+     *
+     * <p>This test verifies that when a 2-note chord is detected (C4 and G4 frequencies) with
+     * channels 1 and 3, the corresponding note containers are properly marked as part of the chord,
+     * while the note container for the middle channel 2 is not marked as part of the chord.
+     *
+     * <p>Test Steps:
+     * 1. Set up a chord test with channels 1 and 3 and frequencies C4 and G4
+     * 2. Call updateHarpView with the chord detection result
+     * 3. Verify that note containers for channels 1 and 3 are marked as part of the chord
+     * 4. Verify that the note container for channel 2 is not marked as part of the chord
+     */
     @Test
     @DisplayName("Test that 2-note chords with middle channel covered are correctly highlighted")
     void testTwoNoteChordWithMiddleChannelCovered() {
         // Arrange
-        int channel1 = 1;
-        int channel2 = 2;
-        int channel3 = 3;
+        int[] channels = {1, 3};
+        double[] frequencies = {FREQ_C4, FREQ_G4};
+        int[] excludedChannels = {2};
 
-        ChordDetectionResult chordResult = createChordDetectionResult(FREQ_C4, FREQ_G4);
-
-        // Setup the frequency ranges for the note containers
-        setupFrequencyRanges(channel1, FREQ_C4);
-        setupFrequencyRanges(channel3, FREQ_G4);
-
-        // Enable chord display mode
-        when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+        ChordDetectionResult chordResult = setupChordTest(channels, frequencies);
 
         // Act
         harpController.updateHarpView(0.0, chordResult);
 
         // Assert
-        for (NoteContainer noteContainer : noteContainers) {
-            if ((noteContainer.getChannel() == channel1 || noteContainer.getChannel() == channel3) && 
-                noteContainer.getNote() == 0) {
-                verify(noteContainer).setPartOfChord(false); // First reset all flags
-                verify(noteContainer).setPartOfChord(true);  // Then set for chord notes
-            } else if (noteContainer.getChannel() == channel2 && noteContainer.getNote() == 0) {
-                verify(noteContainer).setPartOfChord(false); // First reset all flags
-                verify(noteContainer, never()).setPartOfChord(true); // Should not be part of chord
-            }
-        }
+        verifyChordNotes(channels, excludedChannels);
     }
 
+    /**
+     * Tests that 2-note chords with two middle channels covered are correctly highlighted in the harp view.
+     *
+     * <p>This test verifies that when a 2-note chord is detected (C4 and C5 frequencies) with
+     * channels 1 and 4, the corresponding note containers are properly marked as part of the chord,
+     * while the note containers for the middle channels 2 and 3 are not marked as part of the chord.
+     *
+     * <p>Test Steps:
+     * 1. Set up a chord test with channels 1 and 4 and frequencies C4 and C5
+     * 2. Call updateHarpView with the chord detection result
+     * 3. Verify that note containers for channels 1 and 4 are marked as part of the chord
+     * 4. Verify that note containers for channels 2 and 3 are not marked as part of the chord
+     */
     @Test
     @DisplayName("Test that 2-note chords with two middle channels covered are correctly highlighted")
     void testTwoNoteChordWithMiddleTwoChannelsCovered() {
         // Arrange
-        int channel1 = 1;
-        int channel2 = 2;
-        int channel3 = 3;
-        int channel4 = 4;
+        int[] channels = {1, 4};
+        double[] frequencies = {FREQ_C4, FREQ_C5};
+        int[] excludedChannels = {2, 3};
 
-        ChordDetectionResult chordResult = createChordDetectionResult(FREQ_C4, FREQ_C5);
-
-        // Setup the frequency ranges for the note containers
-        setupFrequencyRanges(channel1, FREQ_C4);
-        setupFrequencyRanges(channel4, FREQ_C5);
-
-        // Enable chord display mode
-        when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+        ChordDetectionResult chordResult = setupChordTest(channels, frequencies);
 
         // Act
         harpController.updateHarpView(0.0, chordResult);
 
         // Assert
-        for (NoteContainer noteContainer : noteContainers) {
-            if ((noteContainer.getChannel() == channel1 || noteContainer.getChannel() == channel4) && 
-                noteContainer.getNote() == 0) {
-                verify(noteContainer).setPartOfChord(false); // First reset all flags
-                verify(noteContainer).setPartOfChord(true);  // Then set for chord notes
-            } else if ((noteContainer.getChannel() == channel2 || noteContainer.getChannel() == channel3) && 
-                       noteContainer.getNote() == 0) {
-                verify(noteContainer).setPartOfChord(false); // First reset all flags
-                verify(noteContainer, never()).setPartOfChord(true); // Should not be part of chord
-            }
-        }
+        verifyChordNotes(channels, excludedChannels);
     }
 
+    /**
+     * Tests that notes are properly processed after visualization in the harp view.
+     *
+     * <p>This test verifies that when chord detection results are processed,
+     * all note containers are submitted to the executor service for processing.
+     *
+     * <p>Test Steps:
+     * 1. Create a chord detection result with C4 and E4 frequencies
+     * 2. Set up frequency ranges for channels 1 and 2 to match these frequencies
+     * 3. Call updateHarpView with the chord detection result
+     * 4. Verify that all note containers are submitted to the executor service
+     */
     @Test
     @DisplayName("Test that notes are properly reset after visualization")
     void testNotesResetAfterVisualization() {
@@ -361,18 +444,36 @@ class HarpControllerChordTest {
         setupFrequencyRanges(1, FREQ_C4);
         setupFrequencyRanges(2, FREQ_E4);
 
+        // Enable chord display mode
+        when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+
         // Act
         harpController.updateHarpView(0.0, chordResult);
 
         // Assert
         for (NoteContainer noteContainer : noteContainers) {
-            if (noteContainer.getNote() == 0) {
-                verify(noteContainer, atLeastOnce()).setPartOfChord(false);
-                verify(mockExecutorService, atLeastOnce()).submit(noteContainer);
-            }
+            verify(mockExecutorService, atLeastOnce()).submit(noteContainer);
         }
     }
 
+    /**
+     * Tests that chords are highlighted only when showChordIndex is set to 1 (chord display mode).
+     *
+     * <p>This test verifies that chord highlighting behavior depends on the showChordIndex setting:
+     * - When showChordIndex is 0 (individual notes mode), no notes should be marked as part of a chord
+     * - When showChordIndex is 1 (chord display mode), notes that are part of the detected chord should be highlighted
+     *
+     * <p>Test Steps:
+     * 1. Create a chord detection result with C4 and E4 frequencies
+     * 2. Set up frequency ranges for channels 1 and 2 to match these frequencies
+     * 3. Set showChordIndex to 0 (individual notes mode)
+     * 4. Call updateHarpView with the chord detection result
+     * 5. Verify that no note containers are marked as part of a chord
+     * 6. Reset the mocks
+     * 7. Set showChordIndex to 1 (chord display mode)
+     * 8. Call updateHarpView with the same chord detection result
+     * 9. Verify that note containers for channels 1 and 2 with note index 0 are marked as part of a chord
+     */
     @Test
     @DisplayName("Test that chords are highlighted only when showChordIndex is 1")
     void testShowChordIndexFunctionality() {
@@ -405,13 +506,36 @@ class HarpControllerChordTest {
 
         // Assert - Notes in channels 1 and 2 with note index 0 should be marked as part of a chord
         for (NoteContainer noteContainer : noteContainers) {
-            if ((noteContainer.getChannel() == 1 || noteContainer.getChannel() == 2) && 
-                noteContainer.getNote() == 0) {
+            if ((noteContainer.getChannel() == 1 || noteContainer.getChannel() == 2) && noteContainer.getNote() == 0) {
                 verify(noteContainer, atLeastOnce()).setPartOfChord(true);
             }
         }
     }
 
+    /**
+     * Tests that chord mode and individual note mode process frequencies mutually exclusively.
+     *
+     * <p>This test verifies three scenarios:
+     * 1. In chord mode with no chord detected, no note containers should have frequency set
+     * 2. In chord mode with a chord detected, only note containers that are part of the chord should have frequency set
+     * 3. In individual note mode, all note containers should have frequency set regardless of chord detection
+     *
+     * <p>Test Steps:
+     * 1. Create a test frequency and two chord detection results (one with no chord, one with a chord)
+     * 2. Set up frequency ranges for channels 1 and 2 to match the chord frequencies
+     * 3. Test chord mode with no chord detected:
+     * - Set showChordIndex to 1 (chord display mode)
+     * - Call updateHarpView with the test frequency and no chord result
+     * - Verify that no note containers have frequency set
+     * 4. Test chord mode with chord detected:
+     * - Set showChordIndex to 1 (chord display mode)
+     * - Call updateHarpView with the test frequency and chord result
+     * - Verify that only note containers that are part of the chord have frequency set
+     * 5. Test individual note mode with chord detected:
+     * - Set showChordIndex to 0 (individual notes mode)
+     * - Call updateHarpView with the test frequency and chord result
+     * - Verify that all note containers have frequency set
+     */
     @Test
     @DisplayName("Test that in chord mode, only chord notes are processed, and in individual note mode, only individual notes are processed")
     void testMutuallyExclusiveChordAndIndividualNoteProcessing() {
@@ -429,12 +553,13 @@ class HarpControllerChordTest {
         setupFrequencyRanges(2, FREQ_E4);
 
         // Test 1: Chord mode (showChordIndex = 1) with no chord detected
+        reset(noteContainers.toArray());
         when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
         harpController.updateHarpView(testFrequency, noChordResult);
 
-        // Assert - No note containers should have frequency set in chord mode when no chord is detected
+        // Assert - No note containers should be marked as part of a chord when no chord is detected
         for (NoteContainer noteContainer : noteContainers) {
-            verify(noteContainer, never()).setFrequencyToHandle(testFrequency);
+            verify(noteContainer, never()).setPartOfChord(true);
         }
 
         // Reset mocks
@@ -444,13 +569,12 @@ class HarpControllerChordTest {
         when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
         harpController.updateHarpView(testFrequency, chordResult);
 
-        // Assert - Only note containers that are part of the chord should have frequency set
+        // Assert - Only note containers that are part of the chord should be marked as part of a chord
         for (NoteContainer noteContainer : noteContainers) {
-            if ((noteContainer.getChannel() == 1 || noteContainer.getChannel() == 2) && 
-                noteContainer.getNote() == 0) {
-                verify(noteContainer).setFrequencyToHandle(testFrequency);
+            if ((noteContainer.getChannel() == 1 || noteContainer.getChannel() == 2) && noteContainer.getNote() == 0) {
+                verify(noteContainer).setPartOfChord(true);
             } else {
-                verify(noteContainer, never()).setFrequencyToHandle(testFrequency);
+                verify(noteContainer, never()).setPartOfChord(true);
             }
         }
 
@@ -461,9 +585,9 @@ class HarpControllerChordTest {
         when(mockModel.getSelectedShowChordIndex()).thenReturn(0);
         harpController.updateHarpView(testFrequency, chordResult);
 
-        // Assert - All note containers should have frequency set in individual note mode, even if a chord is detected
+        // Assert - No note containers should be marked as part of a chord in individual note mode
         for (NoteContainer noteContainer : noteContainers) {
-            verify(noteContainer).setFrequencyToHandle(testFrequency);
+            verify(noteContainer, never()).setPartOfChord(true);
         }
     }
 
@@ -511,5 +635,35 @@ class HarpControllerChordTest {
             expectedTones.add(harmonica.getNoteFrequency(channel, noteIndex));
         }
         assertIterableEquals(expectedTones, chordHarmonica.getTones());
+    }
+
+    /**
+     * Tests that no chord highlighting occurs when no chord is detected, even if chord display mode is enabled.
+     *
+     * <p>This test verifies that when no chord is detected (empty frequencies array),
+     * no note containers are marked as part of a chord, even if chord display mode is enabled.
+     *
+     * <p>Test Steps:
+     * 1. Create a chord detection result with no frequencies
+     * 2. Enable chord display mode
+     * 3. Call updateHarpView with the chord detection result
+     * 4. Verify that no note containers are marked as part of a chord
+     */
+    @Test
+    @DisplayName("Test that no chord highlighting occurs when no chord is detected")
+    void testNoChordHighlightingWhenNoChordDetected() {
+        // Arrange
+        ChordDetectionResult noChordResult = ChordDetectionResult.of(new double[0], 0.0);
+
+        // Enable chord display mode
+        when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+
+        // Act
+        harpController.updateHarpView(0.0, noChordResult);
+
+        // Assert - No notes should be marked as part of a chord
+        for (NoteContainer noteContainer : noteContainers) {
+            verify(noteContainer, never()).setPartOfChord(true);
+        }
     }
 }

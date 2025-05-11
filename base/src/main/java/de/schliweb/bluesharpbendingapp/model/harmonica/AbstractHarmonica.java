@@ -1,9 +1,4 @@
 package de.schliweb.bluesharpbendingapp.model.harmonica;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -31,6 +26,9 @@ import java.util.List;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Abstract base class representing the common features and behaviors of a harmonica.
@@ -231,9 +229,9 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return a new instance of a {@link Harmonica} configured for the given key and tuning system
      */
     public static Harmonica create(String selectedKey, String selectedTune) {
-          KEY key = KEY.valueOf(selectedKey);
-          TUNE tune = TUNE.valueOf(selectedTune);
-          return create(key, tune);
+        KEY key = KEY.valueOf(selectedKey);
+        TUNE tune = TUNE.valueOf(selectedTune);
+        return create(key, tune);
     }
 
     /**
@@ -327,7 +325,7 @@ public abstract class AbstractHarmonica implements Harmonica {
     public String getKeyName() {
         String noteName = NoteLookup.getNoteName(keyFrequency);
         for (KEY key : KEY.values()) {
-            if(key.getName().equals(noteName) ) {
+            if (key.getName().equals(noteName)) {
                 return key.name();
             }
         }
@@ -347,14 +345,13 @@ public abstract class AbstractHarmonica implements Harmonica {
     public String getNoteName(int channel, int note) {
         if ((note >= 0 && note <= 1) ||
                 // DrawBends
-                (note > 1 && note <= getDrawBendingTonesCount(channel)+1) ||
+                (note > 1 && note <= getDrawBendingTonesCount(channel) + 1) ||
                 // BlowBends
-                (note < 0 && Math.abs(note) <= getBlowBendingTonesCount(channel))||
+                (note < 0 && Math.abs(note) <= getBlowBendingTonesCount(channel)) ||
                 // OverBlows
-                (note==2 && hasInverseCentsHandling(channel)) ||
+                (note == 2 && hasInverseCentsHandling(channel)) ||
                 // OverDraws
-                (note==-1 && !hasInverseCentsHandling(channel))
-        ) {
+                (note == -1 && !hasInverseCentsHandling(channel))) {
             return NoteLookup.getNoteName(getNoteFrequency(channel, note));
         }
         return null;
@@ -433,7 +430,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      * The adjustment is performed by subtracting 100 cents from the base frequency
      * of the specified channel and note combination.
      *
-     * @param channel the channel number for which the halftone adjustment is to be applied
+     * @param channel  the channel number for which the halftone adjustment is to be applied
      * @param nextNote the next note in the sequence whose frequency is to be adjusted
      * @return the frequency of the specified note after applying the halftone adjustment, in Hertz
      */
@@ -478,7 +475,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      *
      * @param channel the channel number of the harmonica (1-10)
      * @return true if the channel has inverse cents handling (blow note frequency > draw note frequency),
-     *         false otherwise
+     * false otherwise
      */
     @Override
     public boolean hasInverseCentsHandling(int channel) {
@@ -533,6 +530,121 @@ public abstract class AbstractHarmonica implements Harmonica {
     public boolean isOverdraw(int channel, int note) {
         return note == 2 && hasInverseCentsHandling(channel);
     }
+
+    /**
+     * Retrieves the minimum frequency that the harmonica can produce.
+     * This is calculated by reducing the frequency of the first channel's output by 50 cents.
+     *
+     * @return the minimum frequency of the harmonica in Hertz
+     */
+    @Override
+    public double getHarmonicaMinFrequency() {
+        return NoteUtils.addCentsToFrequency(-50.0, getChannelOutFrequency(1));
+    }
+
+    /**
+     * Retrieves the maximum frequency produced by the harmonica.
+     * This is calculated by increasing the base frequency of the 10th channel's output by 50 cents.
+     *
+     * @return the maximum frequency of the harmonica in Hertz
+     */
+    @Override
+    public double getHarmonicaMaxFrequency() {
+        return NoteUtils.addCentsToFrequency(50.0, getChannelOutFrequency(10));
+    }
+
+    /**
+     * Generates a list of all possible two-note chords for harmonica channels
+     * based on specific channel pair combinations. The chords are constructed
+     * using two different pairings:
+     * 1. Each pair of adjacent channels.
+     * 2. Channels separated by three steps, forming an interval across four channels.
+     *
+     * @return a list of ChordHarmonica instances representing all reachable two-note chords
+     * for the defined harmonica channel configurations.
+     */
+    private List<ChordHarmonica> getPossibleTwoNoteChords() {
+        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
+
+        // For each pair of adjacent channels (1-2, 2-3, ..., 9-10)
+        for (int channel = CHANNEL_MIN; channel < CHANNEL_MAX; channel++) {
+            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1), 0);
+            chordHarmonicas.add(chordHarmonica);
+            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1), 1);
+            chordHarmonicas.add(chordHarmonica);
+        }
+
+        // For each quartet of adjacent channels (1-2-3-4, 2-3-4-5, ..., 7-8-9-10)
+        // where the middle two channels are covered
+        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 3; channel++) {
+            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 3), 0);
+            chordHarmonicas.add(chordHarmonica);
+            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 3), 1);
+            chordHarmonicas.add(chordHarmonica);
+        }
+
+        return chordHarmonicas;
+    }
+
+    /**
+     * Generates a list of all possible three-note chords constructed from adjacent channels.
+     * For each triplet of adjacent channels, it creates two types of chords:
+     * one built using "in-frequency" channels and another using "out-frequency" channels.
+     *
+     * @return a list of ChordHarmonica objects, each representing a possible combination of three adjacent channels.
+     */
+    private List<ChordHarmonica> getPossibleThreeNoteChords() {
+        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
+
+        // For each triplet of adjacent channels (1-2-3, 2-3-4, ..., 8-9-10)
+        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 2; channel++) {
+            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2), 0);
+            chordHarmonicas.add(chordHarmonica);
+            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2), 1);
+            chordHarmonicas.add(chordHarmonica);
+        }
+
+        return chordHarmonicas;
+    }
+
+    /**
+     * Generates a list of possible four-note chords by grouping adjacent channels into quartets
+     * and combining their respective in and out frequencies.
+     *
+     * @return a list of ChordHarmonica objects, each representing a group of four frequencies from adjacent channels
+     */
+    private List<ChordHarmonica> getPossibleFourNoteChords() {
+        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
+
+        // For each quartet of adjacent channels (1-2-3-4, 2-3-4-5, ..., 7-8-9-10)
+        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 3; channel++) {
+            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2, channel + 3), 0);
+            chordHarmonicas.add(chordHarmonica);
+            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2, channel + 3), 1);
+            chordHarmonicas.add(chordHarmonica);
+        }
+
+        return chordHarmonicas;
+    }
+
+    /**
+     * Retrieves a list of all possible chords that can be formed.
+     * The method aggregates two-note, three-note, and four-note chords
+     * to create the complete list of possible chords.
+     *
+     * @return a list containing all possible chords, combining two-note,
+     * three-note, and four-note chords.
+     */
+    @Override
+    public List<ChordHarmonica> getPossibleChords() {
+        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
+        chordHarmonicas.addAll(getPossibleTwoNoteChords());
+        chordHarmonicas.addAll(getPossibleThreeNoteChords());
+        chordHarmonicas.addAll(getPossibleFourNoteChords());
+
+        return chordHarmonicas;
+    }
+
 
     /**
      * An enumeration of musical keys, each associated with a specific pitch frequency.
@@ -695,122 +807,9 @@ public abstract class AbstractHarmonica implements Harmonica {
          *
          * @return the name of the musical key as a string
          */
-        public String getName() { return name;}
-    }
-
-    /**
-     * Retrieves the minimum frequency that the harmonica can produce.
-     * This is calculated by reducing the frequency of the first channel's output by 50 cents.
-     *
-     * @return the minimum frequency of the harmonica in Hertz
-     */
-    @Override
-    public double getHarmonicaMinFrequency() {
-        return NoteUtils.addCentsToFrequency(-50.0, getChannelOutFrequency(1));
-    }
-
-    /**
-     * Retrieves the maximum frequency produced by the harmonica.
-     * This is calculated by increasing the base frequency of the 10th channel's output by 50 cents.
-     *
-     * @return the maximum frequency of the harmonica in Hertz
-     */
-    @Override
-    public double getHarmonicaMaxFrequency() {
-        return NoteUtils.addCentsToFrequency(50.0, getChannelOutFrequency(10));
-    }
-
-    /**
-     * Generates a list of all possible two-note chords for harmonica channels
-     * based on specific channel pair combinations. The chords are constructed
-     * using two different pairings:
-     * 1. Each pair of adjacent channels.
-     * 2. Channels separated by three steps, forming an interval across four channels.
-     *
-     * @return a list of ChordHarmonica instances representing all reachable two-note chords
-     *         for the defined harmonica channel configurations.
-     */
-    private List<ChordHarmonica> getPossibleTwoNoteChords() {
-        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
-
-        // For each pair of adjacent channels (1-2, 2-3, ..., 9-10)
-        for (int channel = CHANNEL_MIN; channel < CHANNEL_MAX; channel++) {
-            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1), 0);
-            chordHarmonicas.add(chordHarmonica);
-            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1), 1);
-            chordHarmonicas.add(chordHarmonica);
+        public String getName() {
+            return name;
         }
-
-        // For each quartet of adjacent channels (1-2-3-4, 2-3-4-5, ..., 7-8-9-10)
-        // where the middle two channels are covered
-        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 3; channel++) {
-            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 3), 0);
-            chordHarmonicas.add(chordHarmonica);
-            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 3), 1);
-            chordHarmonicas.add(chordHarmonica);
-        }
-
-        return chordHarmonicas;
-    }
-
-    /**
-     * Generates a list of all possible three-note chords constructed from adjacent channels.
-     * For each triplet of adjacent channels, it creates two types of chords:
-     * one built using "in-frequency" channels and another using "out-frequency" channels.
-     *
-     * @return a list of ChordHarmonica objects, each representing a possible combination of three adjacent channels.
-     */
-    private List<ChordHarmonica> getPossibleThreeNoteChords() {
-        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
-
-        // For each triplet of adjacent channels (1-2-3, 2-3-4, ..., 8-9-10)
-        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 2; channel++) {
-            ChordHarmonica chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2), 0);
-            chordHarmonicas.add(chordHarmonica);
-            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2), 1);
-            chordHarmonicas.add(chordHarmonica);
-        }
-
-        return chordHarmonicas;
-    }
-
-    /**
-     * Generates a list of possible four-note chords by grouping adjacent channels into quartets
-     * and combining their respective in and out frequencies.
-     *
-     * @return a list of ChordHarmonica objects, each representing a group of four frequencies from adjacent channels
-     */
-    private List<ChordHarmonica> getPossibleFourNoteChords() {
-        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
-
-        // For each quartet of adjacent channels (1-2-3-4, 2-3-4-5, ..., 7-8-9-10)
-        for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX - 3; channel++) {
-            ChordHarmonica chordHarmonica = new ChordHarmonica( this , Arrays.asList(channel, channel + 1, channel + 2, channel + 3), 0);
-            chordHarmonicas.add(chordHarmonica);
-            chordHarmonica = new ChordHarmonica(this, Arrays.asList(channel, channel + 1, channel + 2, channel + 3), 1);
-            chordHarmonicas.add(chordHarmonica);
-        }
-
-        return chordHarmonicas;
-    }
-
-
-    /**
-     * Retrieves a list of all possible chords that can be formed.
-     * The method aggregates two-note, three-note, and four-note chords
-     * to create the complete list of possible chords.
-     *
-     * @return a list containing all possible chords, combining two-note,
-     *         three-note, and four-note chords.
-     */
-    @Override
-    public List<ChordHarmonica> getPossibleChords() {
-        List<ChordHarmonica> chordHarmonicas = new ArrayList<>();
-        chordHarmonicas.addAll(getPossibleTwoNoteChords());
-        chordHarmonicas.addAll(getPossibleThreeNoteChords());
-        chordHarmonicas.addAll(getPossibleFourNoteChords());
-
-        return chordHarmonicas;
     }
 
     /**

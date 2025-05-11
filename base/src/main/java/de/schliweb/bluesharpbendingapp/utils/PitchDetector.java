@@ -4,15 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Abstract base class for pitch detection algorithms.
- * <p>
- * This class provides common functionality for different pitch detection algorithms
- * such as YIN, MPM, and ZCR. It defines the basic structure and shared methods
- * that all pitch detectors use, allowing for consistent configuration and usage
- * across different implementations.
- * <p>
- * Each concrete implementation should provide its own algorithm-specific logic
- * in the detectPitch method.
+ * An abstract class representing a generic pitch detector for audio signals.
+ * Provides core functionalities for detecting pitch using different algorithms.
+ * Subclasses are required to implement specific pitch detection logic.
  */
 public abstract class PitchDetector {
 

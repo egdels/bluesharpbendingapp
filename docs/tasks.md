@@ -24,92 +24,111 @@ This document contains a list of actionable improvement tasks for the Bluesharp 
    - [ ] Clearly separate UI, business logic, and data access layers
    - [ ] Define clear interfaces between layers
 
+6. [ ] Implement modular architecture for plugins
+   - [ ] Create a plugin system for extending functionality
+   - [ ] Define standard interfaces for plugins
+   - [ ] Implement dynamic loading of plugins
+
 ## Code Quality Improvements
 
-6. [ ] Reduce code duplication
+7. [ ] Reduce code duplication
    - [ ] Create shared utility methods for common operations
    - [ ] Implement template methods for similar processes
 
-7. [ ] Improve error handling
+8. [ ] Improve error handling
    - [ ] Implement consistent exception handling strategy
    - [ ] Add proper error recovery mechanisms
    - [ ] Add user-friendly error messages
 
-8. [ ] Enhance logging
+9. [ ] Enhance logging
    - [x] Implement structured logging
    - [x] Add appropriate log levels for different types of events
    - [ ] Ensure sensitive information is not logged
 
-9. [ ] Optimize resource management
-   - [ ] Ensure proper closing of resources (e.g., microphone streams)
-   - [ ] Implement try-with-resources where appropriate
+10. [ ] Optimize resource management
+    - [ ] Ensure proper closing of resources (e.g., microphone streams)
+    - [ ] Implement try-with-resources where appropriate
 
-10. [ ] Refactor reflection-based code in MainModel
+11. [ ] Refactor reflection-based code in MainModel
     - [ ] Replace getString() method with a more type-safe approach
     - [ ] Consider using serialization libraries instead of manual serialization
 
 ## Testing Improvements
 
-11. [x] Increase unit test coverage
+12. [x] Increase unit test coverage
     - [x] Add tests for core business logic
     - [x] Add tests for model classes
     - [x] Add tests for utility classes
 
-12. [ ] Implement integration tests
+13. [ ] Implement integration tests
     - [ ] Test interactions between components
     - [ ] Test platform-specific implementations
 
-13. [ ] Add UI tests
+14. [ ] Add UI tests
     - [ ] Test basic UI workflows
     - [ ] Test UI responsiveness
 
-14. [ ] Implement continuous integration
+15. [ ] Implement continuous integration
     - [ ] Set up automated build and test pipeline
     - [ ] Add code quality checks to CI pipeline
 
-15. [ ] Add performance tests
+16. [ ] Add performance tests
     - [x] Test audio processing performance
     - [ ] Test UI rendering performance
 
+17. [ ] Add tests for the tuner module
+    - [ ] Create unit tests for tuner-specific functionality
+    - [ ] Test tuner UI components
+    - [ ] Test tuner audio processing
+
 ## Documentation Improvements
 
-16. [ ] Enhance code documentation
+18. [ ] Enhance code documentation
     - [ ] Add missing JavaDoc comments
     - [ ] Improve existing JavaDoc comments
     - [ ] Document complex algorithms and business logic
 
-17. [ ] Create architectural documentation
+19. [ ] Create architectural documentation
     - [ ] Document overall system architecture
     - [x] Create component diagrams
     - [ ] Document design decisions and trade-offs
 
-18. [ ] Improve user documentation
+20. [ ] Improve user documentation
     - [ ] Create user guides for each platform
     - [x] Add screenshots and examples
     - [ ] Document all features and settings
 
-19. [ ] Add developer onboarding documentation
+21. [ ] Add developer onboarding documentation
     - [ ] Document development environment setup
     - [ ] Create contribution guidelines
     - [ ] Document build and deployment processes
 
+22. [ ] Create API documentation
+    - [ ] Document public APIs for extending the application
+    - [ ] Provide examples of API usage
+    - [ ] Create tutorials for common integration scenarios
+
 ## Performance Improvements
 
-20. [ ] Optimize audio processing
+23. [ ] Optimize audio processing
     - [ ] Profile and optimize pitch detection algorithms
     - [ ] Reduce memory allocations in audio processing loop
+    - [ ] Implement more efficient pitch detection algorithms
 
-21. [ ] Improve UI performance
+24. [ ] Improve UI performance
     - [ ] Optimize rendering of harmonica view
     - [ ] Reduce UI updates when not necessary
+    - [ ] Implement UI virtualization for large datasets
 
-22. [ ] Optimize startup time
+25. [ ] Optimize startup time
     - [ ] Lazy-load components when possible
     - [ ] Reduce initialization overhead
+    - [ ] Implement splash screen with progress indication
 
-23. [ ] Reduce memory usage
+26. [ ] Reduce memory usage
     - [ ] Identify and fix memory leaks
     - [ ] Optimize data structures for memory efficiency
+    - [ ] Implement proper resource cleanup
 
 ## User Experience Improvements
 
