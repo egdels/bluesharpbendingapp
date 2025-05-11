@@ -111,23 +111,6 @@ public abstract class PitchDetector {
     }
 
     /**
-     * Static method for detecting multiple pitches (chord) using TensorFlow with Magenta models.
-     * This method creates a temporary TensorFlowMagentaChordDetector instance and delegates to it.
-     * <p>
-     * This is an advanced approach that uses machine learning to detect chords in an audio signal.
-     * It may provide better results for complex chords and in noisy environments compared to
-     * traditional spectral analysis methods.
-     *
-     * @param audioData  an array of double values representing the audio signal.
-     * @param sampleRate the sample rate of the audio signal in Hz.
-     * @return a ChordDetectionResult containing the detected pitches and confidence value.
-     */
-    public static ChordDetectionResult detectChordWithTensorFlowMagenta(double[] audioData, int sampleRate) {
-        TensorFlowMagentaChordDetector detector = new TensorFlowMagentaChordDetector();
-        return detector.detectChordInternal(audioData, sampleRate);
-    }
-
-    /**
      * Detects the pitch of an audio signal using the specific algorithm implemented by the subclass.
      *
      * @param audioData  an array of double values representing the audio signal.
