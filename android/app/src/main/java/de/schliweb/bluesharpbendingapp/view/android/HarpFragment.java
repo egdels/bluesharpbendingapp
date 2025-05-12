@@ -295,8 +295,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
             labelView.setGravity(android.view.Gravity.CENTER);
             labelView.setText(String.valueOf(channel));
-            labelView.setAutoSizeTextTypeUniformWithConfiguration(
-                    8, // Min text size in SP
+            labelView.setAutoSizeTextTypeUniformWithConfiguration(8, // Min text size in SP
                     14, // Max text size in SP
                     1, // Step granularity in SP
                     TypedValue.COMPLEX_UNIT_SP // Unit of measurement
@@ -372,11 +371,10 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         textView.setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Body1);
         textView.setSingleLine(true); // Prevent text from wrapping to a new line
         // Set auto-size with min and max text sizes to ensure readability
-        textView.setAutoSizeTextTypeUniformWithConfiguration(
-            8, // Min text size in SP
-            14, // Max text size in SP
-            1, // Step granularity in SP
-            TypedValue.COMPLEX_UNIT_SP // Unit of measurement
+        textView.setAutoSizeTextTypeUniformWithConfiguration(8, // Min text size in SP
+                14, // Max text size in SP
+                1, // Step granularity in SP
+                TypedValue.COMPLEX_UNIT_SP // Unit of measurement
         );
         textView.setVisibility(View.INVISIBLE);
         int id;
@@ -482,20 +480,15 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
 
 
     /**
-     * Updates the background color of a specified note in the harp UI.
-     * This method retrieves the corresponding TextView for the note based
-     * on the given channel and note index, and applies a specific drawable
-     * resource as its background.
+     * Sets the color of a specific note in the harp table by updating its background resource.
      *
-     * @param channel The channel of the note to be updated (1-based index).
-     * @param note    The note's position within the channel (-3 to 4, where 0 represents the central note).
+     * @param channel The 1-based index of the channel containing the note.
+     * @param note    The positional index of the note within the channel, relative to -3.
      */
     private void setNoteColor(int channel, int note) {
-        TextView textView = getNote(channel, note);
-        // Use the appropriate background resource for overblow/overdraw notes
-        textView.setBackgroundResource(R.drawable.note_overblowoverdraw);
+        HarpViewNoteElementAndroid harpViewNoteElementAndroid = HarpViewNoteElementAndroid.getInstance(getNote(channel, note));
+        harpViewNoteElementAndroid.setBackgroundResource(R.drawable.note_overblowoverdraw);
     }
-
 
     /**
      * Initializes and displays a note on the UI by setting the provided name

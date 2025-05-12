@@ -87,7 +87,7 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
      * This value is immutable and used to define the starting color state
      * of a note TextView within the {@code HarpViewNoteElementAndroid} class.
      */
-    private final int initialBackgroundColor;
+    private int initialBackgroundColor;
 
     /**
      * Represents a specialized TextView element that is visually emphasized
@@ -185,4 +185,14 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
         activity.runOnUiThread(() -> TextViewUtils.highlightAsChord(noteTextView));
     }
 
+    /**
+     * Sets the background resource of the associated note TextView to the specified resource ID.
+     * Additionally, saves the initial background color of the TextView for further reference.
+     *
+     * @param resourceId the resource ID of the background drawable to be applied to the note TextView
+     */
+    public void setBackgroundResource(int resourceId) {
+        noteTextView.setBackgroundResource(resourceId);
+        this.initialBackgroundColor = TextViewUtils.saveBackgroundColor(noteTextView);
+    }
 }
