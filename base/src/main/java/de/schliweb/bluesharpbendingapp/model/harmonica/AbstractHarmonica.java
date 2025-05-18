@@ -29,6 +29,8 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Abstract base class representing the common features and behaviors of a harmonica.
@@ -80,6 +82,30 @@ import java.util.List;
  */
 @Getter
 public abstract class AbstractHarmonica implements Harmonica {
+
+
+    /**
+     * A thread-safe map used for caching frequencies corresponding to channels.
+     * The key represents the channel as an integer, while the value represents the
+     * associated frequency as a double.
+     */
+    private static final Map<Integer, Double> cachedChannelInFrequencies = new ConcurrentHashMap<>();
+    /**
+     * A thread-safe map that caches output frequencies associated with channel identifiers.
+     * <p>
+     * The key represents the channel ID as an Integer, and the value represents the corresponding
+     * output frequency as a Double. This map allows for quick access to previously computed or
+     * retrieved frequencies to optimize performance and reduce redundant calculations.
+     */
+    private static final Map<Integer, Double> cachedChannelOutFrequencies = new ConcurrentHashMap<>();
+
+    /**
+     * A thread-safe map used to store precomputed note frequencies.
+     * The keys are string representations of musical notes (e.g., "A4"),
+     * and the values are their corresponding frequencies in hertz.
+     */
+    private static final Map<String, Double> cachedNoteFrequencies = new ConcurrentHashMap<>();
+
 
     /**
      * Represents the maximum number of channels supported by the harmonica model.
@@ -140,6 +166,9 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return a new instance of a {@link Harmonica} configured for the given key and tuning system
      */
     public static Harmonica create(KEY key, TUNE tune) {
+        cachedChannelInFrequencies.clear();
+        cachedChannelOutFrequencies.clear();
+        cachedNoteFrequencies.clear();
         Harmonica harmonica = new RichterHarmonica(key.getFrequency());
         if (TUNE.COUNTRY.equals(tune)) {
             harmonica = new CountryHarmonica(key.getFrequency());
@@ -185,14 +214,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return an array of tuning system names as strings
      */
     public static String[] getSupportedTunes() {
-        TUNE[] values = TUNE.values();
-        String[] keys = new String[TUNE.values().length];
-        int index = 0;
-        for (TUNE value : values) {
-            keys[index] = value.name();
-            index++;
-        }
-        return keys;
+        return Arrays.stream(TUNE.values()).map(Enum::name).toArray(String[]::new);
     }
 
     /**
@@ -201,14 +223,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return an array of key names as strings
      */
     public static String[] getSupporterKeys() {
-        KEY[] values = KEY.values();
-        String[] keys = new String[KEY.values().length];
-        int index = 0;
-        for (KEY value : values) {
-            keys[index] = value.name();
-            index++;
-        }
-        return keys;
+        return Arrays.stream(KEY.values()).map(Enum::name).toArray(String[]::new);
     }
 
     /**
@@ -272,7 +287,7 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the frequency of the specified channel in Hertz
      */
     public double getChannelInFrequency(int channel) {
-        return NoteUtils.addCentsToFrequency(getHalfTonesIn()[channel] * 100.0, getKeyFrequency());
+        return cachedChannelInFrequencies.computeIfAbsent(channel, ch -> NoteUtils.addCentsToFrequency(getHalfTonesIn()[ch] * 100.0, getKeyFrequency()));
     }
 
     /**
@@ -283,8 +298,9 @@ public abstract class AbstractHarmonica implements Harmonica {
      * @return the frequency of the specified channel in Hertz
      */
     public double getChannelOutFrequency(int channel) {
-        return NoteUtils.addCentsToFrequency(getHalfTonesOut()[channel] * 100.0, getKeyFrequency());
+        return cachedChannelOutFrequencies.computeIfAbsent(channel, ch -> NoteUtils.addCentsToFrequency(getHalfTonesOut()[ch] * 100.0, getKeyFrequency()));
     }
+
 
     /**
      * Calculates the number of draw bending tones available for a specific channel.
@@ -324,12 +340,7 @@ public abstract class AbstractHarmonica implements Harmonica {
     @Override
     public String getKeyName() {
         String noteName = NoteLookup.getNoteName(keyFrequency);
-        for (KEY key : KEY.values()) {
-            if (key.getName().equals(noteName)) {
-                return key.name();
-            }
-        }
-        return noteName;
+        return Arrays.stream(KEY.values()).filter(key -> key.getName().equals(noteName)).map(KEY::name).findFirst().orElse(noteName);
     }
 
     /**
@@ -368,32 +379,36 @@ public abstract class AbstractHarmonica implements Harmonica {
      */
     @Override
     public double getNoteFrequency(int channel, int note) {
-        if (isOverblow(channel, note) || isOverdraw(channel, note)) {
-            return round(getOverblowOverdrawFrequency(channel));
-        }
+        String cacheKey = channel + ":" + note; // Eindeutiger Key
+        return cachedNoteFrequencies.computeIfAbsent(cacheKey, key -> {
+            if (isOverblow(channel, note) || isOverdraw(channel, note)) {
+                return round(getOverblowOverdrawFrequency(channel));
+            }
 
-        if (!isValidChannel(channel)) {
+            if (!isValidChannel(channel)) {
+                return 0.0;
+            }
+
+            if (note == 0) {
+                return round(getChannelOutFrequency(channel));
+            }
+
+            if (note == 1) {
+                return round(getChannelInFrequency(channel));
+            }
+
+            if (isDrawBending(note)) {
+                return round(applyHalftoneToFrequency(channel, note - 1));
+            }
+
+            if (isBlowBending(note)) {
+                return round(applyHalftoneToFrequency(channel, note + 1));
+            }
+
             return 0.0;
-        }
-
-        if (note == 0) {
-            return round(getChannelOutFrequency(channel));
-        }
-
-        if (note == 1) {
-            return round(getChannelInFrequency(channel));
-        }
-
-        if (isDrawBending(note)) {
-            return round(applyHalftoneToFrequency(channel, note - 1));
-        }
-
-        if (isBlowBending(note)) {
-            return round(applyHalftoneToFrequency(channel, note + 1));
-        }
-
-        return 0.0;
+        });
     }
+
 
     /**
      * Validates whether the given channel number is within the permissible range.

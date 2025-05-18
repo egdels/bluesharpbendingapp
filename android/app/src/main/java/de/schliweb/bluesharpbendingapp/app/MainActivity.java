@@ -287,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
                 microphoneSettingsViewHandler.initAlgorithmList();
                 microphoneSettingsViewHandler.initMicrophoneList();
                 microphoneSettingsViewHandler.initConfidenceList();
+                microphoneSettingsViewHandler.initChordConfidenceList();
                 noteSettingsViewHandler.initConcertPitchList();
                 androidSettingsHandler.initLockScreen();
             }

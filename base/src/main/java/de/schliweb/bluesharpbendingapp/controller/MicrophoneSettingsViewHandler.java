@@ -71,4 +71,19 @@ public interface MicrophoneSettingsViewHandler {
      * @param confidenceIndex the index of the confidence level to be selected
      */
     void handleConfidenceSelection(int confidenceIndex);
+
+    /**
+     * Initializes the list of available chord confidence levels. This method is responsible
+     * for setting up and preparing the chord confidence options that can be used or selected
+     * in the application. These confidence levels are used specifically for chord detection.
+     */
+    void initChordConfidenceList();
+
+    /**
+     * Handles the selection of a specific chord confidence level based on the provided index.
+     * This confidence level is used specifically for chord detection.
+     *
+     * @param chordConfidenceIndex the index of the chord confidence level to be selected
+     */
+    void handleChordConfidenceSelection(int chordConfidenceIndex);
 }

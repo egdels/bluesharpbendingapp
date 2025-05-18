@@ -79,6 +79,8 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      */
     private Pane enlargedPane;
 
+    // The last valid cents value is now managed by the NoteContainer class
+
     /**
      * Constructs an instance of the HarpViewNoteElementDesktopFX with the specified Pane.
      * This constructor initializes the provided Pane, retrieves its child components,
@@ -130,6 +132,7 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      */
     private void clearPane(Pane pane) {
         Platform.runLater(() -> {
+            // The NoteContainer now manages the last valid cents value
             pane.getStyleClass().remove("highlight-chord");
             Line line = (Line) pane.getChildren().get(0);
             line.setVisible(false);
@@ -162,12 +165,13 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
      */
     private void updatePane(Pane pane, double cents) {
         javafx.application.Platform.runLater(() -> {
+            // The cents value is now managed by the NoteContainer
+            // and will already be the appropriate value (last valid or current)
             PaneUtils.updateLine(pane, cents);
 
             if (pane.equals(enlargedPane)) {
                 updateEnlargedLabelCent(cents);
             }
-
         });
     }
 

@@ -48,6 +48,30 @@ public abstract class AbstractMicrophone implements Microphone {
      * and validation mechanisms of the microphone's operations.
      */
     protected double confidence = 0.95;
+
+    /**
+     * Represents the confidence level used by the microphone specifically for chord detection.
+     * <p>
+     * This variable holds a numeric value between 0.0 and 1.0, where higher values indicate
+     * greater confidence in the results of the chord detection algorithm. The default value
+     * is set to 0.8, which is slightly lower than the single note confidence to account for
+     * the increased complexity of chord detection.
+     * <p>
+     * The chord confidence level can be adjusted dynamically based on the index of available
+     * confidence levels defined in the system or application. It influences the internal processing
+     * and validation mechanisms of the microphone's chord detection operations.
+     */
+    protected double chordConfidence = 0.8;
+
+    /**
+     * Indicates whether chord detection is enabled for the microphone.
+     * <p>
+     * When set to true, the microphone will perform chord detection during audio processing.
+     * When set to false, chord detection will be skipped to improve performance.
+     * <p>
+     * The default value is false, meaning chord detection is disabled by default.
+     */
+    protected boolean chordDetectionEnabled = false;
     /**
      * Represents the algorithm used by the microphone for audio processing.
      * <p>
@@ -84,6 +108,20 @@ public abstract class AbstractMicrophone implements Microphone {
         return new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
     }
 
+    /**
+     * Retrieves a list of chord confidence levels supported by the microphone.
+     * <p>
+     * Chord confidence levels are used specifically for chord detection and may have
+     * different default values than regular confidence levels. The default chord confidence
+     * is 0.8, which is slightly lower than the default regular confidence (0.95) to account
+     * for the increased complexity of chord detection.
+     *
+     * @return an array of strings, where each string represents a supported chord confidence level
+     */
+    public static String[] getSupportedChordConfidences() {
+        return new String[]{"0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1"};
+    }
+
     @Override
     public String getAlgorithm() {
         return algorithm;
@@ -112,6 +150,35 @@ public abstract class AbstractMicrophone implements Microphone {
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
             LoggingUtils.logError("Failed to set confidence", exception);
         }
+    }
+
+    @Override
+    public String getChordConfidence() {
+        return Double.toString(chordConfidence);
+    }
+
+    @Override
+    public void setChordConfidence(int confidenceIndex) {
+        LoggingContext.setComponent("AbstractMicrophone");
+
+        try {
+            chordConfidence = Double.parseDouble(getSupportedChordConfidences()[confidenceIndex]);
+            LoggingUtils.logDebug("Set chord confidence to: " + chordConfidence);
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException exception) {
+            LoggingUtils.logError("Failed to set chord confidence", exception);
+        }
+    }
+
+    @Override
+    public boolean isChordDetectionEnabled() {
+        return chordDetectionEnabled;
+    }
+
+    @Override
+    public void setChordDetectionEnabled(boolean enabled) {
+        LoggingContext.setComponent("AbstractMicrophone");
+        this.chordDetectionEnabled = enabled;
+        LoggingUtils.logDebug("Chord detection " + (enabled ? "enabled" : "disabled"));
     }
 
 }

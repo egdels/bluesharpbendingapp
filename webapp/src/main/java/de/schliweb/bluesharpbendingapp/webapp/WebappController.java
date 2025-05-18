@@ -34,7 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
  * Controller responsible for handling HTTP requests for various web application pages.
  * This controller manages the routing and rendering of different views in the application,
  * including the main functional pages, legal information pages, and error handling.
- * 
+ * <p>
  * It also manages session attributes related to harmonica configuration and audio
  * processing settings, ensuring a consistent user experience across page navigations.
  */
@@ -64,6 +64,22 @@ public class WebappController {
      */
     @GetMapping("/doc.html")
     public ModelAndView doc() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("doc");
+
+        return modelAndView;
+    }
+
+    /**
+     * Handles requests for the user guide page via the legacy "/user-guide" endpoint.
+     * This method provides backward compatibility for links to the old URL pattern
+     * by redirecting to the documentation page.
+     *
+     * @return a ModelAndView object configured to render the documentation page
+     */
+    @GetMapping("/user-guide")
+    public ModelAndView docOld() {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("doc");
@@ -149,37 +165,37 @@ public class WebappController {
 
         // Add necessary objects for the tuner page
         Object supportedConfidences = session.getAttribute("supportedConfidences");
-        if(supportedConfidences==null) {
+        if (supportedConfidences == null) {
             supportedConfidences = new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
         }
         modelAndView.addObject("supportedConfidences", supportedConfidences);
 
         Object selectedConfidence = session.getAttribute("selectedConfidence");
-        if(selectedConfidence==null) {
+        if (selectedConfidence == null) {
             selectedConfidence = "0.7";
         }
         modelAndView.addObject("selectedConfidence", selectedConfidence);
 
         Object supportedAlgorithms = session.getAttribute("supportedAlgorithms");
-        if(supportedAlgorithms==null) {
+        if (supportedAlgorithms == null) {
             supportedAlgorithms = new String[]{"YIN", "MPM"};
         }
         modelAndView.addObject("supportedAlgorithms", supportedAlgorithms);
 
         Object selectedAlgorithm = session.getAttribute("selectedAlgorithm");
-        if(selectedAlgorithm==null) {
-            selectedAlgorithm= "YIN";
+        if (selectedAlgorithm == null) {
+            selectedAlgorithm = "YIN";
         }
         modelAndView.addObject("selectedAlgorithm", selectedAlgorithm);
 
         Object supportedConcertPitches = session.getAttribute("supportedConcertPitches");
-        if(supportedConcertPitches==null) {
+        if (supportedConcertPitches == null) {
             supportedConcertPitches = NoteLookup.getSupportedConcertPitches();
         }
         modelAndView.addObject("supportedConcertPitches", supportedConcertPitches);
 
         Object selectedConcertPitch = session.getAttribute("selectedConcertPitch");
-        if(selectedConcertPitch==null) {
+        if (selectedConcertPitch == null) {
             selectedConcertPitch = "442";
         }
         modelAndView.addObject("selectedConcertPitch", selectedConcertPitch);
@@ -212,43 +228,43 @@ public class WebappController {
         modelAndView.addObject("supportedKeys", AbstractHarmonica.getSupporterKeys());
 
         Object supportedConcertPitches = session.getAttribute("supportedConcertPitches");
-        if(supportedConcertPitches==null) {
+        if (supportedConcertPitches == null) {
             supportedConcertPitches = NoteLookup.getSupportedConcertPitches();
         }
         modelAndView.addObject("supportedConcertPitches", supportedConcertPitches);
 
         Object selectedConcertPitch = session.getAttribute("selectedConcertPitch");
-        if(selectedConcertPitch==null) {
+        if (selectedConcertPitch == null) {
             selectedConcertPitch = "442";
         }
         modelAndView.addObject("selectedConcertPitch", selectedConcertPitch);
 
         Object supportedConfidences = session.getAttribute("supportedConfidences");
-        if(supportedConfidences==null) {
+        if (supportedConfidences == null) {
             supportedConfidences = new String[]{"0.95", "0.9", "0.85", "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25", "0.2", "0.15", "0.1", "0.05"};
         }
         modelAndView.addObject("supportedConfidences", supportedConfidences);
 
         Object selectedConfidence = session.getAttribute("selectedConfidence");
-        if(selectedConfidence==null) {
+        if (selectedConfidence == null) {
             selectedConfidence = "0.7";
         }
         modelAndView.addObject("selectedConfidence", selectedConfidence);
 
         Object supportedAlgorithms = session.getAttribute("supportedAlgorithms");
-        if(supportedAlgorithms==null) {
+        if (supportedAlgorithms == null) {
             supportedAlgorithms = new String[]{"YIN", "MPM"};
         }
         modelAndView.addObject("supportedAlgorithms", supportedAlgorithms);
 
         Object selectedAlgorithm = session.getAttribute("selectedAlgorithm");
-        if(selectedAlgorithm==null) {
-            selectedAlgorithm= "YIN";
+        if (selectedAlgorithm == null) {
+            selectedAlgorithm = "YIN";
         }
         modelAndView.addObject("selectedAlgorithm", selectedAlgorithm);
 
         Object expertMode = session.getAttribute("expertMode");
-        if(expertMode==null) {
+        if (expertMode == null) {
             expertMode = false;
         }
         modelAndView.addObject("expertMode", expertMode);

@@ -1,7 +1,34 @@
 package de.schliweb.bluesharpbendingapp.utils;
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * An abstract class representing a generic pitch detector for audio signals.
@@ -43,7 +70,7 @@ public abstract class PitchDetector {
 
     /**
      * Gets the default minimum frequency that can be detected (in Hz).
-     * 
+     *
      * @return the default minimum frequency in Hz
      */
     public static double getDefaultMinFrequency() {
@@ -52,7 +79,7 @@ public abstract class PitchDetector {
 
     /**
      * Gets the default maximum frequency that can be detected (in Hz).
-     * 
+     *
      * @return the default maximum frequency in Hz
      */
     public static double getDefaultMaxFrequency() {
@@ -88,6 +115,23 @@ public abstract class PitchDetector {
     }
 
     /**
+     * Static method for detecting pitch using the Hybrid algorithm.
+     * This method is provided for backward compatibility with code that uses static methods.
+     * It creates a temporary HybridPitchDetector instance and delegates to it.
+     * <p>
+     * The Hybrid algorithm combines the strengths of YIN, MPM, and FFT algorithms
+     * to achieve accurate pitch detection across a wide frequency range.
+     *
+     * @param audioData  an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value.
+     */
+    public static PitchDetectionResult detectPitchHybrid(double[] audioData, int sampleRate) {
+        HybridPitchDetector detector = new HybridPitchDetector();
+        return detector.detectPitch(audioData, sampleRate);
+    }
+
+    /**
      * Static method for detecting multiple pitches (chord) using spectral analysis.
      * This method creates a temporary ChordDetector instance and delegates to it.
      * <p>
@@ -105,13 +149,21 @@ public abstract class PitchDetector {
     }
 
     /**
-     * Detects the pitch of an audio signal using the specific algorithm implemented by the subclass.
+     * Static method for detecting pitch using the FFT algorithm.
+     * This method employs spectral analysis via the Fast Fourier Transform (FFT)
+     * to estimate the pitch of a given input audio signal.
      *
      * @param audioData  an array of double values representing the audio signal.
-     * @param sampleRate the sample rate of the audio signal in Hz.
-     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value.
+     *                   Each value corresponds to the amplitude of the signal at a specific point in time.
+     * @param sampleRate the sample rate of the audio signal in Hz. This is the number of samples
+     *                   per second used to digitize the waveform.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and a confidence value
+     * indicating the reliability of the detection.
      */
-    abstract PitchDetectionResult detectPitch(double[] audioData, int sampleRate);
+    public static PitchDetectionResult detectPitchFFT(double[] audioData, int sampleRate) {
+        FFTDetector detector = new FFTDetector();
+        return detector.detectPitch(audioData, sampleRate);
+    }
 
     /**
      * Calculates the Root Mean Square (RMS) value of an audio signal.
@@ -124,10 +176,7 @@ public abstract class PitchDetector {
      * @return the RMS value of the audio signal as a double.
      */
     public static double calcRMS(double[] audioData) {
-        double sum = 0;
-        for (double sample : audioData) {
-            sum += sample * sample;
-        }
+        double sum = IntStream.range(0, audioData.length).parallel().mapToDouble(i -> audioData[i] * audioData[i]).sum();
         return Math.sqrt(sum / audioData.length);
     }
 
@@ -277,6 +326,122 @@ public abstract class PitchDetector {
         }
         return result;
     }
+
+    /**
+     * Determines whether a specific element in an array is a local minimum.
+     * A local minimum is defined as an element that is smaller than its
+     * immediate neighbors.
+     *
+     * @param array the array of double values to evaluate
+     * @param index the index of the element to check for being a local minimum
+     * @return true if the element at the specified index is a local minimum;
+     * false otherwise
+     */
+    protected static boolean isLocalMinimum(double[] array, int index) {
+        if (index <= 0 || index >= array.length - 1) {
+            return false;
+        }
+        return array[index] < array[index - 1] && array[index] < array[index + 1];
+    }
+
+    /**
+     * Finds the first index in the array where the value is below a specified threshold
+     * and is a local minimum.
+     *
+     * @param array     an array of double values to search in
+     * @param threshold a double value representing the threshold for identifying valid values
+     * @param minIndex  an integer specifying the minimum index to start the search from
+     * @param maxIndex  an integer specifying the maximum index up to which the search should be conducted
+     * @return the index of the first local minimum that satisfies the threshold condition;
+     * returns -1 if no valid index is found within the given range
+     */
+    protected static int findFirstMinimum(double[] array, double threshold, int minIndex, int maxIndex) {
+        for (int i = minIndex; i < maxIndex; i++) {
+            if (array[i] < threshold && isLocalMinimum(array, i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Identifies the local peaks in the given array within a specific range.
+     * A peak is defined as an element that is greater than its immediate neighbors
+     * and exceeds a specified threshold.
+     *
+     * @param array     an array of double values to search in
+     * @param threshold the minimum value for a peak to be considered
+     * @param minIndex  the minimum index to start the search from
+     * @return a list of integers where each integer represents the index of a detected peak
+     */
+    protected static List<Integer> findPeaks(double[] array, double threshold, int minIndex) {
+        List<Integer> peaks = new ArrayList<>();
+
+        // Ensure we don't go out of bounds
+        if (array.length < 2) {
+            return peaks;
+        }
+
+        // Find all peaks in the array that exceed the threshold
+        for (int i = 1; i < array.length - 1; i++) {
+            if (array[i] > array[i - 1] && array[i] > array[i + 1] && array[i] > threshold) {
+                // Add the actual index value (not the array index)
+                peaks.add(i + minIndex);
+            }
+        }
+
+        return peaks;
+    }
+
+    /**
+     * Determines if the audio signal is likely to be noise based on statistical properties.
+     * <p>
+     * This method analyzes the audio data by calculating:
+     * 1. The mean and standard deviation to determine the coefficient of variation (CV)
+     * 2. The zero-crossing rate (ZCR) to measure how often the signal changes sign
+     * <p>
+     * White noise typically has a high coefficient of variation (CV > 5.0) and
+     * a high zero-crossing rate (ZCR > 0.4). These thresholds were determined
+     * empirically to provide good discrimination between musical signals and noise.
+     *
+     * @param audioData the audio data to analyze
+     * @return true if the signal is likely to be noise, false otherwise
+     */
+    protected static boolean isLikelyNoise(double[] audioData) {
+        if (audioData.length == 0) {
+            return true;
+        }
+
+        // Calculate mean using parallel stream
+        double mean = IntStream.range(0, audioData.length).parallel().mapToDouble(i -> audioData[i]).average().orElse(0.0);
+
+        // Calculate standard deviation using parallel stream
+        double stdDev = Math.sqrt(IntStream.range(0, audioData.length).parallel().mapToDouble(i -> {
+            double diff = audioData[i] - mean;
+            return diff * diff;
+        }).sum() / audioData.length);
+
+        // Calculate zero-crossing rate using parallel stream
+        int zeroCrossings = IntStream.range(1, audioData.length).parallel().map(i -> (audioData[i] >= 0 && audioData[i - 1] < 0) || (audioData[i] < 0 && audioData[i - 1] >= 0) ? 1 : 0).sum();
+        double zeroCrossingRate = (double) zeroCrossings / (audioData.length - 1);
+
+        // White noise typically has:
+        // 1. High standard deviation relative to mean (high coefficient of variation)
+        // 2. High zero-crossing rate
+        double cv = Math.abs(stdDev / (mean + 1e-10));
+
+        // Thresholds for noise detection
+        return cv > 5.0 && zeroCrossingRate > 0.4;
+    }
+
+    /**
+     * Detects the pitch of an audio signal using the specific algorithm implemented by the subclass.
+     *
+     * @param audioData  an array of double values representing the audio signal.
+     * @param sampleRate the sample rate of the audio signal in Hz.
+     * @return a PitchDetectionResult containing the detected pitch in Hz and confidence value.
+     */
+    abstract PitchDetectionResult detectPitch(double[] audioData, int sampleRate);
 
     /**
      * Represents the result of a pitch detection operation.

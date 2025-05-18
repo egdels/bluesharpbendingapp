@@ -80,6 +80,8 @@ public class TrainingViewNoteElementDesktopFX implements HarpViewNoteElement {
     @Setter
     private String noteName;
 
+    // The last valid cents value is now managed by the NoteContainer class
+
     /**
      * Constructs a new TrainingViewNoteElementDesktopFX object with the provided note pane.
      * Initializes the instance by associating the note pane and binding a label to the pane.
@@ -105,6 +107,7 @@ public class TrainingViewNoteElementDesktopFX implements HarpViewNoteElement {
     @Override
     public void clear() {
         Platform.runLater(() -> {
+            // The NoteContainer now manages the last valid cents value
             Line line = (Line) notePane.getChildren().get(0);
             line.setVisible(false);
             updateLabelCent(0);
@@ -114,6 +117,8 @@ public class TrainingViewNoteElementDesktopFX implements HarpViewNoteElement {
     @Override
     public void update(double cents) {
         javafx.application.Platform.runLater(() -> {
+            // The cents value is now managed by the NoteContainer
+            // and will already be the appropriate value (last valid or current)
             PaneUtils.updateLine(notePane, cents);
             updateLabelCent(cents);
         });

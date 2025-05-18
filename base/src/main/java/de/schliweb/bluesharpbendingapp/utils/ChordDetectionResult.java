@@ -58,10 +58,7 @@ public record ChordDetectionResult(List<Double> pitches, double confidence) {
      * @return a new ChordDetectionResult instance
      */
     public static ChordDetectionResult of(double[] pitches, double confidence) {
-        return new ChordDetectionResult(
-                Arrays.stream(pitches).boxed().collect(Collectors.toList()),
-                confidence
-        );
+        return new ChordDetectionResult(Arrays.stream(pitches).boxed().collect(Collectors.toList()), confidence);
     }
 
     /**
@@ -118,15 +115,15 @@ public record ChordDetectionResult(List<Double> pitches, double confidence) {
     }
 
     /**
-     * Returns a string representation of this ChordHarmonica instance, including the list of note names
+     * Returns a string representation of this ChordDetectionResult instance, including the list of note names
      * derived from the detected pitch frequencies.
      *
-     * @return a string representation of the ChordHarmonica instance containing its notes
+     * @return a string representation of the ChordDetectionResult instance containing its notes
      */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("ChordHarmonica{notes=[");
+        sb.append("ChordDetectionResult{notes=[");
 
         for (int i = 0; i < pitches.size(); i++) {
             double frequency = pitches.get(i);

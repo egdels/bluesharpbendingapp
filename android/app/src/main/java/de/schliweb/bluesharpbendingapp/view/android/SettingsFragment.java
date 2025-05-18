@@ -154,6 +154,7 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
             setSelectedTune(model.getStoredTuneIndex());
             setSelectedAlgorithm(model.getStoredAlgorithmIndex());
             setSelectedConfidence(model.getStoredConfidenceIndex());
+            setSelectedChordConfidence(model.getStoredChordConfidenceIndex());
             setSelectedLockScreen(model.getStoredLockScreenIndex());
             setSelectedShowChord(model.getStoredShowChordIndex());
             androidSettingsViewHandler.handleLockScreenSelection(model.getStoredLockScreenIndex());
@@ -309,6 +310,34 @@ public class SettingsFragment extends Fragment implements HarpSettingsView, Micr
     @Override
     public void setVolume(double volume) {
         // on android do nothing
+    }
+
+    @Override
+    public void setSelectedChordConfidence(int i) {
+        Spinner spinner = binding.settingsChordConfList;
+        spinner.setSelection(i);
+    }
+
+    @Override
+    public void setChordConfidences(String[] chordConfidences) {
+        // Safeguard in case keys is null
+        if (chordConfidences == null) {
+            chordConfidences = new String[0]; // Use an empty array
+        }
+        Spinner spinner = binding.settingsChordConfList;
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, chordConfidences);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                microphoneSettingsViewHandler.handleChordConfidenceSelection((int) id);
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+                // no need
+            }
+        });
+
     }
 
 

@@ -97,11 +97,16 @@ public abstract class ControllerModule {
      * @param window              the main application window
      * @param modelStorageService the service responsible for managing the persistence of model data
      * @param microphoneController the controller for managing microphone-related functionality
+     * @param harpController      the controller for harp-related functionality
      * @return a singleton MainController instance
      */
     @Provides
     @Singleton
-    static MainController provideMainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, MicrophoneController microphoneController) {
+    static MainController provideMainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, 
+                                               MicrophoneController microphoneController, HarpController harpController) {
+        // Set up the circular dependency between HarpController and MicrophoneController
+        harpController.setMicrophoneController(microphoneController);
+
         return new MainController(model, window, modelStorageService, microphoneController);
     }
 
@@ -124,4 +129,3 @@ public abstract class ControllerModule {
     @Binds
     abstract AndroidSettingsHandler bindAndroidSettingsHandler(MainController impl);
 }
-

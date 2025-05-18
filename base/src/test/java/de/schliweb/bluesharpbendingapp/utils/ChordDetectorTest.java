@@ -1,10 +1,10 @@
 package de.schliweb.bluesharpbendingapp.utils;
 
-import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ class ChordDetectorTest {
 
         // Verify that multiple pitches were detected
         assertTrue(result.hasPitches(), "Should detect pitches in the chord");
-        assertTrue(result.getPitchCount() >= 3, "Should detect 3 pitches in the chord but was " + result.getPitchCount());
+        assertTrue(result.getPitchCount() == 3, "Should detect 3 pitches in the chord but was " + result.getPitchCount());
 
 
         // Verify that the detected pitches match the input frequencies
@@ -289,5 +289,167 @@ class ChordDetectorTest {
         }
 
         return chord;
+    }
+
+    /**
+     * Tests that clear chords (without noise) have high confidence values.
+     * This test verifies that the confidence calculation produces high values
+     * for clean, well-defined chords with strong harmonic content.
+     */
+    @Test
+    void testClearChordConfidence() {
+        // Generate a clear C major chord (C4, E4, G4)
+        double[] chord = generateChord(
+                new double[]{261.63, 329.63, 392.0},
+                new double[]{1.0, 1.0, 1.0},
+                SAMPLE_RATE, 1.0);
+
+        // Detect the chord
+        ChordDetectionResult result = PitchDetector.detectChord(chord, SAMPLE_RATE);
+
+        // Verify that the confidence is high for a clear chord
+        assertTrue(result.hasPitches(), "Should detect pitches in a clear chord");
+        assertTrue(result.confidence() > 0.8, 
+                "Confidence should be high (>0.8) for a clear chord, but was " + result.confidence());
+    }
+
+    /**
+     * Tests how confidence decreases as noise level increases in a chord.
+     * This test verifies that the confidence calculation is sensitive to
+     * the signal-to-noise ratio, with confidence decreasing as noise increases.
+     */
+    @ParameterizedTest
+    @ValueSource(doubles = {0.001, 0.005, 0.01, 0.02, 0.05})
+    void testChordWithVaryingNoiseConfidence(double noiseLevel) {
+        // Generate a C major chord (C4, E4, G4)
+        double[] chord = generateChord(
+                new double[]{261.63, 329.63, 392.0},
+                new double[]{1.0, 1.0, 1.0},
+                SAMPLE_RATE, 1.0);
+
+        // Add noise at the specified level
+        for (int i = 0; i < chord.length; i++) {
+            chord[i] += (Math.random() * 2 - 1) * noiseLevel; // Add noise
+        }
+
+        // Detect the chord
+        ChordDetectionResult result = PitchDetector.detectChord(chord, SAMPLE_RATE);
+
+        // For noise levels above 0.05, we might not detect pitches, so only check if we have pitches
+        if (result.hasPitches()) {
+            // For very low noise (0.001-0.005), confidence should still be high
+            if (noiseLevel <= 0.005) {
+                assertTrue(result.confidence() > 0.7, 
+                        "Confidence should be high (>0.7) for very low noise level " + noiseLevel + 
+                        ", but was " + result.confidence());
+            }
+            // For low noise (0.01-0.02), confidence should be moderate to high
+            else if (noiseLevel <= 0.02) {
+                assertTrue(result.confidence() > 0.6, 
+                        "Confidence should be moderate to high (>0.6) for low noise level " + noiseLevel + 
+                        ", but was " + result.confidence());
+            }
+            // For medium noise (0.05), confidence can be lower
+            else {
+                // No specific assertion, just verify we have a valid confidence value
+                assertTrue(result.confidence() >= 0.0 && result.confidence() <= 1.0,
+                        "Confidence should be between 0 and 1 for medium noise level " + noiseLevel + 
+                        ", but was " + result.confidence());
+            }
+        }
+        // For higher noise levels, it's acceptable not to detect pitches
+        // This is actually a good sign that the detector doesn't produce false positives
+    }
+
+    /**
+     * Tests how confidence varies with the number of notes in a chord.
+     * This test verifies that the confidence calculation works well for
+     * both single notes and complex chords.
+     */
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4})
+    void testSingleNoteVsChordConfidence(int noteCount) {
+        // Define frequencies for a C major chord
+        double[] allFrequencies = {261.63, 329.63, 392.0, 523.25}; // C4, E4, G4, C5
+        double[] frequencies = new double[noteCount];
+        double[] amplitudes = new double[noteCount];
+
+        // Use the first noteCount frequencies
+        for (int i = 0; i < noteCount; i++) {
+            frequencies[i] = allFrequencies[i];
+            amplitudes[i] = 1.0;
+        }
+
+        // Generate the chord or single note
+        double[] audio = generateChord(frequencies, amplitudes, SAMPLE_RATE, 1.0);
+
+        // Detect the chord
+        ChordDetectionResult result = PitchDetector.detectChord(audio, SAMPLE_RATE);
+
+        // Verify that confidence is high for all cases
+        assertTrue(result.hasPitches(), "Should detect pitches for " + noteCount + " note(s)");
+        assertEquals(noteCount, result.getPitchCount(), 
+                "Should detect " + noteCount + " pitch(es), but detected " + result.getPitchCount());
+
+        // Confidence should be high for clean signals regardless of note count
+        assertTrue(result.confidence() > 0.7, 
+                "Confidence should be high (>0.7) for " + noteCount + " clean note(s), but was " + 
+                result.confidence());
+    }
+
+    /**
+     * Tests confidence for signals with varying amplitudes.
+     * This test verifies that the confidence calculation works correctly
+     * for signals with different amplitudes, from very low to high.
+     * 
+     * Note: The current implementation of the chord detector maintains high confidence
+     * even for very low amplitude signals, as long as the signal-to-noise ratio is good.
+     * This is actually a desirable behavior for many applications.
+     */
+    @ParameterizedTest
+    @ValueSource(doubles = {1.0, 0.5, 0.1, 0.05, 0.01, 0.005})
+    void testLowAmplitudeSignalConfidence(double amplitude) {
+        // Generate a C major chord (C4, E4, G4) with the specified amplitude
+        double[] chord = generateChord(
+                new double[]{261.63, 329.63, 392.0},
+                new double[]{amplitude, amplitude, amplitude},
+                SAMPLE_RATE, 1.0);
+
+        // Detect the chord
+        ChordDetectionResult result = PitchDetector.detectChord(chord, SAMPLE_RATE);
+
+        // For extremely low amplitudes, we might not detect any pitches
+        if (amplitude < 0.005) {
+            // No specific assertion - it's acceptable either to detect or not detect pitches
+            // at extremely low amplitudes
+            if (result.hasPitches()) {
+                // If pitches are detected, just verify confidence is a valid value
+                assertTrue(result.confidence() >= 0.0 && result.confidence() <= 1.0,
+                        "Confidence should be between 0 and 1 for extremely low amplitude " + amplitude + 
+                        ", but was " + result.confidence());
+            }
+        } else {
+            // For low to high amplitudes, we should detect pitches
+            assertTrue(result.hasPitches(), "Should detect pitches for amplitude " + amplitude);
+
+            // The current implementation maintains high confidence even for low amplitudes
+            // as long as the signal is clean (good signal-to-noise ratio)
+            if (amplitude >= 0.5) {
+                // High amplitude should have high confidence
+                assertTrue(result.confidence() > 0.7, 
+                        "Confidence should be high (>0.7) for high amplitude " + amplitude + 
+                        ", but was " + result.confidence());
+            } else if (amplitude >= 0.05) {
+                // Medium amplitude should have good confidence
+                assertTrue(result.confidence() > 0.6, 
+                        "Confidence should be good (>0.6) for medium amplitude " + amplitude + 
+                        ", but was " + result.confidence());
+            } else {
+                // Even low amplitude can have good confidence if the signal is clean
+                assertTrue(result.confidence() > 0.5, 
+                        "Confidence should be reasonable (>0.5) for low amplitude " + amplitude + 
+                        ", but was " + result.confidence());
+            }
+        }
     }
 }

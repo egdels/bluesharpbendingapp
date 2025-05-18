@@ -40,7 +40,7 @@ class MPMPitchDetector {
     // Constants
     static NO_DETECTED_PITCH = -1; // Indicates no pitch detected
     static DEFAULT_MIN_FREQUENCY = 80.0; // Default minimum frequency in Hz
-    static DEFAULT_MAX_FREQUENCY = 1000.0; // Default maximum frequency in Hz
+    static DEFAULT_MAX_FREQUENCY = 4835.0; // Default maximum frequency in Hz
     static PEAK_THRESHOLD = 0.5; // Threshold for peak detection in the NSDF
 
     // Configurable properties

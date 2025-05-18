@@ -57,8 +57,12 @@
             <ComboBox fx:id="comboConfidences" GridPane.rowIndex="2" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="Note" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <Label fx:id="valueNote" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label text="Chord Confidences" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboChordConfidences" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Note" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <Label fx:id="valueNote" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
             <Label text="Frequency" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
             <Label fx:id="valueFrequency" GridPane.rowIndex="5" GridPane.columnIndex="1"/>

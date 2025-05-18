@@ -73,6 +73,7 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
     private Harmonica harmonica;
     private NoteContainer[] noteContainers;
     private final ChordAndDetectionResultComparator chordComparator = new ChordAndDetectionResultComparator();
+    private MicrophoneController microphoneController;
 
     /**
      * Constructs a new HarpController with the specified dependencies.
@@ -96,6 +97,18 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
         PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
         PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
         LoggingUtils.logInitialized("HarpController");
+    }
+
+    /**
+     * Sets the MicrophoneController instance to be used by this HarpController.
+     * This method is used to resolve the circular dependency between HarpController and MicrophoneController.
+     *
+     * @param microphoneController The MicrophoneController instance to use
+     */
+    public void setMicrophoneController(MicrophoneController microphoneController) {
+        LoggingContext.setComponent("HarpController");
+        LoggingUtils.logDebug("Setting MicrophoneController instance");
+        this.microphoneController = microphoneController;
     }
 
     /**
@@ -298,9 +311,22 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
     @Override
     public void handleShowChordSelection(int showChordIndex) {
+        LoggingContext.setComponent("HarpController");
+        LoggingUtils.logUserAction("Show chord selection", "showChordIndex=" + showChordIndex);
+
         this.model.setSelectedShowChordIndex(showChordIndex);
         this.model.setStoredShowChordIndex(showChordIndex);
+
+        // Update the microphone's chord detection setting immediately
+        if (microphoneController != null) {
+            LoggingUtils.logDebug("Updating microphone chord detection setting");
+            microphoneController.updateChordDetectionSetting();
+        } else {
+            LoggingUtils.logWarning("Cannot update microphone chord detection setting", "MicrophoneController is null");
+        }
+
         modelStorageService.storeModel(model);
+        LoggingUtils.logOperationCompleted("Show chord selection handling");
     }
 
     @Override

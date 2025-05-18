@@ -1,5 +1,7 @@
 package de.schliweb.bluesharpbendingapp.utils;
 
+import static de.schliweb.bluesharpbendingapp.utils.AudioTestUtils.*;
+
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 
@@ -16,8 +18,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Test class for the PitchDetector.
- * This class tests the functionality of the MPM algorithm implementation.
+ * Test class for the MPM (McLeod Pitch Method) pitch detection algorithm.
+ * <p>
+ * This class tests the functionality of the MPM algorithm implementation in the PitchDetector class.
+ * The MPM algorithm is a time-domain pitch detection method that uses the Normalized Square Difference
+ * Function (NSDF) to identify the fundamental frequency of an audio signal.
+ * <p>
+ * The tests verify that:
+ * 1. The algorithm correctly detects pitches across a range of frequencies
+ * 2. It handles different amplitudes and signal types appropriately
+ * 3. It works correctly with different harmonica frequency ranges
+ * 4. It is robust to noise, silence, and non-periodic signals
+ * 5. It correctly handles edge cases like zero-crossing waves and varying amplitudes
+ * <p>
+ * This test class uses utility methods from {@link AudioTestUtils} to generate test signals.
  */
 class MPMPitchDetectorTest {
 
@@ -285,37 +299,6 @@ class MPMPitchDetectorTest {
                 "The confidence should be at least " + minConfidence);
     }
 
-    /**
-     * Generates a sine wave based on the given frequency, sample rate, and duration.
-     *
-     * @param frequency the frequency of the sine wave in Hertz
-     * @param sampleRate the number of samples per second
-     * @param duration the duration of the sine wave in seconds
-     * @return an array of doubles representing the generated sine wave
-     */
-    private double[] generateSineWave(double frequency, int sampleRate, double duration) {
-        int samples = (int) (sampleRate * duration);
-        double[] sineWave = new double[samples];
-        for (int i = 0; i < samples; i++) {
-            sineWave[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
-        }
-        return sineWave;
-    }
-
-    /**
-     * Helper method: Generates a sine wave with two combined frequencies and different amplitudes
-     */
-    private double[] generateMixedSineWaveWithAmplitudes(double primaryFreq, double primaryAmp, 
-                                                        double secondaryFreq, double secondaryAmp, 
-                                                        int sampleRate, int duration) {
-        int sampleCount = sampleRate * duration;
-        double[] mixedWave = new double[sampleCount];
-        for (int i = 0; i < sampleCount; i++) {
-            mixedWave[i] = primaryAmp * Math.sin(2.0 * Math.PI * primaryFreq * i / sampleRate)
-                    + secondaryAmp * Math.sin(2.0 * Math.PI * secondaryFreq * i / sampleRate);
-        }
-        return mixedWave;
-    }
 
     /**
      * Verifies that the detectPitch method accurately detects the pitch of a sine wave

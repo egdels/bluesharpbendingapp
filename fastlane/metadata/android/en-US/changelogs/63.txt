@@ -1,0 +1,3 @@
+* Optimized performance with parallel processing for spectral computations
+* Refactored code for improved readability and maintainability
+* Improved chord detection with separate confidence settings

@@ -88,4 +88,20 @@ public interface MicrophoneSettingsView {
      */
     void setVolume(double volume);
 
+    /**
+     * Sets the index of the selected chord confidence level from a list of available confidence levels.
+     * This confidence level is used specifically for chord detection.
+     *
+     * @param chordConfidenceIndex the index of the chord confidence level to be selected, represented as an integer
+     */
+    void setSelectedChordConfidence(int chordConfidenceIndex);
+
+    /**
+     * Sets the available chord confidence levels to be used in the microphone settings.
+     * These confidence levels are used specifically for chord detection.
+     *
+     * @param chordConfidences an array of strings representing the chord confidence levels to be set
+     */
+    void setChordConfidences(String[] chordConfidences);
+
 }

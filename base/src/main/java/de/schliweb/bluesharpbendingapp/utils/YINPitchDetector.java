@@ -1,4 +1,29 @@
 package de.schliweb.bluesharpbendingapp.utils;
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the “Software”),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
+import java.util.stream.IntStream;
 
 /**
  * Implementation of the YIN algorithm for pitch detection.
@@ -41,6 +66,70 @@ class YINPitchDetector extends PitchDetector {
         super();
     }
 
+    /**
+     * Computes the Cumulative Mean Normalized Difference Function (CMNDF) for the given range of τ values.
+     * This method calculates a normalized measure within the relevant τ range, specified by minTau and maxTau,
+     * while ignoring values outside that range.
+     *
+     * @param difference an array of difference values to compute the CMNDF from
+     * @param minTau     the minimum index in the τ range to be considered for calculation
+     * @param maxTau     the maximum index in the τ range to be considered for calculation
+     * @return an array representing the CMNDF values, where values outside the specified range are set to 1
+     */
+    private static double[] computeCMNDFInRange(double[] difference, int minTau, int maxTau) {
+        double[] cmndf = new double[difference.length];
+        cmndf[0] = 1;
+        double cumulativeSum = 0;
+
+        for (int tau = 1; tau < difference.length; tau++) {
+            cumulativeSum += difference[tau];
+
+            // Only calculate in the relevant range
+            if (tau >= minTau && tau <= maxTau) {
+                cmndf[tau] = difference[tau] / ((cumulativeSum / tau) + 1e-10);
+            } else {
+                cmndf[tau] = 1; // Ignore values outside the range
+            }
+        }
+
+        return cmndf;
+    }
+
+    // Using methods from parent class
+
+    /**
+     * Computes the difference function for an audio signal, used as an intermediate
+     * step in signal processing algorithms like pitch detection. The difference function
+     * evaluates the dissimilarity between overlapping segments of the audio data at
+     * various time lags to assess periodicity.
+     *
+     * @param audioData  an array of double values representing the original audio signal
+     *                   to be analyzed. Each value corresponds to the amplitude of the
+     *                   signal at a specific point in time.
+     * @param bufferSize the size of the buffer to process in the audio data. This determines
+     *                   the range of time lags to evaluate in the difference function.
+     * @return an array of double values representing the computed difference function.
+     * Each value corresponds to the dissimilarity measure for a specific time lag.
+     */
+    private static double[] computeDifferenceFunction(double[] audioData, int bufferSize) {
+        double[] audioSquared = new double[audioData.length];
+        for (int i = 0; i < audioData.length; i++) {
+            audioSquared[i] = audioData[i] * audioData[i];
+        }
+
+        double[] difference = new double[bufferSize / 2];
+
+        // Use parallel streams to compute the difference function for each tau value concurrently
+        IntStream.range(0, difference.length).parallel().forEach(tau -> {
+            double sum = 0;
+            for (int i = 0; i < bufferSize / 2; i++) {
+                sum += audioSquared[i] + audioSquared[i + tau] - 2 * audioData[i] * audioData[i + tau];
+            }
+            difference[tau] = sum;
+        });
+
+        return difference;
+    }
 
     /**
      * Detects the pitch of an audio signal and returns the pitch frequency along with a confidence score.
@@ -52,8 +141,8 @@ class YINPitchDetector extends PitchDetector {
      * @param sampleRate the sample rate of the audio signal in Hz. This value is used to derive
      *                   frequency calculations from time lags.
      * @return a {@code PitchDetectionResult} object containing the detected pitch frequency (in Hz) and the
-     *         confidence score (ranging from 0.0 to 1.0). If no pitch is detected, the pitch is set
-     *         to {@code NO_DETECTED_PITCH} and the confidence is 0.0.
+     * confidence score (ranging from 0.0 to 1.0). If no pitch is detected, the pitch is set
+     * to {@code NO_DETECTED_PITCH} and the confidence is 0.0.
      */
     @Override
     PitchDetectionResult detectPitch(double[] audioData, int sampleRate) {
@@ -98,108 +187,6 @@ class YINPitchDetector extends PitchDetector {
 
         // Step 7: If no pitch is detected, return no pitch with confidence set to 0.0
         return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
-    }
-
-    /**
-     * Determines whether a specific element in an array is a local minimum.
-     * A local minimum is defined as an element that is smaller than its
-     * immediate neighbors.
-     *
-     * @param array the array of double values to evaluate
-     * @param index the index of the element to check for being a local minimum
-     * @return true if the element at the specified index is a local minimum;
-     * false otherwise
-     */
-    private static boolean isLocalMinimum(double[] array, int index) {
-        if (index <= 0 || index >= array.length - 1) {
-            return false;
-        }
-        return array[index] < array[index - 1] && array[index] < array[index + 1];
-    }
-
-    /**
-     * Finds the first index in the Cumulative Mean Normalized Difference Function (CMNDF)
-     * array where the value is below a specified threshold and is a local minimum.
-     *
-     * @param cmndf     an array of double values representing the cumulative mean normalized
-     *                  difference function (CMNDF). Each element corresponds to the
-     *                  periodicity measure for a specific lag value.
-     * @param threshold a double value representing the threshold for identifying valid
-     *                  CMNDF values. Only elements below this value will be considered.
-     * @param minTau    an integer specifying the minimum lag value to start the search from.
-     * @param maxTau    an integer specifying the maximum lag value up to which the search
-     *                  should be conducted.
-     * @return the index of the first local minimum that satisfies the threshold condition;
-     *         returns -1 if no valid index is found within the given range.
-     */
-    private static int findFirstMinimum(double[] cmndf, double threshold, int minTau, int maxTau) {
-        for (int tau = minTau; tau < maxTau; tau++) {
-            if (cmndf[tau] < threshold && isLocalMinimum(cmndf, tau)) {
-                return tau;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Computes the Cumulative Mean Normalized Difference Function (CMNDF) for the given range of τ values.
-     * This method calculates a normalized measure within the relevant τ range, specified by minTau and maxTau,
-     * while ignoring values outside that range.
-     *
-     * @param difference an array of difference values to compute the CMNDF from
-     * @param minTau the minimum index in the τ range to be considered for calculation
-     * @param maxTau the maximum index in the τ range to be considered for calculation
-     * @return an array representing the CMNDF values, where values outside the specified range are set to 1
-     */
-    private static double[] computeCMNDFInRange(double[] difference, int minTau, int maxTau) {
-        double[] cmndf = new double[difference.length];
-        cmndf[0] = 1;
-        double cumulativeSum = 0;
-
-        for (int tau = 1; tau < difference.length; tau++) {
-            cumulativeSum += difference[tau];
-
-            // Only calculate in the relevant range
-            if (tau >= minTau && tau <= maxTau) {
-                cmndf[tau] = difference[tau] / ((cumulativeSum / tau) + 1e-10);
-            } else {
-                cmndf[tau] = 1; // Ignore values outside the range
-            }
-        }
-
-        return cmndf;
-    }
-
-    /**
-     * Computes the difference function for an audio signal, used as an intermediate
-     * step in signal processing algorithms like pitch detection. The difference function
-     * evaluates the dissimilarity between overlapping segments of the audio data at
-     * various time lags to assess periodicity.
-     *
-     * @param audioData  an array of double values representing the original audio signal
-     *                   to be analyzed. Each value corresponds to the amplitude of the
-     *                   signal at a specific point in time.
-     * @param bufferSize the size of the buffer to process in the audio data. This determines
-     *                   the range of time lags to evaluate in the difference function.
-     * @return an array of double values representing the computed difference function.
-     * Each value corresponds to the dissimilarity measure for a specific time lag.
-     */
-    private static double[] computeDifferenceFunction(double[] audioData, int bufferSize) {
-        double[] audioSquared = new double[audioData.length];
-        for (int i = 0; i < audioData.length; i++) {
-            audioSquared[i] = audioData[i] * audioData[i];
-        }
-
-        double[] difference = new double[bufferSize / 2];
-
-        for (int tau = 0; tau < difference.length; tau++) {
-            double sum = 0;
-            for (int i = 0; i < bufferSize / 2; i++) {
-                sum += audioSquared[i] + audioSquared[i + tau] - 2 * audioData[i] * audioData[i + tau];
-            }
-            difference[tau] = sum;
-        }
-        return difference;
     }
 
 }

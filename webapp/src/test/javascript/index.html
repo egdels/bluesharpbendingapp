@@ -53,35 +53,43 @@
 </head>
 <body>
     <h1>JavaScript Pitch Detector Tests</h1>
-    
+
     <button id="run-tests">Run All Tests</button>
-    
+
     <div id="test-results">
         <div class="test-section">
             <div class="test-title">YIN Pitch Detector Tests</div>
             <div id="yin-test-results" class="test-result">Click "Run All Tests" to start testing.</div>
         </div>
-        
+
         <div class="test-section">
             <div class="test-title">MPM Pitch Detector Tests</div>
             <div id="mpm-test-results" class="test-result">Click "Run All Tests" to start testing.</div>
         </div>
+
+        <div class="test-section">
+            <div class="test-title">Chord Detector Tests</div>
+            <div id="chord-test-results" class="test-result">Click "Run All Tests" to start testing.</div>
+        </div>
     </div>
-    
+
     <div id="test-summary" class="test-summary"></div>
-    
+
     <script type="module">
         import YINPitchDetector from '../../main/resources/static/scripts/YINPitchDetector.js';
         import MPMPitchDetector from '../../main/resources/static/scripts/MPMPitchDetector.js';
+        import ChordDetector from '../../main/resources/static/scripts/ChordDetector.js';
+        import ChordDetectionResult from '../../main/resources/static/scripts/ChordDetectionResult.js';
         import NoteUtils from '../../main/resources/static/scripts/NoteUtils.js';
-        
+
         // Simple test framework
         const TestFramework = {
             results: {
                 yin: { passed: 0, failed: 0, details: [] },
-                mpm: { passed: 0, failed: 0, details: [] }
+                mpm: { passed: 0, failed: 0, details: [] },
+                chord: { passed: 0, failed: 0, details: [] }
             },
-            
+
             expect: function(actual) {
                 return {
                     toBe: function(expected, message) {
@@ -107,7 +115,7 @@
                     }
                 };
             },
-            
+
             runTest: function(name, testFn, type) {
                 try {
                     testFn();
@@ -120,12 +128,13 @@
                     return { passed: false, error: error.message };
                 }
             },
-            
+
             displayResults: function() {
                 const yinResultsElement = document.getElementById('yin-test-results');
                 const mpmResultsElement = document.getElementById('mpm-test-results');
+                const chordResultsElement = document.getElementById('chord-test-results');
                 const summaryElement = document.getElementById('test-summary');
-                
+
                 // Display YIN test results
                 let yinHtml = '';
                 this.results.yin.details.forEach(detail => {
@@ -135,7 +144,7 @@
                     </div>`;
                 });
                 yinResultsElement.innerHTML = yinHtml;
-                
+
                 // Display MPM test results
                 let mpmHtml = '';
                 this.results.mpm.details.forEach(detail => {
@@ -145,198 +154,371 @@
                     </div>`;
                 });
                 mpmResultsElement.innerHTML = mpmHtml;
-                
+
+                // Display Chord test results
+                let chordHtml = '';
+                this.results.chord.details.forEach(detail => {
+                    chordHtml += `<div class="${detail.passed ? 'pass' : 'fail'}">
+                        ${detail.name}: ${detail.passed ? 'PASSED' : 'FAILED'}
+                        ${!detail.passed ? `<br>Error: ${detail.error}` : ''}
+                    </div>`;
+                });
+                chordResultsElement.innerHTML = chordHtml;
+
                 // Display summary
-                const totalPassed = this.results.yin.passed + this.results.mpm.passed;
-                const totalFailed = this.results.yin.failed + this.results.mpm.failed;
+                const totalPassed = this.results.yin.passed + this.results.mpm.passed + this.results.chord.passed;
+                const totalFailed = this.results.yin.failed + this.results.mpm.failed + this.results.chord.failed;
                 const totalTests = totalPassed + totalFailed;
-                
+
                 summaryElement.innerHTML = `
                     Total Tests: ${totalTests}<br>
-                    Passed: ${totalPassed} (${Math.round(totalPassed / totalTests * 100)}%)<br>
-                    Failed: ${totalFailed} (${Math.round(totalFailed / totalTests * 100)}%)
+                    Passed: ${totalPassed} (${totalTests > 0 ? Math.round(totalPassed / totalTests * 100) : 0}%)<br>
+                    Failed: ${totalFailed} (${totalTests > 0 ? Math.round(totalFailed / totalTests * 100) : 0}%)
                 `;
             },
-            
+
             resetResults: function() {
                 this.results = {
                     yin: { passed: 0, failed: 0, details: [] },
-                    mpm: { passed: 0, failed: 0, details: [] }
+                    mpm: { passed: 0, failed: 0, details: [] },
+                    chord: { passed: 0, failed: 0, details: [] }
                 };
             }
         };
-        
+
         // Helper functions for generating test data
         function generateSineWave(frequency, sampleRate, duration) {
             const samples = Math.floor(sampleRate * duration);
             const sineWave = new Array(samples);
-            
+
             for (let i = 0; i < samples; i++) {
                 sineWave[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate);
             }
-            
+
             return sineWave;
         }
-        
+
         function generateMixedSineWaveWithAmplitudes(primaryFreq, primaryAmp, secondaryFreq, secondaryAmp, sampleRate, duration) {
             const sampleCount = sampleRate * duration;
             const mixedWave = new Array(sampleCount);
-            
+
             for (let i = 0; i < sampleCount; i++) {
                 mixedWave[i] = primaryAmp * Math.sin(2.0 * Math.PI * primaryFreq * i / sampleRate)
                         + secondaryAmp * Math.sin(2.0 * Math.PI * secondaryFreq * i / sampleRate);
             }
-            
+
             return mixedWave;
         }
-        
+
         function generateSineWaveWithNoise(frequency, sampleRate, durationMs, noiseLevel) {
             const sampleCount = Math.floor(sampleRate * durationMs / 1000);
             const noisyWave = new Array(sampleCount);
-            
+
             for (let i = 0; i < sampleCount; i++) {
                 noisyWave[i] = Math.sin(2.0 * Math.PI * frequency * i / sampleRate) + noiseLevel * (Math.random() - 0.5);
             }
-            
+
             return noisyWave;
         }
-        
+
         // YIN Pitch Detector Tests
         function runYINTests() {
             const SAMPLE_RATE = 44100;
             const TOLERANCE = 0.5;
-            
+
             // Reset to default frequency range
             YINPitchDetector.setMinFrequency(YINPitchDetector.DEFAULT_MIN_FREQUENCY);
             YINPitchDetector.setMaxFrequency(YINPitchDetector.DEFAULT_MAX_FREQUENCY);
-            
+
             // Test pure sine wave
             TestFramework.runTest('Pure Sine Wave', () => {
                 const frequency = 440.0; // A4
                 const duration = 1.0;
                 const samples = Math.floor(SAMPLE_RATE * duration);
                 const audioData = new Array(samples);
-                
+
                 for (let i = 0; i < samples; i++) {
                     audioData[i] = Math.sin(2 * Math.PI * frequency * i / SAMPLE_RATE);
                 }
-                
+
                 const result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-                
+
                 TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(0.02);
             }, 'yin');
-            
+
             // Test silence
             TestFramework.runTest('Silence', () => {
                 const audioData = new Array(SAMPLE_RATE).fill(0);
-                
+
                 const result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-                
+
                 TestFramework.expect(result.pitch).toBe(YINPitchDetector.NO_DETECTED_PITCH);
             }, 'yin');
-            
+
             // Test noise
             TestFramework.runTest('Noise', () => {
                 const audioData = new Array(2000);
-                
+
                 for (let i = 0; i < audioData.length; i++) {
                     audioData[i] = Math.random() * 2 - 1; // Random noise between -1 and 1
                 }
-                
+
                 const result = YINPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-                
+
                 TestFramework.expect(result.pitch).toBe(YINPitchDetector.NO_DETECTED_PITCH);
             }, 'yin');
-            
+
             // Test frequency with white noise
             TestFramework.runTest('Frequency with White Noise', () => {
                 const frequency = 934.6;
                 const durationMs = 1000; // 1 second
                 const noiseLevel = 0.1; // White noise as 10% of the signal amplitude
-                
+
                 const noisyWave = generateSineWaveWithNoise(frequency, SAMPLE_RATE, durationMs, noiseLevel);
-                
+
                 const result = YINPitchDetector.detectPitch(noisyWave, SAMPLE_RATE);
-                
+
                 TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
                 TestFramework.expect(result.confidence).toBeGreaterThan(0.6);
             }, 'yin');
         }
-        
+
         // MPM Pitch Detector Tests
         function runMPMTests() {
             const SAMPLE_RATE = 44100;
             const TOLERANCE = 1.0;
-            
+
             // Reset to default frequency range
             MPMPitchDetector.setMinFrequency(MPMPitchDetector.DEFAULT_MIN_FREQUENCY);
             MPMPitchDetector.setMaxFrequency(MPMPitchDetector.DEFAULT_MAX_FREQUENCY);
-            
+
             // Test pure sine wave
             TestFramework.runTest('Pure Sine Wave', () => {
                 const frequency = 440.0; // A4
                 const duration = 1.0;
                 const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
-                
+
                 const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-                
+
                 TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
                 TestFramework.expect(result.confidence).toBeGreaterThan(0.9);
             }, 'mpm');
-            
+
             // Test silence
             TestFramework.runTest('Silence', () => {
                 const audioData = new Array(SAMPLE_RATE).fill(0); // 1 second of silence
-                
+
                 const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-                
+
                 TestFramework.expect(result.pitch).toBe(MPMPitchDetector.NO_DETECTED_PITCH);
                 TestFramework.expect(result.confidence).toBe(0.0);
             }, 'mpm');
-            
+
             // Test noise
             TestFramework.runTest('Noise', () => {
                 const audioData = new Array(SAMPLE_RATE); // 1 second of random noise
                 for (let i = 0; i < audioData.length; i++) {
                     audioData[i] = Math.random() * 2 - 1; // Random values between -1 and 1
                 }
-                
+
                 const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-                
+
                 TestFramework.expect(result.pitch).toBe(MPMPitchDetector.NO_DETECTED_PITCH);
                 TestFramework.expect(result.confidence).toBe(0.0);
             }, 'mpm');
-            
+
             // Test low frequency
             TestFramework.runTest('Low Frequency', () => {
                 const frequency = 80.0; // Low frequency
                 const duration = 1.0;
                 const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
-                
+
                 const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-                
+
                 TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
                 TestFramework.expect(result.confidence).toBeGreaterThan(0.9);
             }, 'mpm');
-            
+
             // Test high frequency
             TestFramework.runTest('High Frequency', () => {
                 const frequency = 4000.0; // High frequency
                 const duration = 1.0;
                 const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
-                
+
                 const result = MPMPitchDetector.detectPitch(audioData, SAMPLE_RATE);
-                
+
                 TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
                 TestFramework.expect(result.confidence).toBeGreaterThan(0.9);
             }, 'mpm');
         }
-        
+
+        // Chord Detector Tests
+        function runChordTests() {
+            const SAMPLE_RATE = 44100;
+            const TOLERANCE = 1.0;
+
+            // Reset to default frequency range
+            ChordDetector.setMinFrequency(ChordDetector.DEFAULT_MIN_FREQUENCY);
+            ChordDetector.setMaxFrequency(ChordDetector.DEFAULT_MAX_FREQUENCY);
+
+            // Test pure sine wave (single note)
+            TestFramework.runTest('Pure Sine Wave (Single Note)', () => {
+                const frequency = 440.0; // A4
+                const duration = 1.0;
+                const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
+
+                const result = ChordDetector.detectChord(audioData, SAMPLE_RATE);
+
+                TestFramework.expect(result.hasPitches()).toBe(true);
+                TestFramework.expect(result.getPitchCount()).toBe(1);
+                TestFramework.expect(Math.abs(result.getPitch(0) - frequency)).toBeLessThanOrEqual(TOLERANCE);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.8);
+            }, 'chord');
+
+            // Test silence
+            TestFramework.runTest('Silence', () => {
+                const audioData = new Array(SAMPLE_RATE).fill(0); // 1 second of silence
+
+                const result = ChordDetector.detectChord(audioData, SAMPLE_RATE);
+
+                TestFramework.expect(result.hasPitches()).toBe(false);
+                TestFramework.expect(result.getPitchCount()).toBe(0);
+                TestFramework.expect(result.confidence).toBe(0.0);
+            }, 'chord');
+
+            // Test noise
+            TestFramework.runTest('Noise', () => {
+                const audioData = new Array(SAMPLE_RATE); // 1 second of random noise
+                for (let i = 0; i < audioData.length; i++) {
+                    audioData[i] = Math.random() * 2 - 1; // Random values between -1 and 1
+                }
+
+                const result = ChordDetector.detectChord(audioData, SAMPLE_RATE);
+
+                // Noise might produce some peaks, but the confidence should be low
+                if (result.hasPitches()) {
+                    TestFramework.expect(result.confidence).toBeLessThanOrEqual(0.5);
+                }
+            }, 'chord');
+
+            // Test chord (multiple sine waves)
+            TestFramework.runTest('Chord Detection (C Major)', () => {
+                // Generate a C major chord (C4, E4, G4)
+                const frequencies = [261.63, 329.63, 392.0]; // C4, E4, G4
+                const amplitudes = [1.0, 1.0, 1.0];
+                const duration = 1.0;
+
+                // Generate the chord
+                const samples = Math.floor(SAMPLE_RATE * duration);
+                const chord = new Array(samples).fill(0);
+
+                for (let i = 0; i < samples; i++) {
+                    for (let j = 0; j < frequencies.length; j++) {
+                        chord[i] += amplitudes[j] * Math.sin(2 * Math.PI * frequencies[j] * i / SAMPLE_RATE);
+                    }
+                    // Normalize to avoid clipping
+                    chord[i] /= frequencies.length;
+                }
+
+                const result = ChordDetector.detectChord(chord, SAMPLE_RATE);
+
+                // Verify that multiple pitches were detected
+                TestFramework.expect(result.hasPitches()).toBe(true);
+                TestFramework.expect(result.getPitchCount()).toBe(3);
+
+                // Verify that the detected pitches match the input frequencies
+                let matchCount = 0;
+                for (let i = 0; i < result.getPitchCount(); i++) {
+                    const detectedPitch = result.getPitch(i);
+                    for (const expectedFreq of frequencies) {
+                        if (Math.abs(detectedPitch - expectedFreq) <= TOLERANCE) {
+                            matchCount++;
+                            break;
+                        }
+                    }
+                }
+
+                TestFramework.expect(matchCount).toBe(3);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.7);
+            }, 'chord');
+
+            // Test frequency range
+            TestFramework.runTest('Frequency Range', () => {
+                // Set a custom frequency range
+                const minFreq = 200.0;
+                const maxFreq = 800.0;
+                ChordDetector.setMinFrequency(minFreq);
+                ChordDetector.setMaxFrequency(maxFreq);
+
+                // Test with a frequency within the range
+                const inRangeFreq = 440.0; // A4
+                const audioData1 = generateSineWave(inRangeFreq, SAMPLE_RATE, 1.0);
+                const result1 = ChordDetector.detectChord(audioData1, SAMPLE_RATE);
+
+                TestFramework.expect(result1.hasPitches()).toBe(true);
+                TestFramework.expect(Math.abs(result1.getPitch(0) - inRangeFreq)).toBeLessThanOrEqual(TOLERANCE);
+
+                // Test with a frequency below the range
+                const belowRangeFreq = 150.0;
+                const audioData2 = generateSineWave(belowRangeFreq, SAMPLE_RATE, 1.0);
+                const result2 = ChordDetector.detectChord(audioData2, SAMPLE_RATE);
+
+                // Should not detect the pitch or should detect a pitch within the range
+                if (result2.hasPitches()) {
+                    TestFramework.expect(result2.getPitch(0)).toBeGreaterThan(minFreq - TOLERANCE);
+                }
+
+                // Test with a frequency above the range
+                const aboveRangeFreq = 1000.0;
+                const audioData3 = generateSineWave(aboveRangeFreq, SAMPLE_RATE, 1.0);
+                const result3 = ChordDetector.detectChord(audioData3, SAMPLE_RATE);
+
+                // Should not detect the pitch or should detect a pitch within the range
+                if (result3.hasPitches()) {
+                    TestFramework.expect(result3.getPitch(0)).toBeLessThanOrEqual(maxFreq + TOLERANCE);
+                }
+
+                // Reset to default frequency range
+                ChordDetector.setMinFrequency(ChordDetector.DEFAULT_MIN_FREQUENCY);
+                ChordDetector.setMaxFrequency(ChordDetector.DEFAULT_MAX_FREQUENCY);
+            }, 'chord');
+
+            // Test with a chord with added noise
+            TestFramework.runTest('Chord with Noise', () => {
+                // Generate a C major chord (C4, E4, G4)
+                const frequencies = [261.63, 329.63, 392.0]; // C4, E4, G4
+                const amplitudes = [1.0, 1.0, 1.0];
+                const duration = 1.0;
+
+                // Generate the chord
+                const samples = Math.floor(SAMPLE_RATE * duration);
+                const chord = new Array(samples).fill(0);
+
+                for (let i = 0; i < samples; i++) {
+                    for (let j = 0; j < frequencies.length; j++) {
+                        chord[i] += amplitudes[j] * Math.sin(2 * Math.PI * frequencies[j] * i / SAMPLE_RATE);
+                    }
+                    // Normalize to avoid clipping
+                    chord[i] /= frequencies.length;
+
+                    // Add noise
+                    chord[i] += (Math.random() * 0.1 - 0.05); // Add noise at 5% level
+                }
+
+                const result = ChordDetector.detectChord(chord, SAMPLE_RATE);
+
+                // Verify that pitches were still detected despite the noise
+                TestFramework.expect(result.hasPitches()).toBe(true);
+                TestFramework.expect(result.getPitchCount()).toBeGreaterThan(0);
+            }, 'chord');
+        }
+
         // Run all tests when the button is clicked
         document.getElementById('run-tests').addEventListener('click', function() {
             TestFramework.resetResults();
             runYINTests();
             runMPMTests();
+            runChordTests();
             TestFramework.displayResults();
         });
     </script>

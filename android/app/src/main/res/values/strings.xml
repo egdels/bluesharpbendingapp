@@ -50,6 +50,7 @@
     <string name="training_precision_label">Precision</string>
     <string name="training_progress_label">Progress</string>
     <string name="settings_conf_label">Confidence</string>
+    <string name="settings_chord_conf_label">Chord Confidence</string>
 
     <!-- Settings screen section headers -->
     <string name="settings_harp_header">Harp Settings</string>

@@ -108,4 +108,42 @@ public interface Microphone {
      * @return the currently selected confidence level as a String
      */
     String getConfidence();
+
+    /**
+     * Retrieves the current chord confidence level set for the microphone.
+     * This confidence level is used specifically for chord detection.
+     *
+     * @return the currently selected chord confidence level as a String
+     */
+    String getChordConfidence();
+
+    /**
+     * Sets the chord confidence level for the microphone based on the given index.
+     * The index corresponds to a pre-defined list of confidence levels
+     * supported by the microphone. This confidence level is used specifically
+     * for chord detection.
+     *
+     * @param confidenceIndex the index of the chord confidence level to be set
+     */
+    void setChordConfidence(int confidenceIndex);
+
+    /**
+     * Checks if chord detection is enabled for the microphone.
+     * When chord detection is enabled, the microphone will perform chord detection
+     * during audio processing. When disabled, chord detection will be skipped
+     * to improve performance.
+     *
+     * @return true if chord detection is enabled, false otherwise
+     */
+    boolean isChordDetectionEnabled();
+
+    /**
+     * Sets whether chord detection should be enabled for the microphone.
+     * When chord detection is enabled, the microphone will perform chord detection
+     * during audio processing. When disabled, chord detection will be skipped
+     * to improve performance.
+     *
+     * @param enabled true to enable chord detection, false to disable it
+     */
+    void setChordDetectionEnabled(boolean enabled);
 }

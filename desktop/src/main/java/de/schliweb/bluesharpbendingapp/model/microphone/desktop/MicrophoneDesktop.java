@@ -446,7 +446,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
 
     /**
      * Processes the given audio data buffer to detect the pitch and calculate the RMS (Root Mean Square).
-     * It uses the selected pitch detection algorithm (YIN, MPM, or FFT) and sends the frequency and
+     * It uses the selected pitch detection algorithm (YIN, MPM, FFT) and sends the frequency and
      * amplitude data to the microphone handler.
      *
      * @param buffer    the audio buffer containing raw audio data
@@ -457,7 +457,15 @@ public class MicrophoneDesktop extends AbstractMicrophone {
         double pitch = -1;
         double conf = 0;
         PitchDetector.PitchDetectionResult result;
-        ChordDetectionResult chordResult = PitchDetector.detectChord(audioData, SAMPLE_RATE);
+        ChordDetectionResult chordResult;
+
+        // Only perform chord detection if it's enabled
+        if (isChordDetectionEnabled()) {
+            chordResult = PitchDetector.detectChord(audioData, SAMPLE_RATE);
+        } else {
+            // Create an empty chord detection result when chord detection is disabled
+            chordResult = new ChordDetectionResult(List.of(), 0.0);
+        }
 
         // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
         if ("YIN".equals(getAlgorithm())) {
@@ -468,8 +476,16 @@ public class MicrophoneDesktop extends AbstractMicrophone {
             result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
             pitch = result.pitch();
             conf = result.confidence();
+        } else if ("HYBRID".equals(getAlgorithm())) {
+            result = PitchDetector.detectPitchHybrid(audioData, SAMPLE_RATE);
+            pitch = result.pitch();
+            conf = result.confidence();
         }
         if (conf < confidence) pitch = -1;
+
+        // Apply the chord confidence threshold to chord detection
+        if(chordResult.confidence() < chordConfidence)
+            chordResult = new ChordDetectionResult(List.of(), 0.0);
 
         if (microphoneHandler.get() != null) {
             microphoneHandler.get().handle(pitch, PitchDetector.calcRMS(audioData), chordResult); // frequency, RMS

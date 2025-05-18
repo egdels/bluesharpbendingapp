@@ -77,6 +77,18 @@ public class NoteContainer implements Runnable {
      * The value is managed in a thread-safe manner using an AtomicBoolean.
      */
     private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
+    /**
+     * A thread-safe flag indicating whether the chord state associated with this note
+     * should be cleared during the next processing cycle.
+     * <p>
+     * Used within the NoteContainer class to manage the state and visual updates
+     * for notes that are part of a chord. When this flag is set to true, the system
+     * processes the chord state by resetting relevant attributes and updating the UI
+     * accordingly, ensuring proper visibility and state representation for the user.
+     * <p>
+     * This flag is primarily manipulated in methods like {@code run()} and {@code handleChordFrequencyChange()},
+     * which manage note frequency and chord-related updates. It is reset to false after processing is complete.
+     */
     private final AtomicBoolean toBeClearedChord = new AtomicBoolean(false);
     /**
      * Represents a unique identifier used for caching operations in the NoteContainer.
@@ -213,7 +225,7 @@ public class NoteContainer implements Runnable {
             }, 100, TimeUnit.MILLISECONDS);
         }
         if (toBeClearedChord.compareAndSet(true, false)) {
-            exec.schedule(() ->{
+            exec.schedule(() -> {
                 isPartOfChord = false;
                 harpViewElement.clear();
             }, 200, TimeUnit.MILLISECONDS);

@@ -1,7 +1,8 @@
 package de.schliweb.bluesharpbendingapp.utils;
 
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * The MPMPitchDetector class is a specialized pitch detection implementation
@@ -54,8 +55,8 @@ public class MPMPitchDetector extends PitchDetector {
 
         // Calculate lag limits based on the frequency range
         // We extend the range by 10% on both ends to ensure we can detect frequencies at the edges
-        int minLag = Math.max(1, (int)(sampleRate / (maxFrequency * 1.1))); // Extend by 10% higher
-        int maxLag = Math.min(n / 2, (int)(sampleRate / (minFrequency * 0.9))); // Extend by 10% lower
+        int minLag = Math.max(1, (int) (sampleRate / (maxFrequency * 1.1))); // Extend by 10% higher
+        int maxLag = Math.min(n / 2, (int) (sampleRate / (minFrequency * 0.9))); // Extend by 10% lower
 
         // Calculate the NSDF
         double[] nsdf = calculateNSDF(audioData, n, minLag, maxLag);
@@ -99,7 +100,8 @@ public class MPMPitchDetector extends PitchDetector {
         double[] nsdf = new double[maxLagForCalculation - minLag];
 
         // Calculate NSDF only for lags between minLag and maxLagForCalculation
-        for (int lag = minLag; lag < maxLagForCalculation; lag++) {
+        // Use parallel streams to parallelize the outer loop
+        IntStream.range(minLag, maxLagForCalculation).parallel().forEach(lag -> {
             double numerator = 0;
             double denominator = 0;
             for (int i = 0; i < n - lag; i++) {
@@ -112,14 +114,14 @@ public class MPMPitchDetector extends PitchDetector {
             } else {
                 nsdf[lag - minLag] = 2 * numerator / denominator;
             }
-        }
+        });
 
         return nsdf;
     }
 
     /**
      * Identifies the local peaks in the given Normalized Square Difference Function (NSDF) array
-     * within a specific lag range defined by minLag and maxLag.
+     * within a specific lag range defined by minLag.
      * This allows focusing the peak detection on a specific frequency range.
      *
      * @param nsdf   an array of double values representing the Normalized Square Difference Function (NSDF)
@@ -127,22 +129,7 @@ public class MPMPitchDetector extends PitchDetector {
      * @return a list of integers where each integer represents the index of a detected peak
      */
     private List<Integer> findPeaks(double[] nsdf, int minLag) {
-        List<Integer> candidatePeaks = new ArrayList<>();
-
-        // Ensure we don't go out of bounds
-        if (nsdf.length < 2) {
-            return candidatePeaks;
-        }
-
-        // Find all peaks in the NSDF that exceed the threshold
-        for (int i = 1; i < nsdf.length - 1; i++) {
-            if (nsdf[i] > nsdf[i - 1] && nsdf[i] > nsdf[i + 1] && nsdf[i] > PEAK_THRESHOLD) {
-                // Add the actual lag value (not the array index)
-                candidatePeaks.add(i + minLag);
-            }
-        }
-
-        return candidatePeaks;
+        return findPeaks(nsdf, PEAK_THRESHOLD, minLag);
     }
 
     /**

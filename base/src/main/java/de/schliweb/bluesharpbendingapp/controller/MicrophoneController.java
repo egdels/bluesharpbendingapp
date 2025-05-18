@@ -73,6 +73,13 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
         microphone.setAlgorithm(model.getStoredAlgorithmIndex());
         microphone.setName(model.getStoredMicrophoneIndex());
         microphone.setConfidence(model.getStoredConfidenceIndex());
+        microphone.setChordConfidence(model.getStoredChordConfidenceIndex());
+
+        // Set chord detection enabled based on the "Show Chords" setting
+        // If showChordIndex is 1, chord display is enabled
+        microphone.setChordDetectionEnabled(model.getSelectedShowChordIndex() == 1);
+        LoggingUtils.logDebug("Chord detection " + (model.getSelectedShowChordIndex() == 1 ? "enabled" : "disabled") + 
+                              " based on Show Chords setting: " + model.getSelectedShowChordIndex());
 
         LoggingUtils.logDebug("Registering microphone handler");
         microphone.setMicrophoneHandler(this);
@@ -228,6 +235,26 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
     }
 
     @Override
+    public void initChordConfidenceList() {
+        LoggingContext.setComponent("MicrophoneController");
+        LoggingUtils.logOperationStarted("Chord confidence list initialization");
+
+        if (window.isMicrophoneSettingsViewActive()) {
+            MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
+
+            LoggingUtils.logDebug("Setting chord confidence list in the microphone settings view");
+            microphoneSettingsView.setChordConfidences(AbstractMicrophone.getSupportedChordConfidences());
+
+            LoggingUtils.logDebug("Setting the selected chord confidence in the microphone settings view");
+            microphoneSettingsView.setSelectedChordConfidence(model.getSelectedChordConfidenceIndex());
+
+            LoggingUtils.logOperationCompleted("Chord confidence list initialization");
+        } else {
+            LoggingUtils.logWarning("Chord confidence list initialization skipped", "Microphone settings view is not active");
+        }
+    }
+
+    @Override
     public void handleConfidenceSelection(int confidenceIndex) {
         LoggingContext.setComponent("MicrophoneController");
         LoggingUtils.logUserAction("Confidence selection", "confidenceIndex=" + confidenceIndex);
@@ -242,6 +269,30 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
             LoggingUtils.logOperationCompleted("Confidence selection handling");
         } else {
             LoggingUtils.logWarning("Cannot set confidence index", "Microphone object is null");
+        }
+
+        LoggingUtils.logDebug("Storing updated model");
+        long startTime = System.currentTimeMillis();
+        modelStorageService.storeModel(model);
+        long duration = System.currentTimeMillis() - startTime;
+        LoggingUtils.logPerformance("Model storage", duration);
+    }
+
+    @Override
+    public void handleChordConfidenceSelection(int chordConfidenceIndex) {
+        LoggingContext.setComponent("MicrophoneController");
+        LoggingUtils.logUserAction("Chord confidence selection", "chordConfidenceIndex=" + chordConfidenceIndex);
+
+        LoggingUtils.logDebug("Updating stored chord confidence index in the model");
+        this.model.setStoredChordConfidenceIndex(chordConfidenceIndex);
+        this.model.setSelectedChordConfidenceIndex(chordConfidenceIndex);
+
+        if (microphone != null) {
+            LoggingUtils.logDebug("Setting chord confidence index on the microphone", "chordConfidenceIndex=" + chordConfidenceIndex);
+            microphone.setChordConfidence(chordConfidenceIndex);
+            LoggingUtils.logOperationCompleted("Chord confidence selection handling");
+        } else {
+            LoggingUtils.logWarning("Cannot set chord confidence index", "Microphone object is null");
         }
 
         LoggingUtils.logDebug("Storing updated model");
@@ -279,5 +330,22 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
             MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
             microphoneSettingsView.setVolume(volume);
         }
+    }
+
+    /**
+     * Updates the microphone's chord detection setting based on the model's "Show Chords" setting.
+     * This method should be called whenever the "Show Chords" setting is changed.
+     */
+    public void updateChordDetectionSetting() {
+        LoggingContext.setComponent("MicrophoneController");
+        LoggingUtils.logOperationStarted("Updating chord detection setting");
+
+        boolean enableChordDetection = model.getSelectedShowChordIndex() == 1;
+        microphone.setChordDetectionEnabled(enableChordDetection);
+
+        LoggingUtils.logDebug("Chord detection " + (enableChordDetection ? "enabled" : "disabled") + 
+                              " based on Show Chords setting: " + model.getSelectedShowChordIndex());
+
+        LoggingUtils.logOperationCompleted("Chord detection setting update");
     }
 }

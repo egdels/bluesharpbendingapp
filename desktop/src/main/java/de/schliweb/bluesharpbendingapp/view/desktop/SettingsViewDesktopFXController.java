@@ -77,6 +77,20 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     public ComboBox<String> comboConfidences;
 
     /**
+     * Represents a ComboBox UI element used to display and select chord confidence levels
+     * in the application's settings. The options and functionality of this ComboBox
+     * are managed by methods within the `SettingsViewDesktopFXController` class.
+     * <p>
+     * This field is annotated with `@FXML` to indicate it is injected via the FXML file
+     * defining the UI layout. Its exact behavior depends on how it is initialized and
+     * interacted with within the application's lifecycle.
+     * <p>
+     * Chord confidence levels are specifically used for chord detection.
+     */
+    @FXML
+    public ComboBox<String> comboChordConfidences;
+
+    /**
      * Represents the label displaying the current value of the musical note being processed
      * or tuned in the settings view.
      * This label is dynamically updated to reflect the detected or selected note.
@@ -222,7 +236,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
         LoggingContext.setComponent("SettingsViewDesktopFXController");
         LoggingUtils.logInitializing("Settings View Controller");
 
-        for (ComboBox<String> stringComboBox : Arrays.asList(comboKeys, comboTunes, comboAlgorithms, comboMicrophones, comboConfidences, comboConcertPitches)) {
+        for (ComboBox<String> stringComboBox : Arrays.asList(comboKeys, comboTunes, comboAlgorithms, comboMicrophones, comboConfidences, comboChordConfidences, comboConcertPitches)) {
             addChangeListenerToComboBox(stringComboBox);
         }
 
@@ -337,25 +351,33 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     /**
      * Adds a change listener to the specified ComboBox, enabling real-time handling of
      * value changes within the application. The listener reacts to updates in the
-     * ComboBox's selected value and delegates actions to the appropriate handlers based
-     * on the selected indices of various application-specific ComboBox components
-     * (e.g., keys, tunes, algorithms, microphones, confidences, and concert pitches).
+     * ComboBox's selected value and delegates actions to the appropriate handler based
+     * on which ComboBox was changed.
      * <p>
-     * The method logs any value changes in the ComboBox for debugging purposes. It also
-     * ensures that relevant settings are updated by invoking corresponding handlers
-     * when a new value is selected.
+     * This implementation only processes the specific ComboBox that changed, rather than
+     * processing all ComboBoxes on every change, which significantly improves performance.
      *
      * @param combo the ComboBox to which the change listener will be added
      */
     private void addChangeListenerToComboBox(ComboBox<String> combo) {
         combo.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                handleSelectionChange(comboKeys, harpSettingsViewHandler::handleKeySelection);
-                handleSelectionChange(comboTunes, harpSettingsViewHandler::handleTuneSelection);
-                handleSelectionChange(comboAlgorithms, microphoneSettingsViewHandler::handleAlgorithmSelection);
-                handleSelectionChange(comboMicrophones, microphoneSettingsViewHandler::handleMicrophoneSelection);
-                handleSelectionChange(comboConfidences, microphoneSettingsViewHandler::handleConfidenceSelection);
-                handleSelectionChange(comboConcertPitches, noteSettingsViewHandler::handleConcertPitchSelection);
+                // Only handle the specific ComboBox that changed
+                if (combo == comboKeys) {
+                    handleSelectionChange(comboKeys, harpSettingsViewHandler::handleKeySelection);
+                } else if (combo == comboTunes) {
+                    handleSelectionChange(comboTunes, harpSettingsViewHandler::handleTuneSelection);
+                } else if (combo == comboAlgorithms) {
+                    handleSelectionChange(comboAlgorithms, microphoneSettingsViewHandler::handleAlgorithmSelection);
+                } else if (combo == comboMicrophones) {
+                    handleSelectionChange(comboMicrophones, microphoneSettingsViewHandler::handleMicrophoneSelection);
+                } else if (combo == comboConfidences) {
+                    handleSelectionChange(comboConfidences, microphoneSettingsViewHandler::handleConfidenceSelection);
+                } else if (combo == comboChordConfidences) {
+                    handleSelectionChange(comboChordConfidences, microphoneSettingsViewHandler::handleChordConfidenceSelection);
+                } else if (combo == comboConcertPitches) {
+                    handleSelectionChange(comboConcertPitches, noteSettingsViewHandler::handleConcertPitchSelection);
+                }
             }
         });
     }
@@ -472,6 +494,18 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     }
 
     /**
+     * Sets the selected chord confidence level in the chord confidences ComboBox based on the provided index.
+     * This method updates the UI to reflect the currently selected chord detection confidence threshold.
+     * This confidence level is used specifically for chord detection.
+     *
+     * @param chordConfidenceIndex the index of the chord confidence level to be selected in the ComboBox
+     */
+    @Override
+    public void setSelectedChordConfidence(int chordConfidenceIndex) {
+        setSelected(chordConfidenceIndex, comboChordConfidences);
+    }
+
+    /**
      * Sets the available confidence levels in the confidences ComboBox.
      * This method populates the ComboBox with the provided array of confidence level values,
      * allowing users to select from the available pitch detection confidence thresholds.
@@ -481,6 +515,19 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
     @Override
     public void setConfidences(String[] confidences) {
         initComboBox(comboConfidences, confidences);
+    }
+
+    /**
+     * Sets the available chord confidence levels in the chord confidences ComboBox.
+     * This method populates the ComboBox with the provided array of chord confidence level values,
+     * allowing users to select from the available chord detection confidence thresholds.
+     * These confidence levels are used specifically for chord detection.
+     *
+     * @param chordConfidences an array of strings representing the available chord confidence levels
+     */
+    @Override
+    public void setChordConfidences(String[] chordConfidences) {
+        initComboBox(comboChordConfidences, chordConfidences);
     }
 
     /**
@@ -551,6 +598,7 @@ public class SettingsViewDesktopFXController implements HarpSettingsView, Microp
         setSelectedMicrophone(model.getStoredMicrophoneIndex());
         setSelectedTune(model.getStoredTuneIndex());
         setSelectedConfidence(model.getStoredConfidenceIndex());
+        setSelectedChordConfidence(model.getStoredChordConfidenceIndex());
         setSelectedShowChord(model.getStoredShowChordIndex());
         LoggingUtils.logOperationCompleted("Settings reset to defaults");
     }

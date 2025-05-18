@@ -122,6 +122,22 @@ public class MainModel implements Serializable {
      * application's runtime based on specific processing or input.
      */
     private int storedConfidenceIndex = 0;
+
+    /**
+     * Represents a chord confidence index used by the application to store
+     * or track a numeric value associated with a particular level
+     * of confidence or certainty specifically for chord detection.
+     * <p>
+     * This variable is primarily utilized as part of the application's
+     * internal logic for chord detection, potentially maintaining state 
+     * or providing context for file storage, model modification, or related 
+     * processing tasks.
+     * <p>
+     * The value is initialized to 3, which represents a default confidence
+     * level of 0.8, and is likely modified during the application's runtime 
+     * based on specific processing or input.
+     */
+    private int storedChordConfidenceIndex = 3;
     /**
      * The `storedLockScreenIndex` variable represents the index of the currently
      * stored lock screen configuration. It is used to track or reference a
@@ -216,6 +232,19 @@ public class MainModel implements Serializable {
      * A value of -1 or any other special value may be reserved to indicate that no selection has been made.
      */
     private int selectedConfidenceIndex;
+
+    /**
+     * Represents the index of the selected chord confidence level within a specified list or collection.
+     * This variable is specifically used for chord detection confidence and is used to indicate 
+     * and track the currently selected chord confidence level in a user interface or within 
+     * a data processing context.
+     * <p>
+     * It is assumed that this index corresponds to the position in a predefined sequence
+     * of confidence levels and is updated to reflect user interaction or programmatic changes.
+     * <p>
+     * A value of -1 or any other special value may be reserved to indicate that no selection has been made.
+     */
+    private int selectedChordConfidenceIndex;
     /**
      * Represents the index of the selected precision level in a collection or array of
      * precision options. This variable is used to track which precision level
@@ -338,6 +367,18 @@ public class MainModel implements Serializable {
      */
     public int getSelectedConfidenceIndex() {
         return selectedConfidenceIndex != 0 ? selectedConfidenceIndex : storedConfidenceIndex;
+    }
+
+    /**
+     * Retrieves the selected chord confidence index if it has been explicitly set
+     * (a non-zero value). If not, defaults to the stored chord confidence index.
+     * This confidence level is used specifically for chord detection.
+     *
+     * @return The selected chord confidence index if it is non-zero; otherwise,
+     * the stored chord confidence index.
+     */
+    public int getSelectedChordConfidenceIndex() {
+        return selectedChordConfidenceIndex != 0 ? selectedChordConfidenceIndex : storedChordConfidenceIndex;
     }
 
     /**

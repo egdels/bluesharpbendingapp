@@ -22,9 +22,11 @@ package de.schliweb.bluesharpbendingapp.utils;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Implementation of a spectral-based algorithm for chord detection.
@@ -67,14 +69,14 @@ public class ChordDetector extends PitchDetector {
     /**
      * Represents the tolerance level used to identify and filter out harmonic frequencies
      * in the pitch detection process within audio signals.
-     *
+     * <p>
      * This constant defines the threshold ratio within which frequencies are considered
      * close enough to be treated as harmonics of a fundamental frequency.
-     *
+     * <p>
      * A lower value increases the precision of harmonic filtering, potentially excluding
      * frequencies that are slightly off harmonic intervals. A higher value allows for more
      * leniency, which can help account for slight inharmonicities or measurement errors.
-     *
+     * <p>
      * Typical use cases include:
      * - Distinguishing between fundamental frequencies and their harmonics.
      * - Improving the accuracy of chord and pitch detection by suppressing redundant harmonic peaks.
@@ -121,22 +123,22 @@ public class ChordDetector extends PitchDetector {
 
         double[] fftInput = new double[fftSize * 2]; // Complex numbers (real, imag)
 
-        // Apply window function and prepare FFT input
-        for (int i = 0; i < audioData.length; i++) {
+        // Apply window function and prepare FFT input - parallelized
+        IntStream.range(0, audioData.length).parallel().forEach(i -> {
             fftInput[i * 2] = audioData[i] * hannWindow(i, audioData.length);
             fftInput[i * 2 + 1] = 0; // Imaginary part is zero
-        }
+        });
 
         // Perform FFT
         fft(fftInput, fftSize);
 
-        // Calculate magnitude spectrum
+        // Calculate magnitude spectrum - parallelized
         double[] magnitudeSpectrum = new double[fftSize / 2];
-        for (int i = 0; i < fftSize / 2; i++) {
+        IntStream.range(0, fftSize / 2).parallel().forEach(i -> {
             double real = fftInput[i * 2];
             double imag = fftInput[i * 2 + 1];
             magnitudeSpectrum[i] = Math.sqrt(real * real + imag * imag);
-        }
+        });
 
         // Calculate spectral flatness to distinguish between tonal sounds and noise
         double spectralFlatness = calculateSpectralFlatness(magnitudeSpectrum, sampleRate);
@@ -158,10 +160,10 @@ public class ChordDetector extends PitchDetector {
         // Filter peaks based on frequency range and threshold
         peaks = filterPeaks(peaks);
 
-        // [NEU] Filter harmonics to avoid overtones and prioritize fundamental frequencies
+        // Filter harmonics to avoid overtones and prioritize fundamental frequencies
         peaks = filterHarmonics(peaks);
 
-// [NEU] Prioritize lower frequencies over higher harmonics
+        // Prioritize lower frequencies over higher harmonics
         peaks = prioritizeLowerFrequencies(peaks);
 
 
@@ -180,8 +182,7 @@ public class ChordDetector extends PitchDetector {
         }
 
         // Calculate confidence based on the strength of the peaks
-        double confidence = peaks.isEmpty() ? 0.0 :
-                            peaks.stream().mapToDouble(p -> p.magnitude).sum() / peaks.size();
+        double confidence = peaks.isEmpty() ? 0.0 : peaks.stream().mapToDouble(p -> p.magnitude).sum() / peaks.size();
 
         return ChordDetectionResult.of(pitches, confidence);
     }
@@ -203,9 +204,7 @@ public class ChordDetector extends PitchDetector {
 
         for (int i = startBin + 1; i < endBin - 1; i++) {
             // Check if this is a local maximum
-            if (magnitudeSpectrum[i] > magnitudeSpectrum[i - 1] &&
-                magnitudeSpectrum[i] > magnitudeSpectrum[i + 1] &&
-                magnitudeSpectrum[i] > PEAK_THRESHOLD) {
+            if (magnitudeSpectrum[i] > magnitudeSpectrum[i - 1] && magnitudeSpectrum[i] > magnitudeSpectrum[i + 1] && magnitudeSpectrum[i] > PEAK_THRESHOLD) {
 
                 // Refine the peak position using parabolic interpolation
                 double refinedBin = parabolicInterpolation(magnitudeSpectrum, i);
@@ -262,8 +261,7 @@ public class ChordDetector extends PitchDetector {
             if (Math.abs(nextPeak.frequency - currentPeak.frequency) < MIN_PEAK_DISTANCE_HZ) {
                 // Merge the peaks (weighted average based on magnitude)
                 double totalMagnitude = currentPeak.magnitude + nextPeak.magnitude;
-                double mergedFrequency = (currentPeak.frequency * currentPeak.magnitude +
-                                         nextPeak.frequency * nextPeak.magnitude) / totalMagnitude;
+                double mergedFrequency = (currentPeak.frequency * currentPeak.magnitude + nextPeak.frequency * nextPeak.magnitude) / totalMagnitude;
                 currentPeak = new Peak(mergedFrequency, totalMagnitude);
             } else {
                 // Add the current peak and move to the next one
@@ -299,7 +297,7 @@ public class ChordDetector extends PitchDetector {
      * Values close to 0 indicate tonal sounds, while values close to 1 indicate noise.
      *
      * @param magnitudeSpectrum the magnitude spectrum to calculate flatness for
-     * @param sampleRate the sample rate of the audio signal in Hz
+     * @param sampleRate        the sample rate of the audio signal in Hz
      * @return the spectral flatness value between 0 and 1
      */
     private double calculateSpectralFlatness(double[] magnitudeSpectrum, int sampleRate) {
@@ -307,18 +305,25 @@ public class ChordDetector extends PitchDetector {
         int startBin = Math.max(1, (int) (minFrequency * magnitudeSpectrum.length / (sampleRate / 2)));
         int endBin = Math.min(magnitudeSpectrum.length - 1, (int) (maxFrequency * magnitudeSpectrum.length / (sampleRate / 2)));
 
-        double sum = 0.0;
-        double logSum = 0.0;
-        int count = 0;
+        // Use parallel streams to calculate sums
+        int count = endBin - startBin + 1;
 
-        // Calculate arithmetic mean and geometric mean
-        for (int i = startBin; i <= endBin; i++) {
+        // Calculate arithmetic mean and geometric mean in parallel
+        double[] sums = IntStream.rangeClosed(startBin, endBin).parallel().mapToDouble(i -> {
             // Add a small value to avoid log(0)
             double value = magnitudeSpectrum[i] + 1e-10;
-            sum += value;
-            logSum += Math.log(value);
-            count++;
-        }
+            return value;
+        }).collect(() -> new double[2],  // Initialize an array to hold sum and logSum
+                (acc, value) -> {
+                    acc[0] += value;          // sum
+                    acc[1] += Math.log(value); // logSum
+                }, (acc1, acc2) -> {
+                    acc1[0] += acc2[0];  // Combine sums
+                    acc1[1] += acc2[1];  // Combine logSums
+                });
+
+        double sum = sums[0];
+        double logSum = sums[1];
 
         if (count == 0 || sum == 0) {
             return 1.0; // Maximum flatness (noise)
@@ -332,29 +337,10 @@ public class ChordDetector extends PitchDetector {
     }
 
     /**
-     * Represents a peak in the frequency spectrum.
-     */
-    private static class Peak {
-        final double frequency;
-        final double magnitude;
-
-        Peak(double frequency, double magnitude) {
-            this.frequency = frequency;
-            this.magnitude = magnitude;
-        }
-    }
-
-    /**
      * Filters out harmonic frequencies by comparing the ratios of detected frequencies.
-     *
+     * <p>
      * This method checks if a frequency is a harmonic (integer multiple) of another frequency
      * and filters those harmonics out, prioritizing the lower fundamental frequencies.
-     *
-     * @param peaks the list of detected peaks to filter
-     * @return the filtered list of peaks (without harmonics)
-     */
-    /**
-     * Filters out harmonic frequencies by checking each peak against deeper fundamental frequencies.
      * Harmonics are identified by their frequency ratios (integer multiples).
      *
      * @param peaks the list of detected peaks to filter
@@ -376,8 +362,8 @@ public class ChordDetector extends PitchDetector {
                     continue;
                 }
                 if (Math.abs(ratio - Math.round(ratio)) < HARMONIC_TOLERANCE) {  // Adjusted harmonic threshold
-                    if (ratio > 5.0) { // Unrealistische Harmonie
-                        continue; // Akzeptiere es als separaten Ton
+                    if (ratio > 5.0) { // Unrealistic harmonic
+                        continue; // Accept it as a separate tone
                     }
                     if (peaks.get(i).magnitude < peaks.get(j).magnitude * 0.3) { // Adjusted amplitude ratio to suppress harmonics
                         isHarmonic = true;
@@ -394,7 +380,6 @@ public class ChordDetector extends PitchDetector {
         return filteredPeaks;
     }
 
-
     /**
      * Prioritizes lower frequencies by comparing relative amplitudes of peaks.
      * This ensures that higher harmonics are deprioritized if similar strength exists at lower frequencies.
@@ -410,8 +395,7 @@ public class ChordDetector extends PitchDetector {
             boolean isOverridden = false;
 
             for (Peak lowerPeak : prioritizedPeaks) {
-                if (peak.frequency > lowerPeak.frequency &&
-                        peak.magnitude < lowerPeak.magnitude * 0.6) { // Adjusted amplitude ratio (factor 0.6)
+                if (peak.frequency > lowerPeak.frequency && peak.magnitude < lowerPeak.magnitude * 0.6) { // Adjusted amplitude ratio (factor 0.6)
                     isOverridden = true;
                     break;
                 }
@@ -425,6 +409,18 @@ public class ChordDetector extends PitchDetector {
         return prioritizedPeaks;
     }
 
+    /**
+     * Represents a peak in the frequency spectrum.
+     */
+    private static class Peak {
+        final double frequency;
+        final double magnitude;
+
+        Peak(double frequency, double magnitude) {
+            this.frequency = frequency;
+            this.magnitude = magnitude;
+        }
+    }
 
 
 }
