@@ -89,6 +89,8 @@ public class ChordDetector extends PitchDetector {
      */
     protected ChordDetector() {
         super();
+        LoggingContext.setComponent("ChordDetector");
+        LoggingUtils.logDebug("Initializing ChordDetector");
     }
 
     /**
@@ -101,11 +103,19 @@ public class ChordDetector extends PitchDetector {
      */
     @Override
     PitchDetectionResult detectPitch(double[] audioData, int sampleRate) {
+        LoggingUtils.logDebug("Detecting pitch using ChordDetector");
+
         // For backward compatibility, return the dominant pitch
         ChordDetectionResult chordResult = detectChordInternal(audioData, sampleRate);
+
         if (chordResult.hasPitches()) {
-            return new PitchDetectionResult(chordResult.getPitch(0), chordResult.confidence());
+            double pitch = chordResult.getPitch(0);
+            double confidence = chordResult.confidence();
+            LoggingUtils.logDebug("Detected dominant pitch", String.format("%.2f Hz with confidence %.2f", pitch, confidence));
+            return new PitchDetectionResult(pitch, confidence);
         }
+
+        LoggingUtils.logDebug("No pitch detected");
         return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
     }
 
@@ -117,9 +127,13 @@ public class ChordDetector extends PitchDetector {
      * @return a ChordDetectionResult containing the detected pitches and confidence.
      */
     public ChordDetectionResult detectChordInternal(double[] audioData, int sampleRate) {
+        LoggingUtils.logDebug("Detecting chord using spectral analysis", 
+                             "Sample rate: " + sampleRate + " Hz, data length: " + audioData.length);
+        LoggingUtils.logOperationStarted("Chord detection");
 
         // Prepare for FFT (needs power of 2 size)
         int fftSize = Math.max(1024, nextPowerOfTwo(audioData.length));
+        LoggingUtils.logDebug("FFT size", String.valueOf(fftSize));
 
         double[] fftInput = new double[fftSize * 2]; // Complex numbers (real, imag)
 
@@ -142,9 +156,14 @@ public class ChordDetector extends PitchDetector {
 
         // Calculate spectral flatness to distinguish between tonal sounds and noise
         double spectralFlatness = calculateSpectralFlatness(magnitudeSpectrum, sampleRate);
+        LoggingUtils.logDebug("Spectral flatness", String.format("%.4f (threshold: %.4f)", 
+                             spectralFlatness, SPECTRAL_FLATNESS_THRESHOLD));
 
         // If the spectral flatness is high, it's likely noise
         if (spectralFlatness > SPECTRAL_FLATNESS_THRESHOLD) {
+            LoggingUtils.logDebug("Audio signal classified as noise", 
+                                "Spectral flatness above threshold, returning empty result");
+            LoggingUtils.logOperationCompleted("Chord detection (noise detected)");
             return new ChordDetectionResult(List.of(), 0.0);
         }
 
@@ -156,19 +175,23 @@ public class ChordDetector extends PitchDetector {
 
         // Find peaks in the spectrum
         List<Peak> peaks = findPeaks(magnitudeSpectrum, sampleRate, fftSize);
+        LoggingUtils.logDebug("Initial peaks found", String.valueOf(peaks.size()));
 
         // Filter peaks based on frequency range and threshold
         peaks = filterPeaks(peaks);
+        LoggingUtils.logDebug("Peaks after frequency filtering", String.valueOf(peaks.size()));
 
         // Filter harmonics to avoid overtones and prioritize fundamental frequencies
         peaks = filterHarmonics(peaks);
+        LoggingUtils.logDebug("Peaks after harmonic filtering", String.valueOf(peaks.size()));
 
         // Prioritize lower frequencies over higher harmonics
         peaks = prioritizeLowerFrequencies(peaks);
-
+        LoggingUtils.logDebug("Peaks after prioritization", String.valueOf(peaks.size()));
 
         // Merge peaks that are too close
         peaks = mergePeaks(peaks);
+        LoggingUtils.logDebug("Peaks after merging", String.valueOf(peaks.size()));
 
         // Limit the number of peaks
         if (peaks.size() > MAX_PITCHES) {
@@ -184,7 +207,25 @@ public class ChordDetector extends PitchDetector {
         // Calculate confidence based on the strength of the peaks
         double confidence = peaks.isEmpty() ? 0.0 : peaks.stream().mapToDouble(p -> p.magnitude).sum() / peaks.size();
 
-        return ChordDetectionResult.of(pitches, confidence);
+        // Create the result
+        ChordDetectionResult result = ChordDetectionResult.of(pitches, confidence);
+
+        // Log the result
+        if (result.hasPitches()) {
+            StringBuilder pitchesStr = new StringBuilder();
+            for (int i = 0; i < result.getPitchCount(); i++) {
+                if (i > 0) pitchesStr.append(", ");
+                pitchesStr.append(String.format("%.2f Hz", result.getPitch(i)));
+            }
+            LoggingUtils.logDebug("Detected chord", 
+                                 String.format("%d pitches [%s] with confidence %.2f", 
+                                              result.getPitchCount(), pitchesStr, confidence));
+        } else {
+            LoggingUtils.logDebug("No chord detected", "Confidence: " + confidence);
+        }
+
+        LoggingUtils.logOperationCompleted("Chord detection");
+        return result;
     }
 
     /**

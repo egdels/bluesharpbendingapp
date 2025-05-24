@@ -5,7 +5,8 @@ package de.schliweb.bluesharpbendingapp.utils;
  * <p>
  * This class provides methods for generating various types of audio signals
  * commonly used in testing pitch detection algorithms, such as sine waves,
- * mixed sine waves, and sine waves with noise.
+ * mixed sine waves, sine waves with noise, frequency sweeps, and signals
+ * with multiple frequency components.
  * <p>
  * These utilities help ensure consistent test signal generation across
  * different test classes, reducing code duplication and improving maintainability.
@@ -174,6 +175,120 @@ public class AudioTestUtils {
             double amplitude = (double) i / samples; // Scale amplitude from 0 to 1
             audioData[i] = amplitude * Math.sin(2 * Math.PI * frequency * i / sampleRate);
         }
+        return audioData;
+    }
+
+    /**
+     * Generates a frequency sweep (chirp) signal that transitions from a start frequency
+     * to an end frequency over the specified duration.
+     * <p>
+     * This method creates a signal whose frequency changes linearly from the start
+     * frequency to the end frequency. This is useful for testing how pitch detection
+     * algorithms track changing frequencies, especially in the high frequency range.
+     *
+     * @param startFreq  the starting frequency in Hz
+     * @param endFreq    the ending frequency in Hz
+     * @param sampleRate the sample rate in Hz
+     * @param duration   the duration in seconds
+     * @return an array of double values representing the frequency sweep
+     */
+    public static double[] generateFrequencySweep(double startFreq, double endFreq, int sampleRate, double duration) {
+        int samples = (int) (sampleRate * duration);
+        double[] audioData = new double[samples];
+
+        for (int i = 0; i < samples; i++) {
+            double t = (double) i / sampleRate;
+            // Linear frequency sweep
+            double instantFreq = startFreq + (endFreq - startFreq) * (t / duration);
+            // Phase is the integral of frequency over time
+            double phase = 2 * Math.PI * (startFreq * t + 0.5 * (endFreq - startFreq) * t * t / duration);
+            audioData[i] = Math.sin(phase);
+        }
+
+        return audioData;
+    }
+
+    /**
+     * Generates a signal with multiple frequency components and specified amplitudes.
+     * <p>
+     * This method creates a complex waveform by combining multiple sine waves with
+     * different frequencies and amplitudes. This is useful for testing how pitch detection
+     * algorithms handle signals with multiple frequency components, which is common in
+     * real-world musical sounds like harmonicas.
+     *
+     * @param frequencies an array of frequencies in Hz
+     * @param amplitudes  an array of amplitudes for each frequency
+     * @param sampleRate  the sample rate in Hz
+     * @param duration    the duration in seconds
+     * @return an array of double values representing the complex signal
+     * @throws IllegalArgumentException if frequencies and amplitudes arrays have different lengths
+     */
+    public static double[] generateMultipleFrequencySignal(double[] frequencies, double[] amplitudes, 
+                                                         int sampleRate, double duration) {
+        if (frequencies.length != amplitudes.length) {
+            throw new IllegalArgumentException("Frequencies and amplitudes arrays must have the same length");
+        }
+
+        int samples = (int) (sampleRate * duration);
+        double[] audioData = new double[samples];
+
+        for (int i = 0; i < samples; i++) {
+            double t = (double) i / sampleRate;
+            double sample = 0.0;
+
+            for (int j = 0; j < frequencies.length; j++) {
+                sample += amplitudes[j] * Math.sin(2 * Math.PI * frequencies[j] * t);
+            }
+
+            audioData[i] = sample;
+        }
+
+        return audioData;
+    }
+
+    /**
+     * Generates a signal that abruptly transitions from one frequency to another.
+     * <p>
+     * This method creates a signal that starts at one frequency and then abruptly
+     * changes to another frequency at a specified transition point. This is useful
+     * for testing how quickly pitch detection algorithms can respond to sudden
+     * frequency changes, which is important for real-time applications.
+     *
+     * @param freq1       the first frequency in Hz
+     * @param freq2       the second frequency in Hz
+     * @param sampleRate  the sample rate in Hz
+     * @param duration    the total duration in seconds
+     * @param transitionPoint the point at which to transition from freq1 to freq2, as a fraction of duration (0.0-1.0)
+     * @return an array of double values representing the signal with a frequency transition
+     */
+    public static double[] generateFrequencyTransition(double freq1, double freq2, int sampleRate, 
+                                                     double duration, double transitionPoint) {
+        int samples = (int) (sampleRate * duration);
+        int transitionSample = (int) (samples * transitionPoint);
+        double[] audioData = new double[samples];
+
+        // Phase continuity variables
+        double phase = 0.0;
+        double phaseAtTransition = 0.0;
+
+        for (int i = 0; i < samples; i++) {
+            double t = (double) i / sampleRate;
+
+            if (i < transitionSample) {
+                // First frequency
+                phase = 2 * Math.PI * freq1 * t;
+                if (i == transitionSample - 1) {
+                    phaseAtTransition = phase;
+                }
+                audioData[i] = Math.sin(phase);
+            } else {
+                // Second frequency, with phase continuity
+                double tSinceTransition = (double) (i - transitionSample) / sampleRate;
+                phase = phaseAtTransition + 2 * Math.PI * freq2 * tSinceTransition;
+                audioData[i] = Math.sin(phase);
+            }
+        }
+
         return audioData;
     }
 }

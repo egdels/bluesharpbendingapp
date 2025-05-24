@@ -87,6 +87,8 @@ This document provides a comprehensive comparison of four pitch detection algori
 
 ## Recommendations for BlueSharpBendingApp
 
+> **Note**: In the Desktop and Android versions of the BlueSharpBendingApp, the YIN, MPM, and HYBRID algorithms are available for selection in the user interface. In the web version, only YIN and MPM are available. The FFT algorithm is documented here for technical completeness and future development reference.
+
 1. **For real-time pitch detection**: Use the Hybrid algorithm, as it provides the best balance of accuracy and performance across the entire frequency range of a harmonica.
 
 2. **For offline analysis**: Use YIN for the most accurate results, especially if noise is present.

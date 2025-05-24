@@ -1,0 +1,2 @@
+* Added a hybrid algorithm for single note pitch detection, combining YIN, MPM, and FFT for improved accuracy across all frequency ranges.
+* Improved the chord detection algorithm, which remains experimental.

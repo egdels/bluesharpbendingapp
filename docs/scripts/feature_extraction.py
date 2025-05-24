@@ -20,6 +20,9 @@ import json
 from tqdm import tqdm
 import pickle
 import glob
+import sys
+import time
+import signal
 
 # Constants
 SAMPLE_RATE = 16000  # Expected sample rate of the audio files
@@ -118,6 +121,37 @@ def extract_features(audio_path, feature_type='all', include_raw=False, include_
         return None
 
 
+def save_checkpoint(output_dir, processed_files, features_list, labels_list):
+    """
+    Save a checkpoint of the current processing state.
+
+    Args:
+        output_dir: Directory to save the checkpoint
+        processed_files: Set of already processed files
+        features_list: List of extracted features
+        labels_list: List of extracted labels
+    """
+    # Save checkpoint data
+    checkpoint_file = os.path.join(output_dir, 'checkpoint.json')
+    with open(checkpoint_file, 'w') as f:
+        json.dump({
+            'processed_files': list(processed_files),
+            'timestamp': time.time()
+        }, f, indent=2)
+
+    # Save current features and labels
+    features_file = os.path.join(output_dir, 'features.pkl')
+    labels_file = os.path.join(output_dir, 'labels.pkl')
+
+    with open(features_file, 'wb') as f:
+        pickle.dump(features_list, f)
+
+    with open(labels_file, 'wb') as f:
+        pickle.dump(labels_list, f)
+
+    print(f"Checkpoint saved. {len(processed_files)} files processed so far.")
+
+
 def get_label_from_path(audio_path, label_type):
     """
     Extract label information from the audio file path.
@@ -134,6 +168,10 @@ def get_label_from_path(audio_path, label_type):
     parent_dir = os.path.basename(os.path.dirname(audio_path))
     grandparent_dir = os.path.basename(os.path.dirname(os.path.dirname(audio_path)))
 
+    # Print debug information
+    print(f"Extracting label from: {audio_path}")
+    print(f"Filename: {filename}, Parent dir: {parent_dir}, Grandparent dir: {grandparent_dir}")
+
     # Extract label based on the label type
     if label_type == 'note':
         # Assume filename format: note_C4_blow.wav or similar
@@ -143,19 +181,76 @@ def get_label_from_path(audio_path, label_type):
             for part in parts:
                 if part.endswith('.wav'):
                     part = part[:-4]  # Remove .wav extension
-                if len(part) >= 2 and part[0] in 'ABCDEFG' and part[1:].isdigit():
-                    return part  # Return note name (e.g., 'C4')
+                if len(part) >= 2 and part[0] in 'ABCDEFG' and (part[1:].isdigit() or part[1] in ['#', 'b']):
+                    return part  # Return note name (e.g., 'C4' or 'C#4')
 
-        # If note information not found in filename, return unknown
+        # If note information not found in filename, try to extract from directory structure
+        if 'single_notes' in audio_path:
+            # Try to extract note from filename more aggressively
+            for part in filename.split('_'):
+                if part.endswith('.wav'):
+                    part = part[:-4]  # Remove .wav extension
+                # Look for any part that starts with a note name
+                for note in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+                    if part.startswith(note):
+                        return part  # Return the part as the note name
+
+        # If still not found, return unknown
+        print(f"Warning: Could not extract note from {audio_path}")
         return 'unknown'
 
     elif label_type == 'chord':
-        # Assume filename format: chord_Cmaj_1.wav or chord_C4-E4-G4_1.wav or similar
-        parts = filename.split('_')
-        if len(parts) >= 2 and parts[0] == 'chord':
-            return parts[1]  # Return chord name (e.g., 'Cmaj' or 'C4-E4-G4')
+        # Handle various chord filename formats:
+        # 1. chord_C4-E4-G4.wav (basic format)
+        # 2. chord_C4-E4-G4_1.wav (with index)
+        # 3. chord_C4-E4-G4_1_0_noise0.05.wav (with additional parameters)
+        # 4. chord_C4-E4-G4_1_pitch-1.wav (with negative parameters)
 
-        # If chord information not found, return unknown
+        # Extract the chord part from the filename
+        if filename.startswith('chord_'):
+            # Remove 'chord_' prefix
+            remaining = filename[6:]
+
+            # If there's a hyphen, it's likely a chord with individual notes
+            if '-' in remaining:
+                # Extract the chord notes part (everything before the first underscore or .wav)
+                if '_' in remaining:
+                    chord_part = remaining.split('_')[0]
+                else:
+                    chord_part = remaining.split('.')[0]
+
+                print(f"Extracted chord: {chord_part}")
+                return chord_part
+
+            # For traditional chord names without hyphens
+            if '_' in remaining:
+                chord_part = remaining.split('_')[0]
+            else:
+                chord_part = remaining.split('.')[0]
+
+            print(f"Extracted chord: {chord_part}")
+            return chord_part
+
+        # If the filename doesn't start with 'chord_', try to find a chord pattern
+        # Look for patterns like 'B4-D5-F#5' in the filename
+        parts = filename.replace('.wav', '').split('_')
+        for part in parts:
+            if '-' in part and any(note in part for note in ['A', 'B', 'C', 'D', 'E', 'F', 'G']):
+                print(f"Extracted chord: {part}")
+                return part
+
+        # If still not found, check if the file is in a 'chords' directory
+        if 'chords' in audio_path:
+            # Try one more approach - look for any part with a note pattern
+            for part in parts:
+                for note in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+                    if part.startswith(note) and (len(part) > 1 and (part[1].isdigit() or part[1] in ['#', 'b'])):
+                        # This might be a single note in a chord
+                        print(f"Extracted single note from chord: {part}")
+                        return part
+
+        # If still not found, return unknown
+        print(f"Warning: Could not extract chord from {audio_path}")
         return 'unknown'
 
     elif label_type == 'key_tuning':
@@ -163,17 +258,29 @@ def get_label_from_path(audio_path, label_type):
         if grandparent_dir.startswith('key_'):
             key = grandparent_dir[4:]  # Remove 'key_' prefix
             return {'key': key}
+        elif parent_dir.startswith('key_'):
+            key = parent_dir[4:]  # Remove 'key_' prefix
+            return {'key': key}
 
-        # If key information not found, return unknown
+        # If key information not found, try to extract from filename
+        for part in filename.split('_'):
+            if part.startswith('key_'):
+                key = part[4:]  # Remove 'key_' prefix
+                return {'key': key}
+
+        # If still not found, return unknown
+        print(f"Warning: Could not extract key from {audio_path}")
         return {'key': 'unknown'}
 
     # Default case
+    print(f"Warning: Unknown label type {label_type} for {audio_path}")
     return 'unknown'
 
 
 def process_directory(input_dir, output_dir, feature_type, include_raw, include_delta, label_type):
     """
     Process all audio files in the input directory and its subdirectories.
+    Includes checkpointing to allow resuming from interruptions.
 
     Args:
         input_dir: Directory containing processed audio files
@@ -195,21 +302,58 @@ def process_directory(input_dir, output_dir, feature_type, include_raw, include_
 
     print(f"Found {len(audio_files)} audio files to process.")
 
-    # Process each file
+    # Check for checkpoint file
+    checkpoint_file = os.path.join(output_dir, 'checkpoint.json')
+    processed_files = set()
     features_list = []
     labels_list = []
 
-    for audio_path in tqdm(audio_files, desc="Extracting features"):
-        # Extract features
-        features = extract_features(audio_path, feature_type, include_raw, include_delta)
+    if os.path.exists(checkpoint_file):
+        try:
+            with open(checkpoint_file, 'r') as f:
+                checkpoint_data = json.load(f)
+                processed_files = set(checkpoint_data.get('processed_files', []))
+                # Load existing features and labels if available
+                if os.path.exists(os.path.join(output_dir, 'features.pkl')) and os.path.exists(os.path.join(output_dir, 'labels.pkl')):
+                    with open(os.path.join(output_dir, 'features.pkl'), 'rb') as f_feat:
+                        features_list = pickle.load(f_feat)
+                    with open(os.path.join(output_dir, 'labels.pkl'), 'rb') as f_lab:
+                        labels_list = pickle.load(f_lab)
+                    print(f"Loaded {len(features_list)} features from checkpoint.")
+            print(f"Resuming from checkpoint. {len(processed_files)} files already processed.")
+        except Exception as e:
+            print(f"Error loading checkpoint: {e}. Starting from scratch.")
+            processed_files = set()
 
-        if features is not None:
-            # Extract label
-            label = get_label_from_path(audio_path, label_type)
+    # Filter out already processed files
+    files_to_process = [f for f in audio_files if f not in processed_files]
+    print(f"Processing {len(files_to_process)} new files.")
 
-            # Add to lists
-            features_list.append(features)
-            labels_list.append(label)
+    # Process each file
+    try:
+        for audio_path in tqdm(files_to_process, desc="Extracting features"):
+            # Extract features
+            features = extract_features(audio_path, feature_type, include_raw, include_delta)
+
+            if features is not None:
+                # Extract label
+                label = get_label_from_path(audio_path, label_type)
+
+                # Add to lists
+                features_list.append(features)
+                labels_list.append(label)
+
+                # Update processed files
+                processed_files.add(audio_path)
+
+                # Save checkpoint periodically (every 10 files)
+                if len(processed_files) % 10 == 0:
+                    save_checkpoint(output_dir, processed_files, features_list, labels_list)
+    except KeyboardInterrupt:
+        print("\nProcess interrupted by user. Saving checkpoint...")
+        save_checkpoint(output_dir, processed_files, features_list, labels_list)
+        print("Checkpoint saved. You can resume processing later.")
+        sys.exit(1)
 
     print(f"Extracted features from {len(features_list)} files.")
 
@@ -282,8 +426,17 @@ def process_dataset(input_dir, output_dir, feature_type, include_raw, include_de
         process_directory(input_dir, output_dir, feature_type, include_raw, include_delta, label_type)
 
 
+def signal_handler(sig, frame):
+    """Handle SIGINT (Ctrl+C) signals."""
+    print("\nProcess interrupted by user. Exiting gracefully...")
+    sys.exit(0)
+
+
 def main():
     """Main function."""
+    # Register signal handler for SIGINT (Ctrl+C)
+    signal.signal(signal.SIGINT, signal_handler)
+
     args = parse_arguments()
 
     # Check if input directory exists
@@ -291,17 +444,22 @@ def main():
         print(f"Error: Input directory {args.input_dir} does not exist.")
         return
 
-    # Process the dataset
-    process_dataset(
-        args.input_dir,
-        args.output_dir,
-        args.feature_type,
-        args.include_raw,
-        args.include_delta,
-        args.label_type
-    )
+    try:
+        # Process the dataset
+        process_dataset(
+            args.input_dir,
+            args.output_dir,
+            args.feature_type,
+            args.include_raw,
+            args.include_delta,
+            args.label_type
+        )
 
-    print("Feature extraction completed successfully!")
+        print("Feature extraction completed successfully!")
+    except KeyboardInterrupt:
+        # This is a fallback in case the signal handler doesn't catch the interrupt
+        print("\nProcess interrupted by user. Exiting gracefully...")
+        sys.exit(0)
 
 
 if __name__ == "__main__":

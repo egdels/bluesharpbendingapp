@@ -25,149 +25,255 @@ package de.schliweb.bluesharpbendingapp.utils;
 
 
 /**
- * HybridPitchDetector is a pitch detection class that dynamically selects the most
- * suitable pitch detection algorithm based on the input signal's estimated frequency
- * and desired frequency ranges. It combines the strengths of different algorithms
- * including YIN, Multiple Pitch Measurement (MPM), and Fast Fourier Transform (FFT)
- * to improve detection accuracy and performance across various frequency domains.
- * <p>
- * The class divides the frequency spectrum into three ranges:
- * - Low frequencies (below 300 Hz): Uses the YIN algorithm, known for its accuracy at low frequencies.
- * - Medium frequencies (300 Hz to 1000 Hz): Uses the MPM algorithm, optimized for medium-range accuracy.
- * - High frequencies (above 1000 Hz): Uses the FFT algorithm for efficiency and accuracy.
- * <p>
- * The detection process involves initial noise screening, rough frequency estimation with FFT,
- * and dynamic delegation to the appropriate algorithm based on the estimated pitch and its
- * confidence level.
+ * The HybridPitchDetector class provides a robust, hybrid approach for pitch detection by
+ * combining multiple algorithms and techniques to achieve high accuracy across a wide
+ * frequency range. It incorporates noise detection, energy analysis, and pitch estimation
+ * tailored to different frequency bands.
+ *
+ * This class leverages the YIN, MPM, and Fourier Transform algorithms to effectively handle
+ * pitch detection for low, mid, and high-frequency ranges, respectively. By analyzing the
+ * energy distribution and characteristics of the input audio signal, it dynamically applies
+ * the most appropriate algorithm for pitch detection.
+ *
+ * This detector is designed for applications in music analysis, speech processing, and other
+ * domains requiring precise pitch estimation.
  */
 public class HybridPitchDetector extends PitchDetector {
 
     /**
-     * Defines the threshold value in Hz used to distinguish low frequencies from medium frequencies
-     * within the pitch detection algorithm. Frequencies below this value are categorized as low.
-     * <p>
-     * This threshold is utilized by the HybridPitchDetector to determine which pitch detection
-     * algorithm to apply based on the characteristics of the input audio signal. The value is
-     * statically set and commonly used across all instances of pitch detection.
+     * A threshold value for the energy level of low-frequency components in an audio signal.
+     * This constant is used to differentiate between significant and insignificant energy
+     * in low-frequency ranges during pitch detection and audio processing. Its value is
+     * set to 750 by default, which can be adjusted programmatically if needed.
+     *
+     * The threshold plays a critical role in determining the presence of low-frequency
+     * energy in a signal and helps optimize the pitch detection algorithm used within
+     * the HybridPitchDetector class.
      */
-    private static final double LOW_FREQUENCY_THRESHOLD = 300.0; // Threshold between low and medium frequencies
-    /**
-     * Defines the threshold frequency in Hz above which audio frequencies are classified as high-frequency.
-     * This value is used by the pitch detection algorithms in the HybridPitchDetector class to dynamically
-     * select the appropriate algorithm for high-frequency audio signal processing.
-     * <p>
-     * High-frequency signals are typically processed using different algorithms compared to low or medium
-     * frequency signals, ensuring optimized performance and accuracy.
-     */
-    private static final double HIGH_FREQUENCY_THRESHOLD = 1000.0; // Threshold between medium and high frequencies
+    private static double THRESHOLD_LOW_FREQUENCY_ENERGY = 750;
 
     /**
-     * An instance of the YINPitchDetector class used for pitch detection.
-     * <p>
-     * This object utilizes the YIN algorithm to perform high-accuracy pitch detection
-     * by analyzing audio signals. The YIN algorithm is particularly effective for determining
-     * the fundamental frequency of an input signal and is characterized by its use of
-     * the cumulative mean normalized difference function (CMNDF), thresholding, and lag estimation.
-     * <p>
-     * The yinDetector variable operates as the YIN-based pitch detection mechanism in the system,
-     * playing a crucial role in detecting pitch within the specified frequency ranges or contexts.
+     * A constant defining the lower bound of the frequency range for pitch detection in Hz.
+     * This value represents the minimum frequency that the pitch detection algorithms consider
+     * during the processing of an audio signal. It helps in filtering out frequencies below this
+     * threshold to optimize detection accuracy and performance.
+     */
+    private static int FREQUENCY_RANGE_LOW = 275;
+
+
+    /**
+     * Represents the upper limit of the frequency range threshold, expressed in Hertz (Hz),
+     * for the hybrid pitch detection algorithm.
+     *
+     * This constant is used by the HybridPitchDetector class to restrict pitch detection
+     * to frequencies less than or equal to this value. Adjusting this value can impact the
+     * algorithm's sensitivity to higher frequency ranges.
+     *
+     * Default value is set to 900 Hz.
+     */
+    private static int FREQUENCY_RANGE_HIGH = 900;
+
+    /**
+     * Sets the frequency range threshold for high frequencies.
+     * This method is primarily used for testing and optimization purposes.
+     *
+     * @param frequency the new frequency range threshold value in Hz
+     */
+    public static void setFrequencyRangeHigh(int frequency) {
+        FREQUENCY_RANGE_HIGH = frequency;
+    }
+
+    /**
+     * Gets the current frequency range threshold for high frequencies.
+     *
+     * @return the current frequency range threshold value in Hz
+     */
+    public static int getFrequencyRangeHigh() {
+        return FREQUENCY_RANGE_HIGH;
+    }
+
+    /**
+     * Represents the threshold value for high-frequency energy in the pitch detection process.
+     * This constant is used to analyze and differentiate between low-energy and high-energy
+     * signals in high-frequency ranges during the pitch detection computations.
+     *
+     * Value is set in Hertz (Hz).
+     * Default value: 400 Hz.
+     *
+     * Primarily used in hybrid pitch detection algorithms to optimize performance and accuracy
+     * by applying varied detection techniques based on the signal's energy and frequency characteristics.
+     */
+    private static double THRESHOLD_HIGH_FREQUENCY_ENERGY = 400;
+
+    /**
+     * Sets the threshold for high frequency energy.
+     * This method is primarily used for testing and optimization purposes.
+     *
+     * @param threshold the new threshold value
+     */
+    public static void setThresholdHighFrequencyEnergy(double threshold) {
+        THRESHOLD_HIGH_FREQUENCY_ENERGY = threshold;
+    }
+
+    /**
+     * Gets the current threshold for high frequency energy.
+     *
+     * @return the current threshold value
+     */
+    public static double getThresholdHighFrequencyEnergy() {
+        return THRESHOLD_HIGH_FREQUENCY_ENERGY;
+    }
+
+    /**
+     * Sets the frequency range threshold for low frequencies.
+     * This method is primarily used for testing and optimization purposes.
+     *
+     * @param frequency the new frequency range threshold value in Hz
+     */
+    public static void setFrequencyRangeLow(int frequency) {
+        FREQUENCY_RANGE_LOW = frequency;
+    }
+
+    /**
+     * Gets the current frequency range threshold for low frequencies.
+     *
+     * @return the current frequency range threshold value in Hz
+     */
+    public static int getFrequencyRangeLow() {
+        return FREQUENCY_RANGE_LOW;
+    }
+
+
+    /**
+     * Sets the threshold for low frequency energy.
+     * This method is primarily used for testing and optimization purposes.
+     *
+     * @param threshold the new threshold value
+     */
+    public static void setThresholdLowFrequencyEnergy(double threshold) {
+        THRESHOLD_LOW_FREQUENCY_ENERGY = threshold;
+    }
+
+    /**
+     * Gets the current threshold for low frequency energy.
+     *
+     * @return the current threshold value
+     */
+    public static double getThresholdLowFrequencyEnergy() {
+        return THRESHOLD_LOW_FREQUENCY_ENERGY;
+    }
+
+    /**
+     * An instance of the YIN pitch detection algorithm.
+     * The YIN algorithm is used to estimate the pitch of an audio signal
+     * based on the autocorrelation method, making it particularly suitable
+     * for monophonic signals and low-frequency detection.
+     *
+     * This variable is part of a hybrid pitch detection system and is
+     * utilized in conjunction with other pitch detection algorithms to
+     * enhance performance and accuracy under varying signal conditions.
+     *
+     * The detection process leverages energy thresholds and frequency ranges
+     * to decide whether to use the YIN algorithm or other detection methods,
+     * such as MPM or FFT-based techniques.
      */
     private final YINPitchDetector yinDetector = new YINPitchDetector();
     /**
-     * A final instance of the `MPMPitchDetector` class, which is responsible for pitch detection
-     * using the McLeod Pitch Method (MPM). This detector analyzes audio signals to determine
-     * the fundamental frequency (pitch) and its confidence level.
-     * <p>
-     * The `mpmDetector` is part of the `HybridPitchDetector` system, which dynamically selects
-     * and executes different pitch detection algorithms based on frequency thresholds and confidence
-     * values. The `MPMPitchDetector` implementation is specifically utilized for scenarios where
-     * the McLeod Pitch Method is deemed appropriate.
+     * Represents an instance of the MPM (McLeod Pitch Method) pitch detection algorithm,
+     * used for detecting the fundamental frequency of audio signals.
+     * This variable is initialized as a final field and is utilized within the
+     * HybridPitchDetector class to enable hybrid pitch detection by combining
+     * multiple pitch detection techniques.
      */
     private final MPMPitchDetector mpmDetector = new MPMPitchDetector();
+
     /**
-     * An instance of FFTDetector used for pitch detection using the Fast Fourier Transform algorithm.
-     * It is one of the pitch detection methods utilized by the HybridPitchDetector.
+     * An instance of the FFTDetector class used for pitch detection through frequency domain analysis.
+     * The detector applies the Fast Fourier Transform (FFT) algorithm to analyze the spectral components
+     * of audio data, aiding in detecting the presence and characteristics of specific frequency components.
+     *
+     * This field is a key component of the hybrid pitch detection system, complementing other detection
+     * algorithms to provide accurate and reliable pitch detection across various audio signals.
      */
     private final FFTDetector fftDetector = new FFTDetector();
 
     /**
-     * Detects the pitch of an audio signal using a hybrid approach that selects the most appropriate
-     * pitch detection algorithm based on the characteristics of the input audio data and the estimated frequency range.
-     * <p>
-     * Depending on the signal characteristics, this method utilizes:
-     * - YIN for low frequencies (below 300 Hz) for improved accuracy in that range.
-     * - MPM for frequencies between 300 Hz and 1000 Hz for better handling of intermediate ranges.
-     * - FFT for high frequencies (above 1000 Hz) or for performance efficiency in certain cases.
-     * If no pitch is detected using one algorithm, it will fallback to other algorithms based on the context.
+     * Detects the pitch of a given audio signal using a hybrid approach that combines
+     * multiple pitch detection algorithms (e.g., YIN, FFT, MPM). The detection process
+     * includes noise diagnosis, energy analysis for low and high frequencies, and
+     * fallback mechanisms to improve accuracy across a wide range of input signals.
      *
-     * @param audioData  Array of double values representing the audio samples to be analyzed.
-     * @param sampleRate The sample rate of the audio data in Hz, which provides the temporal resolution of the signal.
-     * @return A {@code PitchDetectionResult} containing the detected pitch frequency in Hz and a confidence score,
-     * or a pitch value of {@code NO_DETECTED_PITCH} with 0.0 confidence if no pitch could be reliably detected.
+     * @param audioData an array of doubles representing the audio signal data in the time domain
+     * @param sampleRate the sample rate of the audio data in Hz
+     * @return a PitchDetectionResult object containing the detected pitch in Hz and the confidence score
      */
     @Override
     public PitchDetectionResult detectPitch(double[] audioData, int sampleRate) {
-        // Step 1: Early noise detection
+        // Step 1: Noise-Diagnose – falls Signal nur Rauschen enthält
         if (isLikelyNoise(audioData)) {
             return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
         }
 
-        // Step 2: First use FFT to roughly determine the frequency
-        PitchDetectionResult fftResult = fftDetector.detectPitch(audioData, sampleRate);
-
-        // If FFT found a pitch, use it to decide which algorithm to use next
-        if (fftResult.pitch() != NO_DETECTED_PITCH) {
-            double estimatedFrequency = fftResult.pitch();
-
-            // If frequency is below 300 Hz, use YIN for better accuracy with low frequencies
-            if (estimatedFrequency < LOW_FREQUENCY_THRESHOLD) {
-                PitchDetectionResult yinResult = yinDetector.detectPitch(audioData, sampleRate);
-                if (yinResult.pitch() != NO_DETECTED_PITCH) {
-                    return yinResult;
-                }
-            }
-            // For frequencies between 300 Hz and 1000 Hz, use MPM for better accuracy with medium frequencies
-            else if (estimatedFrequency < HIGH_FREQUENCY_THRESHOLD) {
-                PitchDetectionResult mpmResult = mpmDetector.detectPitch(audioData, sampleRate);
-                if (mpmResult.pitch() != NO_DETECTED_PITCH) {
-                    return mpmResult;
-                }
-            }
-            // For frequencies above 1000 Hz, use FFT which is more performant for high frequencies
-            else {
-                // We already have the FFT result from the initial estimation
-                return fftResult;
-            }
-        }
-
-        // If FFT didn't find a pitch, we need to try other methods based on expected frequency range
-
-        // For expected low frequencies (below 300 Hz), try YIN
-        if (getMinFrequency() < LOW_FREQUENCY_THRESHOLD) {
+        // Step 2: Energieanalyse für Frequenzen unter 300 Hz
+        double lowFrequencyEnergy = calculateEnergyUsingGoertzel(audioData, sampleRate, FREQUENCY_RANGE_LOW);
+        // Step 3: Entscheidung basierend auf Energie-Analyse
+        if (lowFrequencyEnergy > THRESHOLD_LOW_FREQUENCY_ENERGY) {
+            // Verwende YIN für Frequenzen unter 300 Hz
             PitchDetectionResult yinResult = yinDetector.detectPitch(audioData, sampleRate);
             if (yinResult.pitch() != NO_DETECTED_PITCH) {
                 return yinResult;
             }
-        }
+        } else {
+            // Step 4: Energieanalyse für hohe Frequenzen (z. B. 1000 Hz)
+            double highFrequencyEnergy = calculateEnergyUsingGoertzel(audioData, sampleRate, FREQUENCY_RANGE_HIGH);
 
-        // For expected medium frequencies (between 300 Hz and 1000 Hz), try MPM
-        if (getMinFrequency() >= LOW_FREQUENCY_THRESHOLD && getMinFrequency() < HIGH_FREQUENCY_THRESHOLD) {
+            // Wenn Energie im Bereich hoher Frequenzen hoch ist, nutze FFT
+            if (highFrequencyEnergy > THRESHOLD_HIGH_FREQUENCY_ENERGY) {
+                PitchDetectionResult fftResult = fftDetector.detectPitch(audioData, sampleRate);
+                if (fftResult.pitch() != NO_DETECTED_PITCH) {
+                    return fftResult;
+                }
+            }
+
+            // Wenn Hochfrequenzenergie NICHT hoch genug ist, nutze MPM
             PitchDetectionResult mpmResult = mpmDetector.detectPitch(audioData, sampleRate);
             if (mpmResult.pitch() != NO_DETECTED_PITCH) {
                 return mpmResult;
             }
         }
 
-        // For expected high frequencies (above 1000 Hz), try FFT
-        if (getMinFrequency() >= HIGH_FREQUENCY_THRESHOLD) {
-            PitchDetectionResult fallbackFftResult = fftDetector.detectPitch(audioData, sampleRate);
-            if (fallbackFftResult.pitch() != NO_DETECTED_PITCH) {
-                return fallbackFftResult;
-            }
+
+        // Fallback: Versuche erneut mit YIN
+        return yinDetector.detectPitch(audioData, sampleRate);
+    }
+
+
+    /**
+     * Calculates the energy of a specific frequency component in the given audio data
+     * using the Goertzel algorithm. This method is designed for efficient frequency
+     * analysis, particularly when evaluating a single frequency component.
+     *
+     * @param audioData an array of doubles representing the audio signal data in the time domain
+     * @param sampleRate the sample rate of the audio data in Hz
+     * @param frequency the target frequency in Hz to calculate the energy for
+     * @return the calculated energy of the specified frequency in the audio data
+     */
+    private double calculateEnergyUsingGoertzel(double[] audioData, int sampleRate, int frequency) {
+        int samples = audioData.length;
+        double omega = 2.0 * Math.PI * frequency / sampleRate; // Ziel-Frequenz berechnen
+        double cosine = Math.cos(omega);
+        double coeff = 2.0 * cosine;
+        double q0 = 0, q1 = 0, q2 = 0;
+
+        for (int i = 0; i < samples; i++) {
+            q0 = coeff * q1 - q2 + audioData[i];
+            q2 = q1;
+            q1 = q0;
         }
 
-        // Fallback if no clear result
-        return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
+        // Goertzel-Energiemessung:
+        return q1 * q1 + q2 * q2 - coeff * q1 * q2;
     }
+
 
 }

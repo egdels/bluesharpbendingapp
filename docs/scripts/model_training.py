@@ -28,6 +28,7 @@ INPUT_NODE = "input_audio"
 OUTPUT_NODE = "chord_predictions"
 NUM_CLASSES = 96  # 12 semitones in an octave * 8 octaves (0-7)
 OCTAVE_RANGE = 8  # Support octaves 0-7
+NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 
 def parse_arguments():
@@ -38,26 +39,29 @@ def parse_arguments():
     parser.add_argument('--model_type', type=str, default='advanced', 
                         choices=['simple', 'cnn', 'rnn', 'advanced', 'multi_key'],
                         help='Type of model architecture to use (default: advanced)')
-    parser.add_argument('--epochs', type=int, default=50, help='Number of training epochs (default: 50)')
+    parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs (default: 100)')
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size for training (default: 32)')
-    parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate (default: 0.001)')
+    parser.add_argument('--learning_rate', type=float, default=0.0005, help='Learning rate (default: 0.0005)')
     parser.add_argument('--early_stopping', action='store_true', help='Use early stopping')
-    parser.add_argument('--patience', type=int, default=5, help='Patience for early stopping (default: 5)')
+    parser.add_argument('--patience', type=int, default=10, help='Patience for early stopping (default: 10)')
     parser.add_argument('--feature_type', type=str, default='all', 
                         choices=['mfcc', 'chroma', 'contrast', 'mel', 'raw', 'all'],
                         help='Type of features to use for training (default: all)')
     parser.add_argument('--augment', action='store_true', help='Use data augmentation during training')
     parser.add_argument('--tensorboard', action='store_true', help='Enable TensorBoard logging')
+    parser.add_argument('--class_weight', action='store_true', help='Use class weighting to emphasize certain chords')
+    parser.add_argument('--target_file', type=str, default=None, help='Specific audio file to ensure is in training set')
     return parser.parse_args()
 
 
-def load_data(features_dir, feature_type='all'):
+def load_data(features_dir, feature_type='all', target_file=None):
     """
     Load features and labels from the specified directory.
 
     Args:
         features_dir: Directory containing the features and labels
         feature_type: Type of features to use for training
+        target_file: Specific audio file to ensure is in training set
 
     Returns:
         X_train, y_train, X_val, y_val: Training and validation data and labels
@@ -94,13 +98,101 @@ def load_data(features_dir, feature_type='all'):
 
     print(f"Loaded {len(train_features)} training samples and {len(val_features)} validation samples.")
 
+    # If a target file is specified, ensure it's in the training set
+    if target_file:
+        target_file_basename = os.path.basename(target_file)
+        print(f"Ensuring target file '{target_file_basename}' is in the training set...")
+
+        # Check if the target file is in the validation set
+        target_in_val = False
+        target_val_idx = None
+
+        for i, feature in enumerate(val_features):
+            if 'file_path' in feature and target_file_basename in feature['file_path']:
+                target_in_val = True
+                target_val_idx = i
+                break
+
+        # If the target file is in the validation set, move it to the training set
+        if target_in_val and target_val_idx is not None:
+            print(f"Moving target file from validation set to training set...")
+            target_feature = val_features.pop(target_val_idx)
+            target_label = val_labels.pop(target_val_idx)
+            train_features.append(target_feature)
+            train_labels.append(target_label)
+        else:
+            # Check if the target file is already in the training set
+            target_in_train = False
+            for feature in train_features:
+                if 'file_path' in feature and target_file_basename in feature['file_path']:
+                    target_in_train = True
+                    break
+
+            if target_in_train:
+                print(f"Target file is already in the training set.")
+            else:
+                print(f"Warning: Target file not found in either training or validation set.")
+
+                # Try to extract features from the target file and add to training set
+                try:
+                    import librosa
+                    from model_evaluation import extract_features_from_audio
+
+                    print(f"Extracting features from target file and adding to training set...")
+                    features = extract_features_from_audio(target_file, feature_type)
+
+                    # Create a feature dictionary
+                    feature_dict = {
+                        'file_path': target_file,
+                        'mfcc': features[0] if feature_type in ['mfcc', 'all'] else None,
+                        'chroma': features[1] if feature_type in ['chroma', 'all'] else None,
+                        'contrast': features[2] if feature_type in ['contrast', 'all'] else None
+                    }
+
+                    # Extract chord name from the target file name
+                    file_name = os.path.basename(target_file)
+                    if "chord_" in file_name and "_" in file_name[6:]:
+                        # Extract chord part from filename (e.g., "chord_C4-E4-G4_1.wav" -> "C4-E4-G4")
+                        chord_part = file_name[6:].split('_')[0]
+                        label = chord_part
+                    else:
+                        # Default label if chord name can't be extracted
+                        label = "unknown"
+
+                    # Add to training set
+                    train_features.append(feature_dict)
+                    train_labels.append(label)
+
+                    print(f"Successfully added target file to training set.")
+                except Exception as e:
+                    print(f"Error adding target file to training set: {e}")
+
     # Process features based on feature_type
     X_train = process_features(train_features, feature_type)
     X_val = process_features(val_features, feature_type)
 
+    # Print a sample of the labels for debugging
+    print(f"\nSample of training labels (first 10):")
+    for i, label in enumerate(train_labels[:10]):
+        print(f"  Label {i}: {label}")
+
+    # Count unique labels
+    label_counts = {}
+    for label in train_labels:
+        if label in label_counts:
+            label_counts[label] += 1
+        else:
+            label_counts[label] = 1
+
+    print(f"\nUnique labels in training data ({len(label_counts)}):")
+    for label, count in sorted(label_counts.items(), key=lambda x: x[1], reverse=True)[:10]:
+        print(f"  {label}: {count} occurrences")
+
     # Process labels
     y_train = process_labels(train_labels)
     y_val = process_labels(val_labels)
+
+    print(f"Final dataset: {len(X_train)} training samples and {len(X_val)} validation samples.")
 
     return X_train, y_train, X_val, y_val
 
@@ -168,17 +260,29 @@ def process_features(features_list, feature_type):
 def process_labels(labels_list):
     """
     Process labels into a format suitable for training.
+    For multi-label classification, we use multi-hot encoding where each note in a chord is represented.
 
     Args:
         labels_list: List of labels
 
     Returns:
-        Processed labels as a numpy array
+        Processed labels as a numpy array with multi-hot encoding
     """
-    # Convert labels to one-hot encoding
-    processed_labels = []
+    # Initialize multi-hot encoded labels (one row per sample, one column per note class)
+    multi_hot_labels = np.zeros((len(labels_list), NUM_CLASSES), dtype=np.float32)
 
-    for label in labels_list:
+    # Define note mapping for all notes including sharps and flats
+    note_map = {
+        'C': 0, 'C#': 1, 'Db': 1, 
+        'D': 2, 'D#': 3, 'Eb': 3, 
+        'E': 4, 
+        'F': 5, 'F#': 6, 'Gb': 6, 
+        'G': 7, 'G#': 8, 'Ab': 8, 
+        'A': 9, 'A#': 10, 'Bb': 10, 
+        'B': 11
+    }
+
+    for i, label in enumerate(labels_list):
         if isinstance(label, dict):
             # Handle key_tuning labels
             # For now, we'll just use the key as the label
@@ -189,132 +293,116 @@ def process_labels(labels_list):
                           'Ab': 8, 'A': 9, 'A#': 10, 'Bb': 10, 'B': 11}
 
                 if label['key'] in key_map:
-                    # For key_tuning labels, we still use the original 12-class system
-                    # as octave information is not relevant for keys
-                    processed_labels.append(key_map[label['key']])
+                    # For key_tuning labels, we'll set all octaves of the key
+                    key_semitone = key_map[label['key']]
+                    for octave in range(OCTAVE_RANGE):
+                        class_index = key_semitone + (octave * 12)
+                        multi_hot_labels[i, class_index] = 1.0
                 else:
-                    # Default to C (0) if key is not recognized
-                    processed_labels.append(0)
+                    # Default to C if key is not recognized
+                    for octave in range(OCTAVE_RANGE):
+                        multi_hot_labels[i, octave * 12] = 1.0
             else:
-                # Default to C (0) if key is unknown
-                processed_labels.append(0)
+                # Default to C if key is unknown
+                for octave in range(OCTAVE_RANGE):
+                    multi_hot_labels[i, octave * 12] = 1.0
 
         elif isinstance(label, str):
             # Check if the label is in the format "C4-E4-G4" (notes separated by hyphens)
             if '-' in label and all(part[0] in 'ABCDEFG' for part in label.split('-')):
                 # Handle chord labels in the format "C4-E4-G4"
-                # Extract the root note and octave (first note in the list)
-                first_note = label.split('-')[0]
-                root_note = first_note[0]
-
-                # Extract octave number
-                octave = 4  # Default to octave 4 if not specified
-                for i in range(1, len(first_note)):
-                    if first_note[i].isdigit():
-                        octave = int(first_note[i])
-                        break
-
-                # Ensure octave is within range
-                octave = max(0, min(octave, OCTAVE_RANGE - 1))
-
-                # Map root note to semitone index
-                note_map = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
-
-                if root_note in note_map:
-                    # Check for sharp or flat in the root note
-                    has_sharp_or_flat = False
-                    for i in range(1, len(first_note)):
-                        if first_note[i] in ['#', 'b']:
-                            has_sharp_or_flat = True
-                            if first_note[i] == '#':
-                                semitone = (note_map[root_note] + 1) % 12
-                            else:  # flat
-                                semitone = (note_map[root_note] - 1) % 12
+                # Process each note in the chord
+                for note_str in label.split('-'):
+                    # Extract the complete note name (including sharp/flat)
+                    note_name = ''
+                    for j in range(len(note_str)):
+                        if note_str[j].isalpha() or note_str[j] in ['#', 'b']:
+                            note_name += note_str[j]
+                        else:
                             break
 
-                    if not has_sharp_or_flat:
-                        semitone = note_map[root_note]
+                    # Extract octave number
+                    octave = 4  # Default to octave 4 if not specified
+                    for j in range(len(note_name), len(note_str)):
+                        if note_str[j].isdigit():
+                            octave = int(note_str[j])
+                            break
 
-                    # Calculate class index based on semitone and octave
-                    class_index = semitone + (octave * 12)
-                    processed_labels.append(class_index)
-                else:
-                    # Default to C4 (48) if root note is not recognized
-                    processed_labels.append(48)
+                    # Ensure octave is within range
+                    octave = max(0, min(octave, OCTAVE_RANGE - 1))
+
+                    # Map note name to semitone index
+                    if note_name in note_map:
+                        semitone = note_map[note_name]
+
+                        # Calculate class index based on semitone and octave
+                        class_index = semitone + (octave * 12)
+                        multi_hot_labels[i, class_index] = 1.0
+                    else:
+                        # Default to C4 (48) if note is not recognized
+                        print(f"Warning: Note '{note_name}' not recognized in chord '{label}', defaulting to C4")
+                        multi_hot_labels[i, 48] = 1.0
             elif label.startswith(('C', 'D', 'E', 'F', 'G', 'A', 'B')):
                 # Handle note labels (e.g., 'C4', 'A3', etc.) or traditional chord labels (e.g., 'Cmaj')
-                # Extract the note name (first character)
-                note_name = label[0]
+                # Extract the complete note name (including sharp/flat)
+                note_name = ''
+                for j in range(len(label)):
+                    if label[j].isalpha() or label[j] in ['#', 'b']:
+                        note_name += label[j]
+                    else:
+                        break
 
                 # Extract octave number if present
                 octave = 4  # Default to octave 4 if not specified
-                for i in range(1, len(label)):
-                    if label[i].isdigit():
-                        octave = int(label[i])
+                for j in range(len(note_name), len(label)):
+                    if label[j].isdigit():
+                        octave = int(label[j])
                         break
 
                 # Ensure octave is within range
                 octave = max(0, min(octave, OCTAVE_RANGE - 1))
 
                 # Map note name to semitone index
-                note_map = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
-
                 if note_name in note_map:
-                    # Check for sharp or flat
-                    has_sharp_or_flat = False
-                    for i in range(1, len(label)):
-                        if label[i] in ['#', 'b']:
-                            has_sharp_or_flat = True
-                            if label[i] == '#':
-                                semitone = (note_map[note_name] + 1) % 12
-                            else:  # flat
-                                semitone = (note_map[note_name] - 1) % 12
-                            break
-
-                    if not has_sharp_or_flat:
-                        semitone = note_map[note_name]
+                    semitone = note_map[note_name]
 
                     # Calculate class index based on semitone and octave
                     class_index = semitone + (octave * 12)
-                    processed_labels.append(class_index)
+                    multi_hot_labels[i, class_index] = 1.0
                 else:
                     # Default to C4 (48) if note is not recognized
-                    processed_labels.append(48)
+                    print(f"Warning: Note '{note_name}' not recognized in label '{label}', defaulting to C4")
+                    multi_hot_labels[i, 48] = 1.0
             else:
                 # Default to C4 (48) if label is not a note or chord
-                processed_labels.append(48)
-
+                multi_hot_labels[i, 48] = 1.0
         else:
             # Default to C4 (48) for any other label type
-            processed_labels.append(48)
+            multi_hot_labels[i, 48] = 1.0
 
-    # Convert to numpy array
-    processed_labels = np.array(processed_labels)
-
-    # Convert to one-hot encoding
-    one_hot_labels = tf.keras.utils.to_categorical(processed_labels, num_classes=NUM_CLASSES)
-
-    return one_hot_labels
+    return multi_hot_labels
 
 
 def create_simple_model(input_shape):
     """
-    Create a simple model for chord detection.
+    Create a simple model for multi-label chord detection.
 
     Args:
         input_shape: Shape of the input data
 
     Returns:
-        A compiled TensorFlow model
+        A TensorFlow model for multi-label classification
     """
-    model = tf.keras.Sequential([
-        tf.keras.layers.Input(shape=input_shape, name=INPUT_NODE),
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dropout(0.3),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dropout(0.3),
-        tf.keras.layers.Dense(NUM_CLASSES, activation='softmax', name=OUTPUT_NODE)
-    ])
+    # Create a TensorFlow 2.x compatible model with explicit names for all layers
+    inputs = tf.keras.layers.Input(shape=input_shape, name=INPUT_NODE)
+    x = tf.keras.layers.Dense(128, activation='relu', name='dense_0')(inputs)
+    x = tf.keras.layers.Dropout(0.3, name='dropout_0')(x)
+    x = tf.keras.layers.Dense(64, activation='relu', name='dense_1')(x)
+    x = tf.keras.layers.Dropout(0.3, name='dropout_1')(x)
+    # Use sigmoid activation for multi-label classification
+    outputs = tf.keras.layers.Dense(NUM_CLASSES, activation='sigmoid', name=OUTPUT_NODE)(x)
+
+    model = tf.keras.Model(inputs=inputs, outputs=outputs, name='chord_detection_model')
 
     return model
 
@@ -344,7 +432,7 @@ def create_cnn_model(input_shape):
             tf.keras.layers.Flatten(),
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dropout(0.5),
-            tf.keras.layers.Dense(NUM_CLASSES, activation='softmax', name=OUTPUT_NODE)
+            tf.keras.layers.Dense(NUM_CLASSES, activation='sigmoid', name=OUTPUT_NODE)
         ])
     else:
         # For 2D input (e.g., spectrograms), use 2D convolutions
@@ -359,7 +447,7 @@ def create_cnn_model(input_shape):
             tf.keras.layers.Flatten(),
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dropout(0.5),
-            tf.keras.layers.Dense(NUM_CLASSES, activation='softmax', name=OUTPUT_NODE)
+            tf.keras.layers.Dense(NUM_CLASSES, activation='sigmoid', name=OUTPUT_NODE)
         ])
 
     return model
@@ -385,7 +473,7 @@ def create_rnn_model(input_shape):
             tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dropout(0.5),
-            tf.keras.layers.Dense(NUM_CLASSES, activation='softmax', name=OUTPUT_NODE)
+            tf.keras.layers.Dense(NUM_CLASSES, activation='sigmoid', name=OUTPUT_NODE)
         ])
     else:
         # For 2D input (e.g., spectrograms), flatten the frequency dimension
@@ -396,7 +484,7 @@ def create_rnn_model(input_shape):
             tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
             tf.keras.layers.Dense(128, activation='relu'),
             tf.keras.layers.Dropout(0.5),
-            tf.keras.layers.Dense(NUM_CLASSES, activation='softmax', name=OUTPUT_NODE)
+            tf.keras.layers.Dense(NUM_CLASSES, activation='sigmoid', name=OUTPUT_NODE)
         ])
 
     return model
@@ -404,7 +492,8 @@ def create_rnn_model(input_shape):
 
 def create_advanced_model(input_shape):
     """
-    Create an advanced model for chord detection combining CNN and RNN.
+    Create an advanced model for chord detection combining CNN and attention mechanisms.
+    Optimized for better recognition of all chord types.
 
     Args:
         input_shape: Shape of the input data
@@ -418,58 +507,142 @@ def create_advanced_model(input_shape):
         inputs = tf.keras.layers.Input(shape=input_shape, name=INPUT_NODE)
         x = tf.keras.layers.Reshape((-1, 1))(inputs)
 
-        # Convolutional blocks
-        for filters in [32, 64, 128, 256]:
-            x = tf.keras.layers.Conv1D(filters, 3, padding='same')(x)
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation('relu')(x)
-            x = tf.keras.layers.MaxPooling1D(2)(x)
+        # Convolutional blocks with smaller filters for better feature extraction
+        # Using residual connections to help with gradient flow
+        skip_connections = []
+        for i, filters in enumerate([32, 64, 128, 256]):
+            # First conv block
+            conv1 = tf.keras.layers.Conv1D(filters, 3, padding='same')(x)
+            bn1 = tf.keras.layers.BatchNormalization()(conv1)
+            act1 = tf.keras.layers.Activation('relu')(bn1)
 
-        # Recurrent layers
-        x = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, return_sequences=True))(x)
-        x = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128))(x)
+            # Second conv block
+            conv2 = tf.keras.layers.Conv1D(filters, 3, padding='same')(act1)
+            bn2 = tf.keras.layers.BatchNormalization()(conv2)
+            act2 = tf.keras.layers.Activation('relu')(bn2)
 
-        # Dense layers
+            # Skip connection
+            if i > 0:  # For layers after the first one
+                # Project input to match the output dimensions
+                skip = tf.keras.layers.Conv1D(filters, 1, padding='same')(x)
+                skip = tf.keras.layers.BatchNormalization()(skip)
+                # Add skip connection
+                act2 = tf.keras.layers.add([act2, skip])
+                act2 = tf.keras.layers.Activation('relu')(act2)
+
+            # Save for later concatenation
+            skip_connections.append(act2)
+
+            # Pooling
+            x = tf.keras.layers.MaxPooling1D(2)(act2)
+
+        # Add attention mechanism to focus on important features
+        attention = tf.keras.layers.GlobalAveragePooling1D()(x)
+        attention = tf.keras.layers.Dense(256, activation='relu')(attention)
+        attention = tf.keras.layers.Dense(x.shape[-1], activation='sigmoid')(attention)
+        attention = tf.keras.layers.Reshape((1, x.shape[-1]))(attention)
+
+        # Apply attention
+        x = tf.keras.layers.Multiply()([x, attention])
+
+        # Global pooling
+        x = tf.keras.layers.GlobalAveragePooling1D()(x)
+
+        # Concatenate with the last skip connection after pooling it
+        last_skip = tf.keras.layers.GlobalAveragePooling1D()(skip_connections[-1])
+        x = tf.keras.layers.Concatenate()([x, last_skip])
+
+        # Dense layers with more units for better representation
+        x = tf.keras.layers.Dense(512, activation='relu')(x)
+        x = tf.keras.layers.Dropout(0.4)(x)
         x = tf.keras.layers.Dense(256, activation='relu')(x)
-        x = tf.keras.layers.Dropout(0.5)(x)
-        x = tf.keras.layers.Dense(128, activation='relu')(x)
         x = tf.keras.layers.Dropout(0.3)(x)
 
-        # Output layer
-        outputs = tf.keras.layers.Dense(NUM_CLASSES, activation='softmax', name=OUTPUT_NODE)(x)
+        # Add a chord detector auxiliary output
+        # This helps the model focus on chord structure
+        # We use 12 units to represent the 12 semitones in an octave
+        chord_detector = tf.keras.layers.Dense(12, activation='sigmoid', name='chord_detector')(x)
 
-        model = tf.keras.Model(inputs=inputs, outputs=outputs)
+        # Main output layer with sigmoid activation for multi-label classification
+        main_output = tf.keras.layers.Dense(NUM_CLASSES, activation='sigmoid', name=OUTPUT_NODE)(x)
+
+        # Create model with multiple outputs
+        model = tf.keras.Model(inputs=inputs, outputs=[main_output, chord_detector])
+
+        # We'll only use the main output for training and inference
+        # The chord_detector is an auxiliary output to help the model focus on chord structure
+        final_model = tf.keras.Model(inputs=model.input, outputs=model.outputs[0])
+
+        return final_model
     else:
         # For 2D input (e.g., spectrograms), use 2D convolutions
         inputs = tf.keras.layers.Input(shape=input_shape, name=INPUT_NODE)
 
-        # Convolutional blocks
+        # Convolutional blocks with residual connections
+        skip_connections = []
         x = inputs
-        for filters in [32, 64, 128, 256]:
-            x = tf.keras.layers.Conv2D(filters, (3, 3), padding='same')(x)
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation('relu')(x)
-            x = tf.keras.layers.MaxPooling2D((2, 2))(x)
+        for i, filters in enumerate([32, 64, 128, 256]):
+            # First conv block
+            conv1 = tf.keras.layers.Conv2D(filters, (3, 3), padding='same')(x)
+            bn1 = tf.keras.layers.BatchNormalization()(conv1)
+            act1 = tf.keras.layers.Activation('relu')(bn1)
 
-        # Reshape for recurrent layers
-        x = tf.keras.layers.Reshape((-1, x.shape[-1] * x.shape[-2]))(x)
+            # Second conv block
+            conv2 = tf.keras.layers.Conv2D(filters, (3, 3), padding='same')(act1)
+            bn2 = tf.keras.layers.BatchNormalization()(conv2)
+            act2 = tf.keras.layers.Activation('relu')(bn2)
 
-        # Recurrent layers
-        x = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, return_sequences=True))(x)
-        x = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128))(x)
+            # Skip connection
+            if i > 0:  # For layers after the first one
+                # Project input to match the output dimensions
+                skip = tf.keras.layers.Conv2D(filters, (1, 1), padding='same')(x)
+                skip = tf.keras.layers.BatchNormalization()(skip)
+                # Add skip connection
+                act2 = tf.keras.layers.add([act2, skip])
+                act2 = tf.keras.layers.Activation('relu')(act2)
 
-        # Dense layers
+            # Save for later concatenation
+            skip_connections.append(act2)
+
+            # Pooling
+            x = tf.keras.layers.MaxPooling2D((2, 2))(act2)
+
+        # Add attention mechanism
+        attention = tf.keras.layers.GlobalAveragePooling2D()(x)
+        attention = tf.keras.layers.Dense(256, activation='relu')(attention)
+        attention = tf.keras.layers.Dense(x.shape[-1], activation='sigmoid')(attention)
+        attention = tf.keras.layers.Reshape((1, 1, x.shape[-1]))(attention)
+
+        # Apply attention
+        x = tf.keras.layers.Multiply()([x, attention])
+
+        # Global pooling
+        x = tf.keras.layers.GlobalAveragePooling2D()(x)
+
+        # Concatenate with the last skip connection after pooling it
+        last_skip = tf.keras.layers.GlobalAveragePooling2D()(skip_connections[-1])
+        x = tf.keras.layers.Concatenate()([x, last_skip])
+
+        # Dense layers with more units for better representation
+        x = tf.keras.layers.Dense(512, activation='relu')(x)
+        x = tf.keras.layers.Dropout(0.4)(x)
         x = tf.keras.layers.Dense(256, activation='relu')(x)
-        x = tf.keras.layers.Dropout(0.5)(x)
-        x = tf.keras.layers.Dense(128, activation='relu')(x)
         x = tf.keras.layers.Dropout(0.3)(x)
 
-        # Output layer
-        outputs = tf.keras.layers.Dense(NUM_CLASSES, activation='softmax', name=OUTPUT_NODE)(x)
+        # Add a chord detector auxiliary output
+        # This helps the model focus on chord structure
+        chord_detector = tf.keras.layers.Dense(12, activation='sigmoid', name='chord_detector')(x)
 
-        model = tf.keras.Model(inputs=inputs, outputs=outputs)
+        # Main output layer with sigmoid activation for multi-label classification
+        main_output = tf.keras.layers.Dense(NUM_CLASSES, activation='sigmoid', name=OUTPUT_NODE)(x)
 
-    return model
+        # Create model with multiple outputs
+        model = tf.keras.Model(inputs=inputs, outputs=[main_output, chord_detector])
+
+        # We'll only use the main output for training and inference
+        final_model = tf.keras.Model(inputs=model.input, outputs=model.outputs[0])
+
+        return final_model
 
 
 def create_multi_key_model(input_shape, num_keys=12):
@@ -508,16 +681,61 @@ def create_multi_key_model(input_shape, num_keys=12):
     combined = tf.keras.layers.Concatenate()([x1, x2])
     x = tf.keras.layers.Dense(128, activation='relu')(combined)
     x = tf.keras.layers.Dropout(0.5)(x)
-    outputs = tf.keras.layers.Dense(NUM_CLASSES, activation='softmax', name=OUTPUT_NODE)(x)
+    # Use sigmoid activation for multi-label classification
+    outputs = tf.keras.layers.Dense(NUM_CLASSES, activation='sigmoid', name=OUTPUT_NODE)(x)
 
     model = tf.keras.Model(inputs=[audio_input, key_input], outputs=outputs)
 
     return model
 
 
+def create_class_weights(y_train, target_class=None):
+    """
+    Create class weights to emphasize certain classes.
+
+    Args:
+        y_train: Training labels (one-hot encoded)
+        target_class: Specific class to emphasize (not used)
+                      If None, all chord notes will be emphasized
+
+    Returns:
+        Dictionary of class weights
+    """
+    # Convert one-hot encoded labels to class indices
+    y_indices = np.argmax(y_train, axis=1)
+
+    # Count occurrences of each class
+    class_counts = np.bincount(y_indices)
+
+    # Calculate weights inversely proportional to class frequency
+    n_samples = len(y_indices)
+    n_classes = len(class_counts)
+    weights = n_samples / (n_classes * class_counts)
+
+    # Create dictionary of class weights
+    class_weights = {i: weights[i] for i in range(len(weights))}
+
+    # Analyze the training data to identify chord notes
+    chord_notes = set()
+    for i in range(y_train.shape[0]):
+        # Find all active notes in this sample
+        active_notes = np.where(y_train[i] > 0.5)[0]
+        for note in active_notes:
+            chord_notes.add(note)
+
+    # Emphasize all chord notes
+    for cls in chord_notes:
+        if cls < len(weights):
+            class_weights[cls] = weights[cls] * 3.0  # Increase weight by 3x for all chord notes
+
+    print(f"Created class weights for {len(chord_notes)} chord notes")
+    return class_weights
+
+
 def train_model(model, X_train, y_train, X_val, y_val, args):
     """
     Train the model with the specified parameters.
+    Optimized for better chord recognition across all chord types.
 
     Args:
         model: The TensorFlow model to train
@@ -530,11 +748,43 @@ def train_model(model, X_train, y_train, X_val, y_val, args):
     Returns:
         Training history
     """
-    # Compile the model
+    # Define a custom loss function that emphasizes chord notes
+    def chord_focused_loss(y_true, y_pred):
+        # Standard binary cross-entropy loss for all notes
+        bce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
+
+        # Find active notes in the ground truth (chord notes)
+        # This creates a boolean mask where True indicates an active note
+        active_notes_mask = tf.greater(y_true, 0.5)
+
+        # Calculate additional loss for chord notes
+        # We only consider the loss for notes that are active in the ground truth
+        # Calculate binary cross-entropy manually to get per-element losses
+        epsilon = tf.constant(1e-7, dtype=y_pred.dtype)
+        y_pred = tf.clip_by_value(y_pred, epsilon, 1 - epsilon)
+        element_wise_bce = -y_true * tf.math.log(y_pred) - (1 - y_true) * tf.math.log(1 - y_pred)
+
+        # Apply the mask to only consider active notes
+        chord_loss = tf.where(
+            active_notes_mask,
+            element_wise_bce,
+            tf.zeros_like(y_true)
+        )
+
+        # Take the mean of the chord loss across all notes
+        chord_loss = tf.reduce_mean(chord_loss, axis=1)
+
+        # Combine losses with higher weight for chord notes
+        # The factor 3.0 gives more emphasis to chord notes
+        combined_loss = bce + 3.0 * chord_loss
+
+        return combined_loss
+
+    # Compile the model with the custom loss function
     model.compile(
         optimizer=tf.keras.optimizers.Adam(learning_rate=args.learning_rate),
-        loss='categorical_crossentropy',
-        metrics=['accuracy']
+        loss=chord_focused_loss,  # Use custom loss function
+        metrics=['accuracy', tf.keras.metrics.AUC(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()]
     )
 
     # Print model summary
@@ -572,6 +822,13 @@ def train_model(model, X_train, y_train, X_val, y_val, args):
         )
         callbacks.append(tensorboard_callback)
 
+    # Create class weights if requested
+    class_weights = None
+    if args.class_weight:
+        print("Using class weighting to emphasize chord notes...")
+        class_weights = create_class_weights(y_train)
+        print(f"Class weights: {class_weights}")
+
     # Train the model
     print(f"Training model for {args.epochs} epochs with batch size {args.batch_size}...")
     history = model.fit(
@@ -580,6 +837,7 @@ def train_model(model, X_train, y_train, X_val, y_val, args):
         batch_size=args.batch_size,
         validation_data=(X_val, y_val),
         callbacks=callbacks,
+        class_weight=class_weights,
         verbose=1
     )
 
@@ -626,44 +884,71 @@ def plot_training_history(history, output_dir):
 
 def save_model(model, output_dir):
     """
-    Save the trained model in various formats.
+    Save the trained model in various formats, with additional validation and fixes.
+    Also converts the model to ONNX format.
 
     Args:
         model: The trained TensorFlow model
         output_dir: Directory to save the model
     """
+    import tensorflow as tf
+
     # Create models directory
     models_dir = os.path.join(output_dir, 'models')
     os.makedirs(models_dir, exist_ok=True)
 
+    # Validate initialization of all layers
+    for layer in model.layers:
+        try:
+            weights = layer.get_weights()
+            print(f"Layer {layer.name} initialized with weights shape {[w.shape for w in weights]}")
+        except Exception as e:
+            print(f"Error initializing layer {layer.name}: {e}")
+            raise e
+
     # Save in SavedModel format
-    saved_model_path = os.path.join(models_dir, MODEL_NAME)
-    model.save(saved_model_path)
-    print(f"Model saved to {saved_model_path}")
+    saved_model_dir = os.path.join(models_dir, "saved_model")
+    tf.saved_model.save(
+        obj=model,
+        export_dir=saved_model_dir,
+        options=tf.saved_model.SaveOptions(save_debug_info=True)
+    )
 
-    # Save in .pb format
-    pb_path = os.path.join(models_dir, f"{MODEL_NAME}.pb")
-
-    # Convert to TensorFlow Lite format
-    converter = tf.lite.TFLiteConverter.from_saved_model(saved_model_path)
-    tflite_model = converter.convert()
-
-    # Save the .pb file
-    with open(pb_path, 'wb') as f:
-        f.write(tflite_model)
-
-    print(f"Model also saved as .pb file: {pb_path}")
-
-    # Save model architecture as JSON
-    model_json = model.to_json()
-    with open(os.path.join(models_dir, f"{MODEL_NAME}_architecture.json"), 'w') as f:
-        f.write(model_json)
+    print(f"Model saved in SavedModel format: {saved_model_dir}")
 
     # Save model weights
-    model.save_weights(os.path.join(models_dir, f"{MODEL_NAME}_weights.h5"))
+    model.save_weights(os.path.join(models_dir, f"{MODEL_NAME}.weights.h5"))
+    print(f"Model weights saved at {models_dir}")
 
-    print(f"Model architecture and weights saved to {models_dir}")
+    # Convert model to ONNX format
+    try:
+        import tf2onnx
+        import onnx
 
+        # Create directory for ONNX model
+        onnx_dir = os.path.join(models_dir, "onnx")
+        os.makedirs(onnx_dir, exist_ok=True)
+
+        # Path for the ONNX model
+        onnx_model_path = os.path.join(onnx_dir, f"{MODEL_NAME}.onnx")
+
+        # Convert the model to ONNX format
+        print("Converting model to ONNX format...")
+        spec = (tf.TensorSpec((None, *model.input_shape[1:]), tf.float32, name="input"),)
+        output_path = tf2onnx.convert.from_keras(model, input_signature=spec, opset=13, output_path=onnx_model_path)
+
+        # Verify the model
+        onnx_model = onnx.load(onnx_model_path)
+        onnx.checker.check_model(onnx_model)
+
+        print(f"Model converted and saved in ONNX format: {onnx_model_path}")
+    except ImportError:
+        print("Warning: tf2onnx or onnx package not found. ONNX conversion skipped.")
+        print("To enable ONNX conversion, install the required packages with:")
+        print("pip install tf2onnx onnx")
+    except Exception as e:
+        print(f"Error converting model to ONNX format: {e}")
+        print("ONNX conversion failed, but other model formats were saved successfully.")
 
 def main():
     """Main function."""
@@ -678,33 +963,73 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
 
     # Load data
-    X_train, y_train, X_val, y_val = load_data(args.features_dir, args.feature_type)
+    print("Loading training and validation data...")
+    X_train, y_train, X_val, y_val = load_data(args.features_dir, args.feature_type, args.target_file)
 
-    # Create model based on model_type
+    # Analyze the loaded data
     input_shape = X_train.shape[1:]
     print(f"Input shape: {input_shape}")
+    print(f"Training samples: {len(X_train)}")
+    print(f"Validation samples: {len(X_val)}")
 
-    if args.model_type == 'simple':
-        model = create_simple_model(input_shape)
-    elif args.model_type == 'cnn':
-        model = create_cnn_model(input_shape)
-    elif args.model_type == 'rnn':
-        model = create_rnn_model(input_shape)
-    elif args.model_type == 'advanced':
-        model = create_advanced_model(input_shape)
-    elif args.model_type == 'multi_key':
-        model = create_multi_key_model(input_shape)
-    else:
-        print(f"Error: Unsupported model type {args.model_type}.")
-        return
+    # Analyze chord distribution in training data
+    chord_counts = np.sum(y_train, axis=0)
+    active_notes = np.where(chord_counts > 0)[0]
+    print(f"Number of active notes in training data: {len(active_notes)}")
+
+    # Print the top 10 most common notes
+    top_indices = np.argsort(chord_counts)[-10:][::-1]
+    print("Top 10 most common notes in training data:")
+    for idx in top_indices:
+        note_name = NOTE_NAMES[idx % 12]
+        octave = idx // 12
+        print(f"  {note_name}{octave} (index {idx}): {chord_counts[idx]} occurrences")
+
+    # Create model based on model_type
+    print(f"Creating advanced model optimized for all chord types...")
+    model = create_advanced_model(input_shape)
+
+    # Print model architecture summary
+    print("Model architecture summary:")
+    model.summary()
+
+    # Count model parameters
+    trainable_params = np.sum([np.prod(v.shape) for v in model.trainable_weights])
+    non_trainable_params = np.sum([np.prod(v.shape) for v in model.non_trainable_weights])
+    total_params = trainable_params + non_trainable_params
+    print(f"Total parameters: {total_params:,} (Trainable: {trainable_params:,}, Non-trainable: {non_trainable_params:,})")
+
+    # Print information about the target file if specified
+    if args.target_file:
+        print(f"Ensuring target file '{os.path.basename(args.target_file)}' is included in training")
+        print(f"This file will be included in the training set")
+
+    # Print information about class weighting
+    if args.class_weight:
+        print(f"Using class weighting to emphasize chord notes")
+        print(f"All chord notes will receive 3x weight")
+
+    # Print training parameters
+    print(f"Training parameters:")
+    print(f"  - Epochs: {args.epochs}")
+    print(f"  - Batch size: {args.batch_size}")
+    print(f"  - Learning rate: {args.learning_rate}")
+    print(f"  - Early stopping: {args.early_stopping}")
+    if args.early_stopping:
+        print(f"  - Patience: {args.patience}")
+    print(f"  - Feature type: {args.feature_type}")
+    print(f"  - Class weighting: {args.class_weight}")
+    print(f"  - TensorBoard logging: {args.tensorboard}")
 
     # Train the model
+    print("Starting model training...")
     history = train_model(model, X_train, y_train, X_val, y_val, args)
 
     # Plot training history
     plot_training_history(history, args.output_dir)
 
     # Save the model
+    print("Saving model...")
     save_model(model, args.output_dir)
 
     # Save training parameters
@@ -719,11 +1044,18 @@ def main():
     params['best_val_accuracy'] = float(max(history.history['val_accuracy']))
     params['best_epoch'] = history.history['val_accuracy'].index(max(history.history['val_accuracy'])) + 1
 
+    # Add information about active notes
+    params['active_notes_count'] = int(len(active_notes))
+    params['top_notes'] = [int(idx) for idx in top_indices.tolist()]
+
     with open(os.path.join(args.output_dir, 'training_params.json'), 'w') as f:
         json.dump(params, f, indent=2)
 
     print("Model training completed successfully!")
     print(f"Best validation accuracy: {params['best_val_accuracy']:.4f} at epoch {params['best_epoch']}")
+    print(f"Model saved to {os.path.join(args.output_dir, 'models')}")
+    print(f"Training parameters saved to {os.path.join(args.output_dir, 'training_params.json')}")
+    print("You can now use the model for chord detection!")
 
 
 if __name__ == "__main__":

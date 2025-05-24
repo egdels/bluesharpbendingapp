@@ -24,6 +24,8 @@
 
 dependencies {
     testImplementation 'org.mockito:mockito-inline:5.2.0'
+    // ONNX Runtime for Java - used for ONNX model inference
+    implementation 'com.microsoft.onnxruntime:onnxruntime:1.22.0'
 }
 
 test {
