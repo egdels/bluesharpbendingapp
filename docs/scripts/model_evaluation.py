@@ -26,7 +26,7 @@ import soundfile as sf
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, precision_recall_fscore_support
 
 # Constants
-MODEL_NAME = "magenta_chord_detection_model"
+MODEL_NAME = "chord_detection_model"
 INPUT_NODE = "input_audio"
 OUTPUT_NODE = "chord_predictions"
 OUTPUT_TENSOR = "chord_predictions:0"

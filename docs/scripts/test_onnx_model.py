@@ -29,7 +29,7 @@ from model_evaluation import extract_features_from_audio
 
 # Constants
 MODEL_DIR = "/Users/christian/Documents/git/bluesharpbendingapp/training_output/model"
-ONNX_MODEL_PATH = os.path.join(MODEL_DIR, "models", "onnx", "magenta_chord_detection_model.onnx")
+ONNX_MODEL_PATH = os.path.join(MODEL_DIR, "models", "onnx", "chord_detection_model.onnx")
 TRAINING_DATA_DIR = "/Users/christian/Documents/git/bluesharpbendingapp/training_data/data/raw"
 NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 NUM_CLASSES = 96  # 12 semitones in an octave * 8 octaves (0-7)

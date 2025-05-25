@@ -64,10 +64,10 @@ echo "Model training completed!"
 echo "Step 4: Copying model to resources directory..."
 #mkdir -p "base/desktop/src/main/resources/models/saved_model"
 #mkdir -p "base/src/main/resources/models/keras"
-mkdir -p "base/src/main/resources/models/onnx"
+mkdir -p "desktop/src/main/resources/models/onnx"
 #cp -r "$MODEL_DIR/models/saved_model/"* "base/src/main/resources/models/saved_model/"
 #cp -r "$MODEL_DIR/models/"*.keras "base/src/main/resources/models/keras/" 2>/dev/null || true
-cp -r "$MODEL_DIR/models/onnx/"*.onnx "base/src/main/resources/models/onnx/" 2>/dev/null || true
+cp -r "$MODEL_DIR/models/onnx/"*.onnx "desktop/src/main/resources/models/onnx/" 2>/dev/null || true
 echo "Model copied to resources directory (SavedModel, Keras, and ONNX formats)"
 
 # Step 5: Test the model

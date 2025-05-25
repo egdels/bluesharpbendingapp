@@ -23,7 +23,7 @@ import argparse
 
 # Constants
 MODEL_DIR = "/Users/christian/Documents/git/bluesharpbendingapp/training_output/model"
-ONNX_MODEL_PATH = os.path.join(MODEL_DIR, "models", "onnx", "magenta_chord_detection_model.onnx")
+ONNX_MODEL_PATH = os.path.join(MODEL_DIR, "models", "onnx", "chord_detection_model.onnx")
 DEFAULT_TEST_FILE = "/Users/christian/Documents/git/bluesharpbendingapp/training_data/data/raw/key_C/chords/chord_C4-E4-G4.wav"
 NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 SAMPLE_RATE = 16000  # Expected sample rate of the audio files

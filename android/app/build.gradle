@@ -82,6 +82,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.9.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.9.0'
     implementation 'androidx.core:core-splashscreen:1.0.1'
+    // TODO
+    //implementation('com.microsoft.onnxruntime:onnxruntime-android:1.22.0')
     // Dependency Injection with Dagger
     implementation "com.google.dagger:dagger:${daggerVersion}"
     annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
@@ -91,7 +93,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation 'androidx.core:core-ktx:1.16.0'
     testImplementation 'junit:junit:4.13.2'
-    debugImplementation "androidx.fragment:fragment-testing:1.8.6"
+    debugImplementation "androidx.fragment:fragment-testing:1.8.7"
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation 'androidx.test:runner:1.6.2'

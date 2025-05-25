@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 # Constants
-MODEL_NAME = "magenta_chord_detection_model"
+MODEL_NAME = "chord_detection_model"
 INPUT_NODE = "input_audio"
 OUTPUT_NODE = "chord_predictions"
 NUM_CLASSES = 96  # 12 semitones in an octave * 8 octaves (0-7)
