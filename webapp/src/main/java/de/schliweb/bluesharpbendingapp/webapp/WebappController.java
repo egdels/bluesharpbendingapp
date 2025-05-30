@@ -178,7 +178,7 @@ public class WebappController {
 
         Object supportedAlgorithms = session.getAttribute("supportedAlgorithms");
         if (supportedAlgorithms == null) {
-            supportedAlgorithms = new String[]{"YIN", "MPM"};
+            supportedAlgorithms = new String[]{"YIN", "MPM", "HYBRID"};
         }
         modelAndView.addObject("supportedAlgorithms", supportedAlgorithms);
 
@@ -253,7 +253,7 @@ public class WebappController {
 
         Object supportedAlgorithms = session.getAttribute("supportedAlgorithms");
         if (supportedAlgorithms == null) {
-            supportedAlgorithms = new String[]{"YIN", "MPM"};
+            supportedAlgorithms = new String[]{"YIN", "MPM", "HYBRID"};
         }
         modelAndView.addObject("supportedAlgorithms", supportedAlgorithms);
 

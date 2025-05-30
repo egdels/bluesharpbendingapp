@@ -24,13 +24,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" styleClass="main-window" xmlns="http://javafx.com/javafx/23.0.1"
-      fx:controller="de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController">
+      fx:controller="de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController" 
+      fx:id="mainWindow">
 
     <ToolBar styleClass="menu-toolbar">
-        <Button styleClass="menu-button" text="Let's Bend" onAction="#showHarpView"/>
-        <Button styleClass="menu-button" text="Training" onAction="#showTrainingView"/>
-        <Button styleClass="menu-button" text="Settings" onAction="#showSettingsView"/>
-        <Button styleClass="menu-button" text="About" onAction="#showAboutView"/>
+        <Button styleClass="menu-button" text="%main.button.letsbend" onAction="#showHarpView"/>
+        <Button styleClass="menu-button" text="%main.button.training" onAction="#showTrainingView"/>
+        <Button styleClass="menu-button" text="%main.button.settings" onAction="#showSettingsView"/>
+        <Button styleClass="menu-button" text="%main.button.about" onAction="#showAboutView"/>
     </ToolBar>
 
     <StackPane VBox.vgrow="ALWAYS">

@@ -153,8 +153,15 @@ function adjustUIForOrientation() {
  * @return {void} This method does not return any value but performs UI and server update actions.
  */
 function handleSelectionChange() {
+    // Check if we're on the letsbend.html page by looking for required elements
+    const keyElement = document.querySelector('#supportedKeys');
+    if (!keyElement) {
+        // We're likely on tuner.html or another page that doesn't have these elements
+        // Let the page-specific handleSelectionChange function handle it
+        return;
+    }
 
-    const key = document.querySelector('#supportedKeys').value;
+    const key = keyElement.value;
     const tune = document.querySelector('#supportedTunes').value;
     const concertPitch = document.querySelector('#supportedConcertPitches').value;
     const confidence = document.querySelector('#supportedConfidences').value;

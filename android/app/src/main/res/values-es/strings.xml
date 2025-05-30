@@ -1,0 +1,67 @@
+<!--
+/*
+ * Copyright (c) 2023 Christian Kierdorf
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+-->
+<resources>
+    <string name="app_name">Let\'s Bend</string>
+    <string name="action_settings">Configuración</string>
+    <string name="about_title">Let\'s Bend</string>
+    <string name="action_about">Acerca de</string>
+    <string name="action_harp">Let\'s Bend</string>
+    <string name="about_description">Versión Android de BluesHarpBendingApp</string>
+    <string name="about_version">%1$s (%2$d)</string>
+    <string name="settings_key_label">Tonalidad</string>
+    <string name="settings_tune_label">Afinación</string>
+    <string name="settings_pitches_label">Tono de concierto</string>
+    <string name="settings_reset_label">Restablecer configuración</string>
+    <string name="settings_reset_button">Restablecer</string>
+    <string name="settings_screenlock_label">Mantener pantalla encendida</string>
+    <string name="permission_information_message">Para utilizar correctamente la aplicación, es necesario el acceso al micrófono. Si tiene dudas, consulte la política de privacidad de esta aplicación.
+    </string>
+    <string name="permission_information_title">Información</string>
+    <string name="permission_information_button_label">Continuar de todos modos</string>
+    <string name="settings_algo_label">Algoritmo</string>
+    <string name="action_training">Entrenamiento</string>
+    <string name="training_start_button">Iniciar</string>
+    <string name="training_stop_button">Detener</string>
+    <string name="training_trainings_label">Escala</string>
+    <string name="training_precision_label">Precisión</string>
+    <string name="training_progress_label">Progreso</string>
+    <string name="settings_conf_label">Confianza</string>
+    <string name="settings_chord_conf_label">Confianza de acorde</string>
+
+    <!-- Settings screen section headers -->
+    <string name="settings_harp_header">Configuración de armónica</string>
+    <string name="settings_microphone_header">Configuración de micrófono</string>
+    <string name="settings_app_header">Configuración de aplicación</string>
+
+    <!-- Training screen section headers -->
+    <string name="training_note_header">Visualización de notas</string>
+    <string name="training_settings_header">Configuración de entrenamiento</string>
+    <string name="training_control_header">Control de entrenamiento</string>
+
+    <string name="tuning_key_info_format">%1$s | %2$s</string>
+    <string name="about_user_guide">Guía de usuario</string>
+    <string name="show_chord_experimental">Mostrar acorde (Experimental)</string>
+</resources>

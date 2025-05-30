@@ -29,16 +29,49 @@
 <head th:fragment="head">
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Let's Bend - Blues Harp Bending App for all devices" name="description"/>
-    <meta content="Blues Harp Bending App, Blues Harp Bending App for Android, Blues Harp Bending App for Linux, Blues Harp Bending App for Windows, Blues Harp Bending App for macOS"
-          name="keywords"/>
+    <meta content="Let's Bend: Blues Harmonica Tuner & Trainer - Learn to bend notes on your harmonica with real-time visual feedback. Free app for beginners and advanced players available on Android, Windows, macOS, Linux and web." name="description"/>
+    <meta content="harmonica app, blues harmonica, harmonica tuner, harmonica trainer, learn harmonica, harmonica bending, blues harp, music learning app, pitch detection, note visualization, free harmonica app" name="keywords"/>
+    <meta name="author" content="Christian Kierdorf">
+    <meta name="language" th:content="#{language}">
+    <meta name="robots" content="index, follow">
+
+    <!-- Performance optimizations -->
+    <link rel="preconnect" href="https://www.youtube-nocookie.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://www.youtube-nocookie.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/images/logo.png" as="image">
+    <link rel="preload" th:href="${'/styles/style.css?v=' + @environment.getProperty('spring.application.version')}" as="style">
+    <link rel="preload" th:href="${'/scripts/script.js?v=' + @environment.getProperty('spring.application.version')}" as="script">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" th:href="${#httpServletRequest != null ? #httpServletRequest.requestURL.toString() : 'https://letsbend.de'}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" th:content="${#httpServletRequest != null ? #httpServletRequest.requestURL.toString() : 'https://letsbend.de'}">
+    <meta property="og:title" data-th-content="#{index.title}">
+    <meta property="og:description" content="Learn to bend notes on your harmonica with real-time visual feedback. Free app for all skill levels.">
+    <meta property="og:image" content="https://letsbend.de/images/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" th:content="${#httpServletRequest != null ? #httpServletRequest.requestURL.toString() : 'https://letsbend.de'}">
+    <meta property="twitter:title" data-th-content="#{index.title}">
+    <meta property="twitter:description" content="Learn to bend notes on your harmonica with real-time visual feedback. Free app for all skill levels.">
+    <meta property="twitter:image" content="https://letsbend.de/images/og-image.png">
+
     <title data-th-text="#{index.title}"></title>
     <link href="/images/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180">
     <link href="/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png">
     <link href="/images/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png">
     <link href="/site.webmanifest" rel="manifest">
+
+    <!-- CSS and JavaScript with performance optimizations -->
     <link th:href="${'/styles/style.css?v=' + @environment.getProperty('spring.application.version')}" rel="stylesheet">
-    <script th:src="${'/scripts/script.js?v=' + @environment.getProperty('spring.application.version')}" ></script>
+    <script th:src="${'/scripts/script.js?v=' + @environment.getProperty('spring.application.version')}" defer></script>
 
     <!-- Polyfills for browser compatibility -->
     <script>

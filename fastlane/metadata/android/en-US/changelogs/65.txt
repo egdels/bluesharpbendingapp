@@ -1,0 +1,3 @@
+* Added multilingual UI support for German, Spanish, French, Japanese, and Chinese.
+* The app now uses the device's language settings to automatically determine the UI language.
+* Default language is set to English if the device language is not supported.

@@ -71,6 +71,11 @@
             <div class="test-title">Chord Detector Tests</div>
             <div id="chord-test-results" class="test-result">Click "Run All Tests" to start testing.</div>
         </div>
+
+        <div class="test-section">
+            <div class="test-title">Hybrid Pitch Detector Tests</div>
+            <div id="hybrid-test-results" class="test-result">Click "Run All Tests" to start testing.</div>
+        </div>
     </div>
 
     <div id="test-summary" class="test-summary"></div>
@@ -81,13 +86,16 @@
         import ChordDetector from '../../main/resources/static/scripts/ChordDetector.js';
         import ChordDetectionResult from '../../main/resources/static/scripts/ChordDetectionResult.js';
         import NoteUtils from '../../main/resources/static/scripts/NoteUtils.js';
+        import HybridPitchDetector from '../../main/resources/static/scripts/HybridPitchDetector.js';
+        import FFTDetector from '../../main/resources/static/scripts/FFTDetector.js';
 
         // Simple test framework
         const TestFramework = {
             results: {
                 yin: { passed: 0, failed: 0, details: [] },
                 mpm: { passed: 0, failed: 0, details: [] },
-                chord: { passed: 0, failed: 0, details: [] }
+                chord: { passed: 0, failed: 0, details: [] },
+                hybrid: { passed: 0, failed: 0, details: [] }
             },
 
             expect: function(actual) {
@@ -133,6 +141,7 @@
                 const yinResultsElement = document.getElementById('yin-test-results');
                 const mpmResultsElement = document.getElementById('mpm-test-results');
                 const chordResultsElement = document.getElementById('chord-test-results');
+                const hybridResultsElement = document.getElementById('hybrid-test-results');
                 const summaryElement = document.getElementById('test-summary');
 
                 // Display YIN test results
@@ -165,9 +174,19 @@
                 });
                 chordResultsElement.innerHTML = chordHtml;
 
+                // Display Hybrid test results
+                let hybridHtml = '';
+                this.results.hybrid.details.forEach(detail => {
+                    hybridHtml += `<div class="${detail.passed ? 'pass' : 'fail'}">
+                        ${detail.name}: ${detail.passed ? 'PASSED' : 'FAILED'}
+                        ${!detail.passed ? `<br>Error: ${detail.error}` : ''}
+                    </div>`;
+                });
+                hybridResultsElement.innerHTML = hybridHtml;
+
                 // Display summary
-                const totalPassed = this.results.yin.passed + this.results.mpm.passed + this.results.chord.passed;
-                const totalFailed = this.results.yin.failed + this.results.mpm.failed + this.results.chord.failed;
+                const totalPassed = this.results.yin.passed + this.results.mpm.passed + this.results.chord.passed + this.results.hybrid.passed;
+                const totalFailed = this.results.yin.failed + this.results.mpm.failed + this.results.chord.failed + this.results.hybrid.failed;
                 const totalTests = totalPassed + totalFailed;
 
                 summaryElement.innerHTML = `
@@ -181,7 +200,8 @@
                 this.results = {
                     yin: { passed: 0, failed: 0, details: [] },
                     mpm: { passed: 0, failed: 0, details: [] },
-                    chord: { passed: 0, failed: 0, details: [] }
+                    chord: { passed: 0, failed: 0, details: [] },
+                    hybrid: { passed: 0, failed: 0, details: [] }
                 };
             }
         };
@@ -513,12 +533,108 @@
             }, 'chord');
         }
 
+        // Hybrid Pitch Detector Tests
+        function runHybridTests() {
+            const SAMPLE_RATE = 44100;
+            const TOLERANCE = 0.5;
+
+            // Reset to default frequency range and thresholds
+            HybridPitchDetector.setMinFrequency(HybridPitchDetector.DEFAULT_MIN_FREQUENCY);
+            HybridPitchDetector.setMaxFrequency(HybridPitchDetector.DEFAULT_MAX_FREQUENCY);
+            HybridPitchDetector.setThresholdLowFrequencyEnergy(750);
+            HybridPitchDetector.setThresholdHighFrequencyEnergy(400);
+            HybridPitchDetector.setFrequencyRangeLow(275);
+            HybridPitchDetector.setFrequencyRangeHigh(900);
+
+            // Test pure sine wave
+            TestFramework.runTest('Pure Sine Wave', () => {
+                const frequency = 440.0; // A4
+                const duration = 1.0;
+                const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
+
+                const result = HybridPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(0.02);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.9);
+            }, 'hybrid');
+
+            // Test silence
+            TestFramework.runTest('Silence', () => {
+                const audioData = new Array(SAMPLE_RATE).fill(0); // 1 second of silence
+
+                const result = HybridPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+
+                TestFramework.expect(result.pitch).toBe(HybridPitchDetector.NO_DETECTED_PITCH);
+                TestFramework.expect(result.confidence).toBe(0.0);
+            }, 'hybrid');
+
+            // Test noise
+            TestFramework.runTest('Noise', () => {
+                const audioData = new Array(SAMPLE_RATE); // 1 second of random noise
+                for (let i = 0; i < audioData.length; i++) {
+                    audioData[i] = Math.random() * 2 - 1; // Random values between -1 and 1
+                }
+
+                const result = HybridPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+
+                TestFramework.expect(result.pitch).toBe(HybridPitchDetector.NO_DETECTED_PITCH);
+            }, 'hybrid');
+
+            // Test low frequency
+            TestFramework.runTest('Low Frequency', () => {
+                const frequency = 200.0; // Low frequency
+                const duration = 1.0;
+                const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
+
+                // Set a high threshold to ensure YIN is used
+                HybridPitchDetector.setThresholdLowFrequencyEnergy(100);
+
+                const result = HybridPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.8);
+            }, 'hybrid');
+
+            // Test mid-range frequency
+            TestFramework.runTest('Mid-Range Frequency', () => {
+                const frequency = 600.0; // Mid-range frequency
+                const duration = 1.0;
+                const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
+
+                // Set thresholds to ensure MPM is used
+                HybridPitchDetector.setThresholdLowFrequencyEnergy(1000);
+                HybridPitchDetector.setThresholdHighFrequencyEnergy(1000);
+
+                const result = HybridPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.8);
+            }, 'hybrid');
+
+            // Test high frequency
+            TestFramework.runTest('High Frequency', () => {
+                const frequency = 1200.0; // High frequency
+                const duration = 1.0;
+                const audioData = generateSineWave(frequency, SAMPLE_RATE, duration);
+
+                // Set thresholds to ensure FFT is used
+                HybridPitchDetector.setThresholdLowFrequencyEnergy(1000);
+                HybridPitchDetector.setThresholdHighFrequencyEnergy(100);
+
+                const result = HybridPitchDetector.detectPitch(audioData, SAMPLE_RATE);
+
+                TestFramework.expect(Math.abs(result.pitch - frequency)).toBeLessThanOrEqual(TOLERANCE);
+                TestFramework.expect(result.confidence).toBeGreaterThan(0.7);
+            }, 'hybrid');
+        }
+
         // Run all tests when the button is clicked
         document.getElementById('run-tests').addEventListener('click', function() {
             TestFramework.resetResults();
             runYINTests();
             runMPMTests();
             runChordTests();
+            runHybridTests();
             TestFramework.displayResults();
         });
     </script>

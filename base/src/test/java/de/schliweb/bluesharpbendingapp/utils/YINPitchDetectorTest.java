@@ -26,6 +26,7 @@ package de.schliweb.bluesharpbendingapp.utils;
 import static de.schliweb.bluesharpbendingapp.utils.AudioTestUtils.*;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,10 +60,25 @@ class YINPitchDetectorTest {
     private static final int SAMPLE_RATE = 44100;
     private static final double TOLERANCE = 0.5;
 
+    private double originalMinFrequency;
+    private double originalMaxFrequency;
+
     @BeforeEach
     void setUp() {
+        // Save original values
+        originalMinFrequency = PitchDetector.getMinFrequency();
+        originalMaxFrequency = PitchDetector.getMaxFrequency();
+
+        // Reset to defaults for this test
         PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
         PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Restore original values
+        PitchDetector.setMinFrequency(originalMinFrequency);
+        PitchDetector.setMaxFrequency(originalMaxFrequency);
     }
 
     /**

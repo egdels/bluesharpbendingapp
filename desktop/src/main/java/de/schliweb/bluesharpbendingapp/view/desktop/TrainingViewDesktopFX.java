@@ -23,6 +23,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
@@ -85,7 +86,7 @@ public class TrainingViewDesktopFX {
     public TrainingViewDesktopFX() {
         try {
             // Load the FXML file for the "Training" view
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/training-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/training-view.fxml"), I18nUtils.getResourceBundle());
 
             // Save the root element defined in the FXML file
             root = fxmlLoader.load();

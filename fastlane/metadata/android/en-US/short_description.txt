@@ -1,1 +1,1 @@
-Let's Bend assists blues harmonica players in accurately hitting bending notes.
+Blues harmonica tuner & trainer for learning bending techniques with real-time visual feedback.

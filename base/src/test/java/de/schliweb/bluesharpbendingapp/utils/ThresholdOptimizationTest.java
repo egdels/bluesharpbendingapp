@@ -1,7 +1,9 @@
 package de.schliweb.bluesharpbendingapp.utils;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,6 +43,20 @@ class ThresholdOptimizationTest {
     static void setUp() {
         // Store the original threshold value
         System.out.println("[DEBUG_LOG] Original threshold: " + ORIGINAL_THRESHOLD);
+    }
+
+    @BeforeEach
+    void setUpEach() {
+        // Reset to original threshold value before each test
+        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
+        System.out.println("[DEBUG_LOG] Reset to original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
+    }
+
+    @AfterEach
+    void tearDownEach() {
+        // Restore the original threshold value after each test
+        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
+        System.out.println("[DEBUG_LOG] Restored original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
     }
 
     @AfterAll
@@ -116,7 +132,7 @@ class ThresholdOptimizationTest {
 
     /**
      * Evaluates a specific threshold value with pure sine waves and complex signals.
-     * This method tests the threshold with different types of signals and prints the results.
+     * This method tests the threshold with different types of signals and asserts the results.
      *
      * @param threshold the threshold value to evaluate
      */
@@ -143,7 +159,7 @@ class ThresholdOptimizationTest {
                              complexAverageError * (1.0 - complexSuccessRate) + 
                              (1.0 - harmonicaSuccessRate);
 
-        // Build a results string
+        // Log the results
         StringBuilder results = new StringBuilder();
         results.append("Threshold: ").append(threshold).append("\n");
         results.append("  Pure Sine Waves:\n");
@@ -159,8 +175,14 @@ class ThresholdOptimizationTest {
         results.append("    Successful Detections: ").append(harmonicaSuccessfulDetections).append("\n");
         results.append("  Overall Score: ").append(String.format("%.4f", overallScore)).append(" (lower is better)\n");
 
-        // Throw an exception with the results
-        throw new RuntimeException("TEST RESULTS:\n" + results.toString());
+        System.out.println("[DEBUG_LOG] " + results.toString());
+
+        // Assert that the results meet the expected criteria
+        assertTrue(pureSineSuccessRate >= 0.8, "Pure sine wave detection rate should be at least 80%");
+        assertTrue(complexSuccessRate >= 0.7, "Complex signal detection rate should be at least 70%");
+        assertTrue(harmonicaSuccessRate >= 0.7, "Harmonica note detection rate should be at least 70%");
+        assertTrue(pureSineAverageError < TOLERANCE * 2, "Pure sine wave average error should be less than twice the tolerance");
+        assertTrue(complexAverageError < TOLERANCE * 3, "Complex signal average error should be less than three times the tolerance");
     }
 
     /**

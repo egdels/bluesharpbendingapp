@@ -1,4 +1,4 @@
-User-Agent: *
+User-agent: *
 Disallow:
 
 Sitemap: https://www.letsbend.de/sitemap.xml

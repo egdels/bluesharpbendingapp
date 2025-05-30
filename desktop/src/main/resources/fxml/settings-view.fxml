@@ -45,45 +45,45 @@
             </columnConstraints>
 
             <!-- GridPane-Elemente -->
-            <Label text="Algorithms" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label text="%settings.microphone.algorithm" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboAlgorithms" GridPane.rowIndex="0" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="Microphones" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <Label text="%settings.microphone.device" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboMicrophones" GridPane.rowIndex="1" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="Confidences" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <Label text="%settings.microphone.confidence" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboConfidences" GridPane.rowIndex="2" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="Chord Confidences" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <Label text="%settings.microphone.chordconfidence" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboChordConfidences" GridPane.rowIndex="3" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="Note" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <Label text="%settings.note.current" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
             <Label fx:id="valueNote" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-            <Label text="Frequency" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <Label text="%settings.note.frequency" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
             <Label fx:id="valueFrequency" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
-            <Label text="Volume" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <Label text="%settings.note.volume" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
             <Label fx:id="valueVolume" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
-            <Label text="Keys" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+            <Label text="%settings.harp.key" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboKeys" GridPane.rowIndex="7" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="Tunes" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+            <Label text="%settings.harp.tuning" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboTunes" GridPane.rowIndex="8" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="Concert Pitch (Hz)" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+            <Label text="%settings.note.concertpitch" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboConcertPitches" GridPane.rowIndex="9" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="Show Chord (Experimental)" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-            <CheckBox fx:id="checkShowChord" text="Show Chord" styleClass="custom-checkbox" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+            <Label text="%settings.harp.showchord" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+            <CheckBox fx:id="checkShowChord" styleClass="custom-checkbox" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
         </GridPane>
     </center>
 
@@ -93,7 +93,7 @@
             <padding>
                 <Insets top="10" right="20" bottom="20" left="20"/>
             </padding>
-            <Button text="Reset" onAction="#handleResetButton"/>
+            <Button text="%settings.reset.button" onAction="#handleResetButton"/>
         </HBox>
     </bottom>
 </BorderPane>

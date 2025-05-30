@@ -203,8 +203,20 @@ class HighFrequencyOptimizationTest {
         results.append("  Successful Detections: ").append(successfulDetections).append("/").append(TEST_FREQUENCIES.length).append("\n");
         results.append("  Average Execution Time: ").append(averageExecutionTime).append(" ns\n");
 
-        // Throw an exception with the results
-        throw new RuntimeException("TEST RESULTS:\n" + results.toString());
+        // Log the results
+        System.out.println("[DEBUG_LOG] " + results.toString());
+
+        // Assert that the results meet the expected criteria
+        assertTrue(successfulDetections >= TEST_FREQUENCIES.length * 0.8, 
+                  "At least 80% of frequencies should be successfully detected");
+        assertTrue(averageError < TOLERANCE * 2, 
+                  "Average error should be less than twice the tolerance");
+        assertTrue(averageCentError < 50.0, 
+                  "Average cent error should be less than 50 cents");
+        assertTrue(maxCentError < 100.0, 
+                  "Maximum cent error should be less than 100 cents");
+        assertTrue(averageExecutionTime < 15000000, 
+                  "Average execution time should be less than 15ms (15,000,000 ns)");
     }
 
     /**

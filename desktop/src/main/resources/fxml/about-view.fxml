@@ -37,7 +37,7 @@
         <Insets top="30" right="30" bottom="30" left="30"/>
     </padding>
 
-    <Label text="Let's Bend - BluesHarpBendingApp"
+    <Label text="%about.title"
            styleClass="title-label"
            VBox.vgrow="ALWAYS">
         <font>
@@ -45,7 +45,7 @@
         </font>
     </Label>
 
-    <Label text="Desktop Edition"
+    <Label text="%about.subtitle"
            styleClass="subtitle-label"
            VBox.vgrow="ALWAYS">
         <font>
@@ -63,28 +63,28 @@
            styleClass="version-label"
            VBox.vgrow="ALWAYS"/>
 
-    <TitledPane text="Resources" expanded="true" collapsible="false">
+    <TitledPane text="%about.resources" expanded="true" collapsible="false">
         <VBox spacing="10" alignment="CENTER">
-            <Hyperlink text="User Guide"
+            <Hyperlink text="%about.userguide"
                     onAction="#handleUserGuideClick"
                     styleClass="resource-link"
                     VBox.vgrow="ALWAYS"/>
 
-            <Hyperlink text="Download latest version"
+            <Hyperlink text="%about.download"
                     onAction="#handleDownloadClick"
                     styleClass="resource-link"
                     VBox.vgrow="ALWAYS"/>
         </VBox>
     </TitledPane>
 
-    <TitledPane text="Contact" expanded="true" collapsible="false">
+    <TitledPane text="%about.contact" expanded="true" collapsible="false">
         <VBox spacing="10" alignment="CENTER">
-            <Hyperlink text="Mail me"
+            <Hyperlink text="%about.mail"
                     onAction="#handleMailClick"
                     styleClass="contact-link"
                     VBox.vgrow="ALWAYS"/>
 
-            <Hyperlink text="Buy me a coffee"
+            <Hyperlink text="%about.donate"
                     onAction="#handlePaypalClick"
                     styleClass="contact-link"
                     VBox.vgrow="ALWAYS"/>

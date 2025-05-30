@@ -1,7 +1,9 @@
 package de.schliweb.bluesharpbendingapp.utils;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,6 +45,24 @@ class FrequencyRangeOptimizationTest {
         // Store the original values
         System.out.println("[DEBUG_LOG] Original threshold: " + ORIGINAL_THRESHOLD);
         System.out.println("[DEBUG_LOG] Original frequency range: " + ORIGINAL_FREQUENCY_RANGE);
+    }
+
+    @BeforeEach
+    void setUpEach() {
+        // Reset to original values before each test
+        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
+        HybridPitchDetector.setFrequencyRangeLow(ORIGINAL_FREQUENCY_RANGE);
+        System.out.println("[DEBUG_LOG] Reset to original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
+        System.out.println("[DEBUG_LOG] Reset to original frequency range: " + HybridPitchDetector.getFrequencyRangeLow());
+    }
+
+    @AfterEach
+    void tearDownEach() {
+        // Restore the original values after each test
+        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
+        HybridPitchDetector.setFrequencyRangeLow(ORIGINAL_FREQUENCY_RANGE);
+        System.out.println("[DEBUG_LOG] Restored original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
+        System.out.println("[DEBUG_LOG] Restored original frequency range: " + HybridPitchDetector.getFrequencyRangeLow());
     }
 
     @AfterAll
@@ -260,8 +280,20 @@ class FrequencyRangeOptimizationTest {
         results.append("  Successful Detections: ").append(successfulDetections).append("/").append(TEST_FREQUENCIES.length).append("\n");
         results.append("  Average Execution Time: ").append(averageExecutionTime).append(" ns\n");
 
-        // Throw an exception with the results
-        throw new RuntimeException("TEST RESULTS:\n" + results.toString());
+        // Log the results for debugging
+        System.out.println("[DEBUG_LOG] " + results.toString());
+
+        // Assert that the average error is within the acceptable range
+        assertTrue(averageError < TOLERANCE, 
+                   "Average error should be less than the tolerance for the specific combination");
+
+        // Assert that the average cent error is within an acceptable range
+        assertTrue(averageCentError < 1.0, 
+                   "Average cent error should be less than 1 cent for the specific combination");
+
+        // Assert that all frequencies were detected
+        assertEquals(TEST_FREQUENCIES.length, successfulDetections, 
+                     "All test frequencies should be detected");
     }
 
     /**

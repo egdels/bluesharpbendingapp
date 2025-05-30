@@ -23,6 +23,9 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
+import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import lombok.Getter;
@@ -81,9 +84,11 @@ public class SettingsViewDesktopFX {
      * - RuntimeException if the FXML file cannot be loaded.
      */
     public SettingsViewDesktopFX() {
+        LoggingContext.setComponent("SettingsViewDesktopFX");
+        LoggingUtils.logInitializing("Settings View");
         try {
-            // Load the FXML file for the "Settings" view
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings-view.fxml"));
+            // Load the FXML file for the "Settings" view with the resource bundle
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/settings-view.fxml"), I18nUtils.getResourceBundle());
 
             // Save the root element defined in the FXML
             root = fxmlLoader.load();
@@ -95,11 +100,12 @@ public class SettingsViewDesktopFX {
             root.setManaged(true);
             root.setVisible(true);
 
+            LoggingUtils.logInitialized("Settings View");
         } catch (IOException e) {
+            LoggingUtils.logError("Failed to load Settings View FXML file", e);
             throw new FxmlLoadingException("Failed to load FXML file", e);
         }
     }
 
 
 }
-

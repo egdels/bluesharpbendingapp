@@ -23,6 +23,7 @@
  */
 import YINPitchDetector from './YINPitchDetector.js';
 import MPMPitchDetector from './MPMPitchDetector.js';
+import HybridPitchDetector from './HybridPitchDetector.js';
 
 /**
  * The PitchProcessor class extends AudioWorkletProcessor and is used for real-time
@@ -76,6 +77,10 @@ class PitchProcessor extends AudioWorkletProcessor {
                 else if (this.algorithm === 'MPM') {
                     // console.log("MPM");
                     result = MPMPitchDetector.detectPitch(this.buffer, this.sampleRate);
+                }
+                else if (this.algorithm === 'HYBRID') {
+                    // console.log("HYBRID");
+                    result = HybridPitchDetector.detectPitch(this.buffer, this.sampleRate);
                 }
                 // console.log(result);
                 // Send the result back to the main thread

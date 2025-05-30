@@ -64,4 +64,5 @@
 
     <string name="tuning_key_info_format">%1$s | %2$s</string>
     <string name="about_user_guide">User Guide</string>
+    <string name="show_chord_experimental">Show Chord (Experimental)</string>
 </resources>

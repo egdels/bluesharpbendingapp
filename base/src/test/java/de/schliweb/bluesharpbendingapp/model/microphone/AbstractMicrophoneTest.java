@@ -48,7 +48,7 @@ class AbstractMicrophoneTest {
         assertEquals(3, algorithms.length);
         assertEquals("YIN", algorithms[0]);
         assertEquals("MPM", algorithms[1]);
-        assertEquals("FFT", algorithms[2]);
+        assertEquals("HYBRID", algorithms[2]);
     }
 
     @Test

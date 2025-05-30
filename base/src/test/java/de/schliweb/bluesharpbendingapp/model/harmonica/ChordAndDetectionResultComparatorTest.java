@@ -52,6 +52,8 @@ class ChordAndDetectionResultComparatorTest {
     void setUp() {
         // Initialize the comparator before each test
         comparator = new ChordAndDetectionResultComparator();
+        // Reset the concert pitch to its default value to ensure test isolation
+        NoteLookup.setConcertPitch(440);
     }
 
     /**
@@ -112,21 +114,35 @@ class ChordAndDetectionResultComparatorTest {
         assertEquals(0, result, "Chords with same frequencies should be equal");
     }
 
+    /**
+     * Tests that chords with the same number of notes and frequencies within the
+     * musical tolerance (±50 cents) are considered equal by the comparator.
+     * 
+     * This test focuses specifically on the basic case of two-note chords with
+     * frequencies that differ by exactly 50 cents (the boundary of tolerance).
+     * For more comprehensive testing with multiple notes and different tolerance levels,
+     * see {@link #testFrequencyComparisonWithMultipleNotes()}.
+     */
     @Test
-    @DisplayName("Compare chords with same note count and frequencies within tolerance")
-    void testCompareWithSameNoteCountAndFrequenciesWithinTolerance() {
+    @DisplayName("Compare chords with same note count and frequencies at tolerance boundary")
+    void testCompareWithSameNoteCountAndFrequenciesAtToleranceBoundary() {
         // Arrange
-        // Create chords with the same number of notes and frequencies within tolerance (±50 cents)
+        // Create reference chord with two notes (A4, C5)
+        ChordHarmonica referenceChord = createChordHarmonicaWithTones(
+                Arrays.asList(440.0, 523.25)); // A4, C5
+
+        // Create chord with frequencies exactly 50 cents higher (at the tolerance boundary)
         // 440.0 Hz * 1.029302 ≈ 452.89 Hz (50 cents higher than A4)
-        ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // A4, C5
-        ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(Arrays.asList(452.89, 538.55)); // A4+50cents, C5+50cents
+        // 523.25 Hz * 1.029302 ≈ 538.55 Hz (50 cents higher than C5)
+        ChordHarmonica boundaryChord = createChordHarmonicaWithTones(
+                Arrays.asList(452.89, 538.55)); // A4+50cents, C5+50cents
 
         // Act
-        // The chords should be equal within the tolerance
-        int result = comparator.compare(chordHarmonica1, chordHarmonica2);
+        int result = comparator.compare(referenceChord, boundaryChord);
 
         // Assert
-        assertEquals(0, result, "Chords with frequencies within tolerance should be equal");
+        assertEquals(0, result, 
+                "Chords with frequencies at the 50 cents tolerance boundary should be equal");
     }
 
     @Test
@@ -239,75 +255,93 @@ class ChordAndDetectionResultComparatorTest {
         }
     }
 
+    /**
+     * Tests the comparison of objects with different note counts and verifies that:
+     * 1. Objects with fewer notes are considered "less than" objects with more notes
+     * 2. Objects of different types (ChordHarmonica and ChordDetectionResult) but with
+     *    the same number of notes and frequencies are considered equal
+     * 
+     * This test is comprehensive as it tests both the primary sorting criterion (note count)
+     * and the cross-type comparison functionality.
+     */
     @Test
     @DisplayName("Test note count comparison with different numbers of notes")
-    void testGetNoteCount() {
-        // Arrange
-        // Create objects with different note counts
-        ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25)); // 2 notes
-        ChordHarmonica chordHarmonica3 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25, 659.25)); // 3 notes
-        ChordHarmonica chordHarmonica4 = createChordHarmonicaWithTones(Arrays.asList(440.0, 523.25, 659.25, 783.99)); // 4 notes
+    void testNoteCountComparison() {
+        // Arrange - Create objects with different note counts (2, 3, and 4 notes)
+        // Two-note objects (A4, C5)
+        ChordHarmonica twoNoteChord = createChordHarmonicaWithTones(
+                Arrays.asList(440.0, 523.25));
+        ChordDetectionResult twoNoteResult = new ChordDetectionResult(
+                Arrays.asList(440.0, 523.25), 0.95);
 
-        ChordDetectionResult result2 = new ChordDetectionResult(Arrays.asList(440.0, 523.25), 0.95); // 2 notes
-        ChordDetectionResult result3 = new ChordDetectionResult(Arrays.asList(440.0, 523.25, 659.25), 0.95); // 3 notes
-        ChordDetectionResult result4 = new ChordDetectionResult(Arrays.asList(440.0, 523.25, 659.25, 783.99), 0.95); // 4 notes
+        // Three-note objects (A4, C5, E5 - major triad)
+        ChordHarmonica threeNoteChord = createChordHarmonicaWithTones(
+                Arrays.asList(440.0, 523.25, 659.25));
+        ChordDetectionResult threeNoteResult = new ChordDetectionResult(
+                Arrays.asList(440.0, 523.25, 659.25), 0.95);
 
-        // Act & Assert
-        // Compare objects with different note counts
-        assertTrue(comparator.compare(chordHarmonica2, chordHarmonica3) < 0, "2-note chord should be less than 3-note chord");
-        assertTrue(comparator.compare(chordHarmonica3, chordHarmonica4) < 0, "3-note chord should be less than 4-note chord");
-        assertTrue(comparator.compare(result2, result3) < 0, "2-note result should be less than 3-note result");
-        assertTrue(comparator.compare(result3, result4) < 0, "3-note result should be less than 4-note result");
+        // Four-note objects (A4, C5, E5, G5 - major seventh chord)
+        ChordHarmonica fourNoteChord = createChordHarmonicaWithTones(
+                Arrays.asList(440.0, 523.25, 659.25, 783.99));
+        ChordDetectionResult fourNoteResult = new ChordDetectionResult(
+                Arrays.asList(440.0, 523.25, 659.25, 783.99), 0.95);
 
-        // Compare ChordHarmonica with ChordDetectionResult
-        assertEquals(0, comparator.compare(chordHarmonica2, result2), "2-note chord should equal 2-note result with same frequencies");
-        assertEquals(0, comparator.compare(chordHarmonica3, result3), "3-note chord should equal 3-note result with same frequencies");
-        assertEquals(0, comparator.compare(chordHarmonica4, result4), "4-note chord should equal 4-note result with same frequencies");
+        // Act & Assert - Test 1: Compare objects with different note counts
+        // Objects with fewer notes should be "less than" objects with more notes
+        assertTrue(comparator.compare(twoNoteChord, threeNoteChord) < 0, 
+                "2-note chord should be less than 3-note chord");
+        assertTrue(comparator.compare(threeNoteChord, fourNoteChord) < 0, 
+                "3-note chord should be less than 4-note chord");
+        assertTrue(comparator.compare(twoNoteResult, threeNoteResult) < 0, 
+                "2-note result should be less than 3-note result");
+        assertTrue(comparator.compare(threeNoteResult, fourNoteResult) < 0, 
+                "3-note result should be less than 4-note result");
+
+        // Act & Assert - Test 2: Compare ChordHarmonica with ChordDetectionResult
+        // Objects of different types but with same note count and frequencies should be equal
+        assertEquals(0, comparator.compare(twoNoteChord, twoNoteResult), 
+                "2-note chord should equal 2-note result with same frequencies");
+        assertEquals(0, comparator.compare(threeNoteChord, threeNoteResult), 
+                "3-note chord should equal 3-note result with same frequencies");
+        assertEquals(0, comparator.compare(fourNoteChord, fourNoteResult), 
+                "4-note chord should equal 4-note result with same frequencies");
     }
 
-    // Note: This test is redundant with testCompareWithChordAndChordDetectionResult
-    // It's kept for completeness but could be removed
+    // This test was removed because it was redundant with testCompareWithChordAndChordDetectionResult
+
+    /**
+     * This test specifically focuses on the frequency comparison aspect of the comparator
+     * with multiple frequencies and different tolerance levels.
+     * While there is some overlap with testCompareWithSameNoteCountAndFrequenciesWithinTolerance,
+     * this test provides more comprehensive coverage by:
+     * 1. Testing with three frequencies instead of two
+     * 2. Testing both within-tolerance and outside-tolerance scenarios in a single test
+     * 3. Using specific musical intervals (50 cents and 100 cents) to verify the tolerance boundaries
+     */
     @Test
-    @DisplayName("Test getFrequencies method with same frequencies")
-    void testGetFrequencies() {
-        // Arrange
-        // Create a ChordHarmonica and a ChordDetectionResult with the same frequencies
-        List<Double> frequencies = Arrays.asList(440.0, 523.25, 659.25);
-        ChordHarmonica chordHarmonica = createChordHarmonicaWithTones(frequencies);
-        ChordDetectionResult detectionResult = new ChordDetectionResult(frequencies, 0.95);
+    @DisplayName("Test frequency comparison with multiple notes and various tolerance levels")
+    void testFrequencyComparisonWithMultipleNotes() {
+        // Arrange - Create reference chord with three notes (A4, C5, E5 - a major triad)
+        List<Double> referenceFrequencies = Arrays.asList(440.0, 523.25, 659.25);
+        ChordHarmonica referenceChord = createChordHarmonicaWithTones(referenceFrequencies);
 
-        // Act
-        // Compare them - they should be equal
-        int result = comparator.compare(chordHarmonica, detectionResult);
+        // Test 1: Identical frequencies
+        List<Double> identicalFrequencies = Arrays.asList(440.0, 523.25, 659.25);
+        ChordHarmonica identicalChord = createChordHarmonicaWithTones(identicalFrequencies);
+        assertEquals(0, comparator.compare(referenceChord, identicalChord), 
+                "Chords with identical frequencies should be equal");
 
-        // Assert
-        assertEquals(0, result, "ChordHarmonica and ChordDetectionResult with same frequencies should be equal");
-    }
+        // Test 2: Frequencies within tolerance (each about 50 cents higher)
+        List<Double> withinToleranceFrequencies = Arrays.asList(452.89, 538.55, 678.45);
+        ChordHarmonica withinToleranceChord = createChordHarmonicaWithTones(withinToleranceFrequencies);
+        assertEquals(0, comparator.compare(referenceChord, withinToleranceChord), 
+                "Chords with frequencies within tolerance (50 cents) should be equal");
 
-    // Note: This test is partially redundant with testCompareWithSameNoteCountAndFrequenciesWithinTolerance
-    // But it adds value by testing multiple frequencies and different tolerance levels
-    @Test
-    @DisplayName("Test areFrequenciesEqual method with various frequency comparisons")
-    void testAreFrequenciesEqual() {
-        // Arrange & Act & Assert - Test with frequencies that are exactly the same
-        List<Double> frequencies1 = Arrays.asList(440.0, 523.25, 659.25);
-        List<Double> frequencies2 = Arrays.asList(440.0, 523.25, 659.25);
-        ChordHarmonica chordHarmonica1 = createChordHarmonicaWithTones(frequencies1);
-        ChordHarmonica chordHarmonica2 = createChordHarmonicaWithTones(frequencies2);
-
-        assertEquals(0, comparator.compare(chordHarmonica1, chordHarmonica2), "Chords with identical frequencies should be equal");
-
-        // Arrange & Act & Assert - Test with frequencies that are within tolerance
-        List<Double> frequencies3 = Arrays.asList(452.89, 538.55, 678.45); // Each about 50 cents higher
-        ChordHarmonica chordHarmonica3 = createChordHarmonicaWithTones(frequencies3);
-
-        assertEquals(0, comparator.compare(chordHarmonica1, chordHarmonica3), "Chords with frequencies within tolerance should be equal");
-
-        // Arrange & Act & Assert - Test with frequencies that are outside tolerance
-        List<Double> frequencies4 = Arrays.asList(466.16, 554.37, 698.46); // Each about 100 cents (semitone) higher
-        ChordHarmonica chordHarmonica4 = createChordHarmonicaWithTones(frequencies4);
-
-        assertNotEquals(0, comparator.compare(chordHarmonica1, chordHarmonica4), "Chords with frequencies outside tolerance should not be equal");
+        // Test 3: Frequencies outside tolerance (each about 100 cents/semitone higher)
+        List<Double> outsideToleranceFrequencies = Arrays.asList(466.16, 554.37, 698.46);
+        ChordHarmonica outsideToleranceChord = createChordHarmonicaWithTones(outsideToleranceFrequencies);
+        assertNotEquals(0, comparator.compare(referenceChord, outsideToleranceChord), 
+                "Chords with frequencies outside tolerance (100 cents) should not be equal");
     }
 
     @Test

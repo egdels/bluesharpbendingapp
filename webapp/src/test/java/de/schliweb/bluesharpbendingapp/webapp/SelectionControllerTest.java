@@ -73,7 +73,7 @@ class SelectionControllerTest {
         String inputJson = """
                 {
                     "selectedKey": "C",
-                    "selectedTune": "Major",
+                    "selectedTune": "RICHTER",
                     "selectedConcertPitch": "440Hz",
                     "selectedConfidence": "High",
                     "selectedAlgorithm": "AlgorithmA",
@@ -81,12 +81,12 @@ class SelectionControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/selection/send").contentType(MediaType.APPLICATION_JSON).content(inputJson).session(session)).andExpect(status().isOk()).andExpect(jsonPath("$.selectedKey").value("C")).andExpect(jsonPath("$.selectedTune").value("Major"));
+        mockMvc.perform(post("/selection/send").contentType(MediaType.APPLICATION_JSON).content(inputJson).session(session)).andExpect(status().isOk()).andExpect(jsonPath("$.selectedKey").value("C")).andExpect(jsonPath("$.selectedTune").value("RICHTER"));
 
         HarmonicaWeb harmonicaWeb = (HarmonicaWeb) session.getAttribute("harmonica");
         assert harmonicaWeb != null;
         assert "C".equals(harmonicaWeb.getSelectedKey());
-        assert "Major".equals(harmonicaWeb.getSelectedTune());
+        assert "RICHTER".equals(harmonicaWeb.getSelectedTune());
         assert "440Hz".equals(session.getAttribute("selectedConcertPitch"));
         assert "High".equals(session.getAttribute("selectedConfidence"));
         assert "AlgorithmA".equals(session.getAttribute("selectedAlgorithm"));
@@ -113,16 +113,16 @@ class SelectionControllerTest {
         String inputJson = """
                 {
                     "selectedKey": "G",
-                    "selectedTune": "Minor"
+                    "selectedTune": "NATURALMOLL"
                 }
                 """;
 
-        mockMvc.perform(post("/selection/send").contentType(MediaType.APPLICATION_JSON).content(inputJson).session(session)).andExpect(status().isOk()).andExpect(jsonPath("$.selectedKey").value("G")).andExpect(jsonPath("$.selectedTune").value("Minor"));
+        mockMvc.perform(post("/selection/send").contentType(MediaType.APPLICATION_JSON).content(inputJson).session(session)).andExpect(status().isOk()).andExpect(jsonPath("$.selectedKey").value("G")).andExpect(jsonPath("$.selectedTune").value("NATURALMOLL"));
 
         HarmonicaWeb harmonicaWeb = (HarmonicaWeb) session.getAttribute("harmonica");
         assert harmonicaWeb != null;
         assert "G".equals(harmonicaWeb.getSelectedKey());
-        assert "Minor".equals(harmonicaWeb.getSelectedTune());
+        assert "NATURALMOLL".equals(harmonicaWeb.getSelectedTune());
         assert session.getAttribute("selectedConcertPitch") == null;
         assert session.getAttribute("selectedConfidence") == null;
         assert session.getAttribute("selectedAlgorithm") == null;
@@ -130,16 +130,22 @@ class SelectionControllerTest {
     }
 
     /**
-     * Tests that the ajaxProcessSelection method correctly handles an empty request body.
+     * Tests that the ajaxProcessSelection method correctly handles a minimal request body.
      * <p>
-     * This test verifies that when an empty JSON object is provided in the request body,
-     * the controller still returns a 200 OK status without throwing exceptions.
-     * This ensures the controller is robust against missing or empty input.
+     * This test verifies that when only the required fields (selectedKey and selectedTune)
+     * are provided in the request body, the controller returns a 200 OK status without
+     * throwing exceptions. This ensures the controller works with minimal input.
      *
      * @throws Exception if an error occurs during the test
      */
     @Test
-    void ajaxProcessSelection_emptyBody_shouldReturnGoodRequest() throws Exception {
-        mockMvc.perform(post("/selection/send").contentType(MediaType.APPLICATION_JSON).content("{}")).andExpect(status().isOk());
+    void ajaxProcessSelection_minimalBody_shouldReturnGoodRequest() throws Exception {
+        String inputJson = """
+                {
+                    "selectedKey": "C",
+                    "selectedTune": "RICHTER"
+                }
+                """;
+        mockMvc.perform(post("/selection/send").contentType(MediaType.APPLICATION_JSON).content(inputJson)).andExpect(status().isOk());
     }
 }

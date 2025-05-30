@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.app;
 
 import de.schliweb.bluesharpbendingapp.controller.MainController;
 import de.schliweb.bluesharpbendingapp.service.VersionService;
+import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController;
@@ -116,8 +117,8 @@ public class MainDesktop extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Load the FXML file for the main window
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main-window.fxml"));
+            // Load the FXML file for the main window with the resource bundle
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main-window.fxml"), I18nUtils.getResourceBundle());
             Parent rootNode = loader.load();
             MainWindowDesktopFXController mainWindowController = loader.getController();
 

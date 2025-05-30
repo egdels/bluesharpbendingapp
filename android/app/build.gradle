@@ -34,7 +34,7 @@ android {
         applicationId "de.schliweb.bluesharpbendingapp"
         minSdk 28
         targetSdk 35
-        versionCode 64
+        versionCode 65
         versionName project.version.toString()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -82,8 +82,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.9.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.9.0'
     implementation 'androidx.core:core-splashscreen:1.0.1'
-    // TODO
-    //implementation('com.microsoft.onnxruntime:onnxruntime-android:1.22.0')
     // Dependency Injection with Dagger
     implementation "com.google.dagger:dagger:${daggerVersion}"
     annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"

@@ -24,6 +24,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  */
 
 import de.schliweb.bluesharpbendingapp.service.VersionService;
+import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.AboutView;
@@ -121,11 +122,13 @@ public class AboutViewDesktopFXController implements AboutView {
         // The version is retrieved from the package implementation details and compared with the latest version from the host
         String latestVersion = VersionService.getVersionFromHost();
         if (latestVersion != null) {
-            String versionText = "Version " + getClass().getPackage().getImplementationVersion() + " (Latest: " + VersionService.getVersionFromHost() + ")";
+            String versionText = String.format("%s (Latest: %s)", 
+                I18nUtils.getString("about.version", getClass().getPackage().getImplementationVersion()),
+                latestVersion);
             versionLabel.setText(versionText);
             LoggingUtils.logDebug("Version label set", versionText);
         } else {
-            String versionText = "Version " + getClass().getPackage().getImplementationVersion();
+            String versionText = I18nUtils.getString("about.version", getClass().getPackage().getImplementationVersion());
             versionLabel.setText(versionText);
             LoggingUtils.logDebug("Version label set", versionText);
         }

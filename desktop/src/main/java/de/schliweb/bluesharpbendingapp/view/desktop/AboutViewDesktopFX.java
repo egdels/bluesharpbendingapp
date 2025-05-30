@@ -23,6 +23,7 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
+import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import javafx.fxml.FXMLLoader;
@@ -89,8 +90,8 @@ AboutViewDesktopFX {
         LoggingContext.setComponent("AboutViewDesktopFX");
         LoggingUtils.logInitializing("About View");
         try {
-            // Load the FXML file for the "About" view
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/about-view.fxml"));
+            // Load the FXML file for the "About" view with the resource bundle
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/about-view.fxml"), I18nUtils.getResourceBundle());
 
             // Save the root node of the FXML
             root = fxmlLoader.load();

@@ -129,6 +129,7 @@
 <script th:inline="javascript" type="module">
     import YINPitchDetector from './scripts/YINPitchDetector.js';
     import MPMPitchDetector from './scripts/MPMPitchDetector.js';
+    import HybridPitchDetector from './scripts/HybridPitchDetector.js';
     import NoteLookup from './scripts/NoteLookup.js';
     import NoteUtils from './scripts/NoteUtils.js';
 
@@ -448,8 +449,8 @@
             const harmonicaMinFrequency = parseFloat(document.getElementById('harmonicaMinFrequency').value);
             const harmonicaMaxFrequency = parseFloat(document.getElementById('harmonicaMaxFrequency').value);
 
-            console.log("minFrequency: " + harmonicaMaxFrequency);
-            console.log("maxFrequency: " + harmonicaMinFrequency);
+            console.log("minFrequency: " + harmonicaMinFrequency);
+            console.log("maxFrequency: " + harmonicaMaxFrequency);
 
 
             // Set frequency range in pitch detectors
@@ -457,6 +458,9 @@
             YINPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
             MPMPitchDetector.setMinFrequency(harmonicaMinFrequency);
             MPMPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
+            HybridPitchDetector.setMinFrequency(harmonicaMinFrequency);
+            HybridPitchDetector.setMaxFrequency(harmonicaMaxFrequency);
+
 
             try {
                 // Request microphone access with error handling
@@ -520,8 +524,11 @@
                         if(algorithm === 'YIN') {
                             result = YINPitchDetector.detectPitch(audioData, audioContext.sampleRate);
                         }
-                        if(algorithm === 'MPM') {
+                        else if(algorithm === 'MPM') {
                             result = MPMPitchDetector.detectPitch(audioData, audioContext.sampleRate);
+                        }
+                        else if(algorithm === 'HYBRID') {
+                            result = HybridPitchDetector.detectPitch(audioData, audioContext.sampleRate);
                         }
                         processAudioResult(result);
                     };

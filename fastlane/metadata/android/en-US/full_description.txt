@@ -1,15 +1,27 @@
-Let's Bend assists blues harmonica players in accurately hitting bending notes.
+Let's Bend: Blues Harmonica Tuner & Trainer assists harmonica players in accurately hitting bending notes through real-time visualization.
 
-The application is ad-free and can be used freely without individual registration. Sounds are read via the standard library MediaRecorder as a continuous data stream, converted into tones using mathematical methods and then be displayed.
+The application is completely free, ad-free, and can be used without registration. Sounds are captured via the MediaRecorder library as a continuous data stream, analyzed using advanced pitch detection algorithms, and displayed in real-time.
 
-All common keys and special tunings of your blues harps are supported and can be set via the settings menu.
+All common keys and special tunings of your blues harps are supported and can be easily configured via the settings menu.
 
 Features:
+• Fast and accurate musical note detection
+• Multiple pitch detection algorithms (YIN, MPM, and HYBRID)
+• Support for all common harmonica keys and tunings
+• Adjustable concert pitch settings
+• Visualization of blow bends, draw bends, over blows, and over draws
+• Customizable confidence settings for pitch detection
 
-• Fast musical note detection
-• App is free and ad-free
-• All common keys and tunes are supported
-• Concert pitch can be set individually
-• In addition to blow and draw bends, over blows and over draws are also supported
+Technical Details (for developers):
+• Open-source project available on GitHub
+• Built using Model-View-Controller (MVC) architecture
+• Developed with Gradle build system
+• Requires Android 9 (API 28) or higher
+• Uses Dagger for dependency injection
+• Implements SLF4J for logging
+• Optimized for privacy (no data collection or storage)
+• Part of a multi-platform project that includes desktop (macOS, Linux, Windows) and web versions
+
+The app is also available for desktop platforms and as a web application at https://www.letsbend.de
 
 Enjoy and Let's Bend!

@@ -38,15 +38,15 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
 
-            <Label text="Trainings" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label text="%training.settings.scale" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboTrainings" GridPane.rowIndex="0" GridPane.columnIndex="1"
                       maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
 
-            <Label text="Precision" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <Label text="%training.settings.precision" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
             <ComboBox fx:id="comboPrecision" GridPane.rowIndex="1" GridPane.columnIndex="1"
                       maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
 
-            <Label text="Progress" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <Label text="%training.progress" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
             <ProgressBar fx:id="progressBar" progress="0.0" GridPane.rowIndex="2"
                          GridPane.columnIndex="1" maxWidth="Infinity"/>
 
@@ -77,8 +77,8 @@
             <padding>
                 <Insets top="10" right="20" bottom="20" left="20"/>
             </padding>
-            <Button fx:id="startButton" text="Start" onAction="#handleStartButton" styleClass="button, primary"/>
-            <Button fx:id="stopButton" text="Stop" onAction="#handleStopButton" disable="true" styleClass="button"/>
+            <Button fx:id="startButton" text="%training.control.start" onAction="#handleStartButton" styleClass="button, primary"/>
+            <Button fx:id="stopButton" text="%training.control.stop" onAction="#handleStopButton" disable="true" styleClass="button"/>
         </HBox>
     </bottom>
 
