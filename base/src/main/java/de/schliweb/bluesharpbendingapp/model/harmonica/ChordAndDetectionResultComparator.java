@@ -87,7 +87,10 @@ public class ChordAndDetectionResultComparator implements Comparator<Object> {
             double f2 = copyFrequency2.get(i);
             String n1 = NoteLookup.getNoteName(f1);
             String n2 = NoteLookup.getNoteName(f2);
-            assert n1 != null;
+
+            if (n1 == null || n2 == null) {
+                return false;
+            }
             if (!n1.equals(n2)) {
                 return false;
             }
