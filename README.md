@@ -4,6 +4,14 @@
 
 ---
 
+## 🎥 Live Demo
+
+See how **Let's Bend** detects and visualizes bent notes in real time:
+
+![Let's Bend – Demo](webapp/src/main/resources/static/images/letsbend_demo_short.gif)
+
+---
+
 ## Project Goal
 
 The main goals of the Bluesharp Bending App are:
