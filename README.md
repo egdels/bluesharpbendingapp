@@ -171,6 +171,14 @@ Contributions to this project are welcome! Follow these steps to contribute:
 
 ---
 
+## ⭐ Support the Project
+
+If you find this app helpful, please consider giving it a ⭐ on GitHub – it helps others discover it too!
+
+[![GitHub stars](https://img.shields.io/github/stars/egdels/bluesharpbendingapp?style=social)](https://github.com/egdels/bluesharpbendingapp)
+
+---
+
 ## License
 
 This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
