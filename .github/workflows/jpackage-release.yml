@@ -28,6 +28,8 @@ jobs:
 
       - name: Run jpackage in :desktop
         run: ./gradlew :desktop:jpackage
+        env:
+          GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
 
       - name: Upload installer to GitHub Release
         uses: softprops/action-gh-release@v1
