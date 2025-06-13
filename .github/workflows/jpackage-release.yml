@@ -1,0 +1,43 @@
+name: Build & Release with jpackage
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Make Gradle executable (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: chmod +x ./gradlew
+
+      - name: Run jpackage in :desktop
+        run: ./gradlew :desktop:jpackage
+
+      - name: Upload installer to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: desktop/build/jpackage/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload installer as GitHub Actions artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: native-installer-${{ runner.os }}
+          path: desktop/build/jpackage/

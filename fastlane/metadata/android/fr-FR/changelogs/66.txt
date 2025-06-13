@@ -1,0 +1,2 @@
+* FFT avec commons-math3
+* Correction de l’affichage sans bordure pour Android 15 et versions ultérieures

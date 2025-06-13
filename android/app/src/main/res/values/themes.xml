@@ -29,6 +29,11 @@
         <!-- Enable dynamic colors on Android 12+ -->
         <item name="android:windowLightStatusBar">true</item>
 
+        <!-- System bar attributes for Android 15+ -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
         <!-- Material 3 color attributes -->
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>

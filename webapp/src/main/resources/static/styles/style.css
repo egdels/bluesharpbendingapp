@@ -194,6 +194,11 @@ nav {
     background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
+h1 {
+    color: white;
+    text-align: center;
+}
+
 /* ---------------- End Header Styles --------------------------- */
 
 /* ---------------- Start Link Styles --------------------------- */

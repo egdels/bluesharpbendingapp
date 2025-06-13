@@ -1,0 +1,3 @@
+* Se agregó soporte de interfaz multilingüe para alemán, español, francés, japonés y chino.
+* La aplicación ahora utiliza la configuración de idioma del dispositivo para determinar automáticamente el idioma de la interfaz.
+* El idioma predeterminado se establece en inglés si el idioma del dispositivo no es compatible.

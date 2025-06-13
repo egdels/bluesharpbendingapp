@@ -1,0 +1,27 @@
+Let's Bend: Afinador y Entrenador de Armónica Blues ayuda a los músicos de armónica a tocar con precisión las notas de flexión mediante visualización en tiempo real.
+
+La aplicación es completamente gratuita, sin publicidad y se puede utilizar sin registro. Los sonidos se capturan a través de la biblioteca MediaRecorder como un flujo continuo de datos, se analizan utilizando algoritmos avanzados de detección de tono y se muestran en tiempo real.
+
+Todas las tonalidades comunes y afinaciones especiales de tus armónicas blues son compatibles y se pueden configurar fácilmente a través del menú de configuración.
+
+Características:
+• Detección rápida y precisa de notas musicales
+• Múltiples algoritmos de detección de tono (YIN, MPM e HÍBRIDO)
+• Soporte para todas las tonalidades y afinaciones comunes de armónica
+• Configuración ajustable de tono de concierto
+• Visualización de flexiones de soplido, flexiones de aspiración, sobresoplidos y sobreaspirados
+• Configuración personalizable de confianza para la detección de tono
+
+Detalles técnicos (para desarrolladores):
+• Proyecto de código abierto disponible en GitHub
+• Construido utilizando arquitectura Modelo-Vista-Controlador (MVC)
+• Desarrollado con sistema de compilación Gradle
+• Requiere Android 9 (API 28) o superior
+• Utiliza Dagger para inyección de dependencias
+• Implementa SLF4J para registro
+• Optimizado para privacidad (sin recopilación ni almacenamiento de datos)
+• Parte de un proyecto multiplataforma que incluye versiones de escritorio (macOS, Linux, Windows) y web
+
+La aplicación también está disponible para plataformas de escritorio y como aplicación web en https://letsbend.de
+
+¡Disfruta y Let's Bend!

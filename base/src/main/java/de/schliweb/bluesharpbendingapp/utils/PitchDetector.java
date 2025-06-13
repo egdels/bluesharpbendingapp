@@ -25,15 +25,24 @@ package de.schliweb.bluesharpbendingapp.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.transform.DftNormalization;
+import org.apache.commons.math3.transform.FastFourierTransformer;
+import org.apache.commons.math3.transform.TransformType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 /**
- * An abstract class representing a generic pitch detector for audio signals.
- * Provides core functionalities for detecting pitch using different algorithms.
- * Subclasses are required to implement specific pitch detection logic.
+ * The PitchDetector class provides functionality for analyzing audio data and detecting
+ * pitch and harmonic content. It supports multiple pitch detection algorithms, including
+ * YIN, MPM, FFT, and a Hybrid method. Additionally, it provides utility methods for
+ * operations such as RMS calculation, spectral analysis, and noise determination.
+ * <p>
+ * The class includes static methods for backward compatibility and protected methods
+ * for more advanced or specific signal processing tasks. It is suitable for applications
+ * in audio analysis, music processing, and speech analysis.
  */
 public abstract class PitchDetector {
 
@@ -181,18 +190,6 @@ public abstract class PitchDetector {
     }
 
     /**
-     * Checks if the audio data is silent (contains only very small values).
-     *
-     * @param audioData an array of double values representing the audio signal.
-     * @param threshold the threshold below which the signal is considered silent.
-     * @return true if the audio data is silent, false otherwise.
-     */
-    protected static boolean isSilent(double[] audioData, double threshold) {
-        double rms = calcRMS(audioData);
-        return rms < threshold;
-    }
-
-    /**
      * Applies parabolic interpolation to refine a peak index.
      * This method is used by pitch detection algorithms to improve the accuracy
      * of peak detection in various functions (NSDF, CMNDF, etc.).
@@ -229,77 +226,6 @@ public abstract class PitchDetector {
     }
 
     /**
-     * Performs an in-place Fast Fourier Transform (FFT) on the input data.
-     * This is a radix-2 decimation-in-time FFT algorithm.
-     *
-     * @param data the input/output data array (complex numbers as pairs of real, imaginary)
-     * @param n    the size of the FFT (number of complex numbers)
-     */
-    protected static void fft(double[] data, int n) {
-        // Bit-reversal permutation
-        int shift = 1;
-        while (shift < n) {
-            shift <<= 1;
-        }
-        shift >>= 1;
-
-        // Bit reversal
-        int i, j;
-        for (i = 0; i < n; i++) {
-            j = bitReverse(i, shift);
-            if (j > i) {
-                // Swap real parts
-                double temp = data[i * 2];
-                data[i * 2] = data[j * 2];
-                data[j * 2] = temp;
-
-                // Swap imaginary parts
-                temp = data[i * 2 + 1];
-                data[i * 2 + 1] = data[j * 2 + 1];
-                data[j * 2 + 1] = temp;
-            }
-        }
-
-        // Cooley-Tukey FFT
-        for (int len = 2; len <= n; len <<= 1) {
-            double angle = -2 * Math.PI / len;
-            double wReal = Math.cos(angle);
-            double wImag = Math.sin(angle);
-
-            for (i = 0; i < n; i += len) {
-                double uReal = 1.0;
-                double uImag = 0.0;
-
-                for (j = 0; j < len / 2; j++) {
-                    int p = i + j;
-                    int q = i + j + len / 2;
-
-                    double pReal = data[p * 2];
-                    double pImag = data[p * 2 + 1];
-                    double qReal = data[q * 2];
-                    double qImag = data[q * 2 + 1];
-
-                    // Temporary values for the multiplication
-                    double tempReal = uReal * qReal - uImag * qImag;
-                    double tempImag = uReal * qImag + uImag * qReal;
-
-                    // Update data
-                    data[q * 2] = pReal - tempReal;
-                    data[q * 2 + 1] = pImag - tempImag;
-                    data[p * 2] = pReal + tempReal;
-                    data[p * 2 + 1] = pImag + tempImag;
-
-                    // Update u
-                    double nextUReal = uReal * wReal - uImag * wImag;
-                    double nextUImag = uReal * wImag + uImag * wReal;
-                    uReal = nextUReal;
-                    uImag = nextUImag;
-                }
-            }
-        }
-    }
-
-    /**
      * Applies a Hann window function to the sample at the given index.
      *
      * @param index the index of the sample
@@ -308,23 +234,6 @@ public abstract class PitchDetector {
      */
     protected static double hannWindow(int index, int size) {
         return 0.5 * (1 - Math.cos(2 * Math.PI * index / (size - 1)));
-    }
-
-    /**
-     * Reverses the bits of an integer value up to the given shift.
-     *
-     * @param value the value to reverse
-     * @param shift the bit position to reverse up to
-     * @return the bit-reversed value
-     */
-    protected static int bitReverse(int value, int shift) {
-        int result = 0;
-        while (shift > 0) {
-            result = (result << 1) | (value & 1);
-            value >>= 1;
-            shift >>= 1;
-        }
-        return result;
     }
 
     /**
@@ -435,6 +344,134 @@ public abstract class PitchDetector {
     }
 
     /**
+     * Prepares the input for a Fast Fourier Transform (FFT) by converting a real-valued
+     * audio signal array into an array of complex numbers. The audio data is weighted
+     * using a Hann window function. If the length of the audio data is smaller than the
+     * specified FFT size, the rest of the array is zero-padded.
+     *
+     * @param audioData The array of real-valued audio signal data.
+     * @param fftSize   The size of the FFT to be performed; determines the size of the
+     *                  returned complex array.
+     * @return An array of complex numbers, representing the weighted and zero-padded
+     * audio data, prepared for FFT.
+     */
+    protected static Complex[] prepareFFTInput(double[] audioData, int fftSize) {
+        Complex[] complexInput = new Complex[fftSize];
+
+        // Parallel processing for large arrays
+        if (audioData.length > 10000) {
+            IntStream.range(0, fftSize).parallel().forEach(i -> {
+                if (i < audioData.length) {
+                    complexInput[i] = new Complex(audioData[i] * hannWindow(i, audioData.length), 0);
+                } else {
+                    complexInput[i] = new Complex(0, 0);
+                }
+            });
+        } else {
+            // Serial processing for smaller arrays
+            for (int i = 0; i < fftSize; i++) {
+                if (i < audioData.length) {
+                    complexInput[i] = new Complex(audioData[i] * hannWindow(i, audioData.length), 0);
+                } else {
+                    complexInput[i] = new Complex(0, 0);
+                }
+            }
+        }
+
+        return complexInput;
+    }
+
+    /**
+     * Performs a Fast Fourier Transform (FFT) on the given complex input data
+     * and converts the result into an interleaved array of real and imaginary values.
+     *
+     * @param complexInput an array of Complex numbers representing the input signal
+     *                     for the FFT operation
+     * @param fftSize      the size of the FFT to be performed
+     * @return an array of double values of size 2 * fftSize, where each pair of
+     * consecutive values represents the real and imaginary parts of the FFT result
+     */
+    protected static double[] performFFT(Complex[] complexInput, int fftSize) {
+        // Perform FFT using Commons Math
+        FastFourierTransformer transformer = new FastFourierTransformer(DftNormalization.STANDARD);
+        Complex[] result = transformer.transform(complexInput, TransformType.FORWARD);
+
+        // Convert result to format expected by rest of code
+        double[] fftOutput = new double[fftSize * 2];
+        for (int i = 0; i < fftSize; i++) {
+            fftOutput[i * 2] = result[i].getReal();
+            fftOutput[i * 2 + 1] = result[i].getImaginary();
+        }
+        return fftOutput;
+    }
+
+    /**
+     * Calculates the magnitude spectrum from the FFT output.
+     *
+     * @param fftOutput an array containing the FFT output, where even indices are real parts
+     *                  and odd indices are imaginary parts
+     * @param fftSize   the size of the FFT, must be an even integer
+     * @return an array representing the magnitude spectrum, where each element corresponds
+     * to the magnitude of a frequency bin
+     */
+    protected static double[] calculateMagnitudeSpectrum(double[] fftOutput, int fftSize) {
+        double[] magnitudeSpectrum = new double[fftSize / 2];
+        IntStream.range(0, fftSize / 2).parallel().forEach(i -> {
+            double real = fftOutput[i * 2];
+            double imag = fftOutput[i * 2 + 1];
+            magnitudeSpectrum[i] = Math.sqrt(real * real + imag * imag);
+        });
+        return magnitudeSpectrum;
+    }
+
+    /**
+     * Identifies and refines peaks in a given magnitude spectrum. Peaks are
+     * detected based on a threshold and are further refined using parabolic
+     * interpolation. The results are sorted by peak magnitude in descending order.
+     *
+     * @param magnitudeSpectrum an array representing the magnitude spectrum of the signal
+     * @param sampleRate        the sample rate of the signal in Hz
+     * @param fftSize           the size of the FFT (Fast Fourier Transform) used to compute the spectrum
+     * @param peakThreshold     the minimum magnitude a peak must have to be considered valid
+     * @return a list of detected and refined peaks, sorted by magnitude in descending order
+     */
+    protected static List<Peak> findPeaks(double[] magnitudeSpectrum, int sampleRate, int fftSize, double peakThreshold) {
+        List<Peak> peaks = new ArrayList<>();
+
+        // Skip initial bins (DC and very low frequencies)
+        int startBin = Math.max(1, (int) (minFrequency * fftSize / sampleRate));
+        int endBin = Math.min(magnitudeSpectrum.length - 1, (int) (maxFrequency * fftSize / sampleRate));
+
+        for (int i = startBin + 1; i < endBin - 1; i++) {
+            // Check if this is a local maximum
+            if (magnitudeSpectrum[i] > magnitudeSpectrum[i - 1] && magnitudeSpectrum[i] > magnitudeSpectrum[i + 1] && magnitudeSpectrum[i] > peakThreshold) {
+
+                // Refine peak position using parabolic interpolation
+                double refinedBin = parabolicInterpolation(magnitudeSpectrum, i);
+                double frequency = refinedBin * sampleRate / fftSize;
+
+                // Add the peak to the list
+                peaks.add(new Peak(frequency, magnitudeSpectrum[i]));
+            }
+        }
+
+        // Sort peaks by magnitude (descending)
+        peaks.sort((p1, p2) -> Double.compare(p2.magnitude, p1.magnitude));
+
+        return peaks;
+    }
+
+    /**
+     * Finds the next power of two greater than or equal to the given number.
+     *
+     * @param n the number to find the next power of two for
+     * @return the next power of two
+     */
+    protected int nextPowerOfTwo(int n) {
+        return (int) Math.pow(2, Math.ceil(Math.log(n) / Math.log(2)));
+    }
+
+    /**
      * Detects the pitch of an audio signal using the specific algorithm implemented by the subclass.
      *
      * @param audioData  an array of double values representing the audio signal.
@@ -450,4 +487,56 @@ public abstract class PitchDetector {
      */
     public record PitchDetectionResult(double pitch, double confidence) {
     }
+
+    /**
+     * Represents a peak in a frequency spectrum characterized by its
+     * frequency and magnitude. This class is used to encapsulate the
+     * attributes of a spectral peak for further analysis or processing.
+     */
+    protected static class Peak {
+        /**
+         * Represents the frequency of a spectral peak in Hertz (Hz).
+         * This value identifies the specific component of the spectrum
+         * characterized by its oscillation rate per second, commonly
+         * used in audio signal processing and frequency analysis.
+         */
+        final double frequency;
+
+        /**
+         * Represents the magnitude (amplitude) of a spectral peak in a frequency spectrum.
+         * Magnitude indicates the strength or intensity of the frequency component at a specific peak.
+         * <p>
+         * This value is typically used in audio signal processing and frequency analysis to
+         * quantify the contribution of a particular frequency to the overall signal.
+         */
+        final double magnitude;
+
+        /**
+         * Constructs a Peak object with the specified frequency and magnitude.
+         * This constructor initializes the frequency and magnitude of the peak,
+         * which represent the characteristics of a spectral peak in a frequency spectrum.
+         *
+         * @param frequency The frequency of the spectral peak in Hertz (Hz).
+         *                  This value identifies the specific component in the spectrum.
+         * @param magnitude The magnitude (amplitude) of the spectral peak, which represents
+         *                  the intensity or strength of the frequency component.
+         */
+        protected Peak(double frequency, double magnitude) {
+            this.frequency = frequency;
+            this.magnitude = magnitude;
+        }
+
+        /**
+         * Returns a string representation of the Peak object. The string includes
+         * the frequency and magnitude of the peak in a formatted structure.
+         *
+         * @return A string representation of the Peak object in the format:
+         * "Peak[frequency Hz, mag=magnitude]".
+         */
+        @Override
+        public String toString() {
+            return String.format("Peak[%.2f Hz, mag=%.4f]", frequency, magnitude);
+        }
+    }
+
 }

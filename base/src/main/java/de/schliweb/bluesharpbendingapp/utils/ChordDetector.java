@@ -23,6 +23,8 @@ package de.schliweb.bluesharpbendingapp.utils;
  *
  */
 
+import org.apache.commons.math3.complex.Complex;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -127,42 +129,25 @@ public class ChordDetector extends PitchDetector {
      * @return a ChordDetectionResult containing the detected pitches and confidence.
      */
     public ChordDetectionResult detectChordInternal(double[] audioData, int sampleRate) {
-        LoggingUtils.logDebug("Detecting chord using spectral analysis", 
-                             "Sample rate: " + sampleRate + " Hz, data length: " + audioData.length);
+        LoggingUtils.logDebug("Detecting chord using spectral analysis", "Sample rate: " + sampleRate + " Hz, data length: " + audioData.length);
         LoggingUtils.logOperationStarted("Chord detection");
 
         // Prepare for FFT (needs power of 2 size)
         int fftSize = Math.max(1024, nextPowerOfTwo(audioData.length));
         LoggingUtils.logDebug("FFT size", String.valueOf(fftSize));
 
-        double[] fftInput = new double[fftSize * 2]; // Complex numbers (real, imag)
+        Complex[] complexInput = prepareFFTInput(audioData, fftSize);
+        double[] fftOutput = performFFT(complexInput, fftSize);
 
-        // Apply window function and prepare FFT input - parallelized
-        IntStream.range(0, audioData.length).parallel().forEach(i -> {
-            fftInput[i * 2] = audioData[i] * hannWindow(i, audioData.length);
-            fftInput[i * 2 + 1] = 0; // Imaginary part is zero
-        });
-
-        // Perform FFT
-        fft(fftInput, fftSize);
-
-        // Calculate magnitude spectrum - parallelized
-        double[] magnitudeSpectrum = new double[fftSize / 2];
-        IntStream.range(0, fftSize / 2).parallel().forEach(i -> {
-            double real = fftInput[i * 2];
-            double imag = fftInput[i * 2 + 1];
-            magnitudeSpectrum[i] = Math.sqrt(real * real + imag * imag);
-        });
+        double[] magnitudeSpectrum = calculateMagnitudeSpectrum(fftOutput, fftSize);
 
         // Calculate spectral flatness to distinguish between tonal sounds and noise
         double spectralFlatness = calculateSpectralFlatness(magnitudeSpectrum, sampleRate);
-        LoggingUtils.logDebug("Spectral flatness", String.format("%.4f (threshold: %.4f)", 
-                             spectralFlatness, SPECTRAL_FLATNESS_THRESHOLD));
+        LoggingUtils.logDebug("Spectral flatness", String.format("%.4f (threshold: %.4f)", spectralFlatness, SPECTRAL_FLATNESS_THRESHOLD));
 
         // If the spectral flatness is high, it's likely noise
         if (spectralFlatness > SPECTRAL_FLATNESS_THRESHOLD) {
-            LoggingUtils.logDebug("Audio signal classified as noise", 
-                                "Spectral flatness above threshold, returning empty result");
+            LoggingUtils.logDebug("Audio signal classified as noise", "Spectral flatness above threshold, returning empty result");
             LoggingUtils.logOperationCompleted("Chord detection (noise detected)");
             return new ChordDetectionResult(List.of(), 0.0);
         }
@@ -174,7 +159,7 @@ public class ChordDetector extends PitchDetector {
         }
 
         // Find peaks in the spectrum
-        List<Peak> peaks = findPeaks(magnitudeSpectrum, sampleRate, fftSize);
+        List<Peak> peaks = PitchDetector.findPeaks(magnitudeSpectrum, sampleRate, fftSize, PEAK_THRESHOLD);
         LoggingUtils.logDebug("Initial peaks found", String.valueOf(peaks.size()));
 
         // Filter peaks based on frequency range and threshold
@@ -217,49 +202,13 @@ public class ChordDetector extends PitchDetector {
                 if (i > 0) pitchesStr.append(", ");
                 pitchesStr.append(String.format("%.2f Hz", result.getPitch(i)));
             }
-            LoggingUtils.logDebug("Detected chord", 
-                                 String.format("%d pitches [%s] with confidence %.2f", 
-                                              result.getPitchCount(), pitchesStr, confidence));
+            LoggingUtils.logDebug("Detected chord", String.format("%d pitches [%s] with confidence %.2f", result.getPitchCount(), pitchesStr, confidence));
         } else {
             LoggingUtils.logDebug("No chord detected", "Confidence: " + confidence);
         }
 
         LoggingUtils.logOperationCompleted("Chord detection");
         return result;
-    }
-
-    /**
-     * Finds peaks in the magnitude spectrum that correspond to pitches.
-     *
-     * @param magnitudeSpectrum the magnitude spectrum from FFT
-     * @param sampleRate        the sample rate of the audio signal in Hz
-     * @param fftSize           the size of the FFT
-     * @return a list of peaks found in the spectrum
-     */
-    private List<Peak> findPeaks(double[] magnitudeSpectrum, int sampleRate, int fftSize) {
-        List<Peak> peaks = new ArrayList<>();
-
-        // Skip the first few bins (DC and very low frequencies)
-        int startBin = Math.max(1, (int) (minFrequency * fftSize / sampleRate));
-        int endBin = Math.min(magnitudeSpectrum.length - 1, (int) (maxFrequency * fftSize / sampleRate));
-
-        for (int i = startBin + 1; i < endBin - 1; i++) {
-            // Check if this is a local maximum
-            if (magnitudeSpectrum[i] > magnitudeSpectrum[i - 1] && magnitudeSpectrum[i] > magnitudeSpectrum[i + 1] && magnitudeSpectrum[i] > PEAK_THRESHOLD) {
-
-                // Refine the peak position using parabolic interpolation
-                double refinedBin = parabolicInterpolation(magnitudeSpectrum, i);
-                double frequency = refinedBin * sampleRate / fftSize;
-
-                // Add the peak to the list
-                peaks.add(new Peak(frequency, magnitudeSpectrum[i]));
-            }
-        }
-
-        // Sort peaks by magnitude (descending)
-        peaks.sort((p1, p2) -> Double.compare(p2.magnitude, p1.magnitude));
-
-        return peaks;
     }
 
     /**
@@ -315,20 +264,6 @@ public class ChordDetector extends PitchDetector {
         mergedPeaks.add(currentPeak);
 
         return mergedPeaks;
-    }
-
-    /**
-     * Finds the next power of two greater than or equal to the given number.
-     *
-     * @param n the number to find the next power of two for
-     * @return the next power of two
-     */
-    private int nextPowerOfTwo(int n) {
-        int power = 1;
-        while (power < n) {
-            power *= 2;
-        }
-        return power;
     }
 
     /**
@@ -449,19 +384,4 @@ public class ChordDetector extends PitchDetector {
 
         return prioritizedPeaks;
     }
-
-    /**
-     * Represents a peak in the frequency spectrum.
-     */
-    private static class Peak {
-        final double frequency;
-        final double magnitude;
-
-        Peak(double frequency, double magnitude) {
-            this.frequency = frequency;
-            this.magnitude = magnitude;
-        }
-    }
-
-
 }

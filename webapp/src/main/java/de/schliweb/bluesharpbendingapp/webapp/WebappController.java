@@ -26,8 +26,12 @@ package de.schliweb.bluesharpbendingapp.webapp;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -40,6 +44,9 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class WebappController {
+
+    @Autowired
+    private Environment environment;
 
     /**
      * Handles requests for the index page, which serves as the main landing page
@@ -202,6 +209,18 @@ public class WebappController {
 
         modelAndView.setViewName("tuner");
         return modelAndView;
+    }
+
+    /**
+     * Handles requests for the version.txt file, which returns the current version of the application
+     * as plain text. This endpoint is used by clients to check for updates.
+     *
+     * @return the application version as plain text
+     */
+    @GetMapping(value = "/download/version.txt", produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String getVersion() {
+        return environment.getProperty("spring.application.version");
     }
 
     /**

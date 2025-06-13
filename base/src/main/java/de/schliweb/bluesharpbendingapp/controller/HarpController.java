@@ -74,7 +74,7 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
     private NoteContainer[] noteContainers;
     private final ChordAndDetectionResultComparator chordComparator = new ChordAndDetectionResultComparator();
     private MicrophoneController microphoneController;
-
+    private List<ChordHarmonica> possibleChords;
     /**
      * Constructs a new HarpController with the specified dependencies.
      *
@@ -94,6 +94,7 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
         LoggingUtils.logDebug("Creating and setting harmonica using stored key and tune indices");
         this.harmonica = AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex());
+        this.possibleChords = harmonica.getPossibleChords();
         PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
         PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
         LoggingUtils.logInitialized("HarpController");
@@ -167,7 +168,10 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
         }
 
         boolean chordDetected = false;
-        List<ChordHarmonica> chords = harmonica.getPossibleChords();
+        if (possibleChords == null) {
+            possibleChords = harmonica.getPossibleChords();
+        }
+        List<ChordHarmonica> chords = possibleChords;
 
         for (ChordHarmonica chord : chords) {
             if (chordComparator.compare(chord, chordResult) == 0) {
@@ -234,6 +238,7 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
         LoggingUtils.logDebug("Creating and setting a new harmonica based on the selected key and the stored tune");
         harmonica = AbstractHarmonica.create(keyIndex, model.getStoredTuneIndex());
+        possibleChords = harmonica.getPossibleChords();
         PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
         PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
         long startTime = System.currentTimeMillis();
@@ -255,6 +260,7 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
 
         LoggingUtils.logDebug("Creating and setting a new harmonica based on the stored key and the selected tune");
         harmonica = AbstractHarmonica.create(model.getStoredKeyIndex(), tuneIndex);
+        possibleChords = harmonica.getPossibleChords();
         PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
         PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
         long startTime = System.currentTimeMillis();
@@ -506,6 +512,7 @@ public class HarpController implements HarpSettingsViewHandler, HarpViewHandler,
         LoggingUtils.logDebug("Stored key index: " + storedKeyIndex + ", Stored tune index: " + storedTuneIndex);
 
         harmonica = AbstractHarmonica.create(storedKeyIndex, storedTuneIndex);
+        possibleChords = harmonica.getPossibleChords();
         PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
         PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
         long startTime = System.currentTimeMillis();

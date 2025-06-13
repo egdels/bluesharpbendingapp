@@ -1,0 +1,2 @@
+* FFT con commons-math3
+* Corrección de la visualización sin bordes para Android 15 y versiones posteriores

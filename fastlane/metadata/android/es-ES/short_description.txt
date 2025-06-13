@@ -1,0 +1,1 @@
+Afinador para aprender técnicas de flexión en armónica con feedback visual.

@@ -1,0 +1,27 @@
+Let's Bend: Blues Mundharmonika-Tuner & Trainer unterstützt Mundharmonikaspieler dabei, Bending-Noten durch Echtzeit-Visualisierung präzise zu treffen.
+
+Die Anwendung ist vollständig kostenlos, werbefrei und kann ohne Registrierung genutzt werden. Töne werden über die MediaRecorder-Bibliothek als kontinuierlicher Datenstrom erfasst, mit fortschrittlichen Tonhöhenerkennungsalgorithmen analysiert und in Echtzeit angezeigt.
+
+Alle gängigen Tonarten und speziellen Stimmungen Ihrer Blues-Harps werden unterstützt und können einfach über das Einstellungsmenü konfiguriert werden.
+
+Funktionen:
+• Schnelle und präzise Musiknotenerkennung
+• Mehrere Tonhöhenerkennungsalgorithmen (YIN, MPM und HYBRID)
+• Unterstützung für alle gängigen Mundharmonika-Tonarten und -Stimmungen
+• Einstellbare Konzerttonhöheneinstellungen
+• Visualisierung von Blow Bends, Draw Bends, Over Blows und Over Draws
+• Anpassbare Konfidenzeinstellungen für die Tonhöhenerkennung
+
+Technische Details (für Entwickler):
+• Open-Source-Projekt auf GitHub verfügbar
+• Aufgebaut mit Model-View-Controller (MVC) Architektur
+• Entwickelt mit Gradle-Build-System
+• Erfordert Android 9 (API 28) oder höher
+• Verwendet Dagger für Dependency Injection
+• Implementiert SLF4J für Logging
+• Optimiert für Datenschutz (keine Datenerfassung oder -speicherung)
+• Teil eines Multi-Plattform-Projekts, das Desktop-Versionen (macOS, Linux, Windows) und Web-Versionen umfasst
+
+Die App ist auch für Desktop-Plattformen und als Web-Anwendung unter https://letsbend.de verfügbar.
+
+Viel Spaß und Let's Bend!

@@ -1,0 +1,3 @@
+* Mehrsprachige Benutzeroberfläche für Deutsch, Spanisch, Französisch, Japanisch und Chinesisch hinzugefügt.
+* Die App verwendet jetzt die Spracheinstellungen des Geräts, um die UI-Sprache automatisch zu bestimmen.
+* Die Standardsprache ist Englisch, wenn die Gerätesprache nicht unterstützt wird.

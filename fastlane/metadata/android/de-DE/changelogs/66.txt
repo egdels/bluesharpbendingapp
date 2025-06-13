@@ -1,0 +1,2 @@
+* FFT mit commons-math3
+* Behebung der randlosen Anzeige für Android 15 und höher

@@ -1,0 +1,3 @@
+* Ajout du support d'interface multilingue pour l'allemand, l'espagnol, le français, le japonais et le chinois.
+* L'application utilise désormais les paramètres de langue de l'appareil pour déterminer automatiquement la langue de l'interface.
+* La langue par défaut est l'anglais si la langue de l'appareil n'est pas prise en charge.

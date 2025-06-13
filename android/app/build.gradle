@@ -34,7 +34,7 @@ android {
         applicationId "de.schliweb.bluesharpbendingapp"
         minSdk 28
         targetSdk 35
-        versionCode 65
+        versionCode 66
         versionName project.version.toString()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -76,7 +76,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.9.0'
@@ -91,7 +91,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation 'androidx.core:core-ktx:1.16.0'
     testImplementation 'junit:junit:4.13.2'
-    debugImplementation "androidx.fragment:fragment-testing:1.8.7"
+    debugImplementation "androidx.fragment:fragment-testing:1.8.8"
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation 'androidx.test:runner:1.6.2'

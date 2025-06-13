@@ -22,6 +22,6 @@ Technical Details (for developers):
 • Optimized for privacy (no data collection or storage)
 • Part of a multi-platform project that includes desktop (macOS, Linux, Windows) and web versions
 
-The app is also available for desktop platforms and as a web application at https://www.letsbend.de
+The app is also available for desktop platforms and as a web application at https://letsbend.de
 
 Enjoy and Let's Bend!

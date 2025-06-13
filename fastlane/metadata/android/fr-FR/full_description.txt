@@ -1,0 +1,27 @@
+Let's Bend: Accordeur et Entraîneur d'Harmonica Blues aide les joueurs d'harmonica à jouer avec précision les notes fléchies grâce à une visualisation en temps réel.
+
+L'application est entièrement gratuite, sans publicité et peut être utilisée sans inscription. Les sons sont capturés via la bibliothèque MediaRecorder sous forme de flux de données continu, analysés à l'aide d'algorithmes avancés de détection de hauteur, et affichés en temps réel.
+
+Toutes les tonalités courantes et les accordages spéciaux de vos harmonicas blues sont pris en charge et peuvent être facilement configurés via le menu des paramètres.
+
+Fonctionnalités:
+• Détection rapide et précise des notes musicales
+• Plusieurs algorithmes de détection de hauteur (YIN, MPM et HYBRIDE)
+• Prise en charge de toutes les tonalités et accordages courants d'harmonica
+• Paramètres de diapason ajustables
+• Visualisation des flexions de souffle, flexions d'aspiration, sur-souffles et sur-aspirations
+• Paramètres de confiance personnalisables pour la détection de hauteur
+
+Détails techniques (pour les développeurs):
+• Projet open-source disponible sur GitHub
+• Construit en utilisant l'architecture Modèle-Vue-Contrôleur (MVC)
+• Développé avec le système de build Gradle
+• Nécessite Android 9 (API 28) ou supérieur
+• Utilise Dagger pour l'injection de dépendances
+• Implémente SLF4J pour la journalisation
+• Optimisé pour la confidentialité (aucune collecte ou stockage de données)
+• Partie d'un projet multi-plateforme qui inclut des versions pour ordinateur (macOS, Linux, Windows) et web
+
+L'application est également disponible pour les plateformes de bureau et comme application web sur https://letsbend.de
+
+Profitez-en et Let's Bend!

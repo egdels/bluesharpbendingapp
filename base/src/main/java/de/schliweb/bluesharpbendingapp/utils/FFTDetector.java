@@ -23,6 +23,8 @@ package de.schliweb.bluesharpbendingapp.utils;
  *
  */
 
+import org.apache.commons.math3.complex.Complex;
+
 import java.util.stream.IntStream;
 
 /**
@@ -84,8 +86,9 @@ public class FFTDetector extends PitchDetector {
     @Override
     public PitchDetectionResult detectPitch(double[] audioData, int sampleRate) {
         int fftSize = Math.max(MIN_FFT_SIZE, nextPowerOfTwo(audioData.length));
-        double[] fftInput = prepareFFTInput(audioData, fftSize);
+        Complex[] fftInput = prepareFFTInput(audioData, fftSize);
         double[] fftOutput = performFFT(fftInput, fftSize);
+
         double[] magnitudeSpectrum = calculateMagnitudeSpectrum(fftOutput, fftSize);
         double frequencyResolution = (double) sampleRate / fftSize;
 
@@ -144,56 +147,6 @@ public class FFTDetector extends PitchDetector {
         }
 
         return new PitchDetectionResult(frequency, confidence);
-    }
-
-    /**
-     * Prepares the input data for FFT processing by applying a window function
-     * and converting to the complex number format required by the FFT algorithm.
-     *
-     * @param audioData the original audio data to be processed
-     * @param fftSize   the size of the FFT to be performed
-     * @return an array of double values representing the windowed audio data in complex format
-     * (real and imaginary parts interleaved)
-     */
-    private double[] prepareFFTInput(double[] audioData, int fftSize) {
-        double[] fftInput = new double[fftSize * 2];
-        IntStream.range(0, audioData.length).parallel().forEach(i -> {
-            fftInput[i * 2] = audioData[i] * blackmanHarrisWindow(i, audioData.length);
-            fftInput[i * 2 + 1] = 0;
-        });
-        return fftInput;
-    }
-
-    /**
-     * Performs the Fast Fourier Transform (FFT) on the prepared input data.
-     * This method transforms the time-domain signal into the frequency domain.
-     *
-     * @param fftInput the prepared input data in complex format
-     * @param fftSize  the size of the FFT to be performed
-     * @return the transformed data in the frequency domain
-     */
-    private double[] performFFT(double[] fftInput, int fftSize) {
-        fft(fftInput, fftSize); // Use an optimized library here
-        return fftInput;
-    }
-
-    /**
-     * Calculates the magnitude spectrum from the FFT output.
-     * The magnitude spectrum represents the strength of each frequency component
-     * in the original signal.
-     *
-     * @param fftOutput the output from the FFT operation
-     * @param fftSize   the size of the FFT that was performed
-     * @return an array of double values representing the magnitude spectrum
-     */
-    private double[] calculateMagnitudeSpectrum(double[] fftOutput, int fftSize) {
-        double[] magnitudeSpectrum = new double[fftSize / 2];
-        IntStream.range(0, fftSize / 2).parallel().forEach(i -> {
-            double real = fftOutput[i * 2];
-            double imag = fftOutput[i * 2 + 1];
-            magnitudeSpectrum[i] = Math.sqrt(real * real + imag * imag);
-        });
-        return magnitudeSpectrum;
     }
 
     /**
@@ -279,9 +232,7 @@ public class FFTDetector extends PitchDetector {
 
         // Normalize the SNR to a confidence value between 0 and 1
         // This is similar to how YIN and MPM calculate confidence
-        double confidence = Math.min(1.0, snr / 10.0);
-
-        return confidence;
+        return Math.min(1.0, snr / 10.0);
     }
 
     /**
@@ -408,40 +359,4 @@ public class FFTDetector extends PitchDetector {
         return spectrum[peakBin] > avgMagnitude * 3;
     }
 
-    /**
-     * Applies a Blackman-Harris window function to the sample at the given index.
-     * Window functions are used to reduce spectral leakage in FFT analysis by
-     * smoothly bringing the signal to zero at the edges of the analysis window.
-     * <p>
-     * The Blackman-Harris window provides excellent sidelobe suppression,
-     * which improves frequency resolution in the FFT.
-     *
-     * @param index the index of the sample
-     * @param size  the total number of samples
-     * @return the window coefficient to multiply with the sample
-     */
-    private double blackmanHarrisWindow(int index, int size) {
-        double a0 = 0.35875;
-        double a1 = 0.48829;
-        double a2 = 0.14128;
-        double a3 = 0.01168;
-        double normalizedIndex = (2 * Math.PI * index) / (size - 1);
-        return a0 - a1 * Math.cos(normalizedIndex) + a2 * Math.cos(2 * normalizedIndex) - a3 * Math.cos(3 * normalizedIndex);
-    }
-
-    /**
-     * Finds the next power of two greater than or equal to the input value.
-     * This is used to determine an appropriate FFT size, as FFT algorithms
-     * are most efficient when the size is a power of two.
-     *
-     * @param n the input value
-     * @return the next power of two greater than or equal to n
-     */
-    private int nextPowerOfTwo(int n) {
-        int power = 1;
-        while (power < n) {
-            power *= 2;
-        }
-        return power;
-    }
 }
