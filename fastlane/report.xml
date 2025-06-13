@@ -5,22 +5,22 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000145">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000134">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: add_git_tag" time="0.031084">
+      <testcase classname="fastlane.lanes" name="1: add_git_tag" time="0.031744">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: push_git_tags" time="1.506009">
+      <testcase classname="fastlane.lanes" name="2: push_git_tags" time="1.476725">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: set_github_release" time="5.785036">
+      <testcase classname="fastlane.lanes" name="3: set_github_release" time="6.16922">
         
       </testcase>
     
