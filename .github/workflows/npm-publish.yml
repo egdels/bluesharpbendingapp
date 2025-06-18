@@ -1,0 +1,198 @@
+name: Publish NPM Package
+
+# Trigger on manual dispatch or after a successful release
+on:
+  # Manual trigger with optional version input
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (leave empty to use package.json version)"
+        required: false
+        type: string
+      dry_run:
+        description: "Perform a dry run (npm publish --dry-run)"
+        required: false
+        type: boolean
+        default: false
+
+  # Auto-trigger after jpackage workflow completes successfully
+  workflow_run:
+    workflows: ["Build & Release with jpackage"]
+    types:
+      - completed
+    branches:
+      - master
+      - main
+
+# Ensure only one publish runs at a time
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  # Check if workflow_run completed successfully (only needed for auto-trigger)
+  check-trigger:
+    if: github.event_name == 'workflow_run'
+    runs-on: ubuntu-latest
+    outputs:
+      should-publish: ${{ steps.check.outputs.should-publish }}
+    steps:
+      - name: Check if jpackage workflow succeeded
+        id: check
+        run: |
+          if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
+            echo "should-publish=true" >> $GITHUB_OUTPUT
+            echo "✅ jpackage workflow succeeded - will publish"
+          else
+            echo "should-publish=false" >> $GITHUB_OUTPUT
+            echo "❌ jpackage workflow failed - skipping publish"
+          fi
+
+  publish:
+    needs: check-trigger
+    # Run on manual trigger OR on successful jpackage workflow
+    if: github.event_name == 'workflow_dispatch' || needs.check-trigger.outputs.should-publish == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history for proper version detection
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Verify package structure
+        run: |
+          echo "🔍 Verifying NPM package structure..."
+          if [[ ! -f "package.json" ]]; then
+            echo "❌ package.json not found"
+            exit 1
+          fi
+          if [[ ! -d "npm/src" ]]; then
+            echo "❌ npm/src directory not found"
+            exit 1
+          fi
+          if [[ ! -d "webapp/src/main/resources/static/scripts" ]]; then
+            echo "❌ Original source scripts not found"
+            exit 1
+          fi
+          echo "✅ Package structure verified"
+
+      - name: Determine and Sync Version
+        id: version-sync
+        run: |
+          # Case 1: Triggered by a successful jpackage release workflow
+          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            echo "🔄 Syncing version from Git tag..."
+            TAG_REF="${{ github.event.workflow_run.head_branch }}"
+            # The head_branch for a tag event is the tag name itself, e.g., "v1.2.3"
+            VERSION_FROM_TAG="${TAG_REF#v}"
+            VERSION_FROM_PACKAGE=$(node -p "require('./package.json').version")
+
+            if [[ "$VERSION_FROM_TAG" != "$VERSION_FROM_PACKAGE" ]]; then
+              echo "⚠️ Version mismatch! Git tag is '$VERSION_FROM_TAG', but package.json has '$VERSION_FROM_PACKAGE'."
+              echo "🔧 Updating package.json to version '$VERSION_FROM_TAG' to match the release tag."
+              npm version "$VERSION_FROM_TAG" --no-git-tag-version
+            else
+              echo "✅ Version is in sync with Git tag ($VERSION_FROM_TAG)."
+            fi
+
+          # Case 2: Triggered manually with a specific version
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.version }}" != "" ]]; then
+            INPUT_VERSION="${{ github.event.inputs.version }}"
+            echo "🔄 Updating version to '${INPUT_VERSION}' from manual input."
+            npm version "$INPUT_VERSION" --no-git-tag-version
+
+          # Case 3: Triggered manually without a specific version
+          else
+            echo "ℹ️ Using existing version from package.json."
+          fi
+
+          # Extract final package info for subsequent steps
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+          echo "package-name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          echo "current-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+          echo "📦 Package: $PACKAGE_NAME"
+          echo " publishing version: $CURRENT_VERSION"
+
+      - name: Test package integrity
+        run: |
+          echo "🧪 Testing package integrity..."
+          npm pack --dry-run
+          echo "✅ Package integrity verified"
+
+      - name: Check if version already published
+        id: version-check
+        run: |
+          PACKAGE_NAME="${{ steps.version-sync.outputs.package-name }}"
+          CURRENT_VERSION="${{ steps.version-sync.outputs.current-version }}"
+
+          if npm view "$PACKAGE_NAME@$CURRENT_VERSION" version 2>/dev/null; then
+            echo "version-exists=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Version $CURRENT_VERSION already exists on NPM"
+          else
+            echo "version-exists=false" >> $GITHUB_OUTPUT
+            echo "✅ Version $CURRENT_VERSION is available for publishing"
+          fi
+
+      - name: Publish to NPM (dry run)
+        if: github.event.inputs.dry_run == 'true'
+        run: |
+          echo "🏃‍♂️ Performing dry run..."
+          npm publish --dry-run
+          echo "✅ Dry run completed successfully"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to NPM
+        if: github.event.inputs.dry_run != 'true' && steps.version-check.outputs.version-exists != 'true'
+        run: |
+          echo "🚀 Publishing to NPM..."
+          npm publish --access public
+          echo "✅ Successfully published to NPM!"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify publication
+        if: github.event.inputs.dry_run != 'true' && steps.version-check.outputs.version-exists != 'true'
+        run: |
+          PACKAGE_NAME="${{ steps.version-sync.outputs.package-name }}"
+          CURRENT_VERSION="${{ steps.version-sync.outputs.current-version }}"
+
+          echo "🔍 Verifying publication..."
+          sleep 10
+          if npm view "$PACKAGE_NAME@$CURRENT_VERSION" version; then
+            echo "✅ Package successfully published and available on NPM"
+            echo "📦 Install with: npm install $PACKAGE_NAME"
+          else
+            echo "❌ Package publication verification failed"
+            exit 1
+          fi
+
+      - name: Skip publication (version exists)
+        if: steps.version-check.outputs.version-exists == 'true'
+        run: |
+          PACKAGE_NAME="${{ steps.version-sync.outputs.package-name }}"
+          CURRENT_VERSION="${{ steps.version-sync.outputs.current-version }}"
+
+          echo "⏭️ Skipping publication - version $CURRENT_VERSION already exists"
+          echo "💡 To publish a new version, increment the version in package.json or specify a version in the manual dispatch"
+
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          # ⏭️ Publication Skipped
+          **Reason:** Version \`$CURRENT_VERSION\` already exists on NPM
+          **To publish a new version:**
+          1. Update version in \`package.json\`
+          2. Run this workflow again, or
+          3. Use manual dispatch with a specific version
+          **Current package:** https://www.npmjs.com/package/$PACKAGE_NAME
+          EOF
