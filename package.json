@@ -1,6 +1,6 @@
 {
   "name": "bluesharp-pitch-detection",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "High-accuracy pitch detection algorithms for musical applications",
   "main": "./npm/src/index.js",
   "type": "module",
