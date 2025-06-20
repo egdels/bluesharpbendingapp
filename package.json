@@ -1,0 +1,55 @@
+{
+  "name": "bluesharp-pitch-detection",
+  "version": "3.4.1",
+  "description": "High-accuracy pitch detection algorithms for musical applications",
+  "main": "./npm/src/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./npm/src/index.js"
+    },
+    "./pitch-detectors": {
+      "import": "./npm/src/pitch-detectors.js"
+    },
+    "./utils": {
+      "import": "./npm/src/utils.js"
+    },
+    "./audio-worklet": {
+      "import": "./npm/src/audio-worklet.js"
+    },
+    "./chord-detection": {
+      "import": "./npm/src/chord-detection.js"
+    }
+  },
+  "files": [
+    "npm/src/",
+    "npm/examples/",
+    "npm/README.md",
+    "webapp/src/main/resources/static/scripts/",
+    "LICENSE"
+  ],
+  "keywords": [
+    "pitch-detection",
+    "audio",
+    "music",
+    "yin",
+    "mpm",
+    "fft",
+    "ear-training",
+    "harmonica",
+    "tuner"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/egdels/bluesharpbendingapp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/egdels/bluesharpbendingapp/issues"
+  },
+  "homepage": "https://github.com/egdels/bluesharpbendingapp#readme",
+  "author": "Christian Kierdorf <christian.kierdorf@letsbend.de>"
+}
