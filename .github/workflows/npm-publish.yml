@@ -22,7 +22,6 @@ on:
       - completed
     branches:
       - master
-      - main
 
 # Ensure only one publish runs at a time
 concurrency:
