@@ -4,12 +4,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,8 +19,6 @@ class HighFrequencyOptimizationTest {
 
     private static final int SAMPLE_RATE = 44100;
     private static final double TOLERANCE = 1.0; // 1Hz tolerance for pitch detection
-    private static final double ORIGINAL_THRESHOLD = HybridPitchDetector.getThresholdHighFrequencyEnergy();
-    private static final int ORIGINAL_FREQUENCY_RANGE = HybridPitchDetector.getFrequencyRangeHigh();
 
     // Test frequencies covering low, medium, and high ranges
     private static final double[] TEST_FREQUENCIES = {
@@ -45,18 +39,12 @@ class HighFrequencyOptimizationTest {
 
     @BeforeAll
     static void setUp() {
-        // Store the original values
-        System.out.println("[DEBUG_LOG] Original high frequency threshold: " + ORIGINAL_THRESHOLD);
-        System.out.println("[DEBUG_LOG] Original high frequency range: " + ORIGINAL_FREQUENCY_RANGE);
+        HybridPitchDetector.restoreDefaults();
     }
 
     @AfterAll
     static void tearDown() {
-        // Restore the original values
-        HybridPitchDetector.setThresholdHighFrequencyEnergy(ORIGINAL_THRESHOLD);
-        HybridPitchDetector.setFrequencyRangeHigh(ORIGINAL_FREQUENCY_RANGE);
-        System.out.println("[DEBUG_LOG] Restored original high frequency threshold: " + HybridPitchDetector.getThresholdHighFrequencyEnergy());
-        System.out.println("[DEBUG_LOG] Restored original high frequency range: " + HybridPitchDetector.getFrequencyRangeHigh());
+        HybridPitchDetector.restoreDefaults();
     }
 
     /**

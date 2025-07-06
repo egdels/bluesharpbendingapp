@@ -25,9 +25,7 @@ package de.schliweb.bluesharpbendingapp.utils;
 
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -84,8 +82,18 @@ class HybridPitchDetectorTest {
                 Arguments.of(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.A, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.B, AbstractHarmonica.TUNE.RICHTER, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.A_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.D, AbstractHarmonica.TUNE.AUGMENTED, 5.0, 0.01), Arguments.of(AbstractHarmonica.KEY.E_FLAT, AbstractHarmonica.TUNE.COUNTRY, 5.0, 0.01), Arguments.of(AbstractHarmonica.KEY.D_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 20.0, 0.01), Arguments.of(AbstractHarmonica.KEY.E, AbstractHarmonica.TUNE.COUNTRY, 50.0, 0.01), Arguments.of(AbstractHarmonica.KEY.LA, AbstractHarmonica.TUNE.COUNTRY, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.LF_HASH, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.LG, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.LD_FLAT, AbstractHarmonica.TUNE.DIMINISHED, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.B_FLAT, AbstractHarmonica.TUNE.PADDYRICHTER, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.LLF, AbstractHarmonica.TUNE.PADDYRICHTER, 3.0, 0.01), Arguments.of(AbstractHarmonica.KEY.HA, AbstractHarmonica.TUNE.RICHTER, 13.0, 0.02));
     }
 
+    @BeforeAll
+    static void setUp() {
+        HybridPitchDetector.restoreDefaults();
+    }
+
+    @AfterAll
+    static void tearDown() {
+        HybridPitchDetector.restoreDefaults();
+    }
+
     @BeforeEach
-    void setUp() {
+    void setUpEach() {
         PitchDetector.setMaxFrequency(PitchDetector.getDefaultMaxFrequency());
         PitchDetector.setMinFrequency(PitchDetector.getDefaultMinFrequency());
     }

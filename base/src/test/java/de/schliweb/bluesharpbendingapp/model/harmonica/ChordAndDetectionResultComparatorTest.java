@@ -117,7 +117,7 @@ class ChordAndDetectionResultComparatorTest {
     /**
      * Tests that chords with the same number of notes and frequencies within the
      * musical tolerance (±50 cents) are considered equal by the comparator.
-     * 
+     * <p>
      * This test focuses specifically on the basic case of two-note chords with
      * frequencies that differ by exactly 50 cents (the boundary of tolerance).
      * For more comprehensive testing with multiple notes and different tolerance levels,
@@ -260,7 +260,7 @@ class ChordAndDetectionResultComparatorTest {
      * 1. Objects with fewer notes are considered "less than" objects with more notes
      * 2. Objects of different types (ChordHarmonica and ChordDetectionResult) but with
      *    the same number of notes and frequencies are considered equal
-     * 
+     * <p>
      * This test is comprehensive as it tests both the primary sorting criterion (note count)
      * and the cross-type comparison functionality.
      */

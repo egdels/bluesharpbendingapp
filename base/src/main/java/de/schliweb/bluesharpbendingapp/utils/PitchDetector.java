@@ -77,6 +77,11 @@ public abstract class PitchDetector {
     @Setter
     protected static double maxFrequency = DEFAULT_MAX_FREQUENCY;
 
+    public static void restoreDefaults () {
+    	minFrequency = DEFAULT_MIN_FREQUENCY;
+    	maxFrequency = DEFAULT_MAX_FREQUENCY;
+    }
+
     /**
      * Gets the default minimum frequency that can be detected (in Hz).
      *

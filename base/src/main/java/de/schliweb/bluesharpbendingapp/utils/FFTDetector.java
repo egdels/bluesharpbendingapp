@@ -273,7 +273,7 @@ public class FFTDetector extends PitchDetector {
 
             // Check third frequency (subharmonic)
             int thirdBin = peakBin / 3;
-            if (thirdBin > 0 && spectrum[thirdBin] > spectrum[peakBin] * 0.6) {
+            if (spectrum[thirdBin] > spectrum[peakBin] * 0.6) {
                 return false;
             }
         }

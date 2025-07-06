@@ -36,7 +36,7 @@ import de.schliweb.bluesharpbendingapp.view.MainWindow;
  * The MainController class is responsible for managing the primary workflow and logic
  * of the application. It acts as a mediator between the user interface, model, and other
  * services to ensure proper coordination of tasks.
- *
+ * <p>
  * This class implements the AndroidSettingsHandler interface to provide functionality
  * specific to managing Android lock screen settings.
  */

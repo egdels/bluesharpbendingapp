@@ -27,6 +27,7 @@ import org.apache.commons.math3.complex.Complex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -287,8 +288,7 @@ public class ChordDetector extends PitchDetector {
         // Calculate arithmetic mean and geometric mean in parallel
         double[] sums = IntStream.rangeClosed(startBin, endBin).parallel().mapToDouble(i -> {
             // Add a small value to avoid log(0)
-            double value = magnitudeSpectrum[i] + 1e-10;
-            return value;
+            return magnitudeSpectrum[i] + 1e-10;
         }).collect(() -> new double[2],  // Initialize an array to hold sum and logSum
                 (acc, value) -> {
                     acc[0] += value;          // sum
@@ -364,7 +364,7 @@ public class ChordDetector extends PitchDetector {
      * @return the ordered and prioritized list of peaks
      */
     private List<Peak> prioritizeLowerFrequencies(List<Peak> peaks) {
-        peaks.sort((p1, p2) -> Double.compare(p1.frequency, p2.frequency)); // Sort by frequency (ascending)
+        peaks.sort(Comparator.comparingDouble(p -> p.frequency)); // Sort by frequency (ascending)
 
         List<Peak> prioritizedPeaks = new ArrayList<>();
         for (Peak peak : peaks) {

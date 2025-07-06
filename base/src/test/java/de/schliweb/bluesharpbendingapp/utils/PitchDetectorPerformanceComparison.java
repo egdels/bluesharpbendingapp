@@ -11,10 +11,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * This class can be run directly to see performance comparison results.
- */
-
-/**
  * Performance comparison between ChordDetector and MPMPitchDetector.
  * This class measures and compares the execution time of both detectors
  * with various inputs, including single notes, chords, and different signal conditions.

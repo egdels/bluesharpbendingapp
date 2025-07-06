@@ -11,7 +11,7 @@ import java.util.List;
  * {@code ChordDetectionResult} based on the number of notes they contain and
  * their associated frequencies. The comparison is primarily based on the number
  * of notes, followed by their musical frequencies if necessary.
- *
+ * <p>
  * This comparator supports comparing objects that represent chords or musical
  * tone detections. The comparison involves checking both the note counts and
  * the sets of frequencies (interpreted into musical note names, ignoring order).

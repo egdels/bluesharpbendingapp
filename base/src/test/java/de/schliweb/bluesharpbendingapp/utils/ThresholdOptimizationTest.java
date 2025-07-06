@@ -6,12 +6,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +22,6 @@ class ThresholdOptimizationTest {
 
     private static final int SAMPLE_RATE = 44100;
     private static final double TOLERANCE = 1.0; // 1Hz tolerance for pitch detection
-    private static final double ORIGINAL_THRESHOLD = HybridPitchDetector.getThresholdLowFrequencyEnergy();
 
     // Test frequencies covering low, medium, and high ranges
     private static final double[] TEST_FREQUENCIES = {
@@ -41,29 +37,22 @@ class ThresholdOptimizationTest {
 
     @BeforeAll
     static void setUp() {
-        // Store the original threshold value
-        System.out.println("[DEBUG_LOG] Original threshold: " + ORIGINAL_THRESHOLD);
+        HybridPitchDetector.restoreDefaults();
     }
 
     @BeforeEach
     void setUpEach() {
-        // Reset to original threshold value before each test
-        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
-        System.out.println("[DEBUG_LOG] Reset to original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
+        HybridPitchDetector.restoreDefaults();
     }
 
     @AfterEach
     void tearDownEach() {
-        // Restore the original threshold value after each test
-        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
-        System.out.println("[DEBUG_LOG] Restored original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
+        HybridPitchDetector.restoreDefaults();
     }
 
     @AfterAll
     static void tearDown() {
-        // Restore the original threshold value
-        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
-        System.out.println("[DEBUG_LOG] Restored original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
+       HybridPitchDetector.restoreDefaults();
     }
 
     /**
@@ -160,22 +149,21 @@ class ThresholdOptimizationTest {
                              (1.0 - harmonicaSuccessRate);
 
         // Log the results
-        StringBuilder results = new StringBuilder();
-        results.append("Threshold: ").append(threshold).append("\n");
-        results.append("  Pure Sine Waves:\n");
-        results.append("    Average Error: ").append(pureSineAverageError).append("\n");
-        results.append("    Successful Detections: ").append(pureSineSuccessfulDetections).append("/").append(TEST_FREQUENCIES.length);
-        results.append(" (").append(String.format("%.1f", pureSineSuccessRate * 100)).append("%)\n");
-        results.append("  Complex Signals:\n");
-        results.append("    Average Error: ").append(complexAverageError).append("\n");
-        results.append("    Successful Detections: ").append(complexSuccessfulDetections).append("/").append(TEST_FREQUENCIES.length);
-        results.append(" (").append(String.format("%.1f", complexSuccessRate * 100)).append("%)\n");
-        results.append("  Harmonica Notes:\n");
-        results.append("    Success Rate: ").append(String.format("%.1f", harmonicaSuccessRate * 100)).append("%\n");
-        results.append("    Successful Detections: ").append(harmonicaSuccessfulDetections).append("\n");
-        results.append("  Overall Score: ").append(String.format("%.4f", overallScore)).append(" (lower is better)\n");
+        String results = "Threshold: " + threshold + "\n" +
+                "  Pure Sine Waves:\n" +
+                "    Average Error: " + pureSineAverageError + "\n" +
+                "    Successful Detections: " + pureSineSuccessfulDetections + "/" + TEST_FREQUENCIES.length +
+                " (" + String.format("%.1f", pureSineSuccessRate * 100) + "%)\n" +
+                "  Complex Signals:\n" +
+                "    Average Error: " + complexAverageError + "\n" +
+                "    Successful Detections: " + complexSuccessfulDetections + "/" + TEST_FREQUENCIES.length +
+                " (" + String.format("%.1f", complexSuccessRate * 100) + "%)\n" +
+                "  Harmonica Notes:\n" +
+                "    Success Rate: " + String.format("%.1f", harmonicaSuccessRate * 100) + "%\n" +
+                "    Successful Detections: " + harmonicaSuccessfulDetections + "\n" +
+                "  Overall Score: " + String.format("%.4f", overallScore) + " (lower is better)\n";
 
-        System.out.println("[DEBUG_LOG] " + results.toString());
+        System.out.println("[DEBUG_LOG] " + results);
 
         // Assert that the results meet the expected criteria
         assertTrue(pureSineSuccessRate >= 0.8, "Pure sine wave detection rate should be at least 80%");

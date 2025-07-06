@@ -17,11 +17,11 @@ public class ChordHarmonica {
      * Represents the index of a note within a predefined scale or sequence on the harmonica.
      * This value is used to identify and retrieve the corresponding note's frequency
      * or other properties through the harmonica's methods.
-     *
+     * <p>
      * The note index is typically associated with the position of a note
      * within a given channel and defines the specific tone produced
      * when air is blown or drawn through that channel.
-     *
+     * <p>
      * It is a mandatory parameter for constructing a {@code ChordHarmonica} instance.
      */
     @Getter
@@ -31,10 +31,10 @@ public class ChordHarmonica {
      * Represents the channels on the harmonica involved in forming a chord.
      * Each channel corresponds to a specific airflow path on the harmonica
      * that produces a tone when air is blown or drawn through it.
-     *
+     * <p>
      * The list defines the active channels contributing to the chord, where
      * each integer value represents the channel number (e.g., 1, 2, 3, etc.).
-     *
+     * <p>
      * This field is immutable and must be initialized through the constructor.
      */
     @Getter
@@ -43,11 +43,11 @@ public class ChordHarmonica {
      * Represents the list of tones (frequencies) that define a chord on a harmonica.
      * Each tone corresponds to a specific frequency produced by blowing or drawing
      * air through an associated channel of the harmonica.
-     *
+     * <p>
      * This list is created based on the channels and note index used to construct
      * the {@code ChordHarmonica} object. Each tone is calculated by retrieving
      * the note frequency for the respective channel using the associated harmonica instance.
-     *
+     * <p>
      * The tones are immutable after the initialization of {@code ChordHarmonica}.
      */
     @Getter

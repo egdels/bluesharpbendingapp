@@ -30,6 +30,7 @@ import org.slf4j.MDC;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -269,7 +270,7 @@ class LoggingContextTest {
             String generatedId = LoggingContext.setRequestId(null);
 
             // Verify MDC.put was called with a non-null value
-            mockedMDC.verify(() -> MDC.put(eq("requestId"), argThat(arg -> arg != null)));
+            mockedMDC.verify(() -> MDC.put(eq("requestId"), argThat(Objects::nonNull)));
 
             assertNotNull(generatedId);
             assertEquals(generatedId, MDC.get("requestId"));

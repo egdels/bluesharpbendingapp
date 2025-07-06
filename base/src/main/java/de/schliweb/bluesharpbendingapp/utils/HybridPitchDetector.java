@@ -24,17 +24,20 @@ package de.schliweb.bluesharpbendingapp.utils;
  */
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The HybridPitchDetector class provides a robust, hybrid approach for pitch detection by
  * combining multiple algorithms and techniques to achieve high accuracy across a wide
  * frequency range. It incorporates noise detection, energy analysis, and pitch estimation
  * tailored to different frequency bands.
- *
+ * <p>
  * This class leverages the YIN, MPM, and Fourier Transform algorithms to effectively handle
  * pitch detection for low, mid, and high-frequency ranges, respectively. By analyzing the
  * energy distribution and characteristics of the input audio signal, it dynamically applies
  * the most appropriate algorithm for pitch detection.
- *
+ * <p>
  * This detector is designed for applications in music analysis, speech processing, and other
  * domains requiring precise pitch estimation.
  */
@@ -45,12 +48,16 @@ public class HybridPitchDetector extends PitchDetector {
      * This constant is used to differentiate between significant and insignificant energy
      * in low-frequency ranges during pitch detection and audio processing. Its value is
      * set to 750 by default, which can be adjusted programmatically if needed.
-     *
+     * <p>
      * The threshold plays a critical role in determining the presence of low-frequency
      * energy in a signal and helps optimize the pitch detection algorithm used within
      * the HybridPitchDetector class.
      */
-    private static double THRESHOLD_LOW_FREQUENCY_ENERGY = 750;
+    private static final double THRESHOLD_LOW_FREQUENCY_ENERGY = 750;
+
+    @Getter
+    @Setter
+    private static double thresholdLowFrequencyEnergy = THRESHOLD_LOW_FREQUENCY_ENERGY;
 
     /**
      * A constant defining the lower bound of the frequency range for pitch detection in Hz.
@@ -58,121 +65,55 @@ public class HybridPitchDetector extends PitchDetector {
      * during the processing of an audio signal. It helps in filtering out frequencies below this
      * threshold to optimize detection accuracy and performance.
      */
-    private static int FREQUENCY_RANGE_LOW = 275;
+    private static final int FREQUENCY_RANGE_LOW = 275;
 
+    @Getter
+    @Setter
+    private static int frequencyRangeLow = FREQUENCY_RANGE_LOW;
 
     /**
      * Represents the upper limit of the frequency range threshold, expressed in Hertz (Hz),
      * for the hybrid pitch detection algorithm.
-     *
+     * <p>
      * This constant is used by the HybridPitchDetector class to restrict pitch detection
      * to frequencies less than or equal to this value. Adjusting this value can impact the
      * algorithm's sensitivity to higher frequency ranges.
-     *
+     * <p>
      * Default value is set to 900 Hz.
      */
-    private static int FREQUENCY_RANGE_HIGH = 900;
+    private static final int FREQUENCY_RANGE_HIGH = 900;
 
-    /**
-     * Sets the frequency range threshold for high frequencies.
-     * This method is primarily used for testing and optimization purposes.
-     *
-     * @param frequency the new frequency range threshold value in Hz
-     */
-    public static void setFrequencyRangeHigh(int frequency) {
-        FREQUENCY_RANGE_HIGH = frequency;
-    }
-
-    /**
-     * Gets the current frequency range threshold for high frequencies.
-     *
-     * @return the current frequency range threshold value in Hz
-     */
-    public static int getFrequencyRangeHigh() {
-        return FREQUENCY_RANGE_HIGH;
-    }
+    @Getter
+    @Setter
+    private static int frequencyRangeHigh = FREQUENCY_RANGE_HIGH;
 
     /**
      * Represents the threshold value for high-frequency energy in the pitch detection process.
      * This constant is used to analyze and differentiate between low-energy and high-energy
      * signals in high-frequency ranges during the pitch detection computations.
-     *
+     * <p>
      * Value is set in Hertz (Hz).
      * Default value: 400 Hz.
-     *
+     * <p>
      * Primarily used in hybrid pitch detection algorithms to optimize performance and accuracy
      * by applying varied detection techniques based on the signal's energy and frequency characteristics.
      */
-    private static double THRESHOLD_HIGH_FREQUENCY_ENERGY = 400;
+    private static final double THRESHOLD_HIGH_FREQUENCY_ENERGY = 400;
 
-    /**
-     * Sets the threshold for high frequency energy.
-     * This method is primarily used for testing and optimization purposes.
-     *
-     * @param threshold the new threshold value
-     */
-    public static void setThresholdHighFrequencyEnergy(double threshold) {
-        THRESHOLD_HIGH_FREQUENCY_ENERGY = threshold;
-    }
-
-    /**
-     * Gets the current threshold for high frequency energy.
-     *
-     * @return the current threshold value
-     */
-    public static double getThresholdHighFrequencyEnergy() {
-        return THRESHOLD_HIGH_FREQUENCY_ENERGY;
-    }
-
-    /**
-     * Sets the frequency range threshold for low frequencies.
-     * This method is primarily used for testing and optimization purposes.
-     *
-     * @param frequency the new frequency range threshold value in Hz
-     */
-    public static void setFrequencyRangeLow(int frequency) {
-        FREQUENCY_RANGE_LOW = frequency;
-    }
-
-    /**
-     * Gets the current frequency range threshold for low frequencies.
-     *
-     * @return the current frequency range threshold value in Hz
-     */
-    public static int getFrequencyRangeLow() {
-        return FREQUENCY_RANGE_LOW;
-    }
-
-
-    /**
-     * Sets the threshold for low frequency energy.
-     * This method is primarily used for testing and optimization purposes.
-     *
-     * @param threshold the new threshold value
-     */
-    public static void setThresholdLowFrequencyEnergy(double threshold) {
-        THRESHOLD_LOW_FREQUENCY_ENERGY = threshold;
-    }
-
-    /**
-     * Gets the current threshold for low frequency energy.
-     *
-     * @return the current threshold value
-     */
-    public static double getThresholdLowFrequencyEnergy() {
-        return THRESHOLD_LOW_FREQUENCY_ENERGY;
-    }
+    @Getter
+    @Setter
+    private static double thresholdHighFrequencyEnergy = THRESHOLD_HIGH_FREQUENCY_ENERGY;
 
     /**
      * An instance of the YIN pitch detection algorithm.
      * The YIN algorithm is used to estimate the pitch of an audio signal
      * based on the autocorrelation method, making it particularly suitable
      * for monophonic signals and low-frequency detection.
-     *
+     * <p>
      * This variable is part of a hybrid pitch detection system and is
      * utilized in conjunction with other pitch detection algorithms to
      * enhance performance and accuracy under varying signal conditions.
-     *
+     * <p>
      * The detection process leverages energy thresholds and frequency ranges
      * to decide whether to use the YIN algorithm or other detection methods,
      * such as MPM or FFT-based techniques.
@@ -191,11 +132,19 @@ public class HybridPitchDetector extends PitchDetector {
      * An instance of the FFTDetector class used for pitch detection through frequency domain analysis.
      * The detector applies the Fast Fourier Transform (FFT) algorithm to analyze the spectral components
      * of audio data, aiding in detecting the presence and characteristics of specific frequency components.
-     *
+     * <p>
      * This field is a key component of the hybrid pitch detection system, complementing other detection
      * algorithms to provide accurate and reliable pitch detection across various audio signals.
      */
     private final FFTDetector fftDetector = new FFTDetector();
+
+    public static void restoreDefaults () {
+        PitchDetector.restoreDefaults();
+        thresholdLowFrequencyEnergy = THRESHOLD_LOW_FREQUENCY_ENERGY;
+        frequencyRangeLow = FREQUENCY_RANGE_LOW;
+        frequencyRangeHigh = FREQUENCY_RANGE_HIGH;
+        thresholdHighFrequencyEnergy = THRESHOLD_HIGH_FREQUENCY_ENERGY;
+    }
 
     /**
      * Detects the pitch of a given audio signal using a hybrid approach that combines
@@ -215,9 +164,9 @@ public class HybridPitchDetector extends PitchDetector {
         }
 
         // Step 2: Energieanalyse für Frequenzen unter 300 Hz
-        double lowFrequencyEnergy = calculateEnergyUsingGoertzel(audioData, sampleRate, FREQUENCY_RANGE_LOW);
+        double lowFrequencyEnergy = calculateEnergyUsingGoertzel(audioData, sampleRate, frequencyRangeLow);
         // Step 3: Entscheidung basierend auf Energie-Analyse
-        if (lowFrequencyEnergy > THRESHOLD_LOW_FREQUENCY_ENERGY) {
+        if (lowFrequencyEnergy > thresholdLowFrequencyEnergy) {
             // Verwende YIN für Frequenzen unter 300 Hz
             PitchDetectionResult yinResult = yinDetector.detectPitch(audioData, sampleRate);
             if (yinResult.pitch() != NO_DETECTED_PITCH) {
@@ -225,10 +174,10 @@ public class HybridPitchDetector extends PitchDetector {
             }
         } else {
             // Step 4: Energieanalyse für hohe Frequenzen (z. B. 1000 Hz)
-            double highFrequencyEnergy = calculateEnergyUsingGoertzel(audioData, sampleRate, FREQUENCY_RANGE_HIGH);
+            double highFrequencyEnergy = calculateEnergyUsingGoertzel(audioData, sampleRate, frequencyRangeHigh);
 
             // Wenn Energie im Bereich hoher Frequenzen hoch ist, nutze FFT
-            if (highFrequencyEnergy > THRESHOLD_HIGH_FREQUENCY_ENERGY) {
+            if (highFrequencyEnergy > thresholdHighFrequencyEnergy) {
                 PitchDetectionResult fftResult = fftDetector.detectPitch(audioData, sampleRate);
                 if (fftResult.pitch() != NO_DETECTED_PITCH) {
                     return fftResult;
@@ -259,14 +208,13 @@ public class HybridPitchDetector extends PitchDetector {
      * @return the calculated energy of the specified frequency in the audio data
      */
     private double calculateEnergyUsingGoertzel(double[] audioData, int sampleRate, int frequency) {
-        int samples = audioData.length;
         double omega = 2.0 * Math.PI * frequency / sampleRate; // Ziel-Frequenz berechnen
         double cosine = Math.cos(omega);
         double coeff = 2.0 * cosine;
         double q0 = 0, q1 = 0, q2 = 0;
 
-        for (int i = 0; i < samples; i++) {
-            q0 = coeff * q1 - q2 + audioData[i];
+        for (double audioDatum : audioData) {
+            q0 = coeff * q1 - q2 + audioDatum;
             q2 = q1;
             q1 = q0;
         }

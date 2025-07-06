@@ -33,7 +33,6 @@ import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.utils.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;

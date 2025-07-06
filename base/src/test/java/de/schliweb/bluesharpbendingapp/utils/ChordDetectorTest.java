@@ -401,7 +401,7 @@ class ChordDetectorTest {
      * Tests confidence for signals with varying amplitudes.
      * This test verifies that the confidence calculation works correctly
      * for signals with different amplitudes, from very low to high.
-     * 
+     * <p>
      * Note: The current implementation of the chord detector maintains high confidence
      * even for very low amplitude signals, as long as the signal-to-noise ratio is good.
      * This is actually a desirable behavior for many applications.

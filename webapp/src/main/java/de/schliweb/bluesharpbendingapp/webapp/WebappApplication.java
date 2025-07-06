@@ -31,7 +31,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * Main Spring Boot application class for the BlueSharp Bending web application.
  * This class serves as the entry point for the Spring Boot application and is responsible
  * for bootstrapping and launching the web application.
- * 
+ * <p>
  * By extending SpringBootServletInitializer, this application can be deployed as a traditional
  * WAR file and run in external servlet containers, in addition to being runnable as a
  * standalone application with an embedded server.

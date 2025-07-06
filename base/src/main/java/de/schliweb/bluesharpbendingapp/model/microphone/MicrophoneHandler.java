@@ -35,7 +35,7 @@ public interface MicrophoneHandler {
      *
      * @param frequency   the frequency
      * @param volume      the volume
-     * @param chordResult
+     * @param chordResult the chord result
      */
     void handle(double frequency, double volume, ChordDetectionResult chordResult);
 

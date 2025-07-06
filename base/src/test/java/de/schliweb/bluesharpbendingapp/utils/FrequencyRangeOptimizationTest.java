@@ -6,12 +6,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,8 +21,6 @@ class FrequencyRangeOptimizationTest {
 
     private static final int SAMPLE_RATE = 44100;
     private static final double TOLERANCE = 1.0; // 1Hz tolerance for pitch detection
-    private static final double ORIGINAL_THRESHOLD = HybridPitchDetector.getThresholdLowFrequencyEnergy();
-    private static final int ORIGINAL_FREQUENCY_RANGE = HybridPitchDetector.getFrequencyRangeLow();
 
     // Test frequencies covering low, medium, and high ranges
     private static final double[] TEST_FREQUENCIES = {
@@ -42,36 +36,22 @@ class FrequencyRangeOptimizationTest {
 
     @BeforeAll
     static void setUp() {
-        // Store the original values
-        System.out.println("[DEBUG_LOG] Original threshold: " + ORIGINAL_THRESHOLD);
-        System.out.println("[DEBUG_LOG] Original frequency range: " + ORIGINAL_FREQUENCY_RANGE);
+        HybridPitchDetector.restoreDefaults();
     }
 
     @BeforeEach
     void setUpEach() {
-        // Reset to original values before each test
-        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
-        HybridPitchDetector.setFrequencyRangeLow(ORIGINAL_FREQUENCY_RANGE);
-        System.out.println("[DEBUG_LOG] Reset to original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
-        System.out.println("[DEBUG_LOG] Reset to original frequency range: " + HybridPitchDetector.getFrequencyRangeLow());
+        HybridPitchDetector.restoreDefaults();
     }
 
     @AfterEach
     void tearDownEach() {
-        // Restore the original values after each test
-        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
-        HybridPitchDetector.setFrequencyRangeLow(ORIGINAL_FREQUENCY_RANGE);
-        System.out.println("[DEBUG_LOG] Restored original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
-        System.out.println("[DEBUG_LOG] Restored original frequency range: " + HybridPitchDetector.getFrequencyRangeLow());
+        HybridPitchDetector.restoreDefaults();
     }
 
     @AfterAll
     static void tearDown() {
-        // Restore the original values
-        HybridPitchDetector.setThresholdLowFrequencyEnergy(ORIGINAL_THRESHOLD);
-        HybridPitchDetector.setFrequencyRangeLow(ORIGINAL_FREQUENCY_RANGE);
-        System.out.println("[DEBUG_LOG] Restored original threshold: " + HybridPitchDetector.getThresholdLowFrequencyEnergy());
-        System.out.println("[DEBUG_LOG] Restored original frequency range: " + HybridPitchDetector.getFrequencyRangeLow());
+        HybridPitchDetector.restoreDefaults();
     }
 
     /**
