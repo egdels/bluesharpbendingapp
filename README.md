@@ -75,6 +75,23 @@ The project is divided into several subprojects to keep development modular and 
         - Temporary analysis of audio data without storing it, ensuring privacy.
         - Support for understanding and improving note bending techniques.
 
+### 5. **NPM Package** ([npm](npm))
+
+- A JavaScript package published on [npm](https://www.npmjs.com/package/bluesharp-pitch-detection) as `bluesharp-pitch-detection`.
+- Provides high-accuracy pitch detection algorithms for musical applications, with a focus on harmonica and other instruments.
+- Key features:
+    - Multiple pitch detection algorithms:
+        - **YIN**: Excellent for vocal and monophonic instrument detection
+        - **MPM**: Modified Phase Matching for improved accuracy
+        - **FFT**: Fast Fourier Transform-based detection
+        - **Hybrid**: Combines multiple algorithms for optimal results
+    - Chord detection capabilities
+    - Note utilities for frequency-to-note conversion
+    - Web Audio API integration with AudioWorklet support
+    - Optimized for real-time applications
+- Used by the web version of the application and can be integrated into other web-based music applications.
+- Automatically published to npm after successful releases via GitHub Actions workflow.
+
 ---
 
 ## Build Instructions

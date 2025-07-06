@@ -3,3 +3,4 @@ local.properties
 .gradle
 .kotlin
 build
+node_modules/

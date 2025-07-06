@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluesharp Pitch Detection Examples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        .example-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .example-card h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .example-card p {
+            margin-bottom: 15px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .note {
+            background-color: #e7f5fe;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bluesharp Pitch Detection Examples</h1>
+    
+    <p>
+        This page contains examples demonstrating how to use the <strong>bluesharp-pitch-detection</strong> npm package
+        for pitch detection, chord recognition, and audio analysis.
+    </p>
+    
+    <div class="note">
+        <strong>Note:</strong> These examples are designed to run in a browser environment. Some examples require
+        microphone access and modern browser features like the AudioWorklet API.
+    </div>
+    
+    <h2>Available Examples</h2>
+    
+    <div class="example-card">
+        <h3>Basic Pitch Detection</h3>
+        <p>
+            Demonstrates how to use the YIN pitch detection algorithm to analyze audio data
+            and detect the fundamental frequency (pitch).
+        </p>
+        <a href="basic-pitch-detection.html" class="btn">Run Example</a>
+        <a href="https://github.com/egdels/bluesharpbendingapp/blob/master/npm/examples/basic-pitch-detection.js" class="btn">View Source</a>
+    </div>
+    
+    <div class="example-card">
+        <h3>Algorithm Comparison</h3>
+        <p>
+            Compares different pitch detection algorithms (YIN, MPM, FFT, and Hybrid)
+            on various test signals to demonstrate their strengths and weaknesses.
+        </p>
+        <a href="algorithm-comparison.html" class="btn">Run Example</a>
+        <a href="https://github.com/egdels/bluesharpbendingapp/blob/master/npm/examples/algorithm-comparison.js" class="btn">View Source</a>
+    </div>
+    
+    <div class="example-card">
+        <h3>Chord Detection</h3>
+        <p>
+            Shows how to use the chord detection functionality to identify chords
+            from a set of frequencies or audio input.
+        </p>
+        <a href="chord-detection.html" class="btn">Run Example</a>
+        <a href="https://github.com/egdels/bluesharpbendingapp/blob/master/npm/examples/chord-detection.js" class="btn">View Source</a>
+    </div>
+    
+    <div class="example-card">
+        <h3>Audio Worklet</h3>
+        <p>
+            Demonstrates how to use the PitchProcessor AudioWorklet for real-time
+            pitch detection in a browser environment.
+        </p>
+        <a href="audio-worklet.html" class="btn">Run Example</a>
+        <a href="https://github.com/egdels/bluesharpbendingapp/blob/master/npm/examples/audio-worklet.js" class="btn">View Source</a>
+    </div>
+    
+    <h2>Running the Examples</h2>
+    
+    <p>
+        To run these examples locally, you'll need to:
+    </p>
+    
+    <ol>
+        <li>Clone the repository: <code>git clone https://github.com/egdels/bluesharpbendingapp.git</code></li>
+        <li>Navigate to the examples directory: <code>cd bluesharpbendingapp/npm/examples</code></li>
+        <li>Start a local server, for example using Node.js: <code>npx http-server</code></li>
+        <li>Open your browser and navigate to <code>http://localhost:8080</code></li>
+    </ol>
+    
+    <h2>Example HTML Files</h2>
+    
+    <p>
+        Each example has a corresponding HTML file that loads the JavaScript module.
+        Here's a template for creating these files:
+    </p>
+    
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Example Name - Bluesharp Pitch Detection&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Example Name&lt;/h1&gt;
+    &lt;p&gt;&lt;a href="index.html"&gt;Back to Examples&lt;/a&gt;&lt;/p&gt;
+    
+    &lt;div id="results"&gt;&lt;/div&gt;
+    
+    &lt;script type="module" src="example-file.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    
+    <h2>Additional Resources</h2>
+    
+    <ul>
+        <li><a href="https://github.com/egdels/bluesharpbendingapp">GitHub Repository</a></li>
+        <li><a href="https://www.npmjs.com/package/bluesharp-pitch-detection">NPM Package</a></li>
+        <li><a href="https://www.letsbend.de">Project Website</a></li>
+    </ul>
+    
+    <footer style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #777;">
+        <p>MIT © Christian Kierdorf</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chord Detection - Bluesharp Pitch Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        #results {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-height: 200px;
+            max-height: 600px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .description {
+            margin-bottom: 20px;
+        }
+        .chord-example {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .chord-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .chord-notes {
+            font-style: italic;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chord Detection Example</h1>
+    <a href="index.html" class="back-link">← Back to Examples</a>
+    
+    <div class="description">
+        <p>
+            This example demonstrates how to use the chord detection functionality
+            to identify chords from a set of frequencies or audio input.
+        </p>
+        
+        <p>The example includes:</p>
+
+        <div class="chord-example">
+            <div class="chord-name">Chord from Audio Data</div>
+            <div class="chord-notes">Simulated C major chord waveform</div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the example script
+        import './chord-detection.js';
+    </script>
+</body>
+</html>

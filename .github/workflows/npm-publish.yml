@@ -87,9 +87,20 @@ jobs:
           # Case 1: Triggered by a successful jpackage release workflow
           if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
             echo "🔄 Syncing version from Git tag..."
-            TAG_REF="${{ github.event.workflow_run.head_branch }}"
-            # The head_branch for a tag event is the tag name itself, e.g., "v1.2.3"
-            VERSION_FROM_TAG="${TAG_REF#v}"
+            # For tag-based workflows, we need to find the tag that triggered the workflow
+            # First, get all tags that point to the head_sha
+            git fetch --tags
+            TAG_REF=$(git tag --points-at ${{ github.event.workflow_run.head_sha }} | grep "^v" | head -n 1)
+
+            if [[ -z "$TAG_REF" ]]; then
+              echo "⚠️ No version tag found for commit ${{ github.event.workflow_run.head_sha }}"
+              echo "ℹ️ Using existing version from package.json."
+              VERSION_FROM_TAG=$(node -p "require('./package.json').version")
+            else
+              echo "✅ Found tag: $TAG_REF"
+              # Extract version from tag (remove 'v' prefix)
+              VERSION_FROM_TAG="${TAG_REF#v}"
+            fi
             VERSION_FROM_PACKAGE=$(node -p "require('./package.json').version")
 
             if [[ "$VERSION_FROM_TAG" != "$VERSION_FROM_PACKAGE" ]]; then

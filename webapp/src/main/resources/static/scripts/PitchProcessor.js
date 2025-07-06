@@ -97,3 +97,5 @@ class PitchProcessor extends AudioWorkletProcessor {
 }
 
 registerProcessor('pitch-processor', PitchProcessor);
+
+export default PitchProcessor;
