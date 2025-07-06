@@ -20,8 +20,6 @@ on:
     workflows: ["Build & Release with jpackage"]
     types:
       - completed
-    branches:
-      - master
 
 # Ensure only one publish runs at a time
 concurrency:
