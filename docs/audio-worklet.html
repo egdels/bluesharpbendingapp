@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Worklet - Bluesharp Pitch Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .note {
+            background-color: #e7f5fe;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        .description {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Audio Worklet Example</h1>
+    <a href="index.html" class="back-link">← Back to Examples</a>
+    
+    <div class="description">
+        <p>
+            This example demonstrates how to use the PitchProcessor AudioWorklet
+            for real-time pitch detection in a browser environment.
+        </p>
+        
+        <div class="note">
+            <strong>Note:</strong> This example requires microphone access. 
+            When prompted, please allow access to your microphone.
+        </div>
+        
+        <div class="warning">
+            <strong>Browser Compatibility:</strong> This example requires a browser that supports
+            the AudioWorklet API (Chrome 66+, Firefox 76+, Safari 14.1+).
+        </div>
+    </div>
+    
+    <!-- The audio-worklet.js script will create the UI elements -->
+    <div id="app-container"></div>
+    
+    <script type="module">
+        // Import the example script
+        import './audio-worklet.js';
+        
+        // The script will automatically create the UI and handle all interactions
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if AudioWorklet is supported
+            if (!(window.AudioContext && 'audioWorklet' in AudioContext.prototype)) {
+                const container = document.getElementById('app-container');
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; background-color: #f8d7da; border-radius: 8px; margin: 20px 0;">
+                        <h2 style="color: #721c24;">AudioWorklet Not Supported</h2>
+                        <p>Your browser does not support the AudioWorklet API.</p>
+                        <p>Please use a modern browser like Chrome 66+, Firefox 76+, or Safari 14.1+.</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
