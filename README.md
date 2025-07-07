@@ -92,6 +92,12 @@ The project is divided into several subprojects to keep development modular and 
 - Used by the web version of the application and can be integrated into other web-based music applications.
 - Automatically published to npm after successful releases via GitHub Actions workflow.
 
+**Live Demos & Example Usage:**  
+Try the pitch detection algorithms directly in your browser:
+
+- [🎹 Online Examples (GitHub Pages)](https://egdels.github.io/bluesharpbendingapp/)
+- [📖 Example Source Code](https://github.com/egdels/bluesharpbendingapp/tree/master/docs)
+
 ---
 
 ## Build Instructions
