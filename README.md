@@ -2,6 +2,15 @@
 
 **Bluesharp Bending App** is a software tool designed to help beginners learn to bend notes on a harmonica by visualizing the notes being played.
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/de.schliweb.bluesharpbendingapp/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=de.schliweb.bluesharpbendingapp)
+
+Or download the latest APK from the [Releases Section](https://github.com/egdels/bluesharpbendingapp/releases/releases/latest).
+
 ---
 
 ## 🎥 Live Demo
