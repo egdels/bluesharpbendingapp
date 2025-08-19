@@ -104,4 +104,49 @@ class NoteLookupTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> NoteLookup.getNoteFrequency(emptyNoteName));
         assertTrue(exception.getMessage().contains("Invalid note name"));
     }
+    @ParameterizedTest
+    @CsvSource({
+            "C4, 261.63",   // Middle C
+            "D4, 293.66",   // D above middle C
+            "E4, 329.63",   // E above middle C
+            "F4, 349.23",   // F above middle C
+            "G4, 392.00",   // G above middle C
+            "A4, 440.00",   // A above middle C
+            "B4, 493.88"    // B above middle C
+    })
+    void testGetNoteFrequencyInMiddleOctave(String noteName, double expectedFrequency) {
+        double frequency = NoteLookup.getNoteFrequency(noteName);
+        assertEquals(expectedFrequency, frequency, 0.01);
+    }
+    @ParameterizedTest
+    @CsvSource({
+            "C#4, 277.18",
+            "Db4, 277.18",
+            "F#5, 739.99",
+            "Gb5, 739.99"
+    })
+    void testGetNoteFrequencyWithAccidentals(String noteName, double expectedFrequency) {
+        double frequency = NoteLookup.getNoteFrequency(noteName);
+        assertEquals(expectedFrequency, frequency, 0.01);
+    }
+
+    @Test
+    void testGetNoteFrequencyWithWhitespaceAndLowercase() {
+        assertEquals(440.0, NoteLookup.getNoteFrequency(" a4 "), 0.01);
+        assertEquals(261.63, NoteLookup.getNoteFrequency("c4"), 0.01);
+    }
+
+    @Test
+    void testGetNoteFrequencyWithExtremeOctaves() {
+        assertThrows(IllegalArgumentException.class, () -> NoteLookup.getNoteFrequency("C-1"));
+        assertThrows(IllegalArgumentException.class, () -> NoteLookup.getNoteFrequency("C10"));
+    }
+
+    @Test
+    void testSetConcertPitchAffectsOtherNotes() {
+        NoteLookup.setConcertPitch(432);
+        double freq = NoteLookup.getNoteFrequency("C4");
+        assertEquals(256.87, freq, 0.01);
+        NoteLookup.setConcertPitch(440); // Reset
+    }
 }

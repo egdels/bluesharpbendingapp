@@ -24,9 +24,14 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The DiminishedHarmonica class represents a type of harmonica with a specific
- * tuning known as the diminished tuning. It extends the AbstractHarmonica class,
- * providing the necessary implementation details for this specific tuning type.
+ * The DiminishedHarmonica class is a subclass of AbstractHarmonica, representing
+ * a harmonica tuned using a diminished tuning structure. This tuning features specific
+ * semitone offsets for both blow and draw notes, defined in the HALF_TONES_IN
+ * and HALF_TONES_OUT arrays.
+ * <p>
+ * The diminished tuning creates a unique musical structure that is often associated
+ * with specialized styles and techniques in harmonica playing. Instances of this class
+ * are initialized with a specific key frequency that defines the base pitch of the harmonica.
  */
 public class DiminishedHarmonica extends AbstractHarmonica {
     /**
@@ -35,22 +40,20 @@ public class DiminishedHarmonica extends AbstractHarmonica {
      * between the note produced by drawing air through each channel and the root
      * note for the harmonica.
      * <p>
-     * The values in this array correspond to specific semitone offsets for each
-     * draw note, providing the foundation for the diminished tuning structure in
-     * this context.
+     * The values in this array define specific semitone intervals for each
+     * draw note, forming part of the diminished tuning structure.
      */
-    private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 17, 21, 23, 26, 29, 33};
-
+    private static final int[] HALF_TONES_IN = {0, 2, 5, 8, 11, 14, 17, 20, 23, 26, 29};
     /**
      * An array representing the semitone offsets for the blow notes of the
-     * diminished harmonica tuning. These offsets define the pitch differences
+     * diminished harmonica tuning. These offsets specify the pitch differences
      * between the note produced by blowing air through each channel and the root
-     * note of the harmonica.
+     * note for the harmonica.
      * <p>
-     * The values in this array correspond to specific semitone offsets for each
-     * blow note, contributing to the tuning structure of this harmonica type.
+     * The values in this array define specific semitone intervals for each
+     * blow note, forming part of the diminished tuning structure.
      */
-    private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 12, 16, 19, 24, 28, 31, 36};
+    private static final int[] HALF_TONES_OUT = {0, 0, 3, 6, 9, 12, 15, 18, 21, 24, 27};
 
     /**
      * Constructs a DiminishedHarmonica object with the specified key frequency.

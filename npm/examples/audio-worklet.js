@@ -8,9 +8,7 @@
  * the AudioWorklet API (Chrome 66+, Firefox 76+, Safari 14.1+).
  */
 
-// Import the PitchProcessor from the package
-import { PitchProcessor } from 'https://esm.sh/bluesharp-pitch-detection@latest/audio-worklet';
-import {NoteUtils} from 'https://esm.sh/bluesharp-pitch-detection@latest';
+import {NoteUtils, NoteLookup} from 'https://esm.sh/bluesharp-pitch-detection@latest';
 
 /**
  * Initialize the audio worklet for pitch detection
@@ -34,7 +32,7 @@ async function initAudioWorklet() {
 
     // Register the processor module
     // Note: In a real application, you would use the path to the module in your node_modules
-    await audioContext.audioWorklet.addModule('/npm/src/audio-worklet.js');
+    await audioContext.audioWorklet.addModule('https://esm.sh/bluesharp-pitch-detection@latest/audio-worklet?module');
 
     // Update status
     statusDisplay.textContent = 'Audio worklet loaded. Waiting for microphone access...';
@@ -48,9 +46,10 @@ async function initAudioWorklet() {
     // Create the AudioWorkletNode with the PitchProcessor
     const pitchNode = new AudioWorkletNode(audioContext, 'pitch-processor', {
       processorOptions: {
+        sampleRate: audioContext.sampleRate, // Sample rate of the audio context
         minFrequency: 80,    // Minimum frequency to detect (Hz)
         maxFrequency: 1000,  // Maximum frequency to detect (Hz)
-        algorithm: 'hybrid'  // Algorithm to use: 'yin', 'mpm', 'fft', or 'hybrid'
+        algorithm: 'HYBRID'  // Algorithm to use: 'YIN', 'MPM', or 'HYBRID'
       }
     });
 
@@ -60,8 +59,11 @@ async function initAudioWorklet() {
 
       // Update the UI with the detected pitch
       if (pitch > 0) {
-        const noteName = NoteUtils.frequencyToNoteName(pitch);
-        const cents = NoteUtils.frequencyToCents(pitch);
+
+        const noteName = NoteLookup.getNoteName(pitch);
+        const frequency = NoteLookup.getFrequency(noteName);
+
+        const cents = NoteUtils.getCents(pitch,frequency);
         const centsText = cents !== 0 ? ` ${cents > 0 ? '+' : ''}${cents.toFixed(0)} cents` : '';
 
         pitchDisplay.textContent = `${pitch.toFixed(1)} Hz`;

@@ -1,0 +1,11 @@
+Version 3.4.4 (68)
+
+Neu
+- Adaptive App-Icons für alle Dichten (rund, Vorder-/Hintergrund) und Umstellung auf WebP → kleinere App-Größe, schärfere Darstellung.
+- Aktualisierte Play-Store-Launcher-Grafik.
+
+Verbesserungen & Fixes
+- Diminished-Stimmung korrigiert (Intervallschema) → genauere Noten-/Frequenzanzeige; Tests entsprechend angepasst.
+
+Hinweis
+- Fokus auf Genauigkeit, Packaging und Release-Stabilität; keine Änderungen am App-Flow.

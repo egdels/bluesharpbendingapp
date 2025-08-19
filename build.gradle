@@ -33,7 +33,7 @@ plugins {
 
 ext {
     slf4jVersion = "2.0.16"
-    lombokVersion = "1.18.36"
+    lombokVersion = "1.18.38"
     daggerVersion = "2.56.2"
 }
 
@@ -41,7 +41,7 @@ allprojects {
     // Defines the group ID used for all projects
     group = 'de.schliweb.bluesharpbendingapp'
     // Sets the version of the project, matching ${revision}
-    version = '3.4.3'
+    version = '3.4.4'
 
     repositories {
         google()

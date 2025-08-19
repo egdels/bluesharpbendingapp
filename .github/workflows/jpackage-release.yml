@@ -3,7 +3,7 @@ name: Build & Release with jpackage
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'  # Triggers on tags like v1.0.0, v1.2.3, etc.
 
 permissions:
   contents: write

@@ -1,0 +1,11 @@
+Version 3.4.4 (68)
+
+New
+- Adaptive app icons across all densities (round, foreground/background) and migration to WebP → smaller app size and crisper rendering.
+- Updated Play Store launcher graphic.
+
+Improvements & Fixes
+- Diminished tuning corrected (interval schema) → more accurate note/frequency display; corresponding tests updated.
+
+Note
+- Focus on accuracy, packaging, and release stability; no changes to app flow.

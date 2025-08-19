@@ -1,0 +1,11 @@
+Version 3.4.4 (68)
+
+Nouveautés
+- Icônes d’application adaptatives pour toutes les densités (rondes, avant-plan/arrière-plan) et migration vers WebP → taille de l’application réduite et rendu plus net.
+- Graphique du lanceur Play Store mis à jour.
+
+Améliorations et corrections
+- Accordage diminished corrigé (schéma d’intervalles) → affichage des notes/fréquences plus précis ; tests correspondants mis à jour.
+
+Remarque
+- Accent mis sur la précision, le conditionnement et la stabilité de la version ; aucun changement dans le flux de l’application.
