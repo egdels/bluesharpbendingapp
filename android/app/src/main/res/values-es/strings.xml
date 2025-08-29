@@ -61,7 +61,18 @@
     <string name="training_settings_header">Configuración de entrenamiento</string>
     <string name="training_control_header">Control de entrenamiento</string>
 
-    <string name="tuning_key_info_format">%1$s | %2$s</string>
+    <string name="tuning_key_info_format">%2$s • %1$s</string>
     <string name="about_user_guide">Guía de usuario</string>
     <string name="show_chord_experimental">Mostrar acorde (Experimental)</string>
+    <!-- Favorites (fallback to English until translated) -->
+    <string name="action_favorite">Favorito</string>
+    <string name="favs_saved">Guardado como favorito</string>
+    <string name="favs_removed">Favorito eliminado</string>
+    <string name="favs_manage">Gestionar favoritos</string>
+    <string name="favs_rename">Renombrar favorito</string>
+    <string name="favs_delete">Eliminar favorito</string>
+    <string name="favs_delete_confirm">¿Eliminar? Esta acción no se puede deshacer.</string>
+    <string name="favs_add">Guardar como favorito</string>
+    <string name="favs_toggle_show">Mostrar favoritos</string>
+    <string name="favs_toggle_hide">Ocultar favoritos</string>
 </resources>

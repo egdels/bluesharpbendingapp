@@ -27,9 +27,10 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.controller.*;
+import de.schliweb.bluesharpbendingapp.favorites.FavoriteManager;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 
 import javax.inject.Singleton;
@@ -93,21 +94,21 @@ public abstract class ControllerModule {
     /**
      * Provides a singleton instance of MainController.
      *
-     * @param model               the MainModel containing the state of the application
-     * @param window              the main application window
-     * @param modelStorageService the service responsible for managing the persistence of model data
+     * @param model                the MainModel containing the state of the application
+     * @param window               the main application window
+     * @param modelStorageService  the service responsible for managing the persistence of model data
      * @param microphoneController the controller for managing microphone-related functionality
-     * @param harpController      the controller for harp-related functionality
+     * @param harpController       the controller for harp-related functionality
      * @return a singleton MainController instance
      */
     @Provides
     @Singleton
-    static MainController provideMainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, 
-                                               MicrophoneController microphoneController, HarpController harpController) {
+    static MainController provideMainController(MainModel model, MainWindow window, ModelStorageService modelStorageService,
+                                                MicrophoneController microphoneController, HarpController harpController, FavoriteManager favoriteManager) {
         // Set up the circular dependency between HarpController and MicrophoneController
         harpController.setMicrophoneController(microphoneController);
 
-        return new MainController(model, window, modelStorageService, microphoneController);
+        return new MainController(model, window, modelStorageService, microphoneController, favoriteManager);
     }
 
     // Bind interfaces to implementations using @Binds
@@ -128,4 +129,7 @@ public abstract class ControllerModule {
 
     @Binds
     abstract AndroidSettingsHandler bindAndroidSettingsHandler(MainController impl);
+
+    @Binds
+    abstract FavoritesHandler bindFavoritesHandler(MainController impl);
 }

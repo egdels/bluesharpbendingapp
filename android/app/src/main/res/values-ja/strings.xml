@@ -61,7 +61,18 @@
     <string name="training_settings_header">トレーニング設定</string>
     <string name="training_control_header">トレーニングコントロール</string>
 
-    <string name="tuning_key_info_format">%1$s | %2$s</string>
+    <string name="tuning_key_info_format">%2$s • %1$s</string>
     <string name="about_user_guide">ユーザーガイド</string>
     <string name="show_chord_experimental">コードを表示（実験的）</string>
+    <!-- Favorites (fallback to English until translated) -->
+    <string name="action_favorite">お気に入り</string>
+    <string name="favs_saved">お気に入りに保存しました</string>
+    <string name="favs_removed">お気に入りから削除しました</string>
+    <string name="favs_manage">お気に入りを管理</string>
+    <string name="favs_rename">お気に入りの名前を変更</string>
+    <string name="favs_delete">お気に入りを削除</string>
+    <string name="favs_delete_confirm">削除しますか？ この操作は元に戻せません。</string>
+    <string name="favs_add">お気に入りに追加</string>
+    <string name="favs_toggle_show">お気に入りを表示</string>
+    <string name="favs_toggle_hide">お気に入りを非表示</string>
 </resources>

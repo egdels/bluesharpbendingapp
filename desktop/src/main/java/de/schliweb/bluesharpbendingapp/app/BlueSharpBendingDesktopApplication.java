@@ -63,6 +63,7 @@ public class BlueSharpBendingDesktopApplication {
                 .baseModule(baseModule)
                 .viewModule(viewModule)
                 .microphoneModule(microphoneModule)
+                .desktopFavoritesModule(new de.schliweb.bluesharpbendingapp.di.DesktopFavoritesModule(tempDirectory))
                 .build();
 
         // Log that dependency injection has been initialized

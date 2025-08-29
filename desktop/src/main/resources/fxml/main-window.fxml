@@ -23,6 +23,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" styleClass="main-window" xmlns="http://javafx.com/javafx/23.0.1"
       fx:controller="de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController" 
       fx:id="mainWindow">
@@ -33,6 +34,15 @@
         <Button styleClass="menu-button" text="%main.button.settings" onAction="#showSettingsView"/>
         <Button styleClass="menu-button" text="%main.button.about" onAction="#showAboutView"/>
     </ToolBar>
+
+    <!-- Favorites bar: toggle button + chips container (shown only in Harp view) -->
+    <HBox fx:id="favoritesBar" spacing="8" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+        </padding>
+        <Button fx:id="favoritesToggleButton" text="☆ Favoriten"/>
+        <FlowPane fx:id="favoritesContainer" hgap="8" vgap="8" prefWrapLength="600" />
+    </HBox>
 
     <StackPane VBox.vgrow="ALWAYS">
 

@@ -270,7 +270,15 @@ public abstract class PitchDetector {
      * returns -1 if no valid index is found within the given range
      */
     protected static int findFirstMinimum(double[] array, double threshold, int minIndex, int maxIndex) {
-        for (int i = minIndex; i < maxIndex; i++) {
+        // Defensive bounds: require at least 3 elements to have a local minimum (needs neighbors)
+        if (array == null || array.length < 3) {
+            return -1;
+        }
+        // Clamp indices to safe search window within [1, length-2]
+        int start = Math.max(1, Math.min(Math.max(0, minIndex), array.length - 2));
+        int endExclusive = Math.max(start, Math.min(maxIndex, array.length - 1));
+        // Iterate within clamped safe bounds; stop before last index to allow i+/-1 access
+        for (int i = start; i < endExclusive; i++) {
             if (array[i] < threshold && isLocalMinimum(array, i)) {
                 return i;
             }

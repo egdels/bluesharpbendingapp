@@ -27,15 +27,15 @@ plugins {
 }
 
 android {
-    namespace 'de.schliweb.bluesharpbendingapp'
-    compileSdk 35
+    namespace = 'de.schliweb.bluesharpbendingapp'
+    compileSdk = 35
 
     defaultConfig {
         applicationId "de.schliweb.bluesharpbendingapp"
-        minSdk 28
-        targetSdk 35
-        versionCode 68
-        versionName project.version.toString()
+        minSdk = 28
+        targetSdk = 35
+        versionCode = 72
+        versionName = project.version.toString()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,17 +51,17 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
 
     testOptions {
@@ -77,20 +77,25 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.material:material:1.13.0-rc01'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.9.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.9.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.9.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.9.3'
     implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation 'androidx.activity:activity-ktx:1.10.1'
     // Dependency Injection with Dagger
     implementation "com.google.dagger:dagger:${daggerVersion}"
     annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
     implementation(project(":base"))
+    // SLF4J API and binding to java.util.logging so logs go to Logcat
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.slf4j:slf4j-jdk14:${slf4jVersion}"
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation 'androidx.core:core-ktx:1.16.0'
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'androidx.test:core:1.6.1'
+    testImplementation 'org.robolectric:robolectric:4.13'
     debugImplementation "androidx.fragment:fragment-testing:1.8.8"
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'

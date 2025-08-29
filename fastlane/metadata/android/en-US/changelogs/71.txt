@@ -1,0 +1,3 @@
+New (Martin Release ;-))
+- Favorites (Tuning + Key): Save your most used setups and apply them with a single tap.
+- New favorites bar on the left using Extended FABs with titles for better visibility.

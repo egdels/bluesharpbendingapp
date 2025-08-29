@@ -24,8 +24,8 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import org.junit.jupiter.api.AfterEach;
@@ -37,7 +37,13 @@ import java.util.concurrent.ExecutorService;
 import static org.mockito.Mockito.*;
 
 
-
+/**
+ * Test class for the {@link MainController} class.
+ * <p>
+ * This test class contains unit tests for the behavior of the MainController,
+ * validating its interaction with dependent components and its overall functionality.
+ * It uses mock objects to simulate dependencies during tests.
+ */
 class MainControllerTest {
 
     private MainController mainController;
@@ -50,6 +56,7 @@ class MainControllerTest {
     private TrainingController trainingController;
     private ExecutorService executorService;
     private AndroidSettingsView androidSettingsView;
+    private de.schliweb.bluesharpbendingapp.favorites.FavoriteManager favoriteManager;
 
     @BeforeEach
     void setup() {
@@ -62,6 +69,7 @@ class MainControllerTest {
         microphoneController = mock(MicrophoneController.class);
         executorService = mock(ExecutorService.class);
         androidSettingsView = mock(AndroidSettingsView.class);
+        favoriteManager = mock(de.schliweb.bluesharpbendingapp.favorites.FavoriteManager.class);
 
         when(modelStorageService.readModel()).thenReturn(model);
         when(mainWindow.isAndroidSettingsViewActive()).thenReturn(true);
@@ -71,7 +79,8 @@ class MainControllerTest {
                 model,
                 mainWindow,
                 modelStorageService,
-                microphoneController
+                microphoneController,
+                favoriteManager
         );
     }
 

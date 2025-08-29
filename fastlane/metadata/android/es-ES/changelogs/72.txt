@@ -1,0 +1,12 @@
+Mejoras y correcciones:
+- Preparado para edge-to-edge en Android 15+: EdgeToEdge habilitado para gestionar correctamente los insets en versiones nuevas y antiguas de Android.
+- Material Components actualizado para evitar las API obsoletas de color de la barra de estado/navegación en Android 15.
+- Mejoras de Favoritos:
+  • La barra de favoritos se sitúa en la parte inferior derecha junto al conmutador y se apila verticalmente.
+  • El favorito inferior se alinea con el botón de alternancia para un diseño más limpio.
+  • El botón de acción siempre está visible: muestra «Guardar como favorito» o «Eliminar favorito» según la selección actual.
+  • Cambiar nombre/eliminar un favorito con pulsación larga; anchos normalizados para una alineación ordenada.
+- Correcciones de estabilidad:
+  • Corregido un fallo raro en la detección de tono (comprobación de límites en la búsqueda de mínimos YIN).
+  • Corregido un problema de carga de la pantalla de Ajustes en algunos dispositivos (recursos de dimensiones ausentes).
+- Pequeños ajustes de espaciado/márgenes en el área de favoritos.

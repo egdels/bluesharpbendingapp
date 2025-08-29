@@ -24,10 +24,17 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  */
 
 import de.schliweb.bluesharpbendingapp.controller.*;
+import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.*;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import javax.inject.Inject;
@@ -115,6 +122,36 @@ public class MainWindowDesktopFXController implements MainWindow {
      */
     @FXML
     private VBox trainingViewContainer;
+
+    /**
+     * Favorites bar container containing toggle and chips
+     */
+    @FXML
+    private HBox favoritesBar;
+
+    /**
+     * Favorites toggle button shown above the harp view
+     */
+    @FXML
+    private Button favoritesToggleButton;
+
+    /**
+     * Flow container for favorites chips/buttons
+     */
+    @FXML
+    private FlowPane favoritesContainer;
+
+    /**
+     * Injected handler for favorites operations
+     */
+    @Inject
+    /* package */ FavoritesHandler favoritesHandler;
+
+    /**
+     * Access to current selected key and tune indices
+     */
+    @Inject
+    /* package */ de.schliweb.bluesharpbendingapp.model.MainModel model;
 
     /**
      * A private field in the MainWindowDesktopFXController class that holds an instance
@@ -289,6 +326,11 @@ public class MainWindowDesktopFXController implements MainWindow {
         LoggingUtils.logInitializing("Main Window UI");
         initializeViews();
         setupContainers();
+        // Wire favorites toggle
+        if (favoritesToggleButton != null) {
+            favoritesToggleButton.setOnAction(e -> handleFavoriteToggle());
+        }
+        refreshFavoritesUI();
         LoggingUtils.logInitialized("Main Window UI");
     }
 
@@ -308,6 +350,7 @@ public class MainWindowDesktopFXController implements MainWindow {
         hideAllViews();
         harpViewContainer.setVisible(true);
         harpViewHandler.initNotes();
+        refreshFavoritesUI();
         LoggingUtils.logOperationCompleted("Harp view displayed");
     }
 
@@ -326,6 +369,7 @@ public class MainWindowDesktopFXController implements MainWindow {
         LoggingUtils.logUserAction("Show About View", "Switching to about view");
         hideAllViews();
         aboutViewContainer.setVisible(true);
+        refreshFavoritesUI();
         LoggingUtils.logOperationCompleted("About view displayed");
     }
 
@@ -366,6 +410,7 @@ public class MainWindowDesktopFXController implements MainWindow {
         noteSettingsViewHandler.initConcertPitchList();
 
         LoggingUtils.logOperationCompleted("Settings view displayed and initialized");
+        refreshFavoritesUI();
     }
 
     /**
@@ -395,6 +440,7 @@ public class MainWindowDesktopFXController implements MainWindow {
         trainingViewHandler.initPrecisionList();
 
         LoggingUtils.logOperationCompleted("Training view displayed and initialized");
+        refreshFavoritesUI();
     }
 
     /**
@@ -535,5 +581,197 @@ public class MainWindowDesktopFXController implements MainWindow {
         return false;
     }
 
+    /**
+     * Refreshes the Favorites UI by updating the visibility, manageability, and content of the favorites-related elements
+     * based on the current application state. This method is primarily responsible for ensuring that the favorites UI
+     * reflects the current list of favorites and is only displayed when appropriate.
+     * <p>
+     * Key operations include:
+     * - Checking if the "Harp" view is active to determine if the favorites UI should be shown.
+     * - Updating visibility and manageability of the favorites bar, toggle button, and container elements.
+     * - Clearing and repopulating the favorites container with buttons representing each favorite loaded via the favorites handler.
+     * - Attaching specific actions and context menu behavior to the favorite buttons.
+     * <p>
+     * Any exceptions encountered during the process are silently ignored.
+     */
+    private void refreshFavoritesUI() {
+        try {
+            boolean canShow = isHarpViewActive();
+            if (favoritesBar != null) {
+                favoritesBar.setVisible(canShow);
+                favoritesBar.setManaged(canShow);
+            }
+            if (favoritesToggleButton != null) {
+                favoritesToggleButton.setDisable(!canShow);
+                favoritesToggleButton.setVisible(canShow);
+                favoritesToggleButton.setManaged(canShow);
+            }
+            if (favoritesContainer == null) return;
+            favoritesContainer.setVisible(canShow);
+            favoritesContainer.setManaged(canShow);
+            favoritesContainer.getChildren().clear();
+            if (!canShow || favoritesHandler == null) return;
+
+            java.util.List<de.schliweb.bluesharpbendingapp.favorites.Favorite> list = favoritesHandler.loadFavorites();
+            if (list == null) return;
+            for (de.schliweb.bluesharpbendingapp.favorites.Favorite f : list) {
+                String label = buildFavoriteLabel(f);
+                Button b = new Button(label);
+                b.getStyleClass().add("favorite-chip");
+                b.setOnAction(e -> applyFavorite(f));
+                b.setOnContextMenuRequested(e -> showFavoriteContextMenu(f, b));
+                favoritesContainer.getChildren().add(b);
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * Handles the toggle functionality for marking a harmonica configuration as a favorite.
+     * This method interacts with the favorites management system to either add or remove
+     * a configuration from the user's list of favorites based on the current state. It updates
+     * the user interface to reflect the change in favorite status.
+     * <p>
+     * The method retrieves the stored tuning and key information from the application model,
+     * uses those details to toggle the favorite state via the favorites handler, and updates
+     * the toggle button's text accordingly. It also refreshes the favorites-related user interface
+     * elements to ensure consistency in the displayed information.
+     * <p>
+     * Any exceptions that occur during the process are silently ignored.
+     */
+    private void handleFavoriteToggle() {
+        try {
+            String[] tunes = de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupportedTunes();
+            String[] keys = de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupporterKeys();
+            String tuningId = tunes[model.getStoredTuneIndex()];
+            String key = keys[model.getStoredKeyIndex()];
+            Integer holes = 10;
+            de.schliweb.bluesharpbendingapp.favorites.Favorite created = favoritesHandler.toggleFavorite(tuningId, null, key, holes, null);
+            if (created != null) {
+                favoritesToggleButton.setText(I18nUtils.getString("favorites.toggle.on"));
+            } else {
+                favoritesToggleButton.setText(I18nUtils.getString("favorites.toggle.off"));
+            }
+            refreshFavoritesUI();
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * Applies the provided favorite settings to the harmonica model and updates the view accordingly.
+     *
+     * @param f a Favorite object containing the tuning ID and key to be applied to the harmonica model
+     */
+    private void applyFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        try {
+            String[] tunes = de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupportedTunes();
+            String[] keys = de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupporterKeys();
+            int tuneIndex = indexOf(tunes, f.tuningId, model.getStoredTuneIndex());
+            int keyIndex = indexOf(keys, f.key, model.getStoredKeyIndex());
+            harpSettingsViewHandler.handleTuneSelection(tuneIndex);
+            harpSettingsViewHandler.handleKeySelection(keyIndex);
+            // Ensure HarpView reflects the change immediately
+            if (!isHarpViewActive()) {
+                showHarpView();
+            } else {
+                harpViewHandler.initNotes();
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * Searches for the first occurrence of the specified value in the provided array of strings.
+     * Comparison is case-insensitive and ignores leading and trailing whitespace.
+     *
+     * @param arr   the array of strings to search in; can be null
+     * @param value the string to search for; can be null
+     * @param def   the default value to return if the input array or value is invalid, or if the value is not found
+     * @return the index of the first occurrence of the value in the array if found; otherwise, returns the default value
+     */
+    private static int indexOf(String[] arr, String value, int def) {
+        if (arr == null || value == null) return def;
+        String needle = value.trim();
+        for (int i = 0; i < arr.length; i++) {
+            String hay = arr[i] != null ? arr[i].trim() : null;
+            if (hay != null && hay.equalsIgnoreCase(needle)) return i;
+        }
+        return def;
+    }
+
+    /**
+     * Builds and returns a label for the given favorite object. If the favorite
+     * object already has a non-empty label, it is returned. Otherwise, the label
+     * is constructed using the tuning ID and key of the favorite object.
+     *
+     * @param f the favorite object for which the label is to be built
+     * @return the constructed label or the existing label if present
+     */
+    private String buildFavoriteLabel(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        if (f.label != null && !f.label.isEmpty()) return f.label;
+        String tune = f.tuningId != null ? f.tuningId : "";
+        String key = f.key != null ? f.key : "";
+        return tune + " • " + key;
+    }
+
+    /**
+     * Displays a context menu for the specified favorite item with options to rename or delete it.
+     * The context menu appears anchored to the provided node and includes event handlers for each option.
+     *
+     * @param f      the favorite item for which the context menu is being displayed. Represents a user's saved configuration
+     *               or selection in the application.
+     * @param anchor the JavaFX node to which the context menu will be anchored. This determines the location
+     *               where the context menu is displayed on the user interface.
+     */
+    private void showFavoriteContextMenu(de.schliweb.bluesharpbendingapp.favorites.Favorite f, javafx.scene.Node anchor) {
+        try {
+            javafx.scene.control.ContextMenu ctx = new javafx.scene.control.ContextMenu();
+            javafx.scene.control.MenuItem rename = new javafx.scene.control.MenuItem(I18nUtils.getString("favorites.menu.rename"));
+            javafx.scene.control.MenuItem delete = new javafx.scene.control.MenuItem(I18nUtils.getString("favorites.menu.delete"));
+            rename.setOnAction(e -> promptRenameFavorite(f));
+            delete.setOnAction(e -> confirmDeleteFavorite(f));
+            ctx.getItems().addAll(rename, delete);
+            // Show context menu directly below the clicked favorite chip
+            ctx.show(anchor, javafx.geometry.Side.BOTTOM, 0, 0);
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * Prompts the user with a dialog to rename a specified favorite item.
+     * The dialog allows the user to input a new label for the favorite. If a new label is provided,
+     * the favorite is renamed, and the favorites UI is updated to reflect the changes.
+     *
+     * @param f the favorite item to be renamed. This item represents a user's saved favorite
+     *          configuration or selection that can be managed within the application.
+     */
+    private void promptRenameFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        TextInputDialog dialog = new TextInputDialog(f.label != null ? f.label : buildFavoriteLabel(f));
+        dialog.setTitle(I18nUtils.getString("favorites.rename.title"));
+        dialog.setHeaderText(null);
+        dialog.setContentText(I18nUtils.getString("favorites.rename.prompt"));
+        dialog.showAndWait().ifPresent(newLabel -> {
+            favoritesHandler.renameFavorite(f.id, newLabel != null ? newLabel.trim() : "");
+            refreshFavoritesUI();
+        });
+    }
+
+    /**
+     * Prompts the user with a confirmation dialog to delete the specified favorite.
+     * If the user confirms the action, the favorite is removed, and the favorites UI is refreshed.
+     *
+     * @param f the favorite item to be deleted. This item represents a user's saved favorite
+     *          configuration or selection that is being managed in the application.
+     */
+    private void confirmDeleteFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, I18nUtils.getString("favorites.delete.confirm"), ButtonType.OK, ButtonType.CANCEL);
+        alert.setHeaderText(I18nUtils.getString("favorites.delete.header"));
+        alert.showAndWait().ifPresent(bt -> {
+            if (bt == ButtonType.OK) {
+                favoritesHandler.removeFavorite(f.id);
+                refreshFavoritesUI();
+            }
+        });
+    }
 
 }

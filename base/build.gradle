@@ -25,6 +25,9 @@
 dependencies {
     testImplementation 'org.mockito:mockito-inline:5.2.0'
     implementation 'org.apache.commons:commons-math3:3.6.1'
+    // Use org.json for compile only in base to avoid packaging it into Android; desktop adds it at runtime.
+    compileOnly 'org.json:json:20250517'
+    testImplementation 'org.json:json:20250517'
 }
 
 test {

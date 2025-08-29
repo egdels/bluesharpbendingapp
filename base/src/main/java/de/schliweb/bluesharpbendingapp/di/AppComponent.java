@@ -25,8 +25,8 @@ package de.schliweb.bluesharpbendingapp.di;
 
 import dagger.Component;
 import de.schliweb.bluesharpbendingapp.controller.MainController;
-import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 
 import javax.inject.Singleton;
@@ -37,7 +37,7 @@ import javax.inject.Singleton;
  * of various classes throughout the application.
  */
 @Singleton
-@Component(modules = {BaseModule.class, ControllerModule.class, ViewModule.class, MicrophoneModule.class})
+@Component(modules = {BaseModule.class, ControllerModule.class, ViewModule.class, MicrophoneModule.class, FavoritesBaseModule.class})
 public interface AppComponent {
 
     /**

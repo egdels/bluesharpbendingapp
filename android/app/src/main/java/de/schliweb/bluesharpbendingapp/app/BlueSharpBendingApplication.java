@@ -76,6 +76,7 @@ public class BlueSharpBendingApplication extends Application {
                 .baseModule(baseModule)
                 .viewModule(viewModule)
                 .microphoneModule(microphoneModule)
+                .favoritesModule(new FavoritesModule(getApplicationContext()))
                 .build();
 
         // Log that dependency injection has been initialized

@@ -62,7 +62,18 @@
     <string name="training_settings_header">Paramètres d\'entraînement</string>
     <string name="training_control_header">Contrôle d\'entraînement</string>
 
-    <string name="tuning_key_info_format">%1$s | %2$s</string>
+    <string name="tuning_key_info_format">%2$s • %1$s</string>
     <string name="about_user_guide">Guide d\'utilisation</string>
     <string name="show_chord_experimental">Afficher accord (Expérimental)</string>
+    <!-- Favorites (fallback to English until translated) -->
+    <string name="action_favorite">Favori</string>
+    <string name="favs_saved">Enregistré comme favori</string>
+    <string name="favs_removed">Favori supprimé</string>
+    <string name="favs_manage">Gérer les favoris</string>
+    <string name="favs_rename">Renommer le favori</string>
+    <string name="favs_delete">Supprimer le favori</string>
+    <string name="favs_delete_confirm">Supprimer ? Cette action est irréversible.</string>
+    <string name="favs_add">Enregistrer comme favori</string>
+    <string name="favs_toggle_show">Afficher les favoris</string>
+    <string name="favs_toggle_hide">Masquer les favoris</string>
 </resources>

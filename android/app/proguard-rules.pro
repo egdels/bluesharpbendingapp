@@ -50,3 +50,7 @@
 
 
 -keepattributes SourceFile,LineNumberTable
+
+# Ensure org.json (platform or bundled) is never obfuscated or shrunk in a way that changes method names
+-keep class org.json.** { *; }
+-dontwarn org.json.**

@@ -1,0 +1,12 @@
+Verbesserungen & Fehlerbehebungen:
+- Edge-to-Edge für Android 15+: EdgeToEdge aktiviert für korrektes Inset-Handling auf neueren und älteren Android-Versionen.
+- Material Components aktualisiert, um veraltete APIs zur Farbsetzung von Status-/Navigationsleiste unter Android 15 zu vermeiden.
+- Verbesserungen bei Favoriten:
+  • Die Favoritenleiste befindet sich unten rechts neben dem Toggle und stapelt sich vertikal.
+  • Der unterste Favorit ist auf gleicher Höhe wie der Toggle-Button (sauberes Layout).
+  • Der Aktionsbutton ist immer sichtbar: zeigt „Als Favorit speichern“ oder „Favorit löschen“ je nach aktueller Auswahl.
+  • Umbenennen/Löschen per Langdruck; Breiten vereinheitlicht für aufgeräumte Ausrichtung.
+- Stabilitätskorrekturen:
+  • Seltener Absturz in der Tonhöhenerkennung behoben (Grenzprüfung in der YIN-Minimumsuche).
+  • Problem beim Inflating des Einstellungsbildschirms auf einigen Geräten behoben (fehlende Dimen-Ressourcen).
+- Kleine UI-Anpassungen bei Abständen/Margen im Favoritenbereich.

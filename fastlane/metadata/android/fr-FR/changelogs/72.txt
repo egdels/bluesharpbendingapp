@@ -1,0 +1,12 @@
+Améliorations et corrections :
+- Prise en charge edge-to-edge pour Android 15+ : EdgeToEdge activé pour une gestion correcte des insets sur les versions récentes et anciennes d’Android.
+- Mise à jour de Material Components afin d’éviter les API obsolètes de couleur des barres d’état/navigation sous Android 15.
+- Améliorations des favoris :
+  • La barre des favoris est placée en bas à droite à côté du bouton de bascule et s’empile verticalement.
+  • Le favori le plus bas est aligné avec le bouton de bascule pour une mise en page plus propre.
+  • Le bouton d’action est toujours visible : affiche « Enregistrer comme favori » ou « Supprimer le favori » selon la sélection actuelle.
+  • Renommer/Supprimer un favori via un appui long ; largeurs normalisées pour une meilleure alignement.
+- Correctifs de stabilité :
+  • Correction d’un crash rare dans la détection de hauteur (vérification des limites dans la recherche de minimum YIN).
+  • Correction d’un problème d’inflation de l’écran des paramètres sur certains appareils (ressources de dimensions manquantes).
+- Légers ajustements d’espacement/marges dans la zone des favoris.

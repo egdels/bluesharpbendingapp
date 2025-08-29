@@ -1,29 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ MIT License
+ Copyright (c) 2025 Christian Kierdorf
+-->
 <resources>
-    <!-- Default dimensions for normal screen sizes -->
-    <dimen name="note_corner_radius">8dp</dimen>
-    <dimen name="note_stroke_width">1dp</dimen>
-    <dimen name="note_margin">4dp</dimen>
-    <dimen name="note_padding">12dp</dimen>
+    <!-- Base bottom margin for the favorites bar near bottom-right; match toggle height so bottom-most favorite aligns with toggle -->
+    <dimen name="favorites_bar_bottom_margin">6dp</dimen>
+    <!-- Base bottom margin for the favorites toggle FAB (bottom-right). Smaller value places it slightly lower. -->
+    <dimen name="favorites_toggle_bottom_margin">6dp</dimen>
+    <!-- Horizontal margins for start/end around favorites elements -->
+    <dimen name="favorites_horizontal_margin">8dp</dimen>
 
-    <dimen name="overlay_corner_radius">24dp</dimen>
-    <dimen name="overlay_padding">24dp</dimen>
-    <dimen name="overlay_stroke_width">1dp</dimen>
-
-    <!-- Settings screen dimensions -->
+    <!-- Settings screen dimensions (default/portrait) -->
     <dimen name="settings_margin">16dp</dimen>
     <dimen name="settings_padding">16dp</dimen>
     <dimen name="settings_group_margin">12dp</dimen>
     <dimen name="settings_item_margin">8dp</dimen>
-    <dimen name="settings_card_corner_radius">8dp</dimen>
+    <dimen name="settings_card_corner_radius">12dp</dimen>
     <dimen name="settings_card_elevation">2dp</dimen>
-    <dimen name="settings_header_margin">16dp</dimen>
+    <dimen name="settings_header_margin">12dp</dimen>
     <dimen name="settings_divider_height">1dp</dimen>
 
-    <!-- Menu dimensions -->
-    <dimen name="menu_item_height">64dp</dimen>
-    <dimen name="menu_item_padding_vertical">22dp</dimen>
+    <!-- Default (base) note dimensions to satisfy lint MissingDefaultResource -->
+    <dimen name="note_corner_radius">16dp</dimen>
+    <dimen name="note_stroke_width">1.5dp</dimen>
+    <dimen name="note_margin">4dp</dimen>
+    <dimen name="note_padding">8dp</dimen>
+
+    <!-- Default (base) overlay dimensions to satisfy lint MissingDefaultResource -->
+    <dimen name="overlay_corner_radius">24dp</dimen>
+    <dimen name="overlay_padding">24dp</dimen>
+    <dimen name="overlay_stroke_width">1.5dp</dimen>
+
+    <!-- Popup menu dimensions used by styles.xml -->
+    <dimen name="menu_min_width">200dp</dimen>
+    <dimen name="menu_item_height">48dp</dimen>
     <dimen name="menu_item_padding_horizontal">16dp</dimen>
-    <dimen name="menu_text_size">22sp</dimen>
-    <dimen name="menu_min_width">280dp</dimen>
+    <dimen name="menu_item_padding_vertical">12dp</dimen>
+    <dimen name="menu_text_size">16sp</dimen>
 </resources>

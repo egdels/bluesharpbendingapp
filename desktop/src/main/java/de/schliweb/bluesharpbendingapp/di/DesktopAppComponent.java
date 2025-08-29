@@ -33,7 +33,7 @@ import javax.inject.Singleton;
  * This component extends the base AppComponent and adds Desktop-specific modules.
  */
 @Singleton
-@Component(modules = {BaseModule.class, ControllerModule.class, ViewModule.class, MicrophoneModule.class})
+@Component(modules = {BaseModule.class, ControllerModule.class, ViewModule.class, MicrophoneModule.class, DesktopFavoritesModule.class})
 public interface DesktopAppComponent extends AppComponent {
 
     /**
@@ -72,6 +72,13 @@ public interface DesktopAppComponent extends AppComponent {
          */
         Builder microphoneModule(MicrophoneModule microphoneModule);
 
+        /**
+         * Sets the DesktopFavoritesModule for this component.
+         *
+         * @param desktopFavoritesModule the DesktopFavoritesModule instance
+         * @return this builder
+         */
+        Builder desktopFavoritesModule(DesktopFavoritesModule desktopFavoritesModule);
 
         /**
          * Builds the DesktopAppComponent.

@@ -195,4 +195,13 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
         noteTextView.setBackgroundResource(resourceId);
         this.initialBackgroundColor = TextViewUtils.saveBackgroundColor(noteTextView);
     }
+
+    /**
+     * Clears all instances of {@code HarpViewNoteElementAndroid} stored in the internal instance registry.
+     * This method is typically used to release memory or reset the state of the application.
+     */
+    public static void clearInstances() {
+        instances.clear();
+    }
+
 }

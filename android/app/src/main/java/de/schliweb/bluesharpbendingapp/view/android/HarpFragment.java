@@ -478,6 +478,40 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
         }
     }
 
+    public void clearForFavorites() {
+        // Ensure no enlarged overlay remains visible when switching favorites
+        hideEnlargedTextView();
+
+        for (int channel = 1; channel <= 10; channel++) {
+            for (int note = -3; note <= 4; note++) {
+                TextView textView = getNote(channel, note);
+                HarpViewNoteElementAndroid element = HarpViewNoteElementAndroid.getInstance(textView);
+
+                // Clear any drawn indicators/lines and internal state first
+                element.clear();
+
+                // Reset content
+                textView.setText("");
+
+                // Restore default background based on note type and update initial background in element
+                int backgroundResId;
+                if (note < 0) {
+                    backgroundResId = R.drawable.note_blow;
+                } else if (note == 0 || note == 1) {
+                    backgroundResId = R.drawable.note_channel;
+                } else {
+                    backgroundResId = R.drawable.note_draw;
+                }
+                element.setBackgroundResource(backgroundResId);
+
+                // Finally hide the note cell
+                textView.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        // Drop any cached HarpViewNoteElement instances to avoid stale state
+        HarpViewNoteElementAndroid.clearInstances();
+    }
 
     /**
      * Sets the color of a specific note in the harp table by updating its background resource.

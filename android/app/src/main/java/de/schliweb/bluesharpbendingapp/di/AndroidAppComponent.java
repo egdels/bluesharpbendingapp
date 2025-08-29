@@ -33,8 +33,10 @@ import javax.inject.Singleton;
  * This component extends the base AppComponent and adds Android-specific modules.
  */
 @Singleton
-@Component(modules = {BaseModule.class, ControllerModule.class, ViewModule.class, MicrophoneModule.class})
+@Component(modules = {BaseModule.class, ControllerModule.class, ViewModule.class, MicrophoneModule.class, FavoritesModule.class})
 public interface AndroidAppComponent extends AppComponent {
+
+    de.schliweb.bluesharpbendingapp.favorites.FavoriteManager provideFavoriteManager();
 
     /**
      * Injects dependencies into the specified MainActivity instance.
@@ -71,6 +73,14 @@ public interface AndroidAppComponent extends AppComponent {
          * @return this builder
          */
         Builder microphoneModule(MicrophoneModule microphoneModule);
+
+        /**
+         * Sets the FavoritesModule for this component.
+         *
+         * @param favoritesModule the FavoritesModule instance
+         * @return this builder
+         */
+        Builder favoritesModule(FavoritesModule favoritesModule);
 
 
         /**

@@ -26,6 +26,7 @@
 -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                      xmlns:tools="http://schemas.android.com/tools"
+                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
                                                      android:layout_width="match_parent"
                                                      android:layout_height="match_parent"
                                                      android:fitsSystemWindows="true"
@@ -46,4 +47,44 @@
 
     <include layout="@layout/content_main"/>
 
+
+    <!-- Favorites FAB bar at bottom-right (hidden by default), vertical and positioned left of the toggle -->
+    <ScrollView
+         android:id="@+id/favorites_fab_bar"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginEnd="@dimen/favorites_horizontal_margin"
+         android:layout_marginBottom="@dimen/favorites_bar_bottom_margin"
+         android:overScrollMode="never"
+         android:fillViewport="false"
+         android:visibility="gone"
+         android:scrollbars="vertical"
+         android:fadeScrollbars="false"
+         android:scrollbarStyle="outsideInset"
+         app:layout_anchor="@id/nav_host_fragment_content_main"
+         app:layout_anchorGravity="bottom|end"
+         app:layout_dodgeInsetEdges="bottom|end">
+
+        <LinearLayout
+            android:id="@+id/favorites_fab_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="bottom|end"
+            android:paddingEnd="0dp"/>
+    </ScrollView>
+
+    <!-- Toggle FAB to show/hide the favorites bar (aligned bottom-right) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/favorites_toggle_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/favorites_horizontal_margin"
+        android:layout_marginBottom="@dimen/favorites_toggle_bottom_margin"
+        android:contentDescription="@string/favs_toggle_show"
+        app:layout_anchor="@id/nav_host_fragment_content_main"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_dodgeInsetEdges="bottom|end"
+        app:srcCompat="@drawable/ic_star_outline" />
+ 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

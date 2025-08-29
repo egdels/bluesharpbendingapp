@@ -1,0 +1,12 @@
+Improvements & fixes:
+- Edge-to-edge ready for Android 15+: enabled EdgeToEdge for proper inset handling on newer and older Android versions.
+- Updated Material Components to avoid deprecated status/navigation bar color APIs on Android 15.
+- Favorites enhancements:
+  • Favorites bar sits at the bottom-right next to the toggle and stacks vertically.
+  • Bottom-most favorite aligns with the toggle button for a cleaner layout.
+  • The action button is always visible: shows “Save as favorite” or “Delete favorite” depending on the current selection.
+  • Rename/Delete a favorite via long-press menu; widths normalized for tidy alignment.
+- Stability fixes:
+  • Fixed a rare crash in pitch detection (bounds check in YIN minimum search).
+  • Fixed a Settings screen inflation issue on some devices (missing dimen resources).
+- Small UI spacing/margin adjustments for the favorites area.

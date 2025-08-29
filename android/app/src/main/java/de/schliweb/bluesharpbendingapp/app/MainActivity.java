@@ -35,19 +35,27 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
+import androidx.activity.EdgeToEdge;
+import androidx.core.view.MarginLayoutParamsCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import de.schliweb.bluesharpbendingapp.R;
 import de.schliweb.bluesharpbendingapp.controller.*;
 import de.schliweb.bluesharpbendingapp.databinding.ActivityMainBinding;
+import de.schliweb.bluesharpbendingapp.favorites.FavoriteManager;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.*;
 import de.schliweb.bluesharpbendingapp.view.android.*;
@@ -96,6 +104,7 @@ import javax.inject.Inject;
  * - Configured using the Navigation UI library to allow smooth transitions between different fragments.
  */
 @Slf4j
+@SuppressWarnings("deprecation")
 public class MainActivity extends AppCompatActivity implements MainWindow {
 
     /**
@@ -189,6 +198,11 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
     private boolean isAppBarHidden = false;
 
     /**
+     * Manual toggle flag to hide/show the favorites FAB bar.
+     */
+    private boolean favoritesBarManuallyHidden = true;
+
+    /**
      * The NoteSettingsViewHandler instance responsible for managing
      * and handling the behavior and interactions of the note settings
      * view within the application.
@@ -239,6 +253,18 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
     @Inject
     /* package */ ModelStorageService modelStorageService;
 
+    /**
+     * Favorite manager for saving and toggling favorites.
+     */
+    @Inject
+    /* package */ FavoriteManager favoriteManager;
+
+    /**
+     * Access to current selected key and tune indices.
+     */
+    @Inject
+    /* package */ MainModel model;
+
 
     /**
      * Initializes the main activity, setting up the user interface, managing permissions,
@@ -254,10 +280,12 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         // Handle the splash screen transition.
         SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
+        // Enable edge-to-edge to ensure proper inset handling on Android 15+ and backport on older versions
+        EdgeToEdge.enable(this);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             permissionGranted = true;
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
             showPermissionInformation();
         } else {
             requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
@@ -300,6 +328,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
                 trainingViewHandler.initTrainingList();
                 trainingViewHandler.initPrecisionList();
             }
+            // Update favorites visibility/content on fragment changes
+            refreshFavoriteFabs();
             handleLookScreen();
         });
 
@@ -308,11 +338,27 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
 
         setSupportActionBar(binding.toolbar);
 
+        // Setup Favorites toggle FAB
+        android.view.View toggleFab = findViewById(R.id.favorites_toggle_fab);
+        if (toggleFab != null) {
+            toggleFab.setOnClickListener(v -> {
+                favoritesBarManuallyHidden = !favoritesBarManuallyHidden;
+                refreshFavoriteFabs();
+            });
+        }
+
+        // Initialize favorites favorites-FAB bar
+        refreshFavoriteFabs();
+
+        // Apply bottom system insets to keep FABs above the navigation bar
+        applyBottomInsetMargins();
+
         NavHostFragment navhostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
         assert navhostFragment != null;
         NavController navController = navhostFragment.getNavController();
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        // Use toolbar-based setup to avoid deprecated Activity-based setup
+        NavigationUI.setupWithNavController(binding.toolbar, navController, appBarConfiguration);
 
 
         if (permissionGranted) {
@@ -435,6 +481,345 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
 
 
     /**
+     * Refreshes the favorites FAB bar (mini FABs) at the bottom overlay.
+     */
+    private void refreshFavoriteFabs() {
+        try {
+            android.view.View bar = findViewById(R.id.favorites_fab_bar);
+            android.widget.LinearLayout container = findViewById(R.id.favorites_fab_container);
+            android.widget.ImageButton toggle = null;
+            android.view.View toggleView = findViewById(R.id.favorites_toggle_fab);
+            if (toggleView instanceof android.widget.ImageButton) {
+                toggle = (android.widget.ImageButton) toggleView;
+            }
+            if (bar == null || container == null) return;
+
+            boolean canShow = isHarpViewActive();
+            // Toggle FAB visibility follows canShow
+            if (toggleView != null) {
+                toggleView.setVisibility(canShow ? android.view.View.VISIBLE : android.view.View.GONE);
+            }
+
+            // Only show favorites FABs in HarpView and when AppBar is visible
+            if (!canShow) {
+                bar.setVisibility(android.view.View.GONE);
+                container.removeAllViews();
+                return;
+            }
+
+            // If manually hidden, keep bar gone and update toggle icon/text, then exit
+            if (favoritesBarManuallyHidden) {
+                bar.setVisibility(android.view.View.GONE);
+                container.removeAllViews();
+                if (toggleView != null) {
+                    if (toggle != null) toggle.setImageResource(R.drawable.ic_star_outline);
+                    toggleView.setContentDescription(getString(R.string.favs_toggle_show));
+                    toggleView.setTooltipText(getString(R.string.favs_toggle_show));
+                }
+                return;
+            }
+
+            container.removeAllViews();
+            // Update toggle to indicate it can hide now
+            if (toggleView != null) {
+                if (toggle != null) toggle.setImageResource(R.drawable.ic_star_filled);
+                toggleView.setContentDescription(getString(R.string.favs_toggle_hide));
+                toggleView.setTooltipText(getString(R.string.favs_toggle_hide));
+            }
+
+            // Common spacing for vertical stack (8dp)
+            int spacingPx = (int) (8f * getResources().getDisplayMetrics().density);
+
+            // Keep references to all created EFABs so we can normalize widths after layout
+            java.util.List<android.view.View> createdFabs = new java.util.ArrayList<>();
+
+
+            java.util.List<de.schliweb.bluesharpbendingapp.favorites.Favorite> list = favoriteManager.load();
+            if (list != null) {
+                for (de.schliweb.bluesharpbendingapp.favorites.Favorite f : list) {
+                    ExtendedFloatingActionButton fav = new ExtendedFloatingActionButton(this);
+                    String label = buildFavoriteLabel(f);
+                    fav.setText(label);
+                    fav.setIcon(androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_star_filled));
+                    fav.setContentDescription(label);
+
+                    fav.setTooltipText(label);
+
+                    fav.setOnClickListener(v -> applyFavorite(f));
+                    fav.setOnLongClickListener(v -> {
+                        showFavoriteContextMenu(f);
+                        return true;
+                    });
+                    {
+                        android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                                android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                        );
+                        lp.bottomMargin = spacingPx;
+                        fav.setLayoutParams(lp);
+                    }
+                    container.addView(fav);
+                    createdFabs.add(fav);
+                }
+            }
+
+            // Add the action button at the bottom (after listing all favorites). Always show it, but change label based on current state.
+            try {
+                String[] tunes = AbstractHarmonica.getSupportedTunes();
+                String[] keys = AbstractHarmonica.getSupporterKeys();
+                String tuningId = tunes[model.getStoredTuneIndex()];
+                String key = keys[model.getStoredKeyIndex()];
+                Integer holes = 10; // app defaults to 10 holes
+                boolean alreadyFavorite = favoriteManager.isCurrentFavorite(tuningId, null, key, holes);
+
+                ExtendedFloatingActionButton add = new ExtendedFloatingActionButton(this);
+                if (alreadyFavorite) {
+                    add.setText(getString(R.string.favs_delete));
+                    add.setIcon(androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_star_filled));
+                    add.setContentDescription(getString(R.string.favs_delete));
+                    add.setTooltipText(getString(R.string.favs_delete));
+                } else {
+                    add.setText(getString(R.string.favs_add));
+                    add.setIcon(androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_star_outline));
+                    add.setContentDescription(getString(R.string.favs_add));
+                    add.setTooltipText(getString(R.string.favs_add));
+                }
+                // Toggle action performs add/remove based on current state
+                add.setOnClickListener(v -> handleFavoriteToggle());
+
+                {
+                    android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    lp.bottomMargin = spacingPx;
+                    add.setLayoutParams(lp);
+                }
+
+                container.addView(add);
+                createdFabs.add(add);
+            } catch (Exception ignored) {
+                // If anything goes wrong resolving state, still try to show a default "add" button
+                ExtendedFloatingActionButton add = new ExtendedFloatingActionButton(this);
+                add.setText(getString(R.string.favs_add));
+                add.setIcon(androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_star_outline));
+                add.setContentDescription(getString(R.string.favs_add));
+                add.setTooltipText(getString(R.string.favs_add));
+                add.setOnClickListener(v -> handleFavoriteToggle());
+                android.widget.LinearLayout.LayoutParams lp = new android.widget.LinearLayout.LayoutParams(
+                        android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                        android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                lp.bottomMargin = spacingPx;
+                add.setLayoutParams(lp);
+                container.addView(add);
+                createdFabs.add(add);
+            }
+
+            // After all EFABs are added, normalize widths so they are all the same
+            container.post(() -> {
+                int childCount = container.getChildCount();
+                int maxWidth = 0;
+                for (int i = 0; i < childCount; i++) {
+                    android.view.View child = container.getChildAt(i);
+                    // Ensure measure has occurred; if width is 0, measure explicitly
+                    if (child.getMeasuredWidth() == 0) {
+                        int wSpec = android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED);
+                        int hSpec = android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED);
+                        child.measure(wSpec, hSpec);
+                    }
+                    maxWidth = Math.max(maxWidth, child.getMeasuredWidth());
+                }
+                if (maxWidth > 0) {
+                    for (int i = 0; i < childCount; i++) {
+                        android.view.View child = container.getChildAt(i);
+                        android.view.ViewGroup.LayoutParams lp = child.getLayoutParams();
+                        lp.width = maxWidth;
+                        child.setLayoutParams(lp);
+                    }
+                }
+                // Ensure the bottom-most view (last child) hugs the bottom without extra spacing
+                if (childCount > 0) {
+                    android.view.View last = container.getChildAt(childCount - 1);
+                    if (last.getLayoutParams() instanceof android.widget.LinearLayout.LayoutParams) {
+                        android.widget.LinearLayout.LayoutParams lastLp = (android.widget.LinearLayout.LayoutParams) last.getLayoutParams();
+                        lastLp.bottomMargin = 0; // align with toggle height
+                        last.setLayoutParams(lastLp);
+                    }
+                }
+            });
+
+            bar.setVisibility(android.view.View.VISIBLE);
+        } catch (Exception e) {
+            log.warn("Failed to refresh favorite FABs", e);
+        }
+    }
+
+    /**
+     * Applies the selected favorite by setting tuning and key accordingly.
+     */
+    private void applyFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        try {
+            // Resolve indexes for tuning and key
+            String[] tunes = AbstractHarmonica.getSupportedTunes();
+            String[] keys = AbstractHarmonica.getSupporterKeys();
+            int tuneIndex = indexOf(tunes, f.tuningId, model.getStoredTuneIndex());
+            int keyIndex = indexOf(keys, f.key, model.getStoredKeyIndex());
+
+            // Apply via handlers to update model and persist
+            harpSettingsViewHandler.handleTuneSelection(tuneIndex);
+            harpSettingsViewHandler.handleKeySelection(keyIndex);
+
+            // Ensure HarpView is visible
+            if (!isHarpViewActive()) {
+                androidx.navigation.Navigation.findNavController(this, R.id.nav_host_fragment_content_main)
+                        .navigate(R.id.action_to_HarpFragment);
+                // Do not call initNotes immediately; wait for HarpFragment to become active
+            } else {
+                // Harp view already active: clear and init immediately
+                if (getHarpView() instanceof HarpFragment harpFragment) {
+                    harpFragment.clearForFavorites();
+                }
+                harpViewHandler.initNotes();
+            }
+
+        } catch (Exception e) {
+            log.warn("Failed to apply favorite", e);
+        }
+    }
+
+    private static int indexOf(String[] arr, String value, int def) {
+        if (arr == null || value == null) return def;
+        String needle = value.trim();
+        for (int i = 0; i < arr.length; i++) {
+            String hay = arr[i] != null ? arr[i].trim() : null;
+            if (hay != null && hay.equalsIgnoreCase(needle)) return i;
+        }
+        return def;
+    }
+
+    private String buildFavoriteLabel(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        if (f.label != null && !f.label.isEmpty()) return f.label;
+        String tune = f.tuningId != null ? f.tuningId : "";
+        String key = f.key != null ? f.key : "";
+        return tune + " • " + key;
+    }
+
+
+    /**
+     * Shows a simple context menu for a favorite (Rename/Delete).
+     */
+    private void showFavoriteContextMenu(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        try {
+            CharSequence[] items = new CharSequence[]{getString(R.string.favs_rename), getString(R.string.favs_delete)};
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.favs_manage))
+                    .setItems(items, (dialog, which) -> {
+                        if (which == 0) {
+                            promptRenameFavorite(f);
+                        } else if (which == 1) {
+                            confirmDeleteFavorite(f);
+                        }
+                    })
+                    .show();
+        } catch (Exception e) {
+            log.warn("Failed to show favorite context menu", e);
+        }
+    }
+
+    private void promptRenameFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        try {
+            final android.widget.EditText input = new android.widget.EditText(this);
+            input.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            input.setText(f.label != null ? f.label : buildFavoriteLabel(f));
+            input.setSelection(input.getText().length());
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.favs_rename))
+                    .setView(input)
+                    .setPositiveButton(android.R.string.ok, (d, w) -> {
+                        String newLabel = input.getText() != null ? input.getText().toString().trim() : "";
+                        favoriteManager.rename(f.id, newLabel);
+                        refreshFavoriteFabs();
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+        } catch (Exception e) {
+            log.warn("Failed to prompt rename favorite", e);
+        }
+    }
+
+    private void confirmDeleteFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+        try {
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.favs_delete))
+                    .setMessage(getString(R.string.favs_delete_confirm))
+                    .setPositiveButton(android.R.string.ok, (d, w) -> {
+                        favoriteManager.remove(f.id);
+                        refreshFavoriteFabs();
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+        } catch (Exception e) {
+            log.warn("Failed to confirm delete favorite", e);
+        }
+    }
+
+    /**
+     * Applies system bottom insets to the floating views (toggle FAB and favorites bar)
+     * so they do not overlap the system navigation bar.
+     */
+    private void applyBottomInsetMargins() {
+        // Read base margins from resources so we can tweak placement without code changes
+        final int barBaseBottom = getResources().getDimensionPixelSize(R.dimen.favorites_bar_bottom_margin);
+        final int toggleBaseBottom = getResources().getDimensionPixelSize(R.dimen.favorites_toggle_bottom_margin);
+        final int baseHorizontal = getResources().getDimensionPixelSize(R.dimen.favorites_horizontal_margin);
+
+        android.view.View bar = findViewById(R.id.favorites_fab_bar);
+        final android.view.View toggleRef = findViewById(R.id.favorites_toggle_fab);
+        if (bar != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(bar, (v, insets) -> {
+                Insets sb = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                int bottom = sb.bottom;
+                int end = sb.right; // on some devices, nav bar can sit on the right in landscape
+
+                // Determine toggle width to leave space so the bar sits just left of the toggle
+                int toggleWidth = 0;
+                if (toggleRef != null) {
+                    if (toggleRef.getMeasuredWidth() == 0) {
+                        int wSpec = android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED);
+                        int hSpec = android.view.View.MeasureSpec.makeMeasureSpec(0, android.view.View.MeasureSpec.UNSPECIFIED);
+                        toggleRef.measure(wSpec, hSpec);
+                    }
+                    toggleWidth = toggleRef.getMeasuredWidth();
+                }
+
+                android.view.ViewGroup.MarginLayoutParams lp = (android.view.ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                lp.bottomMargin = barBaseBottom + bottom;
+                // Set end margin (RTL-aware) = horizontal margin + system inset + toggle width + spacing
+                int extraGap = baseHorizontal; // gap between bar and toggle
+                MarginLayoutParamsCompat.setMarginEnd(lp, baseHorizontal + end + toggleWidth + extraGap);
+                v.setLayoutParams(lp);
+                return insets;
+            });
+        }
+        // Apply insets for the toggle FAB, with its own base bottom margin to allow slightly lower placement
+        android.view.View toggle = findViewById(R.id.favorites_toggle_fab);
+        if (toggle != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(toggle, (v, insets) -> {
+                Insets sb = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                int bottom = sb.bottom;
+                int end = sb.right;
+                android.view.ViewGroup.MarginLayoutParams lp = (android.view.ViewGroup.MarginLayoutParams) v.getLayoutParams();
+                lp.bottomMargin = toggleBaseBottom + bottom;
+                MarginLayoutParamsCompat.setMarginEnd(lp, baseHorizontal + end);
+                v.setLayoutParams(lp);
+                return insets;
+            });
+        }
+    }
+
+
+    /**
      * Handles selection of action bar menu items. Based on the item selected,
      * performs specific actions such as navigation or updating the app state.
      * The method also ensures the current model is saved before handling any navigation.
@@ -486,9 +871,34 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
+        return navController.navigateUp() || super.onSupportNavigateUp();
     }
 
+    /**
+     * Toggle current tuning+key as favorite and show a Snackbar with result.
+     */
+    private void handleFavoriteToggle() {
+        try {
+            String[] tunes = AbstractHarmonica.getSupportedTunes();
+            String[] keys = AbstractHarmonica.getSupporterKeys();
+            String tuningId = tunes[model.getStoredTuneIndex()];
+            String key = keys[model.getStoredKeyIndex()];
+            // Holes currently fixed to 10 in app; keep null to use default later or pass 10
+            Integer holes = 10;
+            // Built-in tunings: no tuningHash
+            de.schliweb.bluesharpbendingapp.favorites.Favorite created = favoriteManager.toggle(tuningId, null, key, holes, null);
+            if (created != null) {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.favs_saved), Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.favs_removed), Snackbar.LENGTH_SHORT).show();
+            }
+            // Refresh favorites UI (chips + fab bar)
+            refreshFavoriteFabs();
+        } catch (Exception e) {
+            // Be defensive to avoid crashes in UI; log at least
+            log.warn("Favorite toggle failed", e);
+        }
+    }
 
     @Override
     public HarpSettingsView getHarpSettingsView() {
@@ -571,6 +981,8 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
      */
     @Override
     protected void onResume() {
+        // Refresh UI that may depend on favorites
+        refreshFavoriteFabs();
         super.onResume();
         if (isPaused && permissionGranted) {
             mainController.start();

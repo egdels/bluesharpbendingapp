@@ -62,7 +62,18 @@
     <string name="training_settings_header">Training Settings</string>
     <string name="training_control_header">Training Control</string>
 
-    <string name="tuning_key_info_format">%1$s | %2$s</string>
+    <string name="tuning_key_info_format">%2$s • %1$s</string>
     <string name="about_user_guide">User Guide</string>
     <string name="show_chord_experimental">Show Chord (Experimental)</string>
+    <!-- Favorites -->
+    <string name="action_favorite">Favorite</string>
+    <string name="favs_saved">Saved as favorite</string>
+    <string name="favs_removed">Favorite removed</string>
+    <string name="favs_manage">Manage favorites</string>
+    <string name="favs_rename">Rename favorite</string>
+    <string name="favs_delete">Delete favorite</string>
+    <string name="favs_delete_confirm">Delete? This cannot be undone.</string>
+    <string name="favs_add">Save as favorite</string>
+    <string name="favs_toggle_show">Show favorites</string>
+    <string name="favs_toggle_hide">Hide favorites</string>
 </resources>

@@ -24,13 +24,17 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 
+import de.schliweb.bluesharpbendingapp.favorites.Favorite;
+import de.schliweb.bluesharpbendingapp.favorites.FavoriteManager;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
-import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
+
+import java.util.List;
 
 /**
  * The MainController class is responsible for managing the primary workflow and logic
@@ -40,7 +44,7 @@ import de.schliweb.bluesharpbendingapp.view.MainWindow;
  * This class implements the AndroidSettingsHandler interface to provide functionality
  * specific to managing Android lock screen settings.
  */
-public class MainController implements AndroidSettingsHandler {
+public class MainController implements AndroidSettingsHandler, FavoritesHandler {
 
     private final MainModel model;
     private final ModelStorageService modelStorageService;
@@ -48,6 +52,8 @@ public class MainController implements AndroidSettingsHandler {
     private final MainWindow window;
 
     private final MicrophoneController microphoneController;
+
+    private final FavoriteManager favoriteManager;
 
     /**
      * Constructs a new MainController and initializes its components using the provided
@@ -57,13 +63,14 @@ public class MainController implements AndroidSettingsHandler {
      * @param modelStorageService  The ModelStorageService instance used to retrieve and store model data.
      * @param microphoneController The controller for microphone-related functionality.
      */
-    public MainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, MicrophoneController microphoneController) {
+    public MainController(MainModel model, MainWindow window, ModelStorageService modelStorageService, MicrophoneController microphoneController, FavoriteManager favoriteManager) {
         LoggingContext.setComponent("MainController");
         LoggingUtils.logInitializing("MainController");
         this.model = model;
         this.microphoneController = microphoneController;
         this.modelStorageService = modelStorageService;
         this.window = window;
+        this.favoriteManager = favoriteManager;
 
         LoggingUtils.logDebug("Setting stored reference pitch based on the model's stored concert pitch index");
         NoteLookup.setConcertPitchByIndex(model.getStoredConcertPitchIndex());
@@ -71,6 +78,36 @@ public class MainController implements AndroidSettingsHandler {
         LoggingUtils.logInitialized("MainController");
     }
 
+    // FavoritesHandler implementation (delegates to FavoriteManager)
+    @Override
+    public List<Favorite> loadFavorites() {
+        return favoriteManager.load();
+    }
+
+    @Override
+    public Favorite toggleFavorite(String tuningId, String tuningHash, String key, Integer holes, String label) {
+        return favoriteManager.toggle(tuningId, tuningHash, key, holes, label);
+    }
+
+    @Override
+    public boolean isCurrentFavorite(String tuningId, String tuningHash, String key, Integer holes) {
+        return favoriteManager.isCurrentFavorite(tuningId, tuningHash, key, holes);
+    }
+
+    @Override
+    public void renameFavorite(String id, String newLabel) {
+        favoriteManager.rename(id, newLabel);
+    }
+
+    @Override
+    public void removeFavorite(String id) {
+        favoriteManager.remove(id);
+    }
+
+    @Override
+    public void reorderFavorites(List<Favorite> inNewOrder) {
+        favoriteManager.reorder(inNewOrder);
+    }
 
     /**
      * Starts the primary components of the application.
