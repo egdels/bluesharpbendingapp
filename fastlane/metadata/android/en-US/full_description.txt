@@ -25,3 +25,5 @@ Technical Details (for developers):
 The app is also available for desktop platforms and as a web application at https://letsbend.de
 
 Enjoy and Let's Bend!
+
+Let's is free and open source. If you find it useful, consider supporting development:  https://ko-fi.com/egdels
