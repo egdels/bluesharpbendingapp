@@ -1,4 +1,4 @@
-Let's Bend: Blues Harmonica Tuner & Trainer assists harmonica players in accurately hitting bending notes through real-time visualization.
+d Let's Bend: Blues Harmonica Tuner & Trainer assists harmonica players in accurately hitting bending notes through real-time visualization.
 
 The application is completely free, ad-free, and can be used without registration. Sounds are captured via the MediaRecorder library as a continuous data stream, analyzed using advanced pitch detection algorithms, and displayed in real-time.
 
@@ -26,4 +26,4 @@ The app is also available for desktop platforms and as a web application at http
 
 Enjoy and Let's Bend!
 
-Let's is free and open source. If you find it useful, consider supporting development:  https://ko-fi.com/egdels
+Let's Bend is free and open source. If you find it useful, consider supporting development:  https://ko-fi.com/egdels
