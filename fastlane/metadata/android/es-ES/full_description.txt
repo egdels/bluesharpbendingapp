@@ -25,3 +25,5 @@ Detalles técnicos (para desarrolladores):
 La aplicación también está disponible para plataformas de escritorio y como aplicación web en https://letsbend.de
 
 ¡Disfruta y Let's Bend!
+
+Let's Bend es gratuita y de código abierto. Si te resulta útil, considera apoyar el desarrollo: https://ko-fi.com/egdels
