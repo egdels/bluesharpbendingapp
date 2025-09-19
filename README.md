@@ -219,6 +219,15 @@ If you find this app helpful, please consider giving it a ⭐ on GitHub – it h
 
 ---
 
+## ❤️ Support this project
+**Bluesharp Bending App** is free and open source.
+If you find it useful, please consider supporting development:
+
+[![Ko-fi](https://img.shields.io/badge/Buy%20me%20a%20coffee-Ko--fi-orange)](https://ko-fi.com/egdels)
+[![PayPal](https://img.shields.io/badge/Donate-PayPal-blue)](https://www.paypal.com/paypalme/egdels)
+
+---
+
 ## License
 
 This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
