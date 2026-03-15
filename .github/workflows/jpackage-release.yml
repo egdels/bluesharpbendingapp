@@ -30,7 +30,14 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run jpackage in :desktop
+        if: runner.os != 'Linux'
         run: ./gradlew :desktop:jpackage
+        env:
+          GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
+
+      - name: Run jpackage and build AppImage base (Linux)
+        if: runner.os == 'Linux'
+        run: ./gradlew :desktop:jpackage :desktop:jpackageAppImage
         env:
           GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
 
@@ -41,8 +48,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create AppImage (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          APP_VERSION=$(./gradlew -q :desktop:properties | grep '^version:' | awk '{print $2}')
+          echo "Detected version: ${APP_VERSION}"
+          chmod +x desktop/packaging/appimage/build-appimage.sh
+          desktop/packaging/appimage/build-appimage.sh "${APP_VERSION}"
+        env:
+          GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
+
+      - name: Upload AppImage to GitHub Release (Linux only)
+        if: runner.os == 'Linux'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: desktop/build/appimage-output/*.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload installer as GitHub Actions artifact
         uses: actions/upload-artifact@v4
         with:
           name: native-installer-${{ runner.os }}
           path: desktop/build/jpackage/
+
+      - name: Upload AppImage as GitHub Actions artifact (Linux only)
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-appimage-Linux
+          path: desktop/build/appimage-output/*.AppImage
