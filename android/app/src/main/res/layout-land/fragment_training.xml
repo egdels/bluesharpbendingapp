@@ -34,8 +34,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal">
-
         <!-- Left Section: Note Display -->
         <LinearLayout
             android:layout_width="0dp"
