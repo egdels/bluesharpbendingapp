@@ -26,6 +26,8 @@ package de.schliweb.bluesharpbendingapp.favorites;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Android implementation of FavoritesStorage backed by SharedPreferences. It persists a single JSON
@@ -42,23 +44,24 @@ public final class AndroidSharedPreferencesFavoritesStorage implements Favorites
   private final SharedPreferences prefs;
 
   /** Creates a storage instance using application Context with the default prefs file. */
-  public AndroidSharedPreferencesFavoritesStorage(Context context) {
+  public AndroidSharedPreferencesFavoritesStorage(@NonNull Context context) {
     this(context.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE));
   }
 
   /** Visible for testing/more control. */
-  public AndroidSharedPreferencesFavoritesStorage(SharedPreferences prefs) {
+  public AndroidSharedPreferencesFavoritesStorage(@NonNull SharedPreferences prefs) {
     this.prefs = prefs;
   }
 
   @Override
+  @NonNull
   public String read() {
     String raw = prefs.getString(KEY_FAVORITES_V1, "");
     return raw == null ? "" : raw;
   }
 
   @Override
-  public void write(String json) {
+  public void write(@Nullable String json) {
     prefs.edit().putString(KEY_FAVORITES_V1, json != null ? json : "").apply();
   }
 }
