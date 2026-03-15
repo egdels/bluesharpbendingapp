@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.app;
  */
 
 import android.app.Application;
+import androidx.annotation.Nullable;
 import de.schliweb.bluesharpbendingapp.di.*;
 import de.schliweb.bluesharpbendingapp.model.mircophone.android.MicrophoneAndroid;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
@@ -60,7 +61,7 @@ public class BlueSharpBendingApplication extends Application {
    *
    * @param mainWindow The MainWindow instance to use, or null if not available yet.
    */
-  public void initializeDependencyInjection(MainWindow mainWindow) {
+  public void initializeDependencyInjection(@Nullable MainWindow mainWindow) {
     String tempDirectory = this.getApplicationContext().getFilesDir().getAbsolutePath();
 
     // Create modules with the provided dependencies
