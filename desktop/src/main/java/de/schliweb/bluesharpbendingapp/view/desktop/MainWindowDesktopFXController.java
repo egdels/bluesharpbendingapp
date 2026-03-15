@@ -51,6 +51,29 @@ import javax.inject.Inject;
 public class MainWindowDesktopFXController implements MainWindow {
 
   /**
+   * Opens the central support/donate link in the system browser. This method is wired to the
+   * Support/Donate toolbar button via FXML.
+   */
+  @FXML
+  private void openSupportLink() {
+    LoggingContext.setComponent("MainWindowDesktopFXController");
+    try {
+      java.awt.Desktop desktop =
+          java.awt.Desktop.isDesktopSupported() ? java.awt.Desktop.getDesktop() : null;
+      if (desktop != null && desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+        desktop.browse(de.schliweb.bluesharpbendingapp.support.SupportLinks.DONATE_URI);
+      } else {
+        // Fallback: try JavaFX HostServices through an about view link if available in future
+        LoggingUtils.logWarning("Desktop browse not supported on this platform.");
+      }
+    } catch (Exception e) {
+      LoggingUtils.logError("Failed to open support link", e);
+      Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to open support link", ButtonType.OK);
+      alert.showAndWait();
+    }
+  }
+
+  /**
    * The container for the harp view in the application's user interface.
    *
    * <p>This VBox is used to display the harp view, which allows users to interact with harp-related

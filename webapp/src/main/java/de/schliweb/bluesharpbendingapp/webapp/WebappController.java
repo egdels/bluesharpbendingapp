@@ -110,6 +110,20 @@ public class WebappController {
   }
 
   /**
+   * Handles requests for the support page, which presents ways to support the project (e.g., GitHub
+   * Sponsors, Ko-fi, PayPal). The content is localized via message bundles and rendered by the
+   * Thymeleaf template "support.html".
+   *
+   * @return a ModelAndView object configured to render the support page
+   */
+  @GetMapping("/support.html")
+  public ModelAndView support() {
+    ModelAndView modelAndView = new ModelAndView();
+    modelAndView.setViewName("support");
+    return modelAndView;
+  }
+
+  /**
    * Handles requests for the datenschutz (privacy policy) page, which outlines how user data is
    * collected, processed, and stored by the application. This page provides information required by
    * data protection regulations such as the GDPR.

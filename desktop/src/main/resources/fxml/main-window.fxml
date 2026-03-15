@@ -33,6 +33,7 @@
         <Button styleClass="menu-button" text="%main.button.training" onAction="#showTrainingView"/>
         <Button styleClass="menu-button" text="%main.button.settings" onAction="#showSettingsView"/>
         <Button styleClass="menu-button" text="%main.button.about" onAction="#showAboutView"/>
+        <Button styleClass="menu-button" text="%main.button.support" onAction="#openSupportLink"/>
     </ToolBar>
 
     <!-- Favorites bar: toggle button + chips container (shown only in Harp view) -->
