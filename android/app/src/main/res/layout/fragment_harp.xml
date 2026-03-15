@@ -38,7 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textIsSelectable="true"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,8 +83,7 @@
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="16sp"
             android:autoSizeMaxTextSize="100sp"
-            android:autoSizeStepGranularity="2sp"
-            android:textIsSelectable="true"/>
+            android:autoSizeStepGranularity="2sp"/>
 
     </com.google.android.material.card.MaterialCardView>
 
