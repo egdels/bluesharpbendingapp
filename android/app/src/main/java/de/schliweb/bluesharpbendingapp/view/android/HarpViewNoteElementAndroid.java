@@ -25,6 +25,8 @@ package de.schliweb.bluesharpbendingapp.view.android;
  */
 
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import java.util.HashMap;
@@ -119,7 +121,8 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
    * @return the {@code HarpViewNoteElementAndroid} instance associated with the specified {@code
    *     TextView}.
    */
-  public static HarpViewNoteElementAndroid getInstance(TextView textView) {
+  @NonNull
+  public static HarpViewNoteElementAndroid getInstance(@NonNull TextView textView) {
     return instances.computeIfAbsent(textView, HarpViewNoteElementAndroid::new);
   }
 
@@ -128,12 +131,18 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
     if (enlargedTextView != null) {
       activity.runOnUiThread(
           () -> {
-            TextViewUtils.updateEnlargedTextViewLine(enlargedTextView, cents);
-            TextViewUtils.updateTextViewCent(
-                enlargedTextView, (String) noteTextView.getText(), cents);
+            if (enlargedTextView != null && noteTextView != null) {
+              TextViewUtils.updateEnlargedTextViewLine(enlargedTextView, cents);
+              TextViewUtils.updateTextViewCent(
+                  enlargedTextView, (String) noteTextView.getText(), cents);
+            }
           });
     }
-    activity.runOnUiThread(() -> TextViewUtils.updateTextViewLine(noteTextView, cents));
+    activity.runOnUiThread(() -> {
+      if (noteTextView != null) {
+        TextViewUtils.updateTextViewLine(noteTextView, cents);
+      }
+    });
   }
 
   @Override
@@ -141,14 +150,18 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
     if (enlargedTextView != null) {
       activity.runOnUiThread(
           () -> {
-            TextViewUtils.clearTextViewLine(enlargedTextView);
-            TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
+            if (enlargedTextView != null && noteTextView != null) {
+              TextViewUtils.clearTextViewLine(enlargedTextView);
+              TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
+            }
           });
     }
     activity.runOnUiThread(
         () -> {
-          TextViewUtils.restoreBackgroundColor(noteTextView, initialBackgroundColor);
-          TextViewUtils.clearTextViewLine(noteTextView);
+          if (noteTextView != null) {
+            TextViewUtils.restoreBackgroundColor(noteTextView, initialBackgroundColor);
+            TextViewUtils.clearTextViewLine(noteTextView);
+          }
         });
   }
 
@@ -159,7 +172,7 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
    *
    * @param textView the TextView to be set as the enlarged view. If null, the operation is skipped.
    */
-  public void setEnlargedTextView(TextView textView) {
+  public void setEnlargedTextView(@Nullable TextView textView) {
     // Store the reference to the enlarged TextView
     this.enlargedTextView = textView;
 
