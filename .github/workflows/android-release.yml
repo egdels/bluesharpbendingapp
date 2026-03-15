@@ -46,8 +46,8 @@ jobs:
       - name: Update version in build.gradle for GitHub release
         run: |
           # Update both versionCode and versionName for GitHub builds
-          sed -i "s/versionCode [0-9]*/versionCode ${{ steps.extract_version.outputs.VERSION_CODE }}/" android/app/build.gradle
-          sed -i "s/versionName \"[^\"]*\"/versionName \"${{ steps.extract_version.outputs.VERSION }}\"/" android/app/build.gradle
+          sed -i "s/versionCode = [0-9]*/versionCode = ${{ steps.extract_version.outputs.VERSION_CODE }}/" android/app/build.gradle
+          sed -i "s/versionName = .*/versionName = \"${{ steps.extract_version.outputs.VERSION }}\"/" android/app/build.gradle
           
           # Also update gradle.properties for consistency
           echo "version=${{ steps.extract_version.outputs.VERSION }}" > gradle.properties.tmp
