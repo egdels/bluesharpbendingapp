@@ -136,7 +136,7 @@ public class TextViewUtils {
     double offsetY = (limitedCents / 50.0) * (height / 2.0); // Scale to half the height
     double lineY = middleY - offsetY; // Subtract offset to move up for positive cents
 
-    int lineWidth = (int) (width);
+    int lineWidth = (int) width;
     // Calculate left position to center the line
     int leftPosition = (int) ((width - lineWidth) / 2.0);
 

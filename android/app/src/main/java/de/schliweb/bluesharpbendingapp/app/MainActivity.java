@@ -359,6 +359,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
     return (TrainingView) selectedFragmentView.getInstance();
   }
 
+  @Override
   @NonNull
   public AndroidSettingsView getAndroidSettingsView() {
     return (AndroidSettingsView) selectedFragmentView.getInstance();
@@ -512,9 +513,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
       // Common spacing for vertical stack (8dp)
       int spacingPx = (int) (8f * getResources().getDisplayMetrics().density);
 
-      // Keep references to all created EFABs so we can normalize widths after layout
-      java.util.List<android.view.View> createdFabs = new java.util.ArrayList<>();
-
       java.util.List<de.schliweb.bluesharpbendingapp.favorites.Favorite> list =
           favoriteManager.load();
       if (list != null) {
@@ -543,7 +541,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
             fav.setLayoutParams(lp);
           }
           container.addView(fav);
-          createdFabs.add(fav);
         }
       }
 
@@ -584,7 +581,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         }
 
         container.addView(add);
-        createdFabs.add(add);
       } catch (Exception ignored) {
         // If anything goes wrong resolving state, still try to show a default "add" button
         ExtendedFloatingActionButton add = new ExtendedFloatingActionButton(this);
@@ -601,7 +597,6 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         lp.bottomMargin = spacingPx;
         add.setLayoutParams(lp);
         container.addView(add);
-        createdFabs.add(add);
       }
 
       // After all EFABs are added, normalize widths so they are all the same

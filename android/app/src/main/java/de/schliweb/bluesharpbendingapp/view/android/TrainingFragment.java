@@ -115,10 +115,12 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(
         new AdapterView.OnItemSelectedListener() {
+          @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             trainingViewHandler.handleTrainingSelection((int) id);
           }
 
+          @Override
           public void onNothingSelected(AdapterView<?> parent) {
             // no need
           }
@@ -134,10 +136,12 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(
         new AdapterView.OnItemSelectedListener() {
+          @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             trainingViewHandler.handlePrecisionSelection((int) id);
           }
 
+          @Override
           public void onNothingSelected(AdapterView<?> parent) {
             // no need
           }
