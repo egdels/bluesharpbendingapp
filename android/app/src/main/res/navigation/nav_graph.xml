@@ -32,7 +32,7 @@
     <fragment
             android:id="@+id/HarpFragment"
             android:name="de.schliweb.bluesharpbendingapp.view.android.HarpFragment"
-            android:label="@string/action_harp"
+            android:label="@string/app_name"
             tools:layout="@layout/fragment_harp">
 
         <action
