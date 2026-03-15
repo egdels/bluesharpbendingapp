@@ -138,11 +138,12 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
             }
           });
     }
-    activity.runOnUiThread(() -> {
-      if (noteTextView != null) {
-        TextViewUtils.updateTextViewLine(noteTextView, cents);
-      }
-    });
+    activity.runOnUiThread(
+        () -> {
+          if (noteTextView != null) {
+            TextViewUtils.updateTextViewLine(noteTextView, cents);
+          }
+        });
   }
 
   @Override
@@ -152,7 +153,8 @@ public class HarpViewNoteElementAndroid implements HarpViewNoteElement {
           () -> {
             if (enlargedTextView != null && noteTextView != null) {
               TextViewUtils.clearTextViewLine(enlargedTextView);
-              TextViewUtils.updateTextViewCent(enlargedTextView, (String) noteTextView.getText(), 0);
+              TextViewUtils.updateTextViewCent(
+                  enlargedTextView, (String) noteTextView.getText(), 0);
             }
           });
     }
