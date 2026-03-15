@@ -3,7 +3,6 @@
     <!-- Dimensions for large screen sizes -->
     <dimen name="note_corner_radius">20dp</dimen>
     <dimen name="note_stroke_width">1.5dp</dimen>
-    <dimen name="note_margin">6dp</dimen>
     <dimen name="note_padding">12dp</dimen>
     
     <dimen name="overlay_corner_radius">32dp</dimen>

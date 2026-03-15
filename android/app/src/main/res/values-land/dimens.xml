@@ -25,7 +25,6 @@
 -->
 <resources>
     <!-- Settings screen dimensions for landscape orientation -->
-    <dimen name="settings_margin">12dp</dimen>
     <dimen name="settings_padding">12dp</dimen>
     <dimen name="settings_group_margin">8dp</dimen>
     <dimen name="settings_item_margin">6dp</dimen>
