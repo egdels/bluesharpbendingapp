@@ -102,11 +102,6 @@
         <item name="android:tint">?attr/colorOnSurface</item>
     </style>
 
-    <!-- Material 3 text appearance style for medium text -->
-    <style name="TextAppearanceMedium" parent="TextAppearance.Material3.BodyLarge">
-        <item name="android:textColor">?attr/colorOnSurface</item>
-    </style>
-
     <!-- AppBarLayout style using Material 3 -->
     <style name="ModernAppBarLayout" parent="Widget.Material3.AppBarLayout">
         <item name="android:background">?attr/colorSurface</item>

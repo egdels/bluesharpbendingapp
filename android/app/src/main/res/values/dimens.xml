@@ -12,7 +12,6 @@
     <dimen name="favorites_horizontal_margin">8dp</dimen>
 
     <!-- Settings screen dimensions (default/portrait) -->
-    <dimen name="settings_margin">16dp</dimen>
     <dimen name="settings_padding">16dp</dimen>
     <dimen name="settings_group_margin">12dp</dimen>
     <dimen name="settings_item_margin">8dp</dimen>
@@ -24,7 +23,6 @@
     <!-- Default (base) note dimensions to satisfy lint MissingDefaultResource -->
     <dimen name="note_corner_radius">16dp</dimen>
     <dimen name="note_stroke_width">1.5dp</dimen>
-    <dimen name="note_margin">4dp</dimen>
     <dimen name="note_padding">8dp</dimen>
 
     <!-- Default (base) overlay dimensions to satisfy lint MissingDefaultResource -->

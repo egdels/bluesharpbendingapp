@@ -29,21 +29,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Material Design colors -->
-    <color name="primary">#1976D2</color>
-    <color name="primary_variant">#004BA0</color>
-    <color name="secondary">#FF5722</color>
-    <color name="secondary_variant">#C41C00</color>
-
     <!-- Note colors -->
     <color name="orange">#FF6A00</color> <!-- Intensiveres Orange -->
     <color name="blue">#0057FF</color>   <!-- Helleres und stärkeres Blau -->
     <color name="grey">#5B5A60</color>   <!-- Dunkleres Grau für besseren Kontrast -->
     <color name="magenta">#E100E1</color>
 
-    <!-- Additional colors for potential future use -->
-    <color name="success">#4CAF50</color>
-    <color name="error">#F44336</color>
     <color name="warning">#FFC107</color>
-    <color name="info">#2196F3</color>
 </resources>
