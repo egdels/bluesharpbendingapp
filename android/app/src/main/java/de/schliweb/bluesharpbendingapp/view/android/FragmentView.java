@@ -35,5 +35,6 @@ public interface FragmentView {
    *
    * @return an Object representing the instance for the fragment view.
    */
+  @androidx.annotation.NonNull
   Object getInstance();
 }

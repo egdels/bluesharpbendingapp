@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.di;
  */
 
 import android.content.Context;
+import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.favorites.AndroidSharedPreferencesFavoritesStorage;
@@ -38,13 +39,14 @@ public class FavoritesModule {
 
   private final Context appContext;
 
-  public FavoritesModule(Context appContext) {
+  public FavoritesModule(@NonNull Context appContext) {
     this.appContext = appContext.getApplicationContext();
   }
 
   @Provides
   @Singleton
-  public FavoriteManager provideFavoriteManager(ExecutorService executorService) {
+  @NonNull
+  public FavoriteManager provideFavoriteManager(@NonNull ExecutorService executorService) {
     AndroidSharedPreferencesFavoritesStorage storage =
         new AndroidSharedPreferencesFavoritesStorage(appContext);
     return new FavoriteManager(storage, executorService);

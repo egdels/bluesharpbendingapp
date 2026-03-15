@@ -33,6 +33,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.schliweb.bluesharpbendingapp.R;
@@ -357,8 +358,11 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
   private TextView enlargedTextView = null;
 
   @Override
+  @Nullable
   public View onCreateView(
-      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      @NonNull LayoutInflater inflater,
+      @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
 
     binding = FragmentHarpBinding.inflate(inflater, container, false);
     return binding.getRoot();
@@ -439,7 +443,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
    * @param savedInstanceState A Bundle containing any saved state information for the fragment.
    */
   @Override
-  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
     TableLayout tableLayout = view.findViewById(R.id.harp_table);
@@ -688,7 +692,7 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
   }
 
   @Override
-  public void initNotes(NoteContainer[] notes) {
+  public void initNotes(@NonNull NoteContainer[] notes) {
     for (NoteContainer note : notes) {
       initNote(note.getChannel(), note.getNote(), note.getNoteName());
       if (note.isOverblow() || note.isOverdraw()) {
@@ -773,17 +777,19 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
   }
 
   @Override
+  @NonNull
   public Object getInstance() {
     return this;
   }
 
   @Override
+  @NonNull
   public HarpViewNoteElement getHarpViewElement(int channel, int note) {
     return HarpViewNoteElementAndroid.getInstance(getNote(channel, note));
   }
 
   @Override
-  public void updateTuningKeyInfo(String keyName, String tuningName) {
+  public void updateTuningKeyInfo(@NonNull String keyName, @NonNull String tuningName) {
     if (binding != null) {
       TextView tuningKeyInfoView = binding.getRoot().findViewById(R.id.tuning_key_info);
       if (tuningKeyInfoView != null) {

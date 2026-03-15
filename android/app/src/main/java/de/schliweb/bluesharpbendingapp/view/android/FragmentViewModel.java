@@ -24,6 +24,7 @@ package de.schliweb.bluesharpbendingapp.view.android;
  *
  */
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -53,7 +54,7 @@ public class FragmentViewModel extends ViewModel {
    *
    * @param item the FragmentView to set as the currently selected fragment view.
    */
-  public void selectFragmentView(FragmentView item) {
+  public void selectFragmentView(@NonNull FragmentView item) {
     selectedFragmentView.setValue(item);
   }
 
@@ -63,6 +64,7 @@ public class FragmentViewModel extends ViewModel {
    *
    * @return a LiveData object containing the selected FragmentView instance.
    */
+  @NonNull
   public LiveData<FragmentView> getSelectedFragmentView() {
     return selectedFragmentView;
   }

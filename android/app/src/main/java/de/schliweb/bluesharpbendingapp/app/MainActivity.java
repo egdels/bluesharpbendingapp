@@ -34,6 +34,8 @@ import android.view.WindowManager;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -253,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
    *     it is null.
    */
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
     // Handle the splash screen transition.
     SplashScreen.installSplashScreen(this);
     super.onCreate(savedInstanceState);
@@ -352,11 +354,12 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
   }
 
   @Override
+  @NonNull
   public TrainingView getTrainingView() {
     return (TrainingView) selectedFragmentView.getInstance();
   }
 
-  @Override
+  @NonNull
   public AndroidSettingsView getAndroidSettingsView() {
     return (AndroidSettingsView) selectedFragmentView.getInstance();
   }
@@ -811,10 +814,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
     }
     // Apply insets for the toggle FAB, with its own base bottom margin to allow slightly lower
     // placement
-    android.view.View toggle = findViewById(R.id.favorites_toggle_fab);
-    if (toggle != null) {
+    if (toggleRef != null) {
       ViewCompat.setOnApplyWindowInsetsListener(
-          toggle,
+          toggleRef,
           (v, insets) -> {
             Insets sb = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             int bottom = sb.bottom;
@@ -840,7 +842,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
    *     action was processed, otherwise defer to the superclass implementation.
    */
   @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     // Handle action bar item clicks here. The action bar will
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
@@ -921,16 +923,19 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
   }
 
   @Override
+  @NonNull
   public HarpSettingsView getHarpSettingsView() {
     return (HarpSettingsView) selectedFragmentView.getInstance();
   }
 
   @Override
+  @NonNull
   public HarpView getHarpView() {
     return (HarpView) selectedFragmentView.getInstance();
   }
 
   @Override
+  @NonNull
   public MicrophoneSettingsView getMicrophoneSettingsView() {
     return (MicrophoneSettingsView) selectedFragmentView.getInstance();
   }
@@ -977,6 +982,7 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
   }
 
   @Override
+  @NonNull
   public NoteSettingsView getNoteSettingsView() {
     return (NoteSettingsView) selectedFragmentView.getInstance();
   }
