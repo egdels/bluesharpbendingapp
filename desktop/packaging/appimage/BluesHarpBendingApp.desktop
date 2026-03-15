@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=BluesHarpBendingApp
+Comment=A tool for learning to bend notes on a blues harp
+Exec=BluesHarpBendingApp
+Icon=BluesHarpBendingApp
+Categories=Audio;Music;Education;
+Terminal=false
