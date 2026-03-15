@@ -24,6 +24,7 @@ package de.schliweb.bluesharpbendingapp.di;
  *
  */
 
+import androidx.annotation.NonNull;
 import dagger.Module;
 import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.app.MainActivity;
@@ -47,7 +48,7 @@ public class ActivityModule {
    *
    * @param mainActivity the MainActivity instance to provide
    */
-  public ActivityModule(MainActivity mainActivity) {
+  public ActivityModule(@NonNull MainActivity mainActivity) {
     this.mainActivity = mainActivity;
   }
 
@@ -57,6 +58,7 @@ public class ActivityModule {
    * @return the MainActivity instance
    */
   @Provides
+  @NonNull
   public MainActivity provideMainActivity() {
     return mainActivity;
   }
