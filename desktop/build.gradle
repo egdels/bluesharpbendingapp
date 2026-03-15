@@ -27,7 +27,7 @@ plugins {
 
 javafx {
     // Configures the JavaFX plugin with the required version and modules
-    version = '24.0.2'
+    version = '23.0.2'
     modules = ['javafx.controls', // Enables JavaFX controls module
                'javafx.fxml', // Enables JavaFX FXML module
                'javafx.graphics' // Enables JavaFX graphics module
