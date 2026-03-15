@@ -190,7 +190,7 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.7.0'
     debugImplementation 'androidx.test:core:1.7.0'
     androidTestImplementation 'org.mockito:mockito-android:5.23.0'
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.3.10"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.1.0"))
 
     // Error Prone
     errorprone 'com.google.errorprone:error_prone_core:2.48.0'
