@@ -52,6 +52,18 @@ android {
         includeInBundle = false
     }
 
+    signingConfigs {
+        release {
+            def keystoreFile = rootProject.file("android/keystore.jks")
+            if (keystoreFile.exists() && project.hasProperty('SIGNING_KEY_ALIAS')) {
+                storeFile keystoreFile
+                storePassword project.property('SIGNING_STORE_PASSWORD')
+                keyAlias project.property('SIGNING_KEY_ALIAS')
+                keyPassword project.property('SIGNING_KEY_PASSWORD')
+            }
+        }
+    }
+
     buildTypes {
         debug {
             enableUnitTestCoverage = true
@@ -60,6 +72,10 @@ android {
             minifyEnabled = true
             shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            def keystoreFile = rootProject.file("android/keystore.jks")
+            if (keystoreFile.exists() && project.hasProperty('SIGNING_KEY_ALIAS')) {
+                signingConfig signingConfigs.release
+            }
         }
     }
     compileOptions {
