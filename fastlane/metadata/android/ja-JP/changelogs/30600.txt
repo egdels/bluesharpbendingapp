@@ -1,0 +1,9 @@
+バージョン3.6.0の新機能
+• Java 21にアップグレードし、パフォーマンスと最新言語機能を改善
+• Android 15+向けのエッジツーエッジ表示サポートを強化
+• Androidでの音程検出におけるOutOfMemoryErrorを修正
+• ビュー遷移時のノート表示におけるNullPointerExceptionを修正
+• ノート表示のnull安全性と安定性を改善
+• コード品質の向上：Google Java Format、Error Prone、JaCoCoカバレッジ
+• Android Lint警告を114から11に削減
+• すべての依存関係を最新バージョンに更新（compileSdk/targetSdk 36）

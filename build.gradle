@@ -24,24 +24,26 @@
 plugins {
     // Enables the Java plugin for basic configuration of Java projects
     id 'java'
-    id "org.sonarqube" version "6.0.1.5171"
     // Android
-    id 'com.android.application' version '8.10.1' apply false
-    id 'com.android.library' version '8.10.1' apply false
-    id 'org.jetbrains.kotlin.android' version '2.1.0' apply false
+    id 'com.android.application' version '8.12.0' apply false
+    id 'com.android.library' version '8.12.0' apply false
+    id 'org.jetbrains.kotlin.android' version '2.3.10' apply false
+    // Code quality plugins
+    id 'com.diffplug.spotless' version '8.3.0' apply false
+    id 'net.ltgt.errorprone' version '5.1.0' apply false
 }
 
 ext {
-    slf4jVersion = "2.0.16"
-    lombokVersion = "1.18.38"
-    daggerVersion = "2.56.2"
+    slf4jVersion = "2.0.17"
+    lombokVersion = "1.18.44"
+    daggerVersion = "2.59.2"
 }
 
 allprojects {
     // Defines the group ID used for all projects
     group = 'de.schliweb.bluesharpbendingapp'
     // Sets the version of the project, matching ${revision}
-    version = '3.5.0'
+    version = '3.6.0'
 
     repositories {
         google()
@@ -54,23 +56,27 @@ subprojects {
     if(project.name!=project(":android").name) {
         // Applies the Java plugin to all subprojects
         apply plugin: 'java'
+        apply plugin: 'com.diffplug.spotless'
+        apply plugin: 'net.ltgt.errorprone'
 
         java {
             // Specifies the Java version to be used for source and target compatibility
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
 
         dependencies {
 
             // Adds dependencies for Mockito, a library used for mocking in tests
-            testImplementation 'org.mockito:mockito-core:5.14.2'
+            testImplementation 'org.mockito:mockito-core:5.23.0'
             // Adds the JUnit BOM (Bill of Materials) platform for consistent JUnit versions
-            testImplementation platform('org.junit:junit-bom:5.11.4')
+            testImplementation platform('org.junit:junit-bom:5.14.3')
             // Adds JUnit Jupiter for unit testing
             testImplementation 'org.junit.jupiter:junit-jupiter'
 
             testImplementation 'org.awaitility:awaitility:4.3.0'
+
+            testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
             implementation "org.slf4j:slf4j-api:${slf4jVersion}"
 
@@ -83,6 +89,39 @@ subprojects {
 
             testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
             testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+            // Error Prone
+            errorprone 'com.google.errorprone:error_prone_core:2.48.0'
+        }
+
+        // Spotless code formatting
+        spotless {
+            java {
+                target("src/*/java/**/*.java")
+                googleJavaFormat("1.35.0")
+                removeUnusedImports()
+                trimTrailingWhitespace()
+                endWithNewline()
+            }
+        }
+
+        // Error Prone static analysis
+        tasks.withType(JavaCompile).configureEach {
+            options.encoding = 'UTF-8'
+            options.deprecation = true
+            options.compilerArgs += [
+                    '-Xlint:deprecation',
+                    '-Xlint:unchecked',
+                    '-XDaddTypeAnnotationsToSymbol=true',
+                    '-Xmaxwarns', '500'
+            ]
+            options.errorprone {
+                enabled = true
+                disableWarningsInGeneratedCode = true
+                allErrorsAsWarnings = true
+                disable 'EmptyCatch', 'FutureReturnValueIgnored', 'StatementSwitchToExpressionSwitch',
+                        'LabelledBreakTarget', 'PatternMatchingInstanceof', 'ReturnValueIgnored'
+            }
         }
     }
 }

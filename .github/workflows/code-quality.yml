@@ -1,0 +1,84 @@
+name: Code Quality
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: wrapper
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Check code formatting (Spotless)
+      run: ./gradlew spotlessCheck
+
+    - name: Compile all modules with Error Prone
+      run: ./gradlew :base:compileJava :desktop:compileJava :webapp:compileJava :android:compileDebugJavaWithJavac
+
+    - name: Run Android unit tests
+      run: ./gradlew :android:testDebugUnitTest
+
+    - name: Run Webapp tests
+      run: ./gradlew :webapp:test
+
+    - name: Run Android Lint
+      run: ./gradlew :android:lintDebug
+
+    - name: Generate JaCoCo test coverage report
+      run: ./gradlew :android:jacocoTestReport
+
+    - name: Upload Lint report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: lint-report
+        path: android/app/build/reports/lint-results-debug.html
+        retention-days: 14
+
+    - name: Upload Android test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-test-results
+        path: android/app/build/reports/tests/testDebugUnitTest/
+        retention-days: 14
+
+    - name: Upload Webapp test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: webapp-test-results
+        path: webapp/build/reports/tests/test/
+        retention-days: 14
+
+    - name: Upload JaCoCo coverage report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: android/app/build/reports/jacoco/jacocoTestReport/
+        retention-days: 14

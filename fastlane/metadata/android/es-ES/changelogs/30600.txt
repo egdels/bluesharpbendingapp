@@ -1,0 +1,9 @@
+Novedades en 3.6.0
+• Actualización a Java 21 para mejor rendimiento y funciones modernas
+• Soporte mejorado de edge-to-edge para Android 15+
+• Corregido OutOfMemoryError en la detección de tono en Android
+• Corregido NullPointerException en la visualización de notas durante transiciones de vista
+• Seguridad de nulos mejorada y correcciones de estabilidad en la visualización de notas
+• Mejoras en la calidad del código: Google Java Format, Error Prone y cobertura JaCoCo
+• Advertencias de Android Lint reducidas de 114 a 11
+• Todas las dependencias actualizadas a las últimas versiones (compileSdk/targetSdk 36)

@@ -1,0 +1,9 @@
+What's new in 3.6.0
+• Upgraded to Java 21 for improved performance and modern language features
+• Enhanced edge-to-edge support for Android 15+
+• Fixed OutOfMemoryError in audio pitch detection on Android
+• Fixed NullPointerException in note display during view transitions
+• Improved null-safety and stability fixes for note display
+• Code quality improvements: Google Java Format, Error Prone, and JaCoCo coverage
+• Android Lint warnings reduced from 114 to 11
+• Updated all dependencies to latest versions (compileSdk/targetSdk 36)

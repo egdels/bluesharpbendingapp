@@ -1,0 +1,9 @@
+3.6.0版本新功能
+• 升级至Java 21，提升性能并支持现代语言特性
+• 增强Android 15+的全面屏显示支持
+• 修复Android上音高检测的OutOfMemoryError
+• 修复视图切换时音符显示的NullPointerException
+• 改善音符显示的空值安全性和稳定性
+• 代码质量改进：Google Java Format、Error Prone和JaCoCo覆盖率
+• Android Lint警告从114减少到11
+• 所有依赖更新至最新版本（compileSdk/targetSdk 36）

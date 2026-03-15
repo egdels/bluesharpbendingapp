@@ -27,7 +27,7 @@ plugins {
 
 javafx {
     // Configures the JavaFX plugin with the required version and modules
-    version = '23.0.2'
+    version = '24.0.2'
     modules = ['javafx.controls', // Enables JavaFX controls module
                'javafx.fxml', // Enables JavaFX FXML module
                'javafx.graphics' // Enables JavaFX graphics module
@@ -37,9 +37,9 @@ javafx {
 dependencies {
     // Adds dependency on the project named ':base'
     implementation project(':base')
-    implementation 'ch.qos.logback:logback-classic:1.5.16'
+    implementation 'ch.qos.logback:logback-classic:1.5.32'
     // Add structured logging support
-    implementation 'net.logstash.logback:logstash-logback-encoder:8.1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:9.0'
 
     // Provide org.json at runtime for desktop, since base uses compileOnly
     runtimeOnly 'org.json:json:20250517'
