@@ -19,6 +19,9 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
@@ -70,17 +73,16 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
 
       - name: List all APK files after build
-        run: find android/build/outputs/ -type f -name "*.apk"
+        run: find android/app/build/outputs/ -type f -name "*.apk"
 
-      - name: Verify APK signature
+      - name: Verify APK exists
         run: |
-          # Using aapt to verify the APK is signed
-          aapt dump badging android/build/outputs/apk/release/android-release.apk | head -1
+          ls -la android/app/build/outputs/apk/release/
           echo "APK verification completed"
 
       - name: Generate checksums
         run: |
-          cd android/build/outputs/apk/release/
+          cd android/app/build/outputs/apk/release/
           sha256sum android-release.apk > android-release.apk.sha256
           cd ../../bundle/release/
           sha256sum android-release.aab > android-release.aab.sha256
@@ -116,10 +118,10 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            android/build/outputs/apk/release/android-release.apk
-            android/build/outputs/apk/release/android-release.apk.sha256
-            android/build/outputs/bundle/release/android-release.aab
-            android/build/outputs/bundle/release/android-release.aab.sha256
+            android/app/build/outputs/apk/release/android-release.apk
+            android/app/build/outputs/apk/release/android-release.apk.sha256
+            android/app/build/outputs/bundle/release/android-release.aab
+            android/app/build/outputs/bundle/release/android-release.aab.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

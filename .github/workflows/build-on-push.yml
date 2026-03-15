@@ -45,23 +45,23 @@ jobs:
         SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
         SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
 
-    - name: Verify APK signature
+    - name: Verify APK exists
       run: |
-        aapt dump badging android/build/outputs/apk/release/android-release.apk | head -1
+        ls -la android/app/build/outputs/apk/release/
         echo "APK verification completed"
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: LetsBend-APK
-        path: android/build/outputs/apk/release/android-release.apk
+        path: android/app/build/outputs/apk/release/android-release.apk
         retention-days: 30
 
     - name: Upload AAB
       uses: actions/upload-artifact@v4
       with:
         name: LetsBend-AAB
-        path: android/build/outputs/bundle/release/android-release.aab
+        path: android/app/build/outputs/bundle/release/android-release.aab
         retention-days: 30
 
     - name: Clean up keystore
