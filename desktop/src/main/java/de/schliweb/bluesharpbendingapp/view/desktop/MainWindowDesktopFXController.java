@@ -659,6 +659,8 @@ public class MainWindowDesktopFXController implements MainWindow {
       } else {
         harpViewHandler.initNotes();
       }
+      // Refresh favorites UI so the action button reflects the new state
+      refreshFavoritesUI();
     } catch (Exception ignored) {
     }
   }

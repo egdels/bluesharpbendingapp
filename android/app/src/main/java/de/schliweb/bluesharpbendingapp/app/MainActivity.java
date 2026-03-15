@@ -675,6 +675,9 @@ public class MainActivity extends AppCompatActivity implements MainWindow {
         harpViewHandler.initNotes();
       }
 
+      // Refresh favorite FABs so the action button reflects the new state
+      refreshFavoriteFabs();
+
     } catch (Exception e) {
       log.warn("Failed to apply favorite", e);
     }
