@@ -80,7 +80,7 @@ jobs:
 
       - name: Generate checksums
         run: |
-          cd app/build/outputs/apk/release/
+          cd android/build/outputs/apk/release/
           sha256sum android-release.apk > android-release.apk.sha256
           cd ../../bundle/release/
           sha256sum android-release.aab > android-release.aab.sha256
