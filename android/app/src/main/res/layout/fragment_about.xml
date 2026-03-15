@@ -34,7 +34,6 @@
     tools:context=".view.android.AboutFragment">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/about_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -57,7 +56,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/about_title"
+                android:text="@string/app_name"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
                 app:layout_constraintEnd_toEndOf="parent"
