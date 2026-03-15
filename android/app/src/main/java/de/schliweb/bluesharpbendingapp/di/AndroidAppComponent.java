@@ -24,6 +24,7 @@ package de.schliweb.bluesharpbendingapp.di;
  *
  */
 
+import androidx.annotation.NonNull;
 import dagger.Component;
 import de.schliweb.bluesharpbendingapp.app.MainActivity;
 import javax.inject.Singleton;
@@ -43,6 +44,7 @@ import javax.inject.Singleton;
     })
 public interface AndroidAppComponent extends AppComponent {
 
+  @NonNull
   de.schliweb.bluesharpbendingapp.favorites.FavoriteManager provideFavoriteManager();
 
   /**
@@ -50,7 +52,7 @@ public interface AndroidAppComponent extends AppComponent {
    *
    * @param activity the MainActivity instance to inject dependencies into
    */
-  void inject(MainActivity activity);
+  void inject(@NonNull MainActivity activity);
 
   /** Builder for creating instances of AndroidAppComponent. */
   @Component.Builder
@@ -61,7 +63,8 @@ public interface AndroidAppComponent extends AppComponent {
      * @param baseModule the BaseModule instance
      * @return this builder
      */
-    Builder baseModule(BaseModule baseModule);
+    @NonNull
+    Builder baseModule(@NonNull BaseModule baseModule);
 
     /**
      * Sets the ViewModule for this component.
@@ -69,7 +72,8 @@ public interface AndroidAppComponent extends AppComponent {
      * @param viewModule the ViewModule instance
      * @return this builder
      */
-    Builder viewModule(ViewModule viewModule);
+    @NonNull
+    Builder viewModule(@NonNull ViewModule viewModule);
 
     /**
      * Sets the MicrophoneModule for this component.
@@ -77,7 +81,8 @@ public interface AndroidAppComponent extends AppComponent {
      * @param microphoneModule the MicrophoneModule instance
      * @return this builder
      */
-    Builder microphoneModule(MicrophoneModule microphoneModule);
+    @NonNull
+    Builder microphoneModule(@NonNull MicrophoneModule microphoneModule);
 
     /**
      * Sets the FavoritesModule for this component.
@@ -85,13 +90,15 @@ public interface AndroidAppComponent extends AppComponent {
      * @param favoritesModule the FavoritesModule instance
      * @return this builder
      */
-    Builder favoritesModule(FavoritesModule favoritesModule);
+    @NonNull
+    Builder favoritesModule(@NonNull FavoritesModule favoritesModule);
 
     /**
      * Builds the AndroidAppComponent.
      *
      * @return the built AndroidAppComponent
      */
+    @NonNull
     AndroidAppComponent build();
   }
 }
