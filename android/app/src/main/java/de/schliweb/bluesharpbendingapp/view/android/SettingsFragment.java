@@ -190,10 +190,12 @@ public class SettingsFragment extends Fragment
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(
         new AdapterView.OnItemSelectedListener() {
+          @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             harpSettingsViewHandler.handleKeySelection((int) id);
           }
 
+          @Override
           public void onNothingSelected(AdapterView<?> parent) {
             // no need
           }
@@ -225,10 +227,12 @@ public class SettingsFragment extends Fragment
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(
         new AdapterView.OnItemSelectedListener() {
+          @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             harpSettingsViewHandler.handleTuneSelection((int) id);
           }
 
+          @Override
           public void onNothingSelected(AdapterView<?> parent) {
             // no need
           }
@@ -248,10 +252,12 @@ public class SettingsFragment extends Fragment
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(
         new AdapterView.OnItemSelectedListener() {
+          @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             microphoneSettingsViewHandler.handleAlgorithmSelection(((int) id));
           }
 
+          @Override
           public void onNothingSelected(AdapterView<?> parent) {
             // no need
           }
@@ -282,10 +288,12 @@ public class SettingsFragment extends Fragment
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(
         new AdapterView.OnItemSelectedListener() {
+          @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             microphoneSettingsViewHandler.handleConfidenceSelection((int) id);
           }
 
+          @Override
           public void onNothingSelected(AdapterView<?> parent) {
             // no need
           }
@@ -332,10 +340,12 @@ public class SettingsFragment extends Fragment
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(
         new AdapterView.OnItemSelectedListener() {
+          @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             microphoneSettingsViewHandler.handleChordConfidenceSelection((int) id);
           }
 
+          @Override
           public void onNothingSelected(AdapterView<?> parent) {
             // no need
           }
@@ -361,10 +371,12 @@ public class SettingsFragment extends Fragment
     spinner.setAdapter(adapter);
     spinner.setOnItemSelectedListener(
         new AdapterView.OnItemSelectedListener() {
+          @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             noteSettingsViewHandler.handleConcertPitchSelection(((int) id));
           }
 
+          @Override
           public void onNothingSelected(AdapterView<?> parent) {
             // no need
           }

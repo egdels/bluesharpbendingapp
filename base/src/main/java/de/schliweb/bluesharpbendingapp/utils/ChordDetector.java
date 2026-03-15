@@ -291,7 +291,8 @@ public class ChordDetector extends PitchDetector {
    */
   private double calculateSpectralFlatness(double[] magnitudeSpectrum, int sampleRate) {
     // Skip the first few bins (DC and very low frequencies)
-    int startBin = Math.max(1, (int) (minFrequency * magnitudeSpectrum.length / (sampleRate / 2.0)));
+    int startBin =
+        Math.max(1, (int) (minFrequency * magnitudeSpectrum.length / (sampleRate / 2.0)));
     int endBin =
         Math.min(
             magnitudeSpectrum.length - 1,

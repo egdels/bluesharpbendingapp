@@ -101,7 +101,8 @@ public class VersionService {
 
       if (HttpURLConnection.HTTP_OK == responseCode) {
         LoggingUtils.logDebug("ok");
-        try (Scanner scanner = new Scanner((InputStream) huc.getContent(), StandardCharsets.UTF_8.name())) {
+        try (Scanner scanner =
+            new Scanner((InputStream) huc.getContent(), StandardCharsets.UTF_8.name())) {
           versionFromHost = scanner.nextLine();
         }
 

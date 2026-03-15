@@ -103,7 +103,8 @@ public class ModelStorageService {
 
     File file = new File(tempDirectory + FileSystems.getDefault().getSeparator() + tempFile);
     try (FileOutputStream fos = new FileOutputStream(file);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
+        BufferedWriter bw =
+            new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
       boolean isCreated = file.createNewFile();
       if (isCreated) {
         LoggingUtils.logDebug("File created", file.getAbsolutePath());
@@ -150,7 +151,8 @@ public class ModelStorageService {
     if (file.exists()) {
       LoggingUtils.logDebug("Model file found", file.getAbsolutePath());
       try (FileInputStream fos = new FileInputStream(file);
-          BufferedReader bw = new BufferedReader(new InputStreamReader(fos, StandardCharsets.UTF_8))) {
+          BufferedReader bw =
+              new BufferedReader(new InputStreamReader(fos, StandardCharsets.UTF_8))) {
         String line = bw.readLine();
         if (line != null) {
           LoggingUtils.logDebug("Model data read from file");

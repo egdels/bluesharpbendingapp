@@ -933,8 +933,7 @@ public class PitchDetectorComparison {
    * @param audioData the audio data to analyze
    * @param expectedFrequency the expected frequency in Hz
    */
-  private static void compareAllDetectors(
-      double[] audioData, double expectedFrequency) {
+  private static void compareAllDetectors(double[] audioData, double expectedFrequency) {
     // Measure YIN performance, accuracy, and confidence
     long yinTime = measureYINPerformance(audioData);
     double yinAccuracy = measureYINAccuracy(audioData, expectedFrequency);
