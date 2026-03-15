@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.schliweb.bluesharpbendingapp.R;
@@ -87,7 +88,7 @@ public class SettingsFragment extends Fragment
    * provides access to the views defined in the associated layout file, enabling interaction and
    * data manipulation for UI components.
    */
-  protected FragmentSettingsBinding binding;
+  @Nullable protected FragmentSettingsBinding binding;
 
   /**
    * Represents a handler for managing and interacting with harp settings within the settings view
@@ -95,21 +96,21 @@ public class SettingsFragment extends Fragment
    * specific harp-related settings. It is part of the SettingsFragment class and works in
    * conjunction with other settings handlers to provide a comprehensive configuration interface.
    */
-  @Setter private HarpSettingsViewHandler harpSettingsViewHandler;
+  @Setter HarpSettingsViewHandler harpSettingsViewHandler;
 
   /**
    * A handler for managing the view and interactions related to microphone settings in the user
    * interface. This variable is used to interface with and control the microphone-specific settings
    * available in the application.
    */
-  @Setter private MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
+  @Setter MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
 
   /**
    * Handles the view logic and behaviors related to note settings within the SettingsFragment. This
    * variable is used to manage note-specific configuration options and interactions in the user
    * interface for customizing application behavior.
    */
-  @Setter private NoteSettingsViewHandler noteSettingsViewHandler;
+  @Setter NoteSettingsViewHandler noteSettingsViewHandler;
 
   /**
    * A handler for managing Android-specific settings within the SettingsFragment. This variable is
@@ -120,8 +121,11 @@ public class SettingsFragment extends Fragment
   @Setter private AndroidSettingsHandler androidSettingsViewHandler;
 
   @Override
+  @Nullable
   public View onCreateView(
-      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      @NonNull LayoutInflater inflater,
+      @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
 
     binding = FragmentSettingsBinding.inflate(inflater, container, false);
     return binding.getRoot();
@@ -136,7 +140,7 @@ public class SettingsFragment extends Fragment
    *     saved state as given here.
    */
   @Override
-  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
     FragmentViewModel viewModel =
@@ -174,7 +178,7 @@ public class SettingsFragment extends Fragment
   }
 
   @Override
-  public void setKeys(String[] keys) {
+  public void setKeys(@Nullable String[] keys) {
     // Safeguard in case keys is null
     if (keys == null) {
       keys = new String[0]; // Use an empty array
@@ -209,7 +213,7 @@ public class SettingsFragment extends Fragment
   }
 
   @Override
-  public void setTunes(String[] tunes) {
+  public void setTunes(@Nullable String[] tunes) {
     // Safeguard in case keys is null
     if (tunes == null) {
       tunes = new String[0]; // Use an empty array
@@ -232,7 +236,7 @@ public class SettingsFragment extends Fragment
   }
 
   @Override
-  public void setAlgorithms(String[] algorithms) {
+  public void setAlgorithms(@Nullable String[] algorithms) {
     // Safeguard in case algorithms is null
     if (algorithms == null) {
       algorithms = new String[0]; // Use an empty array
@@ -266,7 +270,7 @@ public class SettingsFragment extends Fragment
   }
 
   @Override
-  public void setConfidences(String[] confidences) {
+  public void setConfidences(@Nullable String[] confidences) {
     // Safeguard in case keys is null
     if (confidences == null) {
       confidences = new String[0]; // Use an empty array
@@ -289,7 +293,7 @@ public class SettingsFragment extends Fragment
   }
 
   @Override
-  public void setMicrophones(String[] microphones) {
+  public void setMicrophones(@Nullable String[] microphones) {
     // no need on android
   }
 
@@ -316,7 +320,7 @@ public class SettingsFragment extends Fragment
   }
 
   @Override
-  public void setChordConfidences(String[] chordConfidences) {
+  public void setChordConfidences(@Nullable String[] chordConfidences) {
     // Safeguard in case keys is null
     if (chordConfidences == null) {
       chordConfidences = new String[0]; // Use an empty array
@@ -339,12 +343,13 @@ public class SettingsFragment extends Fragment
   }
 
   @Override
+  @NonNull
   public Object getInstance() {
     return this;
   }
 
   @Override
-  public void setConcertPitches(String[] pitches) {
+  public void setConcertPitches(@Nullable String[] pitches) {
     // Safeguard in case pitches is null
     if (pitches == null) {
       pitches = new String[0]; // Use an empty array

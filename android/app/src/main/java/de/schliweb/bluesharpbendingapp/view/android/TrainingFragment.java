@@ -36,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.schliweb.bluesharpbendingapp.R;
@@ -75,11 +76,14 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
    * <p>This variable is used in methods that control the training state, such as toggling the
    * training start/stop button and other related functionalities.
    */
-  @Setter private TrainingViewHandler trainingViewHandler;
+  @Setter TrainingViewHandler trainingViewHandler;
 
   @Override
+  @Nullable
   public View onCreateView(
-      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      @NonNull LayoutInflater inflater,
+      @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
 
     binding = FragmentTrainingBinding.inflate(inflater, container, false);
     return binding.getRoot();
@@ -93,7 +97,7 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
    *     saved state as given here.
    */
   @Override
-  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     FragmentViewModel viewModel =
         new ViewModelProvider(requireActivity()).get(FragmentViewModel.class);
@@ -103,7 +107,7 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
   }
 
   @Override
-  public void setTrainings(String[] trainings) {
+  public void setTrainings(@Nullable String[] trainings) {
     Spinner spinner = binding.trainingTrainingsList;
     ArrayAdapter<String> adapter =
         new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, trainings);
@@ -122,7 +126,7 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
   }
 
   @Override
-  public void setPrecisions(String[] precisions) {
+  public void setPrecisions(@NonNull String[] precisions) {
     Spinner spinner = binding.trainingPrecisionList;
     ArrayAdapter<String> adapter =
         new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, precisions);
@@ -153,12 +157,13 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
   }
 
   @Override
+  @Nullable
   public HarpViewNoteElement getActualHarpViewElement() {
     return TrainingViewNoteElementAndroid.getInstance(binding.trainingNote);
   }
 
   @Override
-  public void initTrainingContainer(TrainingContainer trainingContainer) {
+  public void initTrainingContainer(@NonNull TrainingContainer trainingContainer) {
     TextView textView = binding.trainingNote;
     // Set auto-size with min and max text sizes to ensure readability
     textView.setAutoSizeTextTypeUniformWithConfiguration(
@@ -194,6 +199,7 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
   }
 
   @Override
+  @NonNull
   public Object getInstance() {
     return this;
   }

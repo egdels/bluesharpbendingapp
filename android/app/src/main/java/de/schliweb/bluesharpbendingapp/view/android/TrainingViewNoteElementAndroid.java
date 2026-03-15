@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.view.android;
  */
 
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import java.util.HashMap;
@@ -96,7 +97,8 @@ public class TrainingViewNoteElementAndroid implements HarpViewNoteElement {
    *     to be retrieved.
    * @return An instance of TrainingViewNoteElementAndroid associated with the specified TextView.
    */
-  public static TrainingViewNoteElementAndroid getInstance(TextView textView) {
+  @NonNull
+  public static TrainingViewNoteElementAndroid getInstance(@NonNull TextView textView) {
     return instances.computeIfAbsent(textView, TrainingViewNoteElementAndroid::new);
   }
 

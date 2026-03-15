@@ -34,6 +34,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import de.schliweb.bluesharpbendingapp.R;
 
@@ -43,7 +44,7 @@ import de.schliweb.bluesharpbendingapp.R;
  */
 public class TextViewUtils {
 
-  public static int saveBackgroundColor(TextView textView) {
+  public static int saveBackgroundColor(@NonNull TextView textView) {
     // Get the background drawable
     android.graphics.drawable.Drawable background = textView.getBackground();
 
@@ -73,7 +74,7 @@ public class TextViewUtils {
     return 0;
   }
 
-  public static void restoreBackgroundColor(TextView textView, int color) {
+  public static void restoreBackgroundColor(@NonNull TextView textView, int color) {
     setBackgroundColor(textView, color);
   }
 
@@ -100,7 +101,7 @@ public class TextViewUtils {
    * @param cents A double representing the cent value, which determines the position, color
    *     intensity, and other visual attributes of the line.
    */
-  public static void updateEnlargedTextViewLine(TextView noteTextView, double cents) {
+  public static void updateEnlargedTextViewLine(@NonNull TextView noteTextView, double cents) {
     // Check if the background is a LayerDrawable before attempting to cast
     if (!(noteTextView.getBackground() instanceof LayerDrawable layout)) {
       return; // Exit if not a LayerDrawable
@@ -161,7 +162,7 @@ public class TextViewUtils {
    * @param cents A double indicating the cent value that influences the line's position, color
    *     intensity, and attributes. Values are constrained within the range -44 to 44.
    */
-  public static void updateTextViewLine(TextView noteTextView, double cents) {
+  public static void updateTextViewLine(@NonNull TextView noteTextView, double cents) {
     // Get the background drawable
     android.graphics.drawable.Drawable background = noteTextView.getBackground();
 
@@ -228,7 +229,7 @@ public class TextViewUtils {
    * @param noteTextView The TextView whose background line layer will be modified to become
    *     transparent.
    */
-  public static void clearTextViewLine(TextView noteTextView) {
+  public static void clearTextViewLine(@NonNull TextView noteTextView) {
     // Get the background drawable
     android.graphics.drawable.Drawable background = noteTextView.getBackground();
 
@@ -259,7 +260,8 @@ public class TextViewUtils {
    * @param cents A double value representing the cent information, formatted and styled to appear
    *     as part of the displayed text.
    */
-  public static void updateTextViewCent(TextView noteTextView, String noteText, double cents) {
+  public static void updateTextViewCent(
+      @NonNull TextView noteTextView, @NonNull String noteText, double cents) {
     // Format cents with leading spaces and sign (+/-), suppress lint warning
     @SuppressLint("DefaultLocale")
     String centsString = String.format("%+3d", (int) cents);
@@ -304,7 +306,7 @@ public class TextViewUtils {
    *
    * @param noteTextView The TextView to be highlighted as a chord.
    */
-  public static void highlightAsChord(TextView noteTextView) {
+  public static void highlightAsChord(@NonNull TextView noteTextView) {
     setBackgroundColor(
         noteTextView, ContextCompat.getColor(noteTextView.getContext(), R.color.warning));
   }
