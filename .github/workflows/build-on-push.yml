@@ -96,7 +96,14 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build Desktop Installer with jpackage
+      if: runner.os != 'Linux'
       run: ./gradlew :desktop:jpackage
+      env:
+        GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
+
+    - name: Build Desktop Installer and AppImage (Linux)
+      if: runner.os == 'Linux'
+      run: ./gradlew :desktop:jpackage :desktop:jpackageAppImage
       env:
         GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
 
@@ -105,4 +112,22 @@ jobs:
       with:
         name: LetsBend-Desktop-${{ runner.os }}
         path: desktop/build/jpackage/
+        retention-days: 30
+
+    - name: Create AppImage (Linux only)
+      if: runner.os == 'Linux'
+      run: |
+        APP_VERSION=$(./gradlew -q :desktop:properties | grep '^version:' | awk '{print $2}')
+        echo "Detected version: ${APP_VERSION}"
+        chmod +x desktop/packaging/appimage/build-appimage.sh
+        desktop/packaging/appimage/build-appimage.sh "${APP_VERSION}"
+      env:
+        GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
+
+    - name: Upload AppImage (Linux only)
+      if: runner.os == 'Linux'
+      uses: actions/upload-artifact@v4
+      with:
+        name: LetsBend-AppImage
+        path: desktop/build/appimage-output/*.AppImage
         retention-days: 30

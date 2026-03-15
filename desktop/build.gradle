@@ -185,6 +185,46 @@ tasks.register('jpackage', Exec) {
     }
 }
 
+tasks.register('jpackageAppImage', Exec) {
+    group = 'build'
+    description = 'Creates an app-image using jpackage (used as base for AppImage on Linux)'
+
+    dependsOn 'createRuntime'
+    dependsOn 'jar'
+
+    def runtimeDir = layout.buildDirectory.dir("runtime").get().asFile
+    def jarDir = layout.buildDirectory.dir("libs").get().asFile
+    def outputDir = layout.buildDirectory.dir("appimage").get().asFile
+
+    def imageIcon = file("src/main/resources/ic_launcher_round.png").absolutePath
+
+    def appVersion = project.version
+    def mainJarName = jar.archiveFileName.get()
+    def mainJarClass = application.mainClass.get()
+    def applicationName = "BluesHarpBendingApp"
+
+    commandLine = ["${jdkPath}/bin/jpackage",
+                   '--type', 'app-image',
+                   '--runtime-image', runtimeDir,
+                   '--input', jarDir,
+                   '--main-jar', mainJarName,
+                   '--main-class', mainJarClass,
+                   '--name', applicationName,
+                   '--icon', imageIcon,
+                   '--dest', outputDir,
+                   '--app-version', appVersion,
+                   '--arguments', '--logging.profile=PROD',
+                   '--vendor', 'letsbend.de'
+    ] as List<String>
+
+    doFirst {
+        println "Creating app-image with the following values:"
+        println "Runtime Directory: ${runtimeDir}"
+        println "JAR Directory: ${jarDir}"
+        println "Output Directory: ${outputDir}"
+    }
+}
+
 test {
     // Configures the test task to use JUnit 5 (JUnit Platform)
     useJUnitPlatform()
