@@ -26,9 +26,7 @@
 <resources>
     <string name="app_name">Let\'s Bend</string>
     <string name="action_settings">设置</string>
-    <string name="about_title">Let\'s Bend</string>
     <string name="action_about">关于</string>
-    <string name="action_harp">Let\'s Bend</string>
     <string name="about_description">BluesHarpBendingApp的安卓版本</string>
     <string name="about_version">%1$s (%2$d)</string>
     <string name="settings_key_label">调</string>
@@ -65,7 +63,6 @@
     <string name="about_user_guide">用户指南</string>
     <string name="show_chord_experimental">显示和弦（实验性）</string>
     <!-- Favorites (fallback to English until translated) -->
-    <string name="action_favorite">收藏</string>
     <string name="favs_saved">已保存到收藏夹</string>
     <string name="favs_removed">已从收藏夹移除</string>
     <string name="favs_manage">管理收藏夹</string>
