@@ -71,6 +71,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="bottom|end"
+            android:paddingStart="0dp"
             android:paddingEnd="0dp"/>
     </ScrollView>
 
