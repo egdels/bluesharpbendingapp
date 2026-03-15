@@ -1,0 +1,105 @@
+name: Build on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: wrapper
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Decode Keystore
+      run: |
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks
+
+    - name: Build Release APK and Bundle
+      run: |
+        ./gradlew assembleRelease bundleRelease \
+        -PSIGNING_KEY_ALIAS="${SIGNING_KEY_ALIAS}" \
+        -PSIGNING_KEY_PASSWORD="${SIGNING_KEY_PASSWORD}" \
+        -PSIGNING_STORE_PASSWORD="${SIGNING_STORE_PASSWORD}"
+      env:
+        SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+        SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+
+    - name: Verify APK signature
+      run: |
+        aapt dump badging android/build/outputs/apk/release/android-release.apk | head -1
+        echo "APK verification completed"
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: LetsBend-APK
+        path: android/build/outputs/apk/release/android-release.apk
+        retention-days: 30
+
+    - name: Upload AAB
+      uses: actions/upload-artifact@v4
+      with:
+        name: LetsBend-AAB
+        path: android/build/outputs/bundle/release/android-release.aab
+        retention-days: 30
+
+    - name: Clean up keystore
+      if: always()
+      run: |
+        rm -f android/keystore.jks
+        echo "Keystore cleaned up"
+
+  build-desktop:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: wrapper
+
+    - name: Grant execute permission for gradlew
+      if: runner.os != 'Windows'
+      run: chmod +x gradlew
+
+    - name: Build Desktop Installer with jpackage
+      run: ./gradlew :desktop:jpackage
+      env:
+        GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
+
+    - name: Upload Desktop Installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: LetsBend-Desktop-${{ runner.os }}
+        path: desktop/build/jpackage/
+        retention-days: 30
