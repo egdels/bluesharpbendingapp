@@ -26,7 +26,6 @@ package de.schliweb.bluesharpbendingapp.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.math3.complex.Complex;
@@ -177,11 +176,10 @@ public abstract class PitchDetector {
    * @return the RMS value of the audio signal as a double.
    */
   public static double calcRMS(double[] audioData) {
-    double sum =
-        IntStream.range(0, audioData.length)
-            .parallel()
-            .mapToDouble(i -> audioData[i] * audioData[i])
-            .sum();
+    double sum = 0.0;
+    for (double sample : audioData) {
+      sum += sample * sample;
+    }
     return Math.sqrt(sum / audioData.length);
   }
 
@@ -323,38 +321,29 @@ public abstract class PitchDetector {
       return true;
     }
 
-    // Calculate mean using parallel stream
-    double mean =
-        IntStream.range(0, audioData.length)
-            .parallel()
-            .mapToDouble(i -> audioData[i])
-            .average()
-            .orElse(0.0);
+    // Calculate mean
+    double sum = 0.0;
+    for (double sample : audioData) {
+      sum += sample;
+    }
+    double mean = sum / audioData.length;
 
-    // Calculate standard deviation using parallel stream
-    double stdDev =
-        Math.sqrt(
-            IntStream.range(0, audioData.length)
-                    .parallel()
-                    .mapToDouble(
-                        i -> {
-                          double diff = audioData[i] - mean;
-                          return diff * diff;
-                        })
-                    .sum()
-                / audioData.length);
+    // Calculate standard deviation
+    double varianceSum = 0.0;
+    for (double sample : audioData) {
+      double diff = sample - mean;
+      varianceSum += diff * diff;
+    }
+    double stdDev = Math.sqrt(varianceSum / audioData.length);
 
-    // Calculate zero-crossing rate using parallel stream
-    int zeroCrossings =
-        IntStream.range(1, audioData.length)
-            .parallel()
-            .map(
-                i ->
-                    (audioData[i] >= 0 && audioData[i - 1] < 0)
-                            || (audioData[i] < 0 && audioData[i - 1] >= 0)
-                        ? 1
-                        : 0)
-            .sum();
+    // Calculate zero-crossing rate
+    int zeroCrossings = 0;
+    for (int i = 1; i < audioData.length; i++) {
+      if ((audioData[i] >= 0 && audioData[i - 1] < 0)
+          || (audioData[i] < 0 && audioData[i - 1] >= 0)) {
+        zeroCrossings++;
+      }
+    }
     double zeroCrossingRate = (double) zeroCrossings / (audioData.length - 1);
 
     // White noise typically has:
@@ -381,26 +370,11 @@ public abstract class PitchDetector {
   protected static Complex[] prepareFFTInput(double[] audioData, int fftSize) {
     Complex[] complexInput = new Complex[fftSize];
 
-    // Parallel processing for large arrays
-    if (audioData.length > 10000) {
-      IntStream.range(0, fftSize)
-          .parallel()
-          .forEach(
-              i -> {
-                if (i < audioData.length) {
-                  complexInput[i] = new Complex(audioData[i] * hannWindow(i, audioData.length), 0);
-                } else {
-                  complexInput[i] = new Complex(0, 0);
-                }
-              });
-    } else {
-      // Serial processing for smaller arrays
-      for (int i = 0; i < fftSize; i++) {
-        if (i < audioData.length) {
-          complexInput[i] = new Complex(audioData[i] * hannWindow(i, audioData.length), 0);
-        } else {
-          complexInput[i] = new Complex(0, 0);
-        }
+    for (int i = 0; i < fftSize; i++) {
+      if (i < audioData.length) {
+        complexInput[i] = new Complex(audioData[i] * hannWindow(i, audioData.length), 0);
+      } else {
+        complexInput[i] = new Complex(0, 0);
       }
     }
 
@@ -442,14 +416,11 @@ public abstract class PitchDetector {
    */
   protected static double[] calculateMagnitudeSpectrum(double[] fftOutput, int fftSize) {
     double[] magnitudeSpectrum = new double[fftSize / 2];
-    IntStream.range(0, fftSize / 2)
-        .parallel()
-        .forEach(
-            i -> {
-              double real = fftOutput[i * 2];
-              double imag = fftOutput[i * 2 + 1];
-              magnitudeSpectrum[i] = Math.sqrt(real * real + imag * imag);
-            });
+    for (int i = 0; i < fftSize / 2; i++) {
+      double real = fftOutput[i * 2];
+      double imag = fftOutput[i * 2 + 1];
+      magnitudeSpectrum[i] = Math.sqrt(real * real + imag * imag);
+    }
     return magnitudeSpectrum;
   }
 
