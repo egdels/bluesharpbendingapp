@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -24,54 +25,53 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 /**
- * This interface defines methods for handling and managing the harp settings view.
- * It provides functionality for selecting keys and tunings, as well as initializing
- * the key and tuning options available in the settings. Implementations of this interface
- * are responsible for managing user interactions with the harp settings and updating
- * the associated application state accordingly.
+ * This interface defines methods for handling and managing the harp settings view. It provides
+ * functionality for selecting keys and tunings, as well as initializing the key and tuning options
+ * available in the settings. Implementations of this interface are responsible for managing user
+ * interactions with the harp settings and updating the associated application state accordingly.
  */
 public interface HarpSettingsViewHandler {
-    /**
-     * Handles the selection of a key in the harp settings.
-     * This method is invoked to process the user's chosen key from a list of available keys.
-     *
-     * @param keyIndex the index of the selected key, used to identify and apply the chosen key
-     */
-    void handleKeySelection(int keyIndex);
+  /**
+   * Handles the selection of a key in the harp settings. This method is invoked to process the
+   * user's chosen key from a list of available keys.
+   *
+   * @param keyIndex the index of the selected key, used to identify and apply the chosen key
+   */
+  void handleKeySelection(int keyIndex);
 
-    /**
-     * Handles the selection of a tuning in the harp settings.
-     * This method updates the application state based on the tuning option selected by the user.
-     *
-     * @param tuneIndex the index of the selected tuning option
-     */
-    void handleTuneSelection(int tuneIndex);
+  /**
+   * Handles the selection of a tuning in the harp settings. This method updates the application
+   * state based on the tuning option selected by the user.
+   *
+   * @param tuneIndex the index of the selected tuning option
+   */
+  void handleTuneSelection(int tuneIndex);
 
-    /**
-     * Initializes and prepares the list of available keys in the harp settings.
-     * This method ensures that the key options are populated and ready for user interaction.
-     */
-    void initKeyList();
+  /**
+   * Initializes and prepares the list of available keys in the harp settings. This method ensures
+   * that the key options are populated and ready for user interaction.
+   */
+  void initKeyList();
 
-    /**
-     * Initializes and populates the list of tuning options available in the harp settings.
-     * Provides users with a list of tunings they can select and apply.
-     */
-    void initTuneList();
+  /**
+   * Initializes and populates the list of tuning options available in the harp settings. Provides
+   * users with a list of tunings they can select and apply.
+   */
+  void initTuneList();
 
-    /**
-     * Processes the selection of a show chord option in the harp settings.
-     * This method is invoked when the user interacts with the show chord setting,
-     * allowing the application to update its state or UI accordingly.
-     *
-     * @param showChordIndex the index of the selected show chord option
-     */
-    void handleShowChordSelection(int showChordIndex);
+  /**
+   * Processes the selection of a show chord option in the harp settings. This method is invoked
+   * when the user interacts with the show chord setting, allowing the application to update its
+   * state or UI accordingly.
+   *
+   * @param showChordIndex the index of the selected show chord option
+   */
+  void handleShowChordSelection(int showChordIndex);
 
-    /**
-     * Initializes and sets up the available options for the "Show Chord" setting
-     * in the harp settings view. This method prepares the necessary state or data
-     * to enable users to configure their preferences related to displaying chords.
-     */
-    void initShowChordSetting();
+  /**
+   * Initializes and sets up the available options for the "Show Chord" setting in the harp settings
+   * view. This method prepares the necessary state or data to enable users to configure their
+   * preferences related to displaying chords.
+   */
+  void initShowChordSetting();
 }

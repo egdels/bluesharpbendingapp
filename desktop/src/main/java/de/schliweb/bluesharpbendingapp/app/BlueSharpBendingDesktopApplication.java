@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.app;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -29,44 +30,45 @@ import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import lombok.Getter;
 
 /**
- * Application class for the BlueSharp Bending Desktop App.
- * Initializes the dependency injection framework (Dagger) and provides access to the component.
+ * Application class for the BlueSharp Bending Desktop App. Initializes the dependency injection
+ * framework (Dagger) and provides access to the component.
  */
 public class BlueSharpBendingDesktopApplication {
 
-    /**
-     * The Dagger component instance used for dependency injection throughout the application.
-     */
-    @Getter
-    private DesktopAppComponent appComponent;
+  /** The Dagger component instance used for dependency injection throughout the application. */
+  @Getter private DesktopAppComponent appComponent;
 
-    /**
-     * Initializes the dependency injection framework with the necessary modules.
-     * This method is called during application startup and can also be called
-     * with a specific MainWindow instance when needed.
-     *
-     * @param tempDirectory The directory path where temporary files will be stored
-     * @param mainWindow    The MainWindow instance to use,
-     *                      or null if not available yet.
-     */
-    public void initializeDependencyInjection(String tempDirectory, MainWindow mainWindow) {
-        // Log application startup
-        DependencyInjectionInitializer.logAppStartup("BlueSharpBendingDesktopApplication", "BlueSharp Bending Desktop Application");
+  /**
+   * Initializes the dependency injection framework with the necessary modules. This method is
+   * called during application startup and can also be called with a specific MainWindow instance
+   * when needed.
+   *
+   * @param tempDirectory The directory path where temporary files will be stored
+   * @param mainWindow The MainWindow instance to use, or null if not available yet.
+   */
+  public void initializeDependencyInjection(String tempDirectory, MainWindow mainWindow) {
+    // Log application startup
+    DependencyInjectionInitializer.logAppStartup(
+        "BlueSharpBendingDesktopApplication", "BlueSharp Bending Desktop Application");
 
-        // Create modules with the provided dependencies
-        BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
-        ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
-        MicrophoneModule microphoneModule = DependencyInjectionInitializer.createMicrophoneModule(new MicrophoneDesktop());
+    // Create modules with the provided dependencies
+    BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
+    ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
+    MicrophoneModule microphoneModule =
+        DependencyInjectionInitializer.createMicrophoneModule(new MicrophoneDesktop());
 
-        // Create the Dagger component with all required modules
-        appComponent = DaggerDesktopAppComponent.builder()
-                .baseModule(baseModule)
-                .viewModule(viewModule)
-                .microphoneModule(microphoneModule)
-                .desktopFavoritesModule(new de.schliweb.bluesharpbendingapp.di.DesktopFavoritesModule(tempDirectory))
-                .build();
+    // Create the Dagger component with all required modules
+    appComponent =
+        DaggerDesktopAppComponent.builder()
+            .baseModule(baseModule)
+            .viewModule(viewModule)
+            .microphoneModule(microphoneModule)
+            .desktopFavoritesModule(
+                new de.schliweb.bluesharpbendingapp.di.DesktopFavoritesModule(tempDirectory))
+            .build();
 
-        // Log that dependency injection has been initialized
-        DependencyInjectionInitializer.logDependencyInjectionInitialized("BlueSharpBendingDesktopApplication");
-    }
+    // Log that dependency injection has been initialized
+    DependencyInjectionInitializer.logDependencyInjectionInitialized(
+        "BlueSharpBendingDesktopApplication");
+  }
 }

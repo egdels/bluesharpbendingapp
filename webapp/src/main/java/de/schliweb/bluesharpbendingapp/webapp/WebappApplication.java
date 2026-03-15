@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.webapp;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -28,27 +29,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
- * Main Spring Boot application class for the BlueSharp Bending web application.
- * This class serves as the entry point for the Spring Boot application and is responsible
- * for bootstrapping and launching the web application.
- * <p>
- * By extending SpringBootServletInitializer, this application can be deployed as a traditional
- * WAR file and run in external servlet containers, in addition to being runnable as a
- * standalone application with an embedded server.
+ * Main Spring Boot application class for the BlueSharp Bending web application. This class serves
+ * as the entry point for the Spring Boot application and is responsible for bootstrapping and
+ * launching the web application.
+ *
+ * <p>By extending SpringBootServletInitializer, this application can be deployed as a traditional
+ * WAR file and run in external servlet containers, in addition to being runnable as a standalone
+ * application with an embedded server.
  */
 @SpringBootApplication
 public class WebappApplication extends SpringBootServletInitializer {
 
-    /**
-     * The main entry point of the application. This method starts the Spring Boot application,
-     * initializes the Spring application context, and launches the embedded web server.
-     *
-     * @param args command line arguments passed to the application. These can include
-     *             standard Spring Boot configuration parameters such as --server.port
-     *             to specify the port on which the application should run.
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(WebappApplication.class, args);
-    }
-
+  /**
+   * The main entry point of the application. This method starts the Spring Boot application,
+   * initializes the Spring application context, and launches the embedded web server.
+   *
+   * @param args command line arguments passed to the application. These can include standard Spring
+   *     Boot configuration parameters such as --server.port to specify the port on which the
+   *     application should run.
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(WebappApplication.class, args);
+  }
 }

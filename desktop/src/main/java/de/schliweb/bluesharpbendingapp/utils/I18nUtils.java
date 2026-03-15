@@ -24,59 +24,54 @@
 
 package de.schliweb.bluesharpbendingapp.utils;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 /**
- * Utility class for internationalization (i18n) in the application.
- * Provides methods to manage locales and resource bundles.
+ * Utility class for internationalization (i18n) in the application. Provides methods to manage
+ * locales and resource bundles.
  */
 public class I18nUtils {
 
-    private static final String RESOURCE_BUNDLE_BASE_NAME = "i18n.messages";
+  private static final String RESOURCE_BUNDLE_BASE_NAME = "i18n.messages";
 
-    @Getter
-    @Setter
-    private static Locale currentLocale = Locale.getDefault();
+  @Getter @Setter private static Locale currentLocale = Locale.getDefault();
 
-    /**
-     * Private constructor to prevent instantiation of this utility class.
-     */
-    private I18nUtils() {
-        // Utility class should not be instantiated
-    }
+  /** Private constructor to prevent instantiation of this utility class. */
+  private I18nUtils() {
+    // Utility class should not be instantiated
+  }
 
-    /**
-     * Gets the resource bundle for the current locale.
-     *
-     * @return The resource bundle for the current locale
-     */
-    public static ResourceBundle getResourceBundle() {
-        return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, currentLocale);
-    }
+  /**
+   * Gets the resource bundle for the current locale.
+   *
+   * @return The resource bundle for the current locale
+   */
+  public static ResourceBundle getResourceBundle() {
+    return ResourceBundle.getBundle(RESOURCE_BUNDLE_BASE_NAME, currentLocale);
+  }
 
-    /**
-     * Gets a string from the resource bundle for the current locale.
-     *
-     * @param key The key of the string to get
-     * @return The string for the specified key
-     */
-    public static String getString(String key) {
-        return getResourceBundle().getString(key);
-    }
+  /**
+   * Gets a string from the resource bundle for the current locale.
+   *
+   * @param key The key of the string to get
+   * @return The string for the specified key
+   */
+  public static String getString(String key) {
+    return getResourceBundle().getString(key);
+  }
 
-    /**
-     * Gets a string from the resource bundle for the current locale and formats it with the specified arguments.
-     *
-     * @param key  The key of the string to get
-     * @param args The arguments to format the string with
-     * @return The formatted string for the specified key
-     */
-    public static String getString(String key, Object... args) {
-        return String.format(getString(key), args);
-    }
-
+  /**
+   * Gets a string from the resource bundle for the current locale and formats it with the specified
+   * arguments.
+   *
+   * @param key The key of the string to get
+   * @param args The arguments to format the string with
+   * @return The formatted string for the specified key
+   */
+  public static String getString(String key, Object... args) {
+    return String.format(getString(key), args);
+  }
 }

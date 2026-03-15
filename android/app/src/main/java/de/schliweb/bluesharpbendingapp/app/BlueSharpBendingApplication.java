@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.app;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -30,56 +31,54 @@ import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import lombok.Getter;
 
 /**
- * Application class for the BlueSharp Bending App.
- * Initializes the dependency injection framework (Dagger) and provides access to the component.
+ * Application class for the BlueSharp Bending App. Initializes the dependency injection framework
+ * (Dagger) and provides access to the component.
  */
 public class BlueSharpBendingApplication extends Application {
 
-    /**
-     * The Dagger component instance used for dependency injection throughout the application.
-     */
-    @Getter
-    private AndroidAppComponent appComponent;
+  /** The Dagger component instance used for dependency injection throughout the application. */
+  @Getter private AndroidAppComponent appComponent;
 
-    /**
-     * Called when the application is starting. This is where the dependency injection
-     * is initialized.
-     */
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        // Log application startup
-        DependencyInjectionInitializer.logAppStartup("BlueSharpBendingApplication", "BlueSharp Bending Application");
+  /**
+   * Called when the application is starting. This is where the dependency injection is initialized.
+   */
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    // Log application startup
+    DependencyInjectionInitializer.logAppStartup(
+        "BlueSharpBendingApplication", "BlueSharp Bending Application");
 
-        // Initialize dependency injection
-        initializeDependencyInjection(null);
-    }
+    // Initialize dependency injection
+    initializeDependencyInjection(null);
+  }
 
-    /**
-     * Initializes the dependency injection framework with the necessary modules.
-     * This method is called during application startup and can also be called
-     * with a specific MainWindow instance when needed.
-     *
-     * @param mainWindow The MainWindow instance to use,
-     *                   or null if not available yet.
-     */
-    public void initializeDependencyInjection(MainWindow mainWindow) {
-        String tempDirectory = this.getApplicationContext().getFilesDir().getAbsolutePath();
+  /**
+   * Initializes the dependency injection framework with the necessary modules. This method is
+   * called during application startup and can also be called with a specific MainWindow instance
+   * when needed.
+   *
+   * @param mainWindow The MainWindow instance to use, or null if not available yet.
+   */
+  public void initializeDependencyInjection(MainWindow mainWindow) {
+    String tempDirectory = this.getApplicationContext().getFilesDir().getAbsolutePath();
 
-        // Create modules with the provided dependencies
-        BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
-        ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
-        MicrophoneModule microphoneModule = DependencyInjectionInitializer.createMicrophoneModule(new MicrophoneAndroid());
+    // Create modules with the provided dependencies
+    BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
+    ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
+    MicrophoneModule microphoneModule =
+        DependencyInjectionInitializer.createMicrophoneModule(new MicrophoneAndroid());
 
-        // Create the Dagger component with all required modules
-        appComponent = DaggerAndroidAppComponent.builder()
-                .baseModule(baseModule)
-                .viewModule(viewModule)
-                .microphoneModule(microphoneModule)
-                .favoritesModule(new FavoritesModule(getApplicationContext()))
-                .build();
+    // Create the Dagger component with all required modules
+    appComponent =
+        DaggerAndroidAppComponent.builder()
+            .baseModule(baseModule)
+            .viewModule(viewModule)
+            .microphoneModule(microphoneModule)
+            .favoritesModule(new FavoritesModule(getApplicationContext()))
+            .build();
 
-        // Log that dependency injection has been initialized
-        DependencyInjectionInitializer.logDependencyInjectionInitialized("BlueSharpBendingApplication");
-    }
+    // Log that dependency injection has been initialized
+    DependencyInjectionInitializer.logDependencyInjectionInitialized("BlueSharpBendingApplication");
+  }
 }

@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -24,27 +25,25 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 /**
- * An interface for handling note settings-related functionalities within the application.
- * This interface facilitates the initialization and management of concert pitch settings
- * for enhancing interaction in the note settings view.
+ * An interface for handling note settings-related functionalities within the application. This
+ * interface facilitates the initialization and management of concert pitch settings for enhancing
+ * interaction in the note settings view.
  */
 public interface NoteSettingsViewHandler {
 
-    /**
-     * Handles the selection of a concert pitch based on the provided index.
-     * This method is typically invoked to update the application state or UI
-     * when a user selects a specific concert pitch setting.
-     *
-     * @param pitchIndex the index of the selected concert pitch in the list of available pitches
-     */
-    void handleConcertPitchSelection(int pitchIndex);
+  /**
+   * Handles the selection of a concert pitch based on the provided index. This method is typically
+   * invoked to update the application state or UI when a user selects a specific concert pitch
+   * setting.
+   *
+   * @param pitchIndex the index of the selected concert pitch in the list of available pitches
+   */
+  void handleConcertPitchSelection(int pitchIndex);
 
-    /**
-     * Initializes the list of available concert pitch settings.
-     * This method is responsible for setting up the options that users can select
-     * from in relation to concert pitch adjustments. It is typically invoked during
-     * the preparation or setup phase of the note settings view.
-     */
-    void initConcertPitchList();
-
+  /**
+   * Initializes the list of available concert pitch settings. This method is responsible for
+   * setting up the options that users can select from in relation to concert pitch adjustments. It
+   * is typically invoked during the preparation or setup phase of the note settings view.
+   */
+  void initConcertPitchList();
 }

@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -24,11 +25,8 @@ package de.schliweb.bluesharpbendingapp.view;
  */
 
 /**
- * The AboutView interface defines the contract for representing the "About" view
- * in the application. This interface is used for displaying information
- * about the application, including but not limited to version details,
- * donation links, and contact information.
+ * The AboutView interface defines the contract for representing the "About" view in the
+ * application. This interface is used for displaying information about the application, including
+ * but not limited to version details, donation links, and contact information.
  */
-public interface AboutView {
-
-}
+public interface AboutView {}

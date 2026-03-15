@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -24,31 +25,28 @@ package de.schliweb.bluesharpbendingapp.view;
  */
 
 /**
- * The HarpViewNoteElement interface defines the contract for handling
- * and managing individual note-related elements within the harp view.
+ * The HarpViewNoteElement interface defines the contract for handling and managing individual
+ * note-related elements within the harp view.
  */
 public interface HarpViewNoteElement {
 
-    /**
-     * Clears the state or content of the note element, resetting it to its default state.
-     */
-    void clear();
+  /** Clears the state or content of the note element, resetting it to its default state. */
+  void clear();
 
-    /**
-     * Updates the state of the harp view note element based on the given cents value.
-     *
-     * @param cents the pitch shift value in cents used to update the note element
-     */
-    void update(double cents);
+  /**
+   * Updates the state of the harp view note element based on the given cents value.
+   *
+   * @param cents the pitch shift value in cents used to update the note element
+   */
+  void update(double cents);
 
-    /**
-     * Highlights the note element as part of a chord.
-     * This method should provide a visual indication that the note is part of a chord,
-     * such as highlighting it in yellow without showing a line indicator.
-     */
-    default void highlightAsChord() {
-        // Default implementation does nothing
-        // Concrete implementations should override this method to provide chord highlighting
-    }
-
+  /**
+   * Highlights the note element as part of a chord. This method should provide a visual indication
+   * that the note is part of a chord, such as highlighting it in yellow without showing a line
+   * indicator.
+   */
+  default void highlightAsChord() {
+    // Default implementation does nothing
+    // Concrete implementations should override this method to provide chord highlighting
+  }
 }

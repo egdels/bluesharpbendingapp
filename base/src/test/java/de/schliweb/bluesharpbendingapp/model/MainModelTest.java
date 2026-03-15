@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.model;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,49 +24,46 @@ package de.schliweb.bluesharpbendingapp.model;
  *
  */
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-/**
- * The type Main model test.
- */
+/** The type Main model test. */
 class MainModelTest {
 
-    @Test
-    void testGetSelectedLockScreenIndex_usesSelectedValueIfSet() {
-        MainModel model = new MainModel();
-        model.setSelectedLockScreenIndex(5);
-        model.setStoredLockScreenIndex(2);
+  @Test
+  void testGetSelectedLockScreenIndex_usesSelectedValueIfSet() {
+    MainModel model = new MainModel();
+    model.setSelectedLockScreenIndex(5);
+    model.setStoredLockScreenIndex(2);
 
-        assertEquals(5, model.getSelectedLockScreenIndex());
-    }
+    assertEquals(5, model.getSelectedLockScreenIndex());
+  }
 
-    @Test
-    void testGetSelectedLockScreenIndex_usesStoredValueIfSelectedIsZero() {
-        MainModel model = new MainModel();
-        model.setSelectedLockScreenIndex(0);
-        model.setStoredLockScreenIndex(2);
+  @Test
+  void testGetSelectedLockScreenIndex_usesStoredValueIfSelectedIsZero() {
+    MainModel model = new MainModel();
+    model.setSelectedLockScreenIndex(0);
+    model.setStoredLockScreenIndex(2);
 
-        assertEquals(2, model.getSelectedLockScreenIndex());
-    }
+    assertEquals(2, model.getSelectedLockScreenIndex());
+  }
 
-    @Test
-    void testGetSelectedLockScreenIndex_returnsZeroWhenBothAreZero() {
-        MainModel model = new MainModel();
-        model.setSelectedLockScreenIndex(0);
-        model.setStoredLockScreenIndex(0);
+  @Test
+  void testGetSelectedLockScreenIndex_returnsZeroWhenBothAreZero() {
+    MainModel model = new MainModel();
+    model.setSelectedLockScreenIndex(0);
+    model.setStoredLockScreenIndex(0);
 
-        assertEquals(0, model.getSelectedLockScreenIndex());
-    }
+    assertEquals(0, model.getSelectedLockScreenIndex());
+  }
 
-    @Test
-    void testGetSelectedLockScreenIndex_handlesNegativeSelectedIndex() {
-        MainModel model = new MainModel();
-        model.setSelectedLockScreenIndex(-1);
-        model.setStoredLockScreenIndex(3);
+  @Test
+  void testGetSelectedLockScreenIndex_handlesNegativeSelectedIndex() {
+    MainModel model = new MainModel();
+    model.setSelectedLockScreenIndex(-1);
+    model.setStoredLockScreenIndex(3);
 
-        assertEquals(-1, model.getSelectedLockScreenIndex());
-    }
+    assertEquals(-1, model.getSelectedLockScreenIndex());
+  }
 }

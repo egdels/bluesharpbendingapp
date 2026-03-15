@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,16 +24,14 @@ package de.schliweb.bluesharpbendingapp.controller;
  *
  */
 
-
 /**
- * The HarpViewHandler interface defines methods for managing and interacting
- * with the visual and functional elements of a harp application.
+ * The HarpViewHandler interface defines methods for managing and interacting with the visual and
+ * functional elements of a harp application.
  */
 public interface HarpViewHandler {
-    /**
-     * Initializes the notes in the harp application view. This method ensures
-     * that the necessary data and visual representations for the notes
-     * are prepared and ready for interaction.
-     */
-    void initNotes();
+  /**
+   * Initializes the notes in the harp application view. This method ensures that the necessary data
+   * and visual representations for the notes are prepared and ready for interaction.
+   */
+  void initNotes();
 }

@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -24,66 +25,64 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 /**
- * Interface responsible for handling interactions and settings related to the microphone
- * and algorithm configuration in the application. This interface provides methods
- * to initialize lists of available algorithms and microphones, as well as handlers
- * for selecting specific algorithms or microphones.
+ * Interface responsible for handling interactions and settings related to the microphone and
+ * algorithm configuration in the application. This interface provides methods to initialize lists
+ * of available algorithms and microphones, as well as handlers for selecting specific algorithms or
+ * microphones.
  */
 public interface MicrophoneSettingsViewHandler {
-    /**
-     * Handles the selection of a specific algorithm based on the provided index.
-     *
-     * @param algorithmIndex the index of the algorithm to be selected
-     */
-    void handleAlgorithmSelection(int algorithmIndex);
+  /**
+   * Handles the selection of a specific algorithm based on the provided index.
+   *
+   * @param algorithmIndex the index of the algorithm to be selected
+   */
+  void handleAlgorithmSelection(int algorithmIndex);
 
-    /**
-     * Handles the selection of a specific microphone based on the provided index.
-     *
-     * @param microphoneIndex the index of the microphone to be selected
-     */
-    void handleMicrophoneSelection(int microphoneIndex);
+  /**
+   * Handles the selection of a specific microphone based on the provided index.
+   *
+   * @param microphoneIndex the index of the microphone to be selected
+   */
+  void handleMicrophoneSelection(int microphoneIndex);
 
-    /**
-     * Initializes the list of available algorithms. This method is responsible for
-     * setting up and preparing the list of algorithms that can be used or selected
-     * in the application.
-     */
-    void initAlgorithmList();
+  /**
+   * Initializes the list of available algorithms. This method is responsible for setting up and
+   * preparing the list of algorithms that can be used or selected in the application.
+   */
+  void initAlgorithmList();
 
-    /**
-     * Initializes the list of available microphones. This method is responsible for
-     * gathering, setting up, and preparing the microphone options that can be used or
-     * selected in the application.
-     */
-    void initMicrophoneList();
+  /**
+   * Initializes the list of available microphones. This method is responsible for gathering,
+   * setting up, and preparing the microphone options that can be used or selected in the
+   * application.
+   */
+  void initMicrophoneList();
 
-    /**
-     * Initializes the list of available confidence levels. This method is responsible
-     * for setting up and preparing the confidence options that can be used or selected
-     * in the application.
-     */
-    void initConfidenceList();
+  /**
+   * Initializes the list of available confidence levels. This method is responsible for setting up
+   * and preparing the confidence options that can be used or selected in the application.
+   */
+  void initConfidenceList();
 
-    /**
-     * Handles the selection of a specific confidence level based on the provided index.
-     *
-     * @param confidenceIndex the index of the confidence level to be selected
-     */
-    void handleConfidenceSelection(int confidenceIndex);
+  /**
+   * Handles the selection of a specific confidence level based on the provided index.
+   *
+   * @param confidenceIndex the index of the confidence level to be selected
+   */
+  void handleConfidenceSelection(int confidenceIndex);
 
-    /**
-     * Initializes the list of available chord confidence levels. This method is responsible
-     * for setting up and preparing the chord confidence options that can be used or selected
-     * in the application. These confidence levels are used specifically for chord detection.
-     */
-    void initChordConfidenceList();
+  /**
+   * Initializes the list of available chord confidence levels. This method is responsible for
+   * setting up and preparing the chord confidence options that can be used or selected in the
+   * application. These confidence levels are used specifically for chord detection.
+   */
+  void initChordConfidenceList();
 
-    /**
-     * Handles the selection of a specific chord confidence level based on the provided index.
-     * This confidence level is used specifically for chord detection.
-     *
-     * @param chordConfidenceIndex the index of the chord confidence level to be selected
-     */
-    void handleChordConfidenceSelection(int chordConfidenceIndex);
+  /**
+   * Handles the selection of a specific chord confidence level based on the provided index. This
+   * confidence level is used specifically for chord detection.
+   *
+   * @param chordConfidenceIndex the index of the chord confidence level to be selected
+   */
+  void handleChordConfidenceSelection(int chordConfidenceIndex);
 }

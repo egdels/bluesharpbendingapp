@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,17 +24,15 @@ package de.schliweb.bluesharpbendingapp.view;
  *
  */
 /**
- * The AndroidSettingsView interface provides a contract for managing
- * lock screen settings within the context of Android platform-specific
- * functionality. It is used to define methods for configuring lock screen
- * behaviors specific to the Android implementation.
+ * The AndroidSettingsView interface provides a contract for managing lock screen settings within
+ * the context of Android platform-specific functionality. It is used to define methods for
+ * configuring lock screen behaviors specific to the Android implementation.
  */
 public interface AndroidSettingsView {
-    /**
-     * Sets the selected lock screen based on the specified index.
-     *
-     * @param selectedLockScreenIndex the index of the lock screen to be selected
-     */
-    void setSelectedLockScreen(int selectedLockScreenIndex);
-
+  /**
+   * Sets the selected lock screen based on the specified index.
+   *
+   * @param selectedLockScreenIndex the index of the lock screen to be selected
+   */
+  void setSelectedLockScreen(int selectedLockScreenIndex);
 }

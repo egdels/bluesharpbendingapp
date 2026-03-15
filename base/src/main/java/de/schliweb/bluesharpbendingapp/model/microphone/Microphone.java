@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.model.microphone;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -24,126 +25,120 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
  */
 
 /**
- * This interface represents a Microphone that can be used for audio input
- * in applications. It allows configuration of various properties such as
- * the microphone name, audio processing algorithm, and confidence level,
- * while also providing methods for retrieving supported options and
- * managing audio resources.
+ * This interface represents a Microphone that can be used for audio input in applications. It
+ * allows configuration of various properties such as the microphone name, audio processing
+ * algorithm, and confidence level, while also providing methods for retrieving supported options
+ * and managing audio resources.
  */
 public interface Microphone {
 
-    /**
-     * Closes the microphone resource to release any active audio input streams.
-     * This method is used to ensure proper cleanup of the microphone when it is
-     * no longer needed or is about to be reconfigured.
-     */
-    void close();
+  /**
+   * Closes the microphone resource to release any active audio input streams. This method is used
+   * to ensure proper cleanup of the microphone when it is no longer needed or is about to be
+   * reconfigured.
+   */
+  void close();
 
-    /**
-     * Retrieves the currently selected algorithm of the microphone.
-     *
-     * @return the name of the active algorithm as a String
-     */
-    String getAlgorithm();
+  /**
+   * Retrieves the currently selected algorithm of the microphone.
+   *
+   * @return the name of the active algorithm as a String
+   */
+  String getAlgorithm();
 
-    /**
-     * Sets the algorithm to be used by the microphone based on the given index.
-     * The index corresponds to a pre-defined list of algorithms supported by the microphone.
-     *
-     * @param storedAlgorithmIndex the index of the algorithm to be set
-     */
-    void setAlgorithm(int storedAlgorithmIndex);
+  /**
+   * Sets the algorithm to be used by the microphone based on the given index. The index corresponds
+   * to a pre-defined list of algorithms supported by the microphone.
+   *
+   * @param storedAlgorithmIndex the index of the algorithm to be set
+   */
+  void setAlgorithm(int storedAlgorithmIndex);
 
-    /**
-     * Retrieves the name of the microphone.
-     *
-     * @return the name of the microphone as a String
-     */
-    String getName();
+  /**
+   * Retrieves the name of the microphone.
+   *
+   * @return the name of the microphone as a String
+   */
+  String getName();
 
-    /**
-     * Sets the name of the microphone based on the given index.
-     * The index corresponds to a pre-defined list of supported microphones.
-     *
-     * @param storedMicrophoneIndex the index of the microphone to be set
-     */
-    void setName(int storedMicrophoneIndex);
+  /**
+   * Sets the name of the microphone based on the given index. The index corresponds to a
+   * pre-defined list of supported microphones.
+   *
+   * @param storedMicrophoneIndex the index of the microphone to be set
+   */
+  void setName(int storedMicrophoneIndex);
 
-    /**
-     * Retrieves a list of microphones supported by the system or application.
-     *
-     * @return an array of strings, where each string represents the name of a supported microphone
-     */
-    String[] getSupportedMicrophones();
+  /**
+   * Retrieves a list of microphones supported by the system or application.
+   *
+   * @return an array of strings, where each string represents the name of a supported microphone
+   */
+  String[] getSupportedMicrophones();
 
-    /**
-     * Sets the confidence level for the microphone based on the given index.
-     * The index corresponds to a pre-defined list of confidence levels
-     * supported by the microphone.
-     *
-     * @param confidenceIndex the index of the confidence level to be set
-     */
-    void setConfidence(int confidenceIndex);
+  /**
+   * Sets the confidence level for the microphone based on the given index. The index corresponds to
+   * a pre-defined list of confidence levels supported by the microphone.
+   *
+   * @param confidenceIndex the index of the confidence level to be set
+   */
+  void setConfidence(int confidenceIndex);
 
-    /**
-     * Opens the microphone for audio input.
-     * This method is used to initialize the microphone and allocate necessary
-     * resources for capturing audio data. It should be called after configuring
-     * any specific microphone or algorithm settings, to activate the microphone
-     * for use in the application.
-     */
-    void open();
+  /**
+   * Opens the microphone for audio input. This method is used to initialize the microphone and
+   * allocate necessary resources for capturing audio data. It should be called after configuring
+   * any specific microphone or algorithm settings, to activate the microphone for use in the
+   * application.
+   */
+  void open();
 
-    /**
-     * Sets the MicrophoneHandler for the microphone. The handler is responsible
-     * for processing audio data, including handling frequency and volume changes.
-     *
-     * @param handler the MicrophoneHandler instance that will process audio data
-     */
-    void setMicrophoneHandler(MicrophoneHandler handler);
+  /**
+   * Sets the MicrophoneHandler for the microphone. The handler is responsible for processing audio
+   * data, including handling frequency and volume changes.
+   *
+   * @param handler the MicrophoneHandler instance that will process audio data
+   */
+  void setMicrophoneHandler(MicrophoneHandler handler);
 
-    /**
-     * Retrieves the current confidence level set for the microphone.
-     *
-     * @return the currently selected confidence level as a String
-     */
-    String getConfidence();
+  /**
+   * Retrieves the current confidence level set for the microphone.
+   *
+   * @return the currently selected confidence level as a String
+   */
+  String getConfidence();
 
-    /**
-     * Retrieves the current chord confidence level set for the microphone.
-     * This confidence level is used specifically for chord detection.
-     *
-     * @return the currently selected chord confidence level as a String
-     */
-    String getChordConfidence();
+  /**
+   * Retrieves the current chord confidence level set for the microphone. This confidence level is
+   * used specifically for chord detection.
+   *
+   * @return the currently selected chord confidence level as a String
+   */
+  String getChordConfidence();
 
-    /**
-     * Sets the chord confidence level for the microphone based on the given index.
-     * The index corresponds to a pre-defined list of confidence levels
-     * supported by the microphone. This confidence level is used specifically
-     * for chord detection.
-     *
-     * @param confidenceIndex the index of the chord confidence level to be set
-     */
-    void setChordConfidence(int confidenceIndex);
+  /**
+   * Sets the chord confidence level for the microphone based on the given index. The index
+   * corresponds to a pre-defined list of confidence levels supported by the microphone. This
+   * confidence level is used specifically for chord detection.
+   *
+   * @param confidenceIndex the index of the chord confidence level to be set
+   */
+  void setChordConfidence(int confidenceIndex);
 
-    /**
-     * Checks if chord detection is enabled for the microphone.
-     * When chord detection is enabled, the microphone will perform chord detection
-     * during audio processing. When disabled, chord detection will be skipped
-     * to improve performance.
-     *
-     * @return true if chord detection is enabled, false otherwise
-     */
-    boolean isChordDetectionEnabled();
+  /**
+   * Checks if chord detection is enabled for the microphone. When chord detection is enabled, the
+   * microphone will perform chord detection during audio processing. When disabled, chord detection
+   * will be skipped to improve performance.
+   *
+   * @return true if chord detection is enabled, false otherwise
+   */
+  boolean isChordDetectionEnabled();
 
-    /**
-     * Sets whether chord detection should be enabled for the microphone.
-     * When chord detection is enabled, the microphone will perform chord detection
-     * during audio processing. When disabled, chord detection will be skipped
-     * to improve performance.
-     *
-     * @param enabled true to enable chord detection, false to disable it
-     */
-    void setChordDetectionEnabled(boolean enabled);
+  /**
+   * Sets whether chord detection should be enabled for the microphone. When chord detection is
+   * enabled, the microphone will perform chord detection during audio processing. When disabled,
+   * chord detection will be skipped to improve performance.
+   *
+   * @param enabled true to enable chord detection, false to disable it
+   */
+  void setChordDetectionEnabled(boolean enabled);
 }

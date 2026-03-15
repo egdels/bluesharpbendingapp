@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -28,36 +29,35 @@ import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.app.MainActivity;
 
 /**
- * Dagger module that provides activity-related dependencies for the application.
- * This module is responsible for providing the MainActivity instance.
+ * Dagger module that provides activity-related dependencies for the application. This module is
+ * responsible for providing the MainActivity instance.
  */
 @Module
 public class ActivityModule {
 
-    /**
-     * The MainActivity instance that will be provided by this module.
-     * This field is initialized in the constructor and is used by the
-     * provideMainActivity method to supply the MainActivity instance
-     * to dependent components.
-     */
-    private final MainActivity mainActivity;
+  /**
+   * The MainActivity instance that will be provided by this module. This field is initialized in
+   * the constructor and is used by the provideMainActivity method to supply the MainActivity
+   * instance to dependent components.
+   */
+  private final MainActivity mainActivity;
 
-    /**
-     * Constructs a new ActivityModule with the specified MainActivity.
-     *
-     * @param mainActivity the MainActivity instance to provide
-     */
-    public ActivityModule(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
-    }
+  /**
+   * Constructs a new ActivityModule with the specified MainActivity.
+   *
+   * @param mainActivity the MainActivity instance to provide
+   */
+  public ActivityModule(MainActivity mainActivity) {
+    this.mainActivity = mainActivity;
+  }
 
-    /**
-     * Provides the MainActivity instance.
-     *
-     * @return the MainActivity instance
-     */
-    @Provides
-    public MainActivity provideMainActivity() {
-        return mainActivity;
-    }
+  /**
+   * Provides the MainActivity instance.
+   *
+   * @return the MainActivity instance
+   */
+  @Provides
+  public MainActivity provideMainActivity() {
+    return mainActivity;
+  }
 }

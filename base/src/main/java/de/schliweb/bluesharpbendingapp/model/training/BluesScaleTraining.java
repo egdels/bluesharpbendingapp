@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.model.training;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -26,40 +27,40 @@ package de.schliweb.bluesharpbendingapp.model.training;
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 
 /**
- * The BluesScaleTraining class is a specific implementation of the AbstractTraining class,
- * designed to provide training exercises for the blues scale on a harmonica. This class
- * defines the half-tone intervals corresponding to the blues scale and provides the
- * training name for identification.
+ * The BluesScaleTraining class is a specific implementation of the AbstractTraining class, designed
+ * to provide training exercises for the blues scale on a harmonica. This class defines the
+ * half-tone intervals corresponding to the blues scale and provides the training name for
+ * identification.
  */
 public class BluesScaleTraining extends AbstractTraining {
 
-    /**
-     * Represents an array of half-tone intervals used to define the blues scale.
-     * These intervals specify the pitch differences between consecutive notes
-     * in the scale as integer values. The array is utilized in training exercises
-     * for the blues scale on a harmonica.
-     */
-    private static final int[] HALF_TONES = {0, 1, 2, 5, 7, 10, 12, 13, 14, 17, 19, 20, 21, 24, 26, 29, 31};
+  /**
+   * Represents an array of half-tone intervals used to define the blues scale. These intervals
+   * specify the pitch differences between consecutive notes in the scale as integer values. The
+   * array is utilized in training exercises for the blues scale on a harmonica.
+   */
+  private static final int[] HALF_TONES = {
+    0, 1, 2, 5, 7, 10, 12, 13, 14, 17, 19, 20, 21, 24, 26, 29, 31
+  };
 
-    /**
-     * Constructs an instance of BluesScaleTraining using the specified key.
-     * The key determines the root note for the blues scale training exercises
-     * on the harmonica.
-     *
-     * @param key The key of the harmonica used for the training. This specifies
-     *            the root note of the blues scale exercises.
-     */
-    protected BluesScaleTraining(AbstractHarmonica.KEY key) {
-        super(key);
-    }
+  /**
+   * Constructs an instance of BluesScaleTraining using the specified key. The key determines the
+   * root note for the blues scale training exercises on the harmonica.
+   *
+   * @param key The key of the harmonica used for the training. This specifies the root note of the
+   *     blues scale exercises.
+   */
+  protected BluesScaleTraining(AbstractHarmonica.KEY key) {
+    super(key);
+  }
 
-    @Override
-    int[] getHalfTones() {
-        return HALF_TONES;
-    }
+  @Override
+  int[] getHalfTones() {
+    return HALF_TONES;
+  }
 
-    @Override
-    public String getTrainingName() {
-        return TRAINING.BLUES_SCALE.name();
-    }
+  @Override
+  public String getTrainingName() {
+    return TRAINING.BLUES_SCALE.name();
+  }
 }

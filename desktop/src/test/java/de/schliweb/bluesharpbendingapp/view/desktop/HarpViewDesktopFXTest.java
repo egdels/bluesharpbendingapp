@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view.desktop;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +24,8 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -32,54 +35,45 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-/**
- * UI tests for the HarpViewDesktopFX component.
- * Tests basic UI interactions with the harp view.
- */
+/** UI tests for the HarpViewDesktopFX component. Tests basic UI interactions with the harp view. */
 @ExtendWith(ApplicationExtension.class)
 class HarpViewDesktopFXTest {
 
-    private HarpViewDesktopFX harpView;
+  private HarpViewDesktopFX harpView;
 
-    /**
-     * Set up the test fixture with a JavaFX stage.
-     * This method is called before each test.
-     *
-     * @param stage the JavaFX stage
-     */
-    @Start
-    public void start(Stage stage) {
-        // Create the harp view
-        harpView = new HarpViewDesktopFX();
+  /**
+   * Set up the test fixture with a JavaFX stage. This method is called before each test.
+   *
+   * @param stage the JavaFX stage
+   */
+  @Start
+  public void start(Stage stage) {
+    // Create the harp view
+    harpView = new HarpViewDesktopFX();
 
-        // Set up the scene and stage
-        VBox layout = new VBox();
-        layout.getChildren().add(harpView.getRoot());
-        Scene scene = new Scene(layout, 800, 600);
-        stage.setScene(scene);
-        stage.show();
-    }
+    // Set up the scene and stage
+    VBox layout = new VBox();
+    layout.getChildren().add(harpView.getRoot());
+    Scene scene = new Scene(layout, 800, 600);
+    stage.setScene(scene);
+    stage.show();
+  }
 
-    /**
-     * Test that the harp view is properly initialized.
-     */
-    @Test
-    void testHarpViewInitialization() {
-        // Verify that the harp view is not null
-        assertNotNull(harpView, "Harp view should not be null");
-        assertNotNull(harpView.getRoot(), "Harp view root should not be null");
-        assertNotNull(harpView.getController(), "Harp view controller should not be null");
-    }
+  /** Test that the harp view is properly initialized. */
+  @Test
+  void testHarpViewInitialization() {
+    // Verify that the harp view is not null
+    assertNotNull(harpView, "Harp view should not be null");
+    assertNotNull(harpView.getRoot(), "Harp view root should not be null");
+    assertNotNull(harpView.getController(), "Harp view controller should not be null");
+  }
 
-    /**
-     * Test that the harp view can be displayed.
-     */
-    @Test
-    void testHarpViewDisplay(FxRobot robot) {
-        // Verify that the harp view is visible
-        assertNotNull(harpView.getRoot().getScene(), "Harp view should be in a scene");
-        assertNotNull(harpView.getRoot().getScene().getWindow(), "Harp view scene should be in a window");
-    }
+  /** Test that the harp view can be displayed. */
+  @Test
+  void testHarpViewDisplay(FxRobot robot) {
+    // Verify that the harp view is visible
+    assertNotNull(harpView.getRoot().getScene(), "Harp view should be in a scene");
+    assertNotNull(
+        harpView.getRoot().getScene().getWindow(), "Harp view scene should be in a window");
+  }
 }

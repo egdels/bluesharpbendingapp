@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -26,32 +27,33 @@ package de.schliweb.bluesharpbendingapp.view;
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
 
 /**
- * The HarpView interface provides methods to interact with and manage
- * the visual elements of a harp view.
+ * The HarpView interface provides methods to interact with and manage the visual elements of a harp
+ * view.
  */
 public interface HarpView {
 
-    /**
-     * Retrieves the harp view note element associated with the specified channel and note.
-     *
-     * @param channel the channel number corresponding to the harp element
-     * @param note    the note number corresponding to the harp element
-     * @return the harp view note element associated with the given channel and note
-     */
-    HarpViewNoteElement getHarpViewElement(int channel, int note);
+  /**
+   * Retrieves the harp view note element associated with the specified channel and note.
+   *
+   * @param channel the channel number corresponding to the harp element
+   * @param note the note number corresponding to the harp element
+   * @return the harp view note element associated with the given channel and note
+   */
+  HarpViewNoteElement getHarpViewElement(int channel, int note);
 
-    /**
-     * Initializes the notes within the harp view using the provided array of NoteContainer objects.
-     *
-     * @param noteContainers an array of NoteContainer instances representing the notes to be initialized
-     */
-    void initNotes(NoteContainer[] noteContainers);
+  /**
+   * Initializes the notes within the harp view using the provided array of NoteContainer objects.
+   *
+   * @param noteContainers an array of NoteContainer instances representing the notes to be
+   *     initialized
+   */
+  void initNotes(NoteContainer[] noteContainers);
 
-    /**
-     * Updates the display of tuning and key information in the harp view.
-     *
-     * @param keyName   the name of the currently selected key
-     * @param tuningName the name of the currently selected tuning
-     */
-    void updateTuningKeyInfo(String keyName, String tuningName);
+  /**
+   * Updates the display of tuning and key information in the harp view.
+   *
+   * @param keyName the name of the currently selected key
+   * @param tuningName the name of the currently selected tuning
+   */
+  void updateTuningKeyInfo(String keyName, String tuningName);
 }

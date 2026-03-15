@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -28,80 +29,83 @@ import de.schliweb.bluesharpbendingapp.controller.MainController;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
-
 import javax.inject.Singleton;
 
 /**
- * Dagger component that provides application-wide dependencies.
- * This component is responsible for creating and providing instances
- * of various classes throughout the application.
+ * Dagger component that provides application-wide dependencies. This component is responsible for
+ * creating and providing instances of various classes throughout the application.
  */
 @Singleton
-@Component(modules = {BaseModule.class, ControllerModule.class, ViewModule.class, MicrophoneModule.class, FavoritesBaseModule.class})
+@Component(
+    modules = {
+      BaseModule.class,
+      ControllerModule.class,
+      ViewModule.class,
+      MicrophoneModule.class,
+      FavoritesBaseModule.class
+    })
 public interface AppComponent {
 
+  /**
+   * Gets the MainController instance.
+   *
+   * @return the MainController instance
+   */
+  MainController getMainController();
+
+  /**
+   * Gets the ModelStorageService instance.
+   *
+   * @return the ModelStorageService instance
+   */
+  ModelStorageService getModelStorageService();
+
+  /**
+   * Gets the Microphone instance.
+   *
+   * @return the Microphone instance
+   */
+  Microphone getMicrophone();
+
+  /**
+   * Gets the MainWindow instance.
+   *
+   * @return the MainWindow instance
+   */
+  MainWindow getMainWindow();
+
+  /** Builder for creating instances of AppComponent. */
+  @Component.Builder
+  interface Builder {
     /**
-     * Gets the MainController instance.
+     * Sets the BaseModule for this component.
      *
-     * @return the MainController instance
+     * @param baseModule the BaseModule instance
+     * @return this builder
      */
-    MainController getMainController();
+    Builder baseModule(BaseModule baseModule);
 
     /**
-     * Gets the ModelStorageService instance.
+     * Sets the ViewModule for this component.
      *
-     * @return the ModelStorageService instance
+     * @param viewModule the ViewModule instance
+     * @return this builder
      */
-    ModelStorageService getModelStorageService();
+    Builder viewModule(ViewModule viewModule);
 
     /**
-     * Gets the Microphone instance.
+     * Sets the MicrophoneModule for this component.
      *
-     * @return the Microphone instance
+     * @param microphoneModule the MicrophoneModule instance
+     * @return this builder
      */
-    Microphone getMicrophone();
+    Builder microphoneModule(MicrophoneModule microphoneModule);
 
     /**
-     * Gets the MainWindow instance.
+     * Builds the AppComponent.
      *
-     * @return the MainWindow instance
+     * @return the built AppComponent
      */
-    MainWindow getMainWindow();
-
-    /**
-     * Builder for creating instances of AppComponent.
-     */
-    @Component.Builder
-    interface Builder {
-        /**
-         * Sets the BaseModule for this component.
-         *
-         * @param baseModule the BaseModule instance
-         * @return this builder
-         */
-        Builder baseModule(BaseModule baseModule);
-
-        /**
-         * Sets the ViewModule for this component.
-         *
-         * @param viewModule the ViewModule instance
-         * @return this builder
-         */
-        Builder viewModule(ViewModule viewModule);
-
-        /**
-         * Sets the MicrophoneModule for this component.
-         *
-         * @param microphoneModule the MicrophoneModule instance
-         * @return this builder
-         */
-        Builder microphoneModule(MicrophoneModule microphoneModule);
-
-        /**
-         * Builds the AppComponent.
-         *
-         * @return the built AppComponent
-         */
-        AppComponent build();
-    }
+    AppComponent build();
+  }
 }

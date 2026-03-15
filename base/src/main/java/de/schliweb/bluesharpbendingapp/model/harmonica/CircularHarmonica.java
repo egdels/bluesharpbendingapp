@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.model.harmonica;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -24,48 +25,48 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The CircularHarmonica class represents a circular tuned harmonica.
- * It extends the AbstractHarmonica class, providing specific half-tone
- * mappings for inwards and outwards notes, representing the circular tuning system.
+ * The CircularHarmonica class represents a circular tuned harmonica. It extends the
+ * AbstractHarmonica class, providing specific half-tone mappings for inwards and outwards notes,
+ * representing the circular tuning system.
  */
 public class CircularHarmonica extends AbstractHarmonica {
 
-    /**
-     * A static array representing the half-tone steps for inward notes
-     * in the circular tuning system of the harmonica. Each value corresponds
-     * to the number of half-tone steps from the base pitch in a specific channel.
-     */
-    private static final int[] HALF_TONES_IN = {0, 2, 5, 9, 12, 16, 19, 22, 26, 29, 33};
+  /**
+   * A static array representing the half-tone steps for inward notes in the circular tuning system
+   * of the harmonica. Each value corresponds to the number of half-tone steps from the base pitch
+   * in a specific channel.
+   */
+  private static final int[] HALF_TONES_IN = {0, 2, 5, 9, 12, 16, 19, 22, 26, 29, 33};
 
-    /**
-     * A static array representing the half-tone steps for outward notes
-     * in the circular tuning system of the harmonica. Each value corresponds
-     * to the number of half-tone steps from the base pitch in a specific channel.
-     */
-    private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 10, 14, 17, 21, 24, 28, 31};
+  /**
+   * A static array representing the half-tone steps for outward notes in the circular tuning system
+   * of the harmonica. Each value corresponds to the number of half-tone steps from the base pitch
+   * in a specific channel.
+   */
+  private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 10, 14, 17, 21, 24, 28, 31};
 
-    /**
-     * Constructs a CircularHarmonica instance with the specified key frequency.
-     *
-     * @param keyFrequency the base frequency of the musical key to which
-     *                     the circular harmonica is tuned
-     */
-    public CircularHarmonica(double keyFrequency) {
-        super(keyFrequency);
-    }
+  /**
+   * Constructs a CircularHarmonica instance with the specified key frequency.
+   *
+   * @param keyFrequency the base frequency of the musical key to which the circular harmonica is
+   *     tuned
+   */
+  public CircularHarmonica(double keyFrequency) {
+    super(keyFrequency);
+  }
 
-    @Override
-    int[] getHalfTonesIn() {
-        return HALF_TONES_IN;
-    }
+  @Override
+  int[] getHalfTonesIn() {
+    return HALF_TONES_IN;
+  }
 
-    @Override
-    int[] getHalfTonesOut() {
-        return HALF_TONES_OUT;
-    }
+  @Override
+  int[] getHalfTonesOut() {
+    return HALF_TONES_OUT;
+  }
 
-    @Override
-    public String getTuneName() {
-        return TUNE.CIRCULAR.name();
-    }
+  @Override
+  public String getTuneName() {
+    return TUNE.CIRCULAR.name();
+  }
 }

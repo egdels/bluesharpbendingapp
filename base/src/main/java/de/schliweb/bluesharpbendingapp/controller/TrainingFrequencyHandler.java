@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,14 +24,12 @@ package de.schliweb.bluesharpbendingapp.controller;
  *
  */
 
-/**
- * Interface for handling frequency updates in the training view.
- */
+/** Interface for handling frequency updates in the training view. */
 public interface TrainingFrequencyHandler {
-    /**
-     * Updates the training view with the given frequency.
-     *
-     * @param frequency the frequency to update the view with
-     */
-    void updateTrainingView(double frequency);
+  /**
+   * Updates the training view with the given frequency.
+   *
+   * @param frequency the frequency to update the view with
+   */
+  void updateTrainingView(double frequency);
 }

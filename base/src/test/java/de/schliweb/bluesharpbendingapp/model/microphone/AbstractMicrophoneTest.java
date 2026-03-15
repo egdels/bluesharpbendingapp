@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.model.microphone;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,119 +24,115 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
  *
  */
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * Unit tests for the AbstractMicrophone class.
- */
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+/** Unit tests for the AbstractMicrophone class. */
 class AbstractMicrophoneTest {
 
-    private TestMicrophone microphone;
+  private TestMicrophone microphone;
 
-    @BeforeEach
-    void setUp() {
-        microphone = new TestMicrophone();
+  @BeforeEach
+  void setUp() {
+    microphone = new TestMicrophone();
+  }
+
+  @Test
+  void testGetSupportedAlgorithms() {
+    String[] algorithms = AbstractMicrophone.getSupportedAlgorithms();
+    assertNotNull(algorithms);
+    assertEquals(3, algorithms.length);
+    assertEquals("YIN", algorithms[0]);
+    assertEquals("MPM", algorithms[1]);
+    assertEquals("HYBRID", algorithms[2]);
+  }
+
+  @Test
+  void testGetSupportedConfidences() {
+    String[] confidences = AbstractMicrophone.getSupportedConfidences();
+    assertNotNull(confidences);
+    assertEquals(19, confidences.length);
+    assertEquals("0.95", confidences[0]);
+    assertEquals("0.05", confidences[18]);
+  }
+
+  @Test
+  void testGetAlgorithm() {
+    // Default algorithm should be "YIN"
+    assertEquals("YIN", microphone.getAlgorithm());
+  }
+
+  @Test
+  void testSetAlgorithm() {
+    // Set to MPM (index 1)
+    microphone.setAlgorithm(1);
+    assertEquals("MPM", microphone.getAlgorithm());
+
+    // Set to invalid index, should not change
+    microphone.setAlgorithm(-1);
+    assertEquals("MPM", microphone.getAlgorithm());
+
+    microphone.setAlgorithm(100);
+    assertEquals("MPM", microphone.getAlgorithm());
+  }
+
+  @Test
+  void testGetConfidence() {
+    // Default confidence should be 0.95
+    assertEquals("0.95", microphone.getConfidence());
+  }
+
+  @Test
+  void testSetConfidence() {
+    // Set to 0.9 (index 1)
+    microphone.setConfidence(1);
+    assertEquals("0.9", microphone.getConfidence());
+
+    // Set to 0.45 (index 10)
+    microphone.setConfidence(10);
+    assertEquals("0.45", microphone.getConfidence());
+
+    // Set to invalid index, should not change (and log error)
+    microphone.setConfidence(-1);
+    assertEquals("0.45", microphone.getConfidence());
+
+    microphone.setConfidence(100);
+    assertEquals("0.45", microphone.getConfidence());
+  }
+
+  /** Test implementation of AbstractMicrophone for testing purposes. */
+  private static class TestMicrophone extends AbstractMicrophone {
+    @Override
+    public void close() {
+      // No implementation needed for test
     }
 
-    @Test
-    void testGetSupportedAlgorithms() {
-        String[] algorithms = AbstractMicrophone.getSupportedAlgorithms();
-        assertNotNull(algorithms);
-        assertEquals(3, algorithms.length);
-        assertEquals("YIN", algorithms[0]);
-        assertEquals("MPM", algorithms[1]);
-        assertEquals("HYBRID", algorithms[2]);
+    @Override
+    public String getName() {
+      return "TestMicrophone";
     }
 
-    @Test
-    void testGetSupportedConfidences() {
-        String[] confidences = AbstractMicrophone.getSupportedConfidences();
-        assertNotNull(confidences);
-        assertEquals(19, confidences.length);
-        assertEquals("0.95", confidences[0]);
-        assertEquals("0.05", confidences[18]);
+    @Override
+    public void setName(int storedMicrophoneIndex) {
+      // No implementation needed for test
     }
 
-    @Test
-    void testGetAlgorithm() {
-        // Default algorithm should be "YIN"
-        assertEquals("YIN", microphone.getAlgorithm());
+    @Override
+    public String[] getSupportedMicrophones() {
+      return new String[] {"TestMicrophone"};
     }
 
-    @Test
-    void testSetAlgorithm() {
-        // Set to MPM (index 1)
-        microphone.setAlgorithm(1);
-        assertEquals("MPM", microphone.getAlgorithm());
-
-        // Set to invalid index, should not change
-        microphone.setAlgorithm(-1);
-        assertEquals("MPM", microphone.getAlgorithm());
-
-        microphone.setAlgorithm(100);
-        assertEquals("MPM", microphone.getAlgorithm());
+    @Override
+    public void open() {
+      // No implementation needed for test
     }
 
-    @Test
-    void testGetConfidence() {
-        // Default confidence should be 0.95
-        assertEquals("0.95", microphone.getConfidence());
+    @Override
+    public void setMicrophoneHandler(MicrophoneHandler handler) {
+      // No implementation needed for test
     }
-
-    @Test
-    void testSetConfidence() {
-        // Set to 0.9 (index 1)
-        microphone.setConfidence(1);
-        assertEquals("0.9", microphone.getConfidence());
-
-        // Set to 0.45 (index 10)
-        microphone.setConfidence(10);
-        assertEquals("0.45", microphone.getConfidence());
-
-        // Set to invalid index, should not change (and log error)
-        microphone.setConfidence(-1);
-        assertEquals("0.45", microphone.getConfidence());
-
-        microphone.setConfidence(100);
-        assertEquals("0.45", microphone.getConfidence());
-    }
-
-    /**
-     * Test implementation of AbstractMicrophone for testing purposes.
-     */
-    private static class TestMicrophone extends AbstractMicrophone {
-        @Override
-        public void close() {
-            // No implementation needed for test
-        }
-
-        @Override
-        public String getName() {
-            return "TestMicrophone";
-        }
-
-        @Override
-        public void setName(int storedMicrophoneIndex) {
-            // No implementation needed for test
-        }
-
-        @Override
-        public String[] getSupportedMicrophones() {
-            return new String[]{"TestMicrophone"};
-        }
-
-        @Override
-        public void open() {
-            // No implementation needed for test
-        }
-
-        @Override
-        public void setMicrophoneHandler(MicrophoneHandler handler) {
-            // No implementation needed for test
-        }
-    }
+  }
 }

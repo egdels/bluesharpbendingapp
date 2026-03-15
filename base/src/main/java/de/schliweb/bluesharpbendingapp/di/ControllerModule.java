@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -32,104 +33,125 @@ import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
-
-import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
+import javax.inject.Singleton;
 
 /**
- * Dagger module that provides controller dependencies for the application.
- * This module is responsible for configuring how controller instances
- * are created and managed throughout the application.
+ * Dagger module that provides controller dependencies for the application. This module is
+ * responsible for configuring how controller instances are created and managed throughout the
+ * application.
  */
 @Module
 public abstract class ControllerModule {
 
-    /**
-     * Provides a singleton instance of HarpController.
-     *
-     * @param model               the MainModel containing application state
-     * @param modelStorageService the service for storing model data
-     * @param window              the main application window
-     * @param executorService     the executor service for asynchronous operations
-     * @return a singleton HarpController instance
-     */
-    @Provides
-    @Singleton
-    static HarpController provideHarpController(MainModel model, ModelStorageService modelStorageService, MainWindow window, ExecutorService executorService) {
-        return new HarpController(model, modelStorageService, window, executorService);
-    }
+  /**
+   * Provides a singleton instance of HarpController.
+   *
+   * @param model the MainModel containing application state
+   * @param modelStorageService the service for storing model data
+   * @param window the main application window
+   * @param executorService the executor service for asynchronous operations
+   * @return a singleton HarpController instance
+   */
+  @Provides
+  @Singleton
+  static HarpController provideHarpController(
+      MainModel model,
+      ModelStorageService modelStorageService,
+      MainWindow window,
+      ExecutorService executorService) {
+    return new HarpController(model, modelStorageService, window, executorService);
+  }
 
-    /**
-     * Provides a singleton instance of TrainingController.
-     *
-     * @param model               the MainModel containing application state
-     * @param modelStorageService the service for storing model data
-     * @param window              the main application window
-     * @param executorService     the executor service for asynchronous operations
-     * @return a singleton TrainingController instance
-     */
-    @Provides
-    @Singleton
-    static TrainingController provideTrainingController(MainModel model, ModelStorageService modelStorageService, MainWindow window, ExecutorService executorService) {
-        return new TrainingController(model, modelStorageService, window, executorService);
-    }
+  /**
+   * Provides a singleton instance of TrainingController.
+   *
+   * @param model the MainModel containing application state
+   * @param modelStorageService the service for storing model data
+   * @param window the main application window
+   * @param executorService the executor service for asynchronous operations
+   * @return a singleton TrainingController instance
+   */
+  @Provides
+  @Singleton
+  static TrainingController provideTrainingController(
+      MainModel model,
+      ModelStorageService modelStorageService,
+      MainWindow window,
+      ExecutorService executorService) {
+    return new TrainingController(model, modelStorageService, window, executorService);
+  }
 
-    /**
-     * Provides a singleton instance of MicrophoneController.
-     *
-     * @param model               the MainModel containing application state
-     * @param modelStorageService the service for storing model data
-     * @param window              the main application window
-     * @param microphone          the microphone instance to control
-     * @param harpController      the controller for harp-related functionality
-     * @param trainingController  the controller for training-related functionality
-     * @return a singleton MicrophoneController instance
-     */
-    @Provides
-    @Singleton
-    static MicrophoneController provideMicrophoneController(MainModel model, ModelStorageService modelStorageService, MainWindow window, Microphone microphone, HarpController harpController, TrainingController trainingController) {
-        return new MicrophoneController(model, modelStorageService, window, microphone, harpController, trainingController);
-    }
+  /**
+   * Provides a singleton instance of MicrophoneController.
+   *
+   * @param model the MainModel containing application state
+   * @param modelStorageService the service for storing model data
+   * @param window the main application window
+   * @param microphone the microphone instance to control
+   * @param harpController the controller for harp-related functionality
+   * @param trainingController the controller for training-related functionality
+   * @return a singleton MicrophoneController instance
+   */
+  @Provides
+  @Singleton
+  static MicrophoneController provideMicrophoneController(
+      MainModel model,
+      ModelStorageService modelStorageService,
+      MainWindow window,
+      Microphone microphone,
+      HarpController harpController,
+      TrainingController trainingController) {
+    return new MicrophoneController(
+        model, modelStorageService, window, microphone, harpController, trainingController);
+  }
 
-    /**
-     * Provides a singleton instance of MainController.
-     *
-     * @param model                the MainModel containing the state of the application
-     * @param window               the main application window
-     * @param modelStorageService  the service responsible for managing the persistence of model data
-     * @param microphoneController the controller for managing microphone-related functionality
-     * @param harpController       the controller for harp-related functionality
-     * @return a singleton MainController instance
-     */
-    @Provides
-    @Singleton
-    static MainController provideMainController(MainModel model, MainWindow window, ModelStorageService modelStorageService,
-                                                MicrophoneController microphoneController, HarpController harpController, FavoriteManager favoriteManager) {
-        // Set up the circular dependency between HarpController and MicrophoneController
-        harpController.setMicrophoneController(microphoneController);
+  /**
+   * Provides a singleton instance of MainController.
+   *
+   * @param model the MainModel containing the state of the application
+   * @param window the main application window
+   * @param modelStorageService the service responsible for managing the persistence of model data
+   * @param microphoneController the controller for managing microphone-related functionality
+   * @param harpController the controller for harp-related functionality
+   * @return a singleton MainController instance
+   */
+  @Provides
+  @Singleton
+  static MainController provideMainController(
+      MainModel model,
+      MainWindow window,
+      ModelStorageService modelStorageService,
+      MicrophoneController microphoneController,
+      HarpController harpController,
+      FavoriteManager favoriteManager) {
+    // Set up the circular dependency between HarpController and MicrophoneController
+    harpController.setMicrophoneController(microphoneController);
 
-        return new MainController(model, window, modelStorageService, microphoneController, favoriteManager);
-    }
+    return new MainController(
+        model, window, modelStorageService, microphoneController, favoriteManager);
+  }
 
-    // Bind interfaces to implementations using @Binds
-    @Binds
-    abstract TrainingViewHandler bindTrainingViewHandler(TrainingController impl);
+  // Bind interfaces to implementations using @Binds
+  @Binds
+  abstract TrainingViewHandler bindTrainingViewHandler(TrainingController impl);
 
-    @Binds
-    abstract NoteSettingsViewHandler bindNoteSettingsViewHandler(HarpController impl);
+  @Binds
+  abstract NoteSettingsViewHandler bindNoteSettingsViewHandler(HarpController impl);
 
-    @Binds
-    abstract MicrophoneSettingsViewHandler bindMicrophoneSettingsViewHandler(MicrophoneController impl);
+  @Binds
+  abstract MicrophoneSettingsViewHandler bindMicrophoneSettingsViewHandler(
+      MicrophoneController impl);
 
-    @Binds
-    abstract HarpViewHandler bindHarpViewHandler(HarpController impl);
+  @Binds
+  abstract HarpViewHandler bindHarpViewHandler(HarpController impl);
 
-    @Binds
-    abstract HarpSettingsViewHandler bindHarpSettingsViewHandler(HarpController impl);
+  @Binds
+  abstract HarpSettingsViewHandler bindHarpSettingsViewHandler(HarpController impl);
 
-    @Binds
-    abstract AndroidSettingsHandler bindAndroidSettingsHandler(MainController impl);
+  @Binds
+  abstract AndroidSettingsHandler bindAndroidSettingsHandler(MainController impl);
 
-    @Binds
-    abstract FavoritesHandler bindFavoritesHandler(MainController impl);
+  @Binds
+  abstract FavoritesHandler bindFavoritesHandler(MainController impl);
 }

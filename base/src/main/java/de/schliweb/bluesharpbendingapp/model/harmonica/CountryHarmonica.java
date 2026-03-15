@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.model.harmonica;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -24,50 +25,47 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  */
 
 /**
- * The CountryHarmonica class represents a specific type of harmonica
- * tuned to produce the "Country" scale.
- * It extends the AbstractHarmonica class, inheriting its core behavior,
- * and overrides methods to provide tuning information specific to the
- * Country harmonica style.
+ * The CountryHarmonica class represents a specific type of harmonica tuned to produce the "Country"
+ * scale. It extends the AbstractHarmonica class, inheriting its core behavior, and overrides
+ * methods to provide tuning information specific to the Country harmonica style.
  */
 public class CountryHarmonica extends AbstractHarmonica {
 
-    /**
-     * Represents the sequence of half-tone intervals for the "in" direction
-     * (draw notes) on a Country Harmonica. Each element corresponds to the
-     * cumulative number of half-tones relative to the first note.
-     */
-    private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 18, 21, 23, 26, 29, 33};
+  /**
+   * Represents the sequence of half-tone intervals for the "in" direction (draw notes) on a Country
+   * Harmonica. Each element corresponds to the cumulative number of half-tones relative to the
+   * first note.
+   */
+  private static final int[] HALF_TONES_IN = {0, 2, 7, 11, 14, 18, 21, 23, 26, 29, 33};
 
-    /**
-     * Represents the sequence of half-tone intervals for the "out" direction
-     * (blow notes) on a Country Harmonica. Each element corresponds to the
-     * cumulative number of half-tones relative to the first note.
-     */
-    private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 12, 16, 19, 24, 28, 31, 36};
+  /**
+   * Represents the sequence of half-tone intervals for the "out" direction (blow notes) on a
+   * Country Harmonica. Each element corresponds to the cumulative number of half-tones relative to
+   * the first note.
+   */
+  private static final int[] HALF_TONES_OUT = {0, 0, 4, 7, 12, 16, 19, 24, 28, 31, 36};
 
+  /**
+   * Constructs an instance of CountryHarmonica with the specified key frequency.
+   *
+   * @param keyFrequency the base frequency of the musical key that the harmonica is tuned to
+   */
+  public CountryHarmonica(double keyFrequency) {
+    super(keyFrequency);
+  }
 
-    /**
-     * Constructs an instance of CountryHarmonica with the specified key frequency.
-     *
-     * @param keyFrequency the base frequency of the musical key that the harmonica is tuned to
-     */
-    public CountryHarmonica(double keyFrequency) {
-        super(keyFrequency);
-    }
+  @Override
+  int[] getHalfTonesIn() {
+    return HALF_TONES_IN;
+  }
 
-    @Override
-    int[] getHalfTonesIn() {
-        return HALF_TONES_IN;
-    }
+  @Override
+  int[] getHalfTonesOut() {
+    return HALF_TONES_OUT;
+  }
 
-    @Override
-    int[] getHalfTonesOut() {
-        return HALF_TONES_OUT;
-    }
-
-    @Override
-    public String getTuneName() {
-        return TUNE.COUNTRY.name();
-    }
+  @Override
+  public String getTuneName() {
+    return TUNE.COUNTRY.name();
+  }
 }

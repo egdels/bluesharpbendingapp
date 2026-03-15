@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.favorites;
+
 /*
  * MIT License
  *
@@ -24,17 +25,13 @@ package de.schliweb.bluesharpbendingapp.favorites;
  */
 
 /**
- * A minimal key-value storage abstraction for persisting favorites JSON.
- * Implementations must be platform-neutral; file-based storage is the default.
+ * A minimal key-value storage abstraction for persisting favorites JSON. Implementations must be
+ * platform-neutral; file-based storage is the default.
  */
 public interface FavoritesStorage {
-    /**
-     * Returns the stored JSON string for favorites (may be null or empty if not present).
-     */
-    String read();
+  /** Returns the stored JSON string for favorites (may be null or empty if not present). */
+  String read();
 
-    /**
-     * Persists the given JSON string atomically if possible.
-     */
-    void write(String json);
+  /** Persists the given JSON string atomically if possible. */
+  void write(String json);
 }

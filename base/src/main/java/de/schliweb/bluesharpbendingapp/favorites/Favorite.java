@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.favorites;
+
 /*
  * MIT License
  *
@@ -26,65 +27,62 @@ package de.schliweb.bluesharpbendingapp.favorites;
 import java.util.Objects;
 
 /**
- * Represents a Favorite combination of tuning, key, and optionally holes for quick recall.
- * This model is used by the FavoriteManager to persist and manage favorites across platforms.
+ * Represents a Favorite combination of tuning, key, and optionally holes for quick recall. This
+ * model is used by the FavoriteManager to persist and manage favorites across platforms.
  */
 public final class Favorite {
-    /**
-     * Unique identifier (UUID string).
-     */
-    public String id;
-    /**
-     * Optional display label.
-     */
-    public String label;
-    /**
-     * Tuning identifier (e.g., "RICHTER", "CIRCULAR", "DIMINISHED", or "CUSTOM:xyz").
-     */
-    public String tuningId;
-    /**
-     * Stable signature/hash of tuning definition (used for custom tunings).
-     */
-    public String tuningHash;
-    /**
-     * Key name (e.g., "C", "G", "A"), or a semitone index string if the app uses that representation.
-     */
-    public String key;
-    /**
-     * Optional holes count (e.g., 10, 12).
-     */
-    public Integer holes;
-    /**
-     * Creation timestamp (millis).
-     */
-    public Long createdAt;
-    /**
-     * Sort order for displaying chips.
-     */
-    public int sortOrder;
+  /** Unique identifier (UUID string). */
+  public String id;
 
-    public Favorite() {
-    }
+  /** Optional display label. */
+  public String label;
 
-    public Favorite(String id, String label, String tuningId, String tuningHash,
-                    String key, Integer holes, Long createdAt, int sortOrder) {
-        this.id = id;
-        this.label = label;
-        this.tuningId = tuningId;
-        this.tuningHash = tuningHash;
-        this.key = key;
-        this.holes = holes;
-        this.createdAt = createdAt;
-        this.sortOrder = sortOrder;
-    }
+  /** Tuning identifier (e.g., "RICHTER", "CIRCULAR", "DIMINISHED", or "CUSTOM:xyz"). */
+  public String tuningId;
 
-    /**
-     * Determines whether this favorite matches the provided combination for duplicate detection.
-     */
-    public boolean matches(String tuningId, String tuningHash, String key, Integer holes) {
-        if (!Objects.equals(this.tuningId, tuningId)) return false;
-        if (!Objects.equals(this.tuningHash, tuningHash)) return false;
-        if (!Objects.equals(this.key, key)) return false;
-        return Objects.equals(this.holes, holes);
-    }
+  /** Stable signature/hash of tuning definition (used for custom tunings). */
+  public String tuningHash;
+
+  /**
+   * Key name (e.g., "C", "G", "A"), or a semitone index string if the app uses that representation.
+   */
+  public String key;
+
+  /** Optional holes count (e.g., 10, 12). */
+  public Integer holes;
+
+  /** Creation timestamp (millis). */
+  public Long createdAt;
+
+  /** Sort order for displaying chips. */
+  public int sortOrder;
+
+  public Favorite() {}
+
+  public Favorite(
+      String id,
+      String label,
+      String tuningId,
+      String tuningHash,
+      String key,
+      Integer holes,
+      Long createdAt,
+      int sortOrder) {
+    this.id = id;
+    this.label = label;
+    this.tuningId = tuningId;
+    this.tuningHash = tuningHash;
+    this.key = key;
+    this.holes = holes;
+    this.createdAt = createdAt;
+    this.sortOrder = sortOrder;
+  }
+
+  /** Determines whether this favorite matches the provided combination for duplicate detection. */
+  public boolean matches(String tuningId, String tuningHash, String key, Integer holes) {
+    if (!Objects.equals(this.tuningId, tuningId)) return false;
+    if (!Objects.equals(this.tuningHash, tuningHash)) return false;
+    if (!Objects.equals(this.key, key)) return false;
+    return Objects.equals(this.holes, holes);
+  }
 }

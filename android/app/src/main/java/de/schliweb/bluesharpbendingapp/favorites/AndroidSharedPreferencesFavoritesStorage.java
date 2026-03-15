@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.favorites;
+
 /*
  * MIT License
  *
@@ -27,40 +28,37 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Android implementation of FavoritesStorage backed by SharedPreferences.
- * It persists a single JSON array string under a fixed key and preferences file,
- * matching the previous Android FavoriteManager behavior to ensure seamless migration.
+ * Android implementation of FavoritesStorage backed by SharedPreferences. It persists a single JSON
+ * array string under a fixed key and preferences file, matching the previous Android
+ * FavoriteManager behavior to ensure seamless migration.
  */
 public final class AndroidSharedPreferencesFavoritesStorage implements FavoritesStorage {
-    /** SharedPreferences file name, kept for backward compatibility. */
-    public static final String PREFS_FILE = "de.schliweb.bluesharpbendingapp.prefs";
-    /** Key for the favorites JSON payload (schema v1). */
-    public static final String KEY_FAVORITES_V1 = "favorites_v1";
+  /** SharedPreferences file name, kept for backward compatibility. */
+  public static final String PREFS_FILE = "de.schliweb.bluesharpbendingapp.prefs";
 
-    private final SharedPreferences prefs;
+  /** Key for the favorites JSON payload (schema v1). */
+  public static final String KEY_FAVORITES_V1 = "favorites_v1";
 
-    /**
-     * Creates a storage instance using application Context with the default prefs file.
-     */
-    public AndroidSharedPreferencesFavoritesStorage(Context context) {
-        this(context.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE));
-    }
+  private final SharedPreferences prefs;
 
-    /**
-     * Visible for testing/more control.
-     */
-    public AndroidSharedPreferencesFavoritesStorage(SharedPreferences prefs) {
-        this.prefs = prefs;
-    }
+  /** Creates a storage instance using application Context with the default prefs file. */
+  public AndroidSharedPreferencesFavoritesStorage(Context context) {
+    this(context.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE));
+  }
 
-    @Override
-    public String read() {
-        String raw = prefs.getString(KEY_FAVORITES_V1, "");
-        return raw == null ? "" : raw;
-    }
+  /** Visible for testing/more control. */
+  public AndroidSharedPreferencesFavoritesStorage(SharedPreferences prefs) {
+    this.prefs = prefs;
+  }
 
-    @Override
-    public void write(String json) {
-        prefs.edit().putString(KEY_FAVORITES_V1, json != null ? json : "").apply();
-    }
+  @Override
+  public String read() {
+    String raw = prefs.getString(KEY_FAVORITES_V1, "");
+    return raw == null ? "" : raw;
+  }
+
+  @Override
+  public void write(String json) {
+    prefs.edit().putString(KEY_FAVORITES_V1, json != null ? json : "").apply();
+  }
 }

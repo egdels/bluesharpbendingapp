@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view.desktop;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +24,8 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -32,54 +35,47 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 /**
- * UI tests for the AboutViewDesktopFX component.
- * Tests basic UI interactions with the about view.
+ * UI tests for the AboutViewDesktopFX component. Tests basic UI interactions with the about view.
  */
 @ExtendWith(ApplicationExtension.class)
 class AboutViewDesktopFXTest {
 
-    private AboutViewDesktopFX aboutView;
+  private AboutViewDesktopFX aboutView;
 
-    /**
-     * Set up the test fixture with a JavaFX stage.
-     * This method is called before each test.
-     *
-     * @param stage the JavaFX stage
-     */
-    @Start
-    public void start(Stage stage) {
-        // Create the about view
-        aboutView = new AboutViewDesktopFX();
+  /**
+   * Set up the test fixture with a JavaFX stage. This method is called before each test.
+   *
+   * @param stage the JavaFX stage
+   */
+  @Start
+  public void start(Stage stage) {
+    // Create the about view
+    aboutView = new AboutViewDesktopFX();
 
-        // Set up the scene and stage
-        VBox layout = new VBox();
-        layout.getChildren().add(aboutView.getRoot());
-        Scene scene = new Scene(layout, 800, 600);
-        stage.setScene(scene);
-        stage.show();
-    }
+    // Set up the scene and stage
+    VBox layout = new VBox();
+    layout.getChildren().add(aboutView.getRoot());
+    Scene scene = new Scene(layout, 800, 600);
+    stage.setScene(scene);
+    stage.show();
+  }
 
-    /**
-     * Test that the about view is properly initialized.
-     */
-    @Test
-    void testAboutViewInitialization() {
-        // Verify that the about view is not null
-        assertNotNull(aboutView, "About view should not be null");
-        assertNotNull(aboutView.getRoot(), "About view root should not be null");
-        assertNotNull(aboutView.getController(), "About view controller should not be null");
-    }
+  /** Test that the about view is properly initialized. */
+  @Test
+  void testAboutViewInitialization() {
+    // Verify that the about view is not null
+    assertNotNull(aboutView, "About view should not be null");
+    assertNotNull(aboutView.getRoot(), "About view root should not be null");
+    assertNotNull(aboutView.getController(), "About view controller should not be null");
+  }
 
-    /**
-     * Test that the about view can be displayed.
-     */
-    @Test
-    void testAboutViewDisplay(FxRobot robot) {
-        // Verify that the about view is visible
-        assertNotNull(aboutView.getRoot().getScene(), "About view should be in a scene");
-        assertNotNull(aboutView.getRoot().getScene().getWindow(), "About view scene should be in a window");
-    }
+  /** Test that the about view can be displayed. */
+  @Test
+  void testAboutViewDisplay(FxRobot robot) {
+    // Verify that the about view is visible
+    assertNotNull(aboutView.getRoot().getScene(), "About view should be in a scene");
+    assertNotNull(
+        aboutView.getRoot().getScene().getWindow(), "About view scene should be in a window");
+  }
 }

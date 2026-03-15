@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view.desktop;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -36,742 +37,717 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
 import javax.inject.Inject;
 
 /**
- * The MainWindowDesktopFXController class serves as the controller for the main
- * application window in a JavaFX desktop application. It manages the initialization
- * and interaction with various views, such as harp view, settings view, about view,
- * and training view. Additionally, it provides functionality to set view handlers
- * and determine the active view within the application.
- * <p>
- * This class implements the MainWindow interface, ensuring compatibility with
- * the defined main window contract.
+ * The MainWindowDesktopFXController class serves as the controller for the main application window
+ * in a JavaFX desktop application. It manages the initialization and interaction with various
+ * views, such as harp view, settings view, about view, and training view. Additionally, it provides
+ * functionality to set view handlers and determine the active view within the application.
+ *
+ * <p>This class implements the MainWindow interface, ensuring compatibility with the defined main
+ * window contract.
  */
 public class MainWindowDesktopFXController implements MainWindow {
 
+  /**
+   * The container for the harp view in the application's user interface.
+   *
+   * <p>This VBox is used to display the harp view, which allows users to interact with harp-related
+   * features, such as viewing and playing notes. The view is dynamically initialized and inserted
+   * into this container during the application setup process.
+   *
+   * <p>The controller manages the visibility and content of this container through various methods,
+   * enabling seamless transitions between different sections of the application.
+   *
+   * <p>This field is linked to the associated FXML file via the {@code @FXML} annotation, allowing
+   * the JavaFX framework to inject the corresponding UI element.
+   */
+  @FXML private VBox harpViewContainer;
 
-    /**
-     * The container for the harp view in the application's user interface.
-     * <p>
-     * This VBox is used to display the harp view, which allows users to interact
-     * with harp-related features, such as viewing and playing notes. The view is
-     * dynamically initialized and inserted into this container during the application
-     * setup process.
-     * <p>
-     * The controller manages the visibility and content of this container through
-     * various methods, enabling seamless transitions between different sections
-     * of the application.
-     * <p>
-     * This field is linked to the associated FXML file via the {@code @FXML} annotation,
-     * allowing the JavaFX framework to inject the corresponding UI element.
-     */
-    @FXML
-    private VBox harpViewContainer;
+  /**
+   * Represents the container for the settings view in the application's user interface.
+   *
+   * <p>This field is bound to the corresponding UI element specified in the FXML file and serves as
+   * the parent layout node for the settings view. It is used to display and manage various settings
+   * configurations, including but not limited to: - Microphone options - Harp settings - Note
+   * settings
+   *
+   * <p>The container is controlled and manipulated by the methods in the associated controller
+   * class, primarily for showing or hiding the settings view or initializing its content with
+   * relevant data.
+   */
+  @FXML private VBox settingsViewContainer;
 
-    /**
-     * Represents the container for the settings view in the application's user interface.
-     * <p>
-     * This field is bound to the corresponding UI element specified in the FXML file
-     * and serves as the parent layout node for the settings view. It is used to display
-     * and manage various settings configurations, including but not limited to:
-     * - Microphone options
-     * - Harp settings
-     * - Note settings
-     * <p>
-     * The container is controlled and manipulated by the methods in the associated
-     * controller class, primarily for showing or hiding the settings view or initializing
-     * its content with relevant data.
-     */
-    @FXML
-    private VBox settingsViewContainer;
+  /**
+   * Represents the container for the "About" view in the application's user interface.
+   *
+   * <p>This field is managed by the JavaFX framework and corresponds to a VBox layout defined in
+   * the FXML file. It serves as the visual container for displaying the "About" section of the
+   * application.
+   *
+   * <p>The container is dynamically made visible or hidden depending on the current user
+   * interaction or application state. It is primarily accessed and managed through methods within
+   * the controller class, such as {@code showAboutView()}.
+   *
+   * <p>This field is initialized automatically when the associated FXML is loaded, and it is
+   * configured to host the root node of the "About" view.
+   */
+  @FXML private VBox aboutViewContainer;
 
-    /**
-     * Represents the container for the "About" view in the application's user interface.
-     * <p>
-     * This field is managed by the JavaFX framework and corresponds to a VBox layout
-     * defined in the FXML file. It serves as the visual container for displaying the
-     * "About" section of the application.
-     * <p>
-     * The container is dynamically made visible or hidden depending on the current
-     * user interaction or application state. It is primarily accessed and managed
-     * through methods within the controller class, such as {@code showAboutView()}.
-     * <p>
-     * This field is initialized automatically when the associated FXML is loaded,
-     * and it is configured to host the root node of the "About" view.
-     */
-    @FXML
-    private VBox aboutViewContainer;
+  /**
+   * Represents the VBox container used to host the training view in the application's user
+   * interface. This container serves as the layout component for displaying and managing the
+   * training-related elements within the JavaFX application.
+   *
+   * <p>The {@code trainingViewContainer} is managed by the {@code MainWindowDesktopFXController}
+   * and is part of the application's overall view setup. It plays a crucial role in transitioning
+   * to the training view when user actions require displaying training-specific functionalities.
+   *
+   * <p>Specifically, this field: - Is populated and initialized during the controller's view and
+   * container setup process. - Becomes visible when the {@code showTrainingView()} method is
+   * invoked, allowing the user to interact with the training view. - Is hidden as part of the
+   * {@code hideAllViews()} method to ensure no overlapping visibility with other view containers.
+   */
+  @FXML private VBox trainingViewContainer;
 
-    /**
-     * Represents the VBox container used to host the training view in the application's
-     * user interface. This container serves as the layout component for displaying
-     * and managing the training-related elements within the JavaFX application.
-     * <p>
-     * The {@code trainingViewContainer} is managed by the {@code MainWindowDesktopFXController} and is
-     * part of the application's overall view setup. It plays a crucial role in transitioning to
-     * the training view when user actions require displaying training-specific functionalities.
-     * <p>
-     * Specifically, this field:
-     * - Is populated and initialized during the controller's view and container setup process.
-     * - Becomes visible when the {@code showTrainingView()} method is invoked, allowing the user
-     * to interact with the training view.
-     * - Is hidden as part of the {@code hideAllViews()} method to ensure no overlapping visibility
-     * with other view containers.
-     */
-    @FXML
-    private VBox trainingViewContainer;
+  /** Favorites bar container containing toggle and chips */
+  @FXML private HBox favoritesBar;
 
-    /**
-     * Favorites bar container containing toggle and chips
-     */
-    @FXML
-    private HBox favoritesBar;
+  /** Favorites toggle button shown above the harp view */
+  @FXML private Button favoritesToggleButton;
 
-    /**
-     * Favorites toggle button shown above the harp view
-     */
-    @FXML
-    private Button favoritesToggleButton;
+  /** Flow container for favorites chips/buttons */
+  @FXML private FlowPane favoritesContainer;
 
-    /**
-     * Flow container for favorites chips/buttons
-     */
-    @FXML
-    private FlowPane favoritesContainer;
+  /** Injected handler for favorites operations */
+  @Inject /* package */ FavoritesHandler favoritesHandler;
 
-    /**
-     * Injected handler for favorites operations
-     */
-    @Inject
-    /* package */ FavoritesHandler favoritesHandler;
+  /** Access to current selected key and tune indices */
+  @Inject /* package */ de.schliweb.bluesharpbendingapp.model.MainModel model;
 
-    /**
-     * Access to current selected key and tune indices
-     */
-    @Inject
-    /* package */ de.schliweb.bluesharpbendingapp.model.MainModel model;
+  /**
+   * A private field in the MainWindowDesktopFXController class that holds an instance of the
+   * HarpSettingsViewHandler interface. This handler is responsible for managing and controlling the
+   * harp settings view within the application.
+   *
+   * <p>The HarpSettingsViewHandler interface provides methods for initializing key and tuning
+   * options and handling user interactions such as selecting keys and tunings in the harp settings
+   * view. This field enables the controller to delegate specific harp settings-related operations
+   * to the corresponding handler implementation.
+   */
+  @Inject /* package */ HarpSettingsViewHandler harpSettingsViewHandler;
 
-    /**
-     * A private field in the MainWindowDesktopFXController class that holds an instance
-     * of the HarpSettingsViewHandler interface. This handler is responsible for managing
-     * and controlling the harp settings view within the application.
-     * <p>
-     * The HarpSettingsViewHandler interface provides methods for initializing key and
-     * tuning options and handling user interactions such as selecting keys and tunings
-     * in the harp settings view. This field enables the controller to delegate specific
-     * harp settings-related operations to the corresponding handler implementation.
-     */
-    @Inject
-    /* package */ HarpSettingsViewHandler harpSettingsViewHandler;
+  /**
+   * The handler associated with managing microphone settings in the application. This variable is
+   * responsible for coordinating interactions and initializing data related to microphone
+   * selection, algorithm configuration, and confidence levels.
+   *
+   * <p>The `MicrophoneSettingsViewHandler` plays a crucial role in enabling the user to configure
+   * microphone-related options via the settings view.
+   *
+   * <p>Responsibilities include: - Handling algorithm and microphone selection. - Initializing
+   * lists for available microphone devices, algorithms, and confidence levels. - Providing
+   * interaction logic for user-selected configurations.
+   *
+   * <p>It is typically invoked during initialization and when the settings view is displayed to
+   * ensure the user has access to the relevant configuration options.
+   */
+  @Inject /* package */ MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
 
-    /**
-     * The handler associated with managing microphone settings in the application.
-     * This variable is responsible for coordinating interactions and initializing
-     * data related to microphone selection, algorithm configuration, and confidence levels.
-     * <p>
-     * The `MicrophoneSettingsViewHandler` plays a crucial role in enabling the user
-     * to configure microphone-related options via the settings view.
-     * <p>
-     * Responsibilities include:
-     * - Handling algorithm and microphone selection.
-     * - Initializing lists for available microphone devices, algorithms, and confidence levels.
-     * - Providing interaction logic for user-selected configurations.
-     * <p>
-     * It is typically invoked during initialization and when the settings
-     * view is displayed to ensure the user has access to the relevant configuration options.
-     */
-    @Inject
-    /* package */ MicrophoneSettingsViewHandler microphoneSettingsViewHandler;
+  /**
+   * The NoteSettingsViewHandler instance.
+   *
+   * <p>The `noteSettingsViewHandler` is used to manage functionalities related to note settings,
+   * specifically for initializing and handling adjustments of concert pitch within the application.
+   * It plays a critical role in ensuring that the note settings view operates correctly by
+   * delegating tasks such as updating the UI or managing the application's state related to note
+   * settings.
+   *
+   * <p>This field is injected by Guice during the application's setup phase.
+   */
+  @Inject /* package */ NoteSettingsViewHandler noteSettingsViewHandler;
 
-    /**
-     * The NoteSettingsViewHandler instance.
-     * <p>
-     * The `noteSettingsViewHandler` is used to manage functionalities related to note settings,
-     * specifically for initializing and handling adjustments of concert pitch within the application.
-     * It plays a critical role in ensuring that the note settings view operates correctly by
-     * delegating tasks such as updating the UI or managing the application's state related to
-     * note settings.
-     * <p>
-     * This field is injected by Guice during the application's setup phase.
-     */
-    @Inject
-    /* package */ NoteSettingsViewHandler noteSettingsViewHandler;
+  /**
+   * Manages the training view of the application by handling its initialization and associated
+   * tasks, such as setting up the training list and configuring the training container.
+   *
+   * <p>This field serves as the primary handler for the training view's functionality, enabling
+   * interaction and coordination between the user interface and the application's logic specific to
+   * training operations.
+   *
+   * <p>The {@code TrainingViewHandler} is used in methods like {@code showTrainingView()} to
+   * initialize and prepare the training view when it is displayed.
+   *
+   * <p>It may handle tasks such as: - Initializing the training list. - Setting up the precision
+   * settings. - Managing the layout container for the training view.
+   */
+  @Inject /* package */ TrainingViewHandler trainingViewHandler;
 
-    /**
-     * Manages the training view of the application by handling its initialization
-     * and associated tasks, such as setting up the training list and configuring
-     * the training container.
-     * <p>
-     * This field serves as the primary handler for the training view's functionality,
-     * enabling interaction and coordination between the user interface and the
-     * application's logic specific to training operations.
-     * <p>
-     * The {@code TrainingViewHandler} is used in methods like {@code showTrainingView()}
-     * to initialize and prepare the training view when it is displayed.
-     * <p>
-     * It may handle tasks such as:
-     * - Initializing the training list.
-     * - Setting up the precision settings.
-     * - Managing the layout container for the training view.
-     */
-    @Inject
-    /* package */ TrainingViewHandler trainingViewHandler;
+  /**
+   * Represents the handler responsible for managing and interacting with the visual and functional
+   * components of the harp view in the application.
+   *
+   * <p>This variable holds an instance of {@code HarpViewHandler}, providing methods to initialize,
+   * configure, or update the harp view. It is utilized in the application to handle harp-specific
+   * operations, such as initializing the notes displayed within the harp view or responding to user
+   * interactions.
+   *
+   * <p>The {@code harpViewHandler} is critical for ensuring that the harp view operates correctly
+   * and interacts seamlessly with other parts of the application, such as rendering note data or
+   * supporting user interface transitions.
+   */
+  @Inject /* package */ HarpViewHandler harpViewHandler;
 
-    /**
-     * Represents the handler responsible for managing and interacting with
-     * the visual and functional components of the harp view in the application.
-     * <p>
-     * This variable holds an instance of {@code HarpViewHandler}, providing
-     * methods to initialize, configure, or update the harp view. It is utilized
-     * in the application to handle harp-specific operations, such as initializing
-     * the notes displayed within the harp view or responding to user interactions.
-     * <p>
-     * The {@code harpViewHandler} is critical for ensuring that the harp view
-     * operates correctly and interacts seamlessly with other parts of the
-     * application, such as rendering note data or supporting user interface transitions.
-     */
-    @Inject
-    /* package */ HarpViewHandler harpViewHandler;
+  /**
+   * The {@code androidSettingsHandler} field holds a reference to an implementation of the {@link
+   * AndroidSettingsHandler} interface. It is responsible for managing operations related to
+   * Android-specific settings within the application.
+   *
+   * <p>This field can be used to: - Initialize the lock screen settings on an Android device. -
+   * Handle user selection or changes to Android lock screen configurations.
+   *
+   * <p>This field is typically set during the application's initialization process, ensuring that
+   * the controller has access to Android-specific settings functionality if needed.
+   */
+  @Inject /* package */ AndroidSettingsHandler androidSettingsHandler;
 
-    /**
-     * The {@code androidSettingsHandler} field holds a reference to an implementation
-     * of the {@link AndroidSettingsHandler} interface. It is responsible for managing
-     * operations related to Android-specific settings within the application.
-     * <p>
-     * This field can be used to:
-     * - Initialize the lock screen settings on an Android device.
-     * - Handle user selection or changes to Android lock screen configurations.
-     * <p>
-     * This field is typically set during the application's initialization process,
-     * ensuring that the controller has access to Android-specific settings functionality
-     * if needed.
-     */
-    @Inject
-    /* package */ AndroidSettingsHandler androidSettingsHandler;
+  /**
+   * Represents the primary graphical user interface (GUI) component for displaying the harp view in
+   * the application.
+   *
+   * <p>This variable is an instance of {@code HarpViewDesktopFX} and is used to manage and control
+   * the harp-specific UI elements, such as displaying notes and handling interactions related to
+   * the virtual harp. It is initialized during the {@code initializeViews()} method and added to
+   * the appropriate layout container in {@code setupContainers()}.
+   *
+   * <p>The harp view is shown to the user through the {@code showHarpView()} method, where its
+   * associated container is made visible, and necessary data such as notes are initialized. It
+   * interacts with the view handler {@code harpViewHandler} for handling specific actions and
+   * updates.
+   */
+  private HarpViewDesktopFX harpView;
 
-    /**
-     * Represents the primary graphical user interface (GUI) component for displaying
-     * the harp view in the application.
-     * <p>
-     * This variable is an instance of {@code HarpViewDesktopFX} and is used to manage
-     * and control the harp-specific UI elements, such as displaying notes and handling
-     * interactions related to the virtual harp. It is initialized during the
-     * {@code initializeViews()} method and added to the appropriate layout container
-     * in {@code setupContainers()}.
-     * <p>
-     * The harp view is shown to the user through the {@code showHarpView()} method, where
-     * its associated container is made visible, and necessary data such as notes are
-     * initialized. It interacts with the view handler {@code harpViewHandler} for handling
-     * specific actions and updates.
-     */
-    private HarpViewDesktopFX harpView;
+  /**
+   * Represents the settings view instance for the desktop application.
+   *
+   * <p>This variable serves as a reference to the {@code SettingsViewDesktopFX} object, which
+   * encapsulates the user interface and controller logic for the settings section of the
+   * application. It is initialized during the application startup and used to manage and display
+   * settings-related functionality.
+   *
+   * <p>The settings view is associated with an FXML layout file and a corresponding controller that
+   * handles user interactions and populates the necessary settings data.
+   */
+  private SettingsViewDesktopFX settingsView;
 
-    /**
-     * Represents the settings view instance for the desktop application.
-     * <p>
-     * This variable serves as a reference to the {@code SettingsViewDesktopFX} object,
-     * which encapsulates the user interface and controller logic for the settings section
-     * of the application. It is initialized during the application startup and used to
-     * manage and display settings-related functionality.
-     * <p>
-     * The settings view is associated with an FXML layout file and a corresponding controller
-     * that handles user interactions and populates the necessary settings data.
-     */
-    private SettingsViewDesktopFX settingsView;
+  /**
+   * Represents the "About" view of the application within the main controller.
+   *
+   * <p>This field is an instance of the {@code AboutViewDesktopFX} class, which is responsible for
+   * managing the user interface and behavior of the "About" section. It provides information about
+   * the application, such as its purpose, features, and possibly author or version details.
+   *
+   * <p>The {@code aboutView} field is initialized within the {@code initializeViews()} method,
+   * where it is created and prepared for display. The view is shown when the {@code
+   * showAboutView()} method is invoked, typically in response to a user action within the
+   * application's interface.
+   *
+   * <p>The associated container for this view is the {@code aboutViewContainer}, which is managed
+   * by the controller to control the visibility of the "About" section and ensure a smooth
+   * transition between different views in the application.
+   */
+  private AboutViewDesktopFX aboutView;
 
-    /**
-     * Represents the "About" view of the application within the main controller.
-     * <p>
-     * This field is an instance of the {@code AboutViewDesktopFX} class, which is responsible
-     * for managing the user interface and behavior of the "About" section. It provides
-     * information about the application, such as its purpose, features, and possibly author or version details.
-     * <p>
-     * The {@code aboutView} field is initialized within the {@code initializeViews()} method,
-     * where it is created and prepared for display. The view is shown when the {@code showAboutView()}
-     * method is invoked, typically in response to a user action within the application's interface.
-     * <p>
-     * The associated container for this view is the {@code aboutViewContainer}, which is managed
-     * by the controller to control the visibility of the "About" section and ensure a smooth
-     * transition between different views in the application.
-     */
-    private AboutViewDesktopFX aboutView;
+  /**
+   * Represents the training view in the application's user interface.
+   *
+   * <p>This variable holds an instance of the {@code TrainingViewDesktopFX} class, responsible for
+   * managing and displaying the training view's graphical components and logic. It integrates the
+   * user interface defined in the associated FXML file and provides access to the view's root node
+   * and controller.
+   *
+   * <p>The training view is one of several views managed by the controller, and its lifecycle and
+   * visibility are controlled via methods such as {@code showTrainingView()} and {@code
+   * hideAllViews()} in the {@code MainWindowDesktopFXController}.
+   */
+  private TrainingViewDesktopFX trainingView;
 
-    /**
-     * Represents the training view in the application's user interface.
-     * <p>
-     * This variable holds an instance of the {@code TrainingViewDesktopFX} class,
-     * responsible for managing and displaying the training view's graphical components
-     * and logic. It integrates the user interface defined in the associated FXML file
-     * and provides access to the view's root node and controller.
-     * <p>
-     * The training view is one of several views managed by the controller, and its lifecycle
-     * and visibility are controlled via methods such as {@code showTrainingView()}
-     * and {@code hideAllViews()} in the {@code MainWindowDesktopFXController}.
-     */
-    private TrainingViewDesktopFX trainingView;
-
-    /**
-     * Initializes the main controller by preparing the views and their respective containers.
-     * <p>
-     * This method is automatically invoked by the JavaFX framework when the associated FXML is loaded.
-     * It performs the following tasks:
-     * 1. Calls {@code initializeViews()} to create and initialize all the views used in the application.
-     * 2. Calls {@code setupContainers()} to configure the layout containers to host the views.
-     */
-    @FXML
-    public void initialize() {
-        LoggingContext.setComponent("MainWindowDesktopFXController");
-        LoggingUtils.logInitializing("Main Window UI");
-        initializeViews();
-        setupContainers();
-        // Wire favorites toggle
-        if (favoritesToggleButton != null) {
-            favoritesToggleButton.setOnAction(e -> handleFavoriteToggle());
-        }
-        refreshFavoritesUI();
-        LoggingUtils.logInitialized("Main Window UI");
+  /**
+   * Initializes the main controller by preparing the views and their respective containers.
+   *
+   * <p>This method is automatically invoked by the JavaFX framework when the associated FXML is
+   * loaded. It performs the following tasks: 1. Calls {@code initializeViews()} to create and
+   * initialize all the views used in the application. 2. Calls {@code setupContainers()} to
+   * configure the layout containers to host the views.
+   */
+  @FXML
+  public void initialize() {
+    LoggingContext.setComponent("MainWindowDesktopFXController");
+    LoggingUtils.logInitializing("Main Window UI");
+    initializeViews();
+    setupContainers();
+    // Wire favorites toggle
+    if (favoritesToggleButton != null) {
+      favoritesToggleButton.setOnAction(e -> handleFavoriteToggle());
     }
+    refreshFavoritesUI();
+    LoggingUtils.logInitialized("Main Window UI");
+  }
 
-    /**
-     * Displays the harp view by making its container visible and initializing its note data.
-     * <p>
-     * This method is part of the JavaFX controller and is triggered to show the harp view
-     * when a specific user action occurs. It performs the following steps:
-     * 1. Calls {@code hideAllViews()} to ensure that all other view containers are hidden.
-     * 2. Sets the visibility of the {@code harpViewContainer} to {@code true}, making the harp view visible to the user.
-     * 3. Invokes {@code harpViewHandler.initNotes()} to initialize the notes displayed within the harp view.
-     */
-    @FXML
-    private void showHarpView() {
-        LoggingContext.setComponent("MainWindowDesktopFXController");
-        LoggingUtils.logUserAction("Show Harp View", "Switching to harp view");
-        hideAllViews();
-        harpViewContainer.setVisible(true);
-        harpViewHandler.initNotes();
-        refreshFavoritesUI();
-        LoggingUtils.logOperationCompleted("Harp view displayed");
+  /**
+   * Displays the harp view by making its container visible and initializing its note data.
+   *
+   * <p>This method is part of the JavaFX controller and is triggered to show the harp view when a
+   * specific user action occurs. It performs the following steps: 1. Calls {@code hideAllViews()}
+   * to ensure that all other view containers are hidden. 2. Sets the visibility of the {@code
+   * harpViewContainer} to {@code true}, making the harp view visible to the user. 3. Invokes {@code
+   * harpViewHandler.initNotes()} to initialize the notes displayed within the harp view.
+   */
+  @FXML
+  private void showHarpView() {
+    LoggingContext.setComponent("MainWindowDesktopFXController");
+    LoggingUtils.logUserAction("Show Harp View", "Switching to harp view");
+    hideAllViews();
+    harpViewContainer.setVisible(true);
+    harpViewHandler.initNotes();
+    refreshFavoritesUI();
+    LoggingUtils.logOperationCompleted("Harp view displayed");
+  }
+
+  /**
+   * Displays the "About" view by making its container visible.
+   *
+   * <p>This method is part of the JavaFX controller and is used to transition the user interface to
+   * the "About" section of the application. It performs the following steps: 1. Invokes {@code
+   * hideAllViews()} to ensure all other view containers are hidden. 2. Sets the visibility of
+   * {@code aboutViewContainer} to {@code true}, making the "About" view visible to the user.
+   */
+  @FXML
+  public void showAboutView() {
+    LoggingContext.setComponent("MainWindowDesktopFXController");
+    LoggingUtils.logUserAction("Show About View", "Switching to about view");
+    hideAllViews();
+    aboutViewContainer.setVisible(true);
+    refreshFavoritesUI();
+    LoggingUtils.logOperationCompleted("About view displayed");
+  }
+
+  /**
+   * Displays the settings view by making its container visible and initializing various settings
+   * lists.
+   *
+   * <p>
+   *
+   * <p>This method is part of the JavaFX controller and is invoked to transition the user interface
+   * to the settings section of the application. It performs the following operations: 1. Invokes
+   * {@code hideAllViews()} to ensure all other view containers are hidden. 2. Sets the visibility
+   * of the {@code settingsViewContainer} to {@code true}. 3. Calls initialization methods from the
+   * respective handlers to populate the required settings data, including: - Microphone options
+   * (microphone list, algorithm list, confidence levels) - Harp settings (key list, tuning options)
+   * - Note settings (concert pitch options)
+   */
+  @FXML
+  public void showSettingsView() {
+    LoggingContext.setComponent("MainWindowDesktopFXController");
+    LoggingUtils.logUserAction("Show Settings View", "Switching to settings view");
+    hideAllViews();
+    settingsViewContainer.setVisible(true);
+
+    LoggingUtils.logDebug("Initializing microphone settings");
+    microphoneSettingsViewHandler.initMicrophoneList();
+    microphoneSettingsViewHandler.initAlgorithmList();
+    microphoneSettingsViewHandler.initConfidenceList();
+    microphoneSettingsViewHandler.initChordConfidenceList();
+
+    LoggingUtils.logDebug("Initializing harp settings");
+    harpSettingsViewHandler.initKeyList();
+    harpSettingsViewHandler.initTuneList();
+    harpSettingsViewHandler.initShowChordSetting();
+
+    LoggingUtils.logDebug("Initializing note settings");
+    noteSettingsViewHandler.initConcertPitchList();
+
+    LoggingUtils.logOperationCompleted("Settings view displayed and initialized");
+    refreshFavoritesUI();
+  }
+
+  /**
+   * Displays the training view by making its container visible and initializing the associated
+   * elements.
+   *
+   * <p>This method is responsible for transitioning the user interface to the training view of the
+   * application. It performs the following actions: 1. Calls {@code hideAllViews()} to ensure that
+   * all other view containers are hidden. 2. Sets the visibility of the {@code
+   * trainingViewContainer} to {@code true}. 3. Invokes initialization methods from the {@code
+   * trainingViewHandler} to prepare the necessary data and configurations for the training view,
+   * including: - Initializing the training list via {@code trainingViewHandler.initTrainingList()}.
+   * - Setting up the training container via {@code trainingViewHandler.initTrainingContainer()}. -
+   * Initializing the precision list via {@code trainingViewHandler.initPrecisionList()}.
+   */
+  @FXML
+  private void showTrainingView() {
+    LoggingContext.setComponent("MainWindowDesktopFXController");
+    LoggingUtils.logUserAction("Show Training View", "Switching to training view");
+    hideAllViews();
+    trainingViewContainer.setVisible(true);
+
+    LoggingUtils.logDebug("Initializing training components");
+    trainingViewHandler.initTrainingList();
+    trainingViewHandler.initTrainingContainer();
+    trainingViewHandler.initPrecisionList();
+
+    LoggingUtils.logOperationCompleted("Training view displayed and initialized");
+    refreshFavoritesUI();
+  }
+
+  /**
+   * Hides all view containers in the application by setting their visibility to {@code false}.
+   *
+   * <p>This method ensures that no view container is visible by: - Hiding the harp view container.
+   * - Hiding the training view container. - Hiding the settings view container. - Hiding the
+   * "About" view container.
+   *
+   * <p>It is typically called before displaying a specific view to ensure that only the desired
+   * view is visible to the user.
+   */
+  private void hideAllViews() {
+    harpViewContainer.setVisible(false);
+    trainingViewContainer.setVisible(false);
+    settingsViewContainer.setVisible(false);
+    aboutViewContainer.setVisible(false);
+  }
+
+  /**
+   * Initializes the view components for the main application controller.
+   *
+   * <p>This method is responsible for creating instances of the various view objects required by
+   * the application. Each view corresponds to a distinct part of the application's user interface
+   * and is initialized here to make them available for further configuration or interaction during
+   * runtime.
+   *
+   * <p>Specifically, this method performs the following actions: 1. Creates an instance of the harp
+   * view using {@code HarpViewDesktopFX}. 2. Creates an instance of the settings view using {@code
+   * SettingsViewDesktopFX}. 3. Creates an instance of the "About" view using {@code
+   * AboutViewDesktopFX}. 4. Creates an instance of the training view using {@code
+   * TrainingViewDesktopFX}.
+   *
+   * <p>This method is invoked as part of the application's initialization process to ensure that
+   * all views are constructed and ready for use.
+   */
+  private void initializeViews() {
+    harpView = new HarpViewDesktopFX();
+    settingsView = new SettingsViewDesktopFX();
+    aboutView = new AboutViewDesktopFX();
+    trainingView = new TrainingViewDesktopFX();
+  }
+
+  /**
+   * Configures the layout containers for the application by adding the root Node of each
+   * corresponding view to its respective container.
+   *
+   * <p>This method is responsible for setting up the various view containers with their associated
+   * UI components, ensuring that each view is correctly embedded within the graphical user
+   * interface of the application. Specifically, it performs the following steps:
+   *
+   * <p>1. Adds the root Node of the harp view to the harp view container. 2. Adds the root Node of
+   * the settings view to the settings view container. 3. Adds the root Node of the "About" view to
+   * the "About" view container. 4. Adds the root Node of the training view to the training view
+   * container.
+   */
+  private void setupContainers() {
+    harpViewContainer.getChildren().add(harpView.getRoot());
+    settingsViewContainer.getChildren().add(settingsView.getRoot());
+    aboutViewContainer.getChildren().add(aboutView.getRoot());
+    trainingViewContainer.getChildren().add(trainingView.getRoot());
+  }
+
+  @Override
+  public HarpSettingsView getHarpSettingsView() {
+    return settingsView.getController();
+  }
+
+  @Override
+  public HarpView getHarpView() {
+    return harpView.getController();
+  }
+
+  @Override
+  public MicrophoneSettingsView getMicrophoneSettingsView() {
+    return settingsView.getController();
+  }
+
+  @Override
+  public boolean isHarpSettingsViewActive() {
+    return settingsViewContainer.isVisible();
+  }
+
+  @Override
+  public boolean isHarpViewActive() {
+    return harpViewContainer.isVisible();
+  }
+
+  @Override
+  public boolean isMicrophoneSettingsViewActive() {
+    return settingsViewContainer.isVisible();
+  }
+
+  @Override
+  public boolean isTrainingViewActive() {
+    return trainingViewContainer.isVisible();
+  }
+
+  @Override
+  public void open() {
+    settingsView.getController().setHarpSettingsViewHandler(harpSettingsViewHandler);
+    settingsView.getController().setMicrophoneSettingsViewHandler(microphoneSettingsViewHandler);
+    settingsView.getController().setNoteSettingsViewHandler(noteSettingsViewHandler);
+    trainingView.getController().setTrainingViewHandler(trainingViewHandler);
+    showHarpView();
+  }
+
+  @Override
+  public boolean isNoteSettingsViewActive() {
+    return settingsViewContainer.isVisible();
+  }
+
+  @Override
+  public NoteSettingsView getNoteSettingsView() {
+    return settingsView.getController();
+  }
+
+  @Override
+  public TrainingView getTrainingView() {
+    return trainingView.getController();
+  }
+
+  @Override
+  public AndroidSettingsView getAndroidSettingsView() {
+    // no need for Desktop
+    return null;
+  }
+
+  @Override
+  public boolean isAndroidSettingsViewActive() {
+    // no need for Desktop
+    return false;
+  }
+
+  /**
+   * Refreshes the Favorites UI by updating the visibility, manageability, and content of the
+   * favorites-related elements based on the current application state. This method is primarily
+   * responsible for ensuring that the favorites UI reflects the current list of favorites and is
+   * only displayed when appropriate.
+   *
+   * <p>Key operations include: - Checking if the "Harp" view is active to determine if the
+   * favorites UI should be shown. - Updating visibility and manageability of the favorites bar,
+   * toggle button, and container elements. - Clearing and repopulating the favorites container with
+   * buttons representing each favorite loaded via the favorites handler. - Attaching specific
+   * actions and context menu behavior to the favorite buttons.
+   *
+   * <p>Any exceptions encountered during the process are silently ignored.
+   */
+  private void refreshFavoritesUI() {
+    try {
+      boolean canShow = isHarpViewActive();
+      if (favoritesBar != null) {
+        favoritesBar.setVisible(canShow);
+        favoritesBar.setManaged(canShow);
+      }
+      if (favoritesToggleButton != null) {
+        favoritesToggleButton.setDisable(!canShow);
+        favoritesToggleButton.setVisible(canShow);
+        favoritesToggleButton.setManaged(canShow);
+      }
+      if (favoritesContainer == null) return;
+      favoritesContainer.setVisible(canShow);
+      favoritesContainer.setManaged(canShow);
+      favoritesContainer.getChildren().clear();
+      if (!canShow || favoritesHandler == null) return;
+
+      java.util.List<de.schliweb.bluesharpbendingapp.favorites.Favorite> list =
+          favoritesHandler.loadFavorites();
+      if (list == null) return;
+      for (de.schliweb.bluesharpbendingapp.favorites.Favorite f : list) {
+        String label = buildFavoriteLabel(f);
+        Button b = new Button(label);
+        b.getStyleClass().add("favorite-chip");
+        b.setOnAction(e -> applyFavorite(f));
+        b.setOnContextMenuRequested(e -> showFavoriteContextMenu(f, b));
+        favoritesContainer.getChildren().add(b);
+      }
+    } catch (Exception ignored) {
     }
+  }
 
-    /**
-     * Displays the "About" view by making its container visible.
-     * <p>
-     * This method is part of the JavaFX controller and is used to transition
-     * the user interface to the "About" section of the application. It performs the following steps:
-     * 1. Invokes {@code hideAllViews()} to ensure all other view containers are hidden.
-     * 2. Sets the visibility of {@code aboutViewContainer} to {@code true},
-     * making the "About" view visible to the user.
-     */
-    @FXML
-    public void showAboutView() {
-        LoggingContext.setComponent("MainWindowDesktopFXController");
-        LoggingUtils.logUserAction("Show About View", "Switching to about view");
-        hideAllViews();
-        aboutViewContainer.setVisible(true);
-        refreshFavoritesUI();
-        LoggingUtils.logOperationCompleted("About view displayed");
+  /**
+   * Handles the toggle functionality for marking a harmonica configuration as a favorite. This
+   * method interacts with the favorites management system to either add or remove a configuration
+   * from the user's list of favorites based on the current state. It updates the user interface to
+   * reflect the change in favorite status.
+   *
+   * <p>The method retrieves the stored tuning and key information from the application model, uses
+   * those details to toggle the favorite state via the favorites handler, and updates the toggle
+   * button's text accordingly. It also refreshes the favorites-related user interface elements to
+   * ensure consistency in the displayed information.
+   *
+   * <p>Any exceptions that occur during the process are silently ignored.
+   */
+  private void handleFavoriteToggle() {
+    try {
+      String[] tunes =
+          de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupportedTunes();
+      String[] keys =
+          de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupporterKeys();
+      String tuningId = tunes[model.getStoredTuneIndex()];
+      String key = keys[model.getStoredKeyIndex()];
+      Integer holes = 10;
+      de.schliweb.bluesharpbendingapp.favorites.Favorite created =
+          favoritesHandler.toggleFavorite(tuningId, null, key, holes, null);
+      if (created != null) {
+        favoritesToggleButton.setText(I18nUtils.getString("favorites.toggle.on"));
+      } else {
+        favoritesToggleButton.setText(I18nUtils.getString("favorites.toggle.off"));
+      }
+      refreshFavoritesUI();
+    } catch (Exception ignored) {
     }
+  }
 
-    /**
-     * Displays the settings view by making its container visible and initializing
-     * various settings lists.
-     * <p> <p>
-     * This method is part of the JavaFX controller and is invoked to transition the
-     * user interface to the settings section of the application. It performs the
-     * following operations:
-     * 1. Invokes {@code hideAllViews()} to ensure all other view containers are hidden.
-     * 2. Sets the visibility of the {@code settingsViewContainer} to {@code true}.
-     * 3. Calls initialization methods from the respective handlers to populate
-     * the required settings data, including:
-     * - Microphone options (microphone list, algorithm list, confidence levels)
-     * - Harp settings (key list, tuning options)
-     * - Note settings (concert pitch options)
-     */
-    @FXML
-    public void showSettingsView() {
-        LoggingContext.setComponent("MainWindowDesktopFXController");
-        LoggingUtils.logUserAction("Show Settings View", "Switching to settings view");
-        hideAllViews();
-        settingsViewContainer.setVisible(true);
-
-        LoggingUtils.logDebug("Initializing microphone settings");
-        microphoneSettingsViewHandler.initMicrophoneList();
-        microphoneSettingsViewHandler.initAlgorithmList();
-        microphoneSettingsViewHandler.initConfidenceList();
-        microphoneSettingsViewHandler.initChordConfidenceList();
-
-        LoggingUtils.logDebug("Initializing harp settings");
-        harpSettingsViewHandler.initKeyList();
-        harpSettingsViewHandler.initTuneList();
-        harpSettingsViewHandler.initShowChordSetting();
-
-        LoggingUtils.logDebug("Initializing note settings");
-        noteSettingsViewHandler.initConcertPitchList();
-
-        LoggingUtils.logOperationCompleted("Settings view displayed and initialized");
-        refreshFavoritesUI();
-    }
-
-    /**
-     * Displays the training view by making its container visible and initializing
-     * the associated elements.
-     * <p>
-     * This method is responsible for transitioning the user interface to the
-     * training view of the application. It performs the following actions:
-     * 1. Calls {@code hideAllViews()} to ensure that all other view containers are hidden.
-     * 2. Sets the visibility of the {@code trainingViewContainer} to {@code true}.
-     * 3. Invokes initialization methods from the {@code trainingViewHandler} to prepare
-     * the necessary data and configurations for the training view, including:
-     * - Initializing the training list via {@code trainingViewHandler.initTrainingList()}.
-     * - Setting up the training container via {@code trainingViewHandler.initTrainingContainer()}.
-     * - Initializing the precision list via {@code trainingViewHandler.initPrecisionList()}.
-     */
-    @FXML
-    private void showTrainingView() {
-        LoggingContext.setComponent("MainWindowDesktopFXController");
-        LoggingUtils.logUserAction("Show Training View", "Switching to training view");
-        hideAllViews();
-        trainingViewContainer.setVisible(true);
-
-        LoggingUtils.logDebug("Initializing training components");
-        trainingViewHandler.initTrainingList();
-        trainingViewHandler.initTrainingContainer();
-        trainingViewHandler.initPrecisionList();
-
-        LoggingUtils.logOperationCompleted("Training view displayed and initialized");
-        refreshFavoritesUI();
-    }
-
-    /**
-     * Hides all view containers in the application by setting their visibility to {@code false}.
-     * <p>
-     * This method ensures that no view container is visible by:
-     * - Hiding the harp view container.
-     * - Hiding the training view container.
-     * - Hiding the settings view container.
-     * - Hiding the "About" view container.
-     * <p>
-     * It is typically called before displaying a specific view to ensure that only
-     * the desired view is visible to the user.
-     */
-    private void hideAllViews() {
-        harpViewContainer.setVisible(false);
-        trainingViewContainer.setVisible(false);
-        settingsViewContainer.setVisible(false);
-        aboutViewContainer.setVisible(false);
-    }
-
-    /**
-     * Initializes the view components for the main application controller.
-     * <p>
-     * This method is responsible for creating instances of the various view objects required
-     * by the application. Each view corresponds to a distinct part of the application's
-     * user interface and is initialized here to make them available for further configuration
-     * or interaction during runtime.
-     * <p>
-     * Specifically, this method performs the following actions:
-     * 1. Creates an instance of the harp view using {@code HarpViewDesktopFX}.
-     * 2. Creates an instance of the settings view using {@code SettingsViewDesktopFX}.
-     * 3. Creates an instance of the "About" view using {@code AboutViewDesktopFX}.
-     * 4. Creates an instance of the training view using {@code TrainingViewDesktopFX}.
-     * <p>
-     * This method is invoked as part of the application's initialization process
-     * to ensure that all views are constructed and ready for use.
-     */
-    private void initializeViews() {
-        harpView = new HarpViewDesktopFX();
-        settingsView = new SettingsViewDesktopFX();
-        aboutView = new AboutViewDesktopFX();
-        trainingView = new TrainingViewDesktopFX();
-    }
-
-    /**
-     * Configures the layout containers for the application by adding the root Node
-     * of each corresponding view to its respective container.
-     * <p>
-     * This method is responsible for setting up the various view containers with
-     * their associated UI components, ensuring that each view is correctly embedded
-     * within the graphical user interface of the application. Specifically, it performs
-     * the following steps:
-     * <p>
-     * 1. Adds the root Node of the harp view to the harp view container.
-     * 2. Adds the root Node of the settings view to the settings view container.
-     * 3. Adds the root Node of the "About" view to the "About" view container.
-     * 4. Adds the root Node of the training view to the training view container.
-     */
-    private void setupContainers() {
-        harpViewContainer.getChildren().add(harpView.getRoot());
-        settingsViewContainer.getChildren().add(settingsView.getRoot());
-        aboutViewContainer.getChildren().add(aboutView.getRoot());
-        trainingViewContainer.getChildren().add(trainingView.getRoot());
-    }
-
-    @Override
-    public HarpSettingsView getHarpSettingsView() {
-        return settingsView.getController();
-    }
-
-
-    @Override
-    public HarpView getHarpView() {
-        return harpView.getController();
-    }
-
-    @Override
-    public MicrophoneSettingsView getMicrophoneSettingsView() {
-        return settingsView.getController();
-    }
-
-    @Override
-    public boolean isHarpSettingsViewActive() {
-        return settingsViewContainer.isVisible();
-    }
-
-    @Override
-    public boolean isHarpViewActive() {
-        return harpViewContainer.isVisible();
-    }
-
-    @Override
-    public boolean isMicrophoneSettingsViewActive() {
-        return settingsViewContainer.isVisible();
-    }
-
-    @Override
-    public boolean isTrainingViewActive() {
-        return trainingViewContainer.isVisible();
-    }
-
-
-    @Override
-    public void open() {
-        settingsView.getController().setHarpSettingsViewHandler(harpSettingsViewHandler);
-        settingsView.getController().setMicrophoneSettingsViewHandler(microphoneSettingsViewHandler);
-        settingsView.getController().setNoteSettingsViewHandler(noteSettingsViewHandler);
-        trainingView.getController().setTrainingViewHandler(trainingViewHandler);
+  /**
+   * Applies the provided favorite settings to the harmonica model and updates the view accordingly.
+   *
+   * @param f a Favorite object containing the tuning ID and key to be applied to the harmonica
+   *     model
+   */
+  private void applyFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+    try {
+      String[] tunes =
+          de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupportedTunes();
+      String[] keys =
+          de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupporterKeys();
+      int tuneIndex = indexOf(tunes, f.tuningId, model.getStoredTuneIndex());
+      int keyIndex = indexOf(keys, f.key, model.getStoredKeyIndex());
+      harpSettingsViewHandler.handleTuneSelection(tuneIndex);
+      harpSettingsViewHandler.handleKeySelection(keyIndex);
+      // Ensure HarpView reflects the change immediately
+      if (!isHarpViewActive()) {
         showHarpView();
+      } else {
+        harpViewHandler.initNotes();
+      }
+    } catch (Exception ignored) {
     }
+  }
 
-
-    @Override
-    public boolean isNoteSettingsViewActive() {
-        return settingsViewContainer.isVisible();
+  /**
+   * Searches for the first occurrence of the specified value in the provided array of strings.
+   * Comparison is case-insensitive and ignores leading and trailing whitespace.
+   *
+   * @param arr the array of strings to search in; can be null
+   * @param value the string to search for; can be null
+   * @param def the default value to return if the input array or value is invalid, or if the value
+   *     is not found
+   * @return the index of the first occurrence of the value in the array if found; otherwise,
+   *     returns the default value
+   */
+  private static int indexOf(String[] arr, String value, int def) {
+    if (arr == null || value == null) return def;
+    String needle = value.trim();
+    for (int i = 0; i < arr.length; i++) {
+      String hay = arr[i] != null ? arr[i].trim() : null;
+      if (hay != null && hay.equalsIgnoreCase(needle)) return i;
     }
+    return def;
+  }
 
-    @Override
-    public NoteSettingsView getNoteSettingsView() {
-        return settingsView.getController();
+  /**
+   * Builds and returns a label for the given favorite object. If the favorite object already has a
+   * non-empty label, it is returned. Otherwise, the label is constructed using the tuning ID and
+   * key of the favorite object.
+   *
+   * @param f the favorite object for which the label is to be built
+   * @return the constructed label or the existing label if present
+   */
+  private String buildFavoriteLabel(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+    if (f.label != null && !f.label.isEmpty()) return f.label;
+    String tune = f.tuningId != null ? f.tuningId : "";
+    String key = f.key != null ? f.key : "";
+    return tune + " • " + key;
+  }
+
+  /**
+   * Displays a context menu for the specified favorite item with options to rename or delete it.
+   * The context menu appears anchored to the provided node and includes event handlers for each
+   * option.
+   *
+   * @param f the favorite item for which the context menu is being displayed. Represents a user's
+   *     saved configuration or selection in the application.
+   * @param anchor the JavaFX node to which the context menu will be anchored. This determines the
+   *     location where the context menu is displayed on the user interface.
+   */
+  private void showFavoriteContextMenu(
+      de.schliweb.bluesharpbendingapp.favorites.Favorite f, javafx.scene.Node anchor) {
+    try {
+      javafx.scene.control.ContextMenu ctx = new javafx.scene.control.ContextMenu();
+      javafx.scene.control.MenuItem rename =
+          new javafx.scene.control.MenuItem(I18nUtils.getString("favorites.menu.rename"));
+      javafx.scene.control.MenuItem delete =
+          new javafx.scene.control.MenuItem(I18nUtils.getString("favorites.menu.delete"));
+      rename.setOnAction(e -> promptRenameFavorite(f));
+      delete.setOnAction(e -> confirmDeleteFavorite(f));
+      ctx.getItems().addAll(rename, delete);
+      // Show context menu directly below the clicked favorite chip
+      ctx.show(anchor, javafx.geometry.Side.BOTTOM, 0, 0);
+    } catch (Exception ignored) {
     }
+  }
 
-    @Override
-    public TrainingView getTrainingView() {
-        return trainingView.getController();
-    }
+  /**
+   * Prompts the user with a dialog to rename a specified favorite item. The dialog allows the user
+   * to input a new label for the favorite. If a new label is provided, the favorite is renamed, and
+   * the favorites UI is updated to reflect the changes.
+   *
+   * @param f the favorite item to be renamed. This item represents a user's saved favorite
+   *     configuration or selection that can be managed within the application.
+   */
+  private void promptRenameFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+    TextInputDialog dialog = new TextInputDialog(f.label != null ? f.label : buildFavoriteLabel(f));
+    dialog.setTitle(I18nUtils.getString("favorites.rename.title"));
+    dialog.setHeaderText(null);
+    dialog.setContentText(I18nUtils.getString("favorites.rename.prompt"));
+    dialog
+        .showAndWait()
+        .ifPresent(
+            newLabel -> {
+              favoritesHandler.renameFavorite(f.id, newLabel != null ? newLabel.trim() : "");
+              refreshFavoritesUI();
+            });
+  }
 
-    @Override
-    public AndroidSettingsView getAndroidSettingsView() {
-        // no need for Desktop
-        return null;
-    }
-
-    @Override
-    public boolean isAndroidSettingsViewActive() {
-        // no need for Desktop
-        return false;
-    }
-
-    /**
-     * Refreshes the Favorites UI by updating the visibility, manageability, and content of the favorites-related elements
-     * based on the current application state. This method is primarily responsible for ensuring that the favorites UI
-     * reflects the current list of favorites and is only displayed when appropriate.
-     * <p>
-     * Key operations include:
-     * - Checking if the "Harp" view is active to determine if the favorites UI should be shown.
-     * - Updating visibility and manageability of the favorites bar, toggle button, and container elements.
-     * - Clearing and repopulating the favorites container with buttons representing each favorite loaded via the favorites handler.
-     * - Attaching specific actions and context menu behavior to the favorite buttons.
-     * <p>
-     * Any exceptions encountered during the process are silently ignored.
-     */
-    private void refreshFavoritesUI() {
-        try {
-            boolean canShow = isHarpViewActive();
-            if (favoritesBar != null) {
-                favoritesBar.setVisible(canShow);
-                favoritesBar.setManaged(canShow);
-            }
-            if (favoritesToggleButton != null) {
-                favoritesToggleButton.setDisable(!canShow);
-                favoritesToggleButton.setVisible(canShow);
-                favoritesToggleButton.setManaged(canShow);
-            }
-            if (favoritesContainer == null) return;
-            favoritesContainer.setVisible(canShow);
-            favoritesContainer.setManaged(canShow);
-            favoritesContainer.getChildren().clear();
-            if (!canShow || favoritesHandler == null) return;
-
-            java.util.List<de.schliweb.bluesharpbendingapp.favorites.Favorite> list = favoritesHandler.loadFavorites();
-            if (list == null) return;
-            for (de.schliweb.bluesharpbendingapp.favorites.Favorite f : list) {
-                String label = buildFavoriteLabel(f);
-                Button b = new Button(label);
-                b.getStyleClass().add("favorite-chip");
-                b.setOnAction(e -> applyFavorite(f));
-                b.setOnContextMenuRequested(e -> showFavoriteContextMenu(f, b));
-                favoritesContainer.getChildren().add(b);
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
-    /**
-     * Handles the toggle functionality for marking a harmonica configuration as a favorite.
-     * This method interacts with the favorites management system to either add or remove
-     * a configuration from the user's list of favorites based on the current state. It updates
-     * the user interface to reflect the change in favorite status.
-     * <p>
-     * The method retrieves the stored tuning and key information from the application model,
-     * uses those details to toggle the favorite state via the favorites handler, and updates
-     * the toggle button's text accordingly. It also refreshes the favorites-related user interface
-     * elements to ensure consistency in the displayed information.
-     * <p>
-     * Any exceptions that occur during the process are silently ignored.
-     */
-    private void handleFavoriteToggle() {
-        try {
-            String[] tunes = de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupportedTunes();
-            String[] keys = de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupporterKeys();
-            String tuningId = tunes[model.getStoredTuneIndex()];
-            String key = keys[model.getStoredKeyIndex()];
-            Integer holes = 10;
-            de.schliweb.bluesharpbendingapp.favorites.Favorite created = favoritesHandler.toggleFavorite(tuningId, null, key, holes, null);
-            if (created != null) {
-                favoritesToggleButton.setText(I18nUtils.getString("favorites.toggle.on"));
-            } else {
-                favoritesToggleButton.setText(I18nUtils.getString("favorites.toggle.off"));
-            }
-            refreshFavoritesUI();
-        } catch (Exception ignored) {
-        }
-    }
-
-    /**
-     * Applies the provided favorite settings to the harmonica model and updates the view accordingly.
-     *
-     * @param f a Favorite object containing the tuning ID and key to be applied to the harmonica model
-     */
-    private void applyFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
-        try {
-            String[] tunes = de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupportedTunes();
-            String[] keys = de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica.getSupporterKeys();
-            int tuneIndex = indexOf(tunes, f.tuningId, model.getStoredTuneIndex());
-            int keyIndex = indexOf(keys, f.key, model.getStoredKeyIndex());
-            harpSettingsViewHandler.handleTuneSelection(tuneIndex);
-            harpSettingsViewHandler.handleKeySelection(keyIndex);
-            // Ensure HarpView reflects the change immediately
-            if (!isHarpViewActive()) {
-                showHarpView();
-            } else {
-                harpViewHandler.initNotes();
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
-    /**
-     * Searches for the first occurrence of the specified value in the provided array of strings.
-     * Comparison is case-insensitive and ignores leading and trailing whitespace.
-     *
-     * @param arr   the array of strings to search in; can be null
-     * @param value the string to search for; can be null
-     * @param def   the default value to return if the input array or value is invalid, or if the value is not found
-     * @return the index of the first occurrence of the value in the array if found; otherwise, returns the default value
-     */
-    private static int indexOf(String[] arr, String value, int def) {
-        if (arr == null || value == null) return def;
-        String needle = value.trim();
-        for (int i = 0; i < arr.length; i++) {
-            String hay = arr[i] != null ? arr[i].trim() : null;
-            if (hay != null && hay.equalsIgnoreCase(needle)) return i;
-        }
-        return def;
-    }
-
-    /**
-     * Builds and returns a label for the given favorite object. If the favorite
-     * object already has a non-empty label, it is returned. Otherwise, the label
-     * is constructed using the tuning ID and key of the favorite object.
-     *
-     * @param f the favorite object for which the label is to be built
-     * @return the constructed label or the existing label if present
-     */
-    private String buildFavoriteLabel(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
-        if (f.label != null && !f.label.isEmpty()) return f.label;
-        String tune = f.tuningId != null ? f.tuningId : "";
-        String key = f.key != null ? f.key : "";
-        return tune + " • " + key;
-    }
-
-    /**
-     * Displays a context menu for the specified favorite item with options to rename or delete it.
-     * The context menu appears anchored to the provided node and includes event handlers for each option.
-     *
-     * @param f      the favorite item for which the context menu is being displayed. Represents a user's saved configuration
-     *               or selection in the application.
-     * @param anchor the JavaFX node to which the context menu will be anchored. This determines the location
-     *               where the context menu is displayed on the user interface.
-     */
-    private void showFavoriteContextMenu(de.schliweb.bluesharpbendingapp.favorites.Favorite f, javafx.scene.Node anchor) {
-        try {
-            javafx.scene.control.ContextMenu ctx = new javafx.scene.control.ContextMenu();
-            javafx.scene.control.MenuItem rename = new javafx.scene.control.MenuItem(I18nUtils.getString("favorites.menu.rename"));
-            javafx.scene.control.MenuItem delete = new javafx.scene.control.MenuItem(I18nUtils.getString("favorites.menu.delete"));
-            rename.setOnAction(e -> promptRenameFavorite(f));
-            delete.setOnAction(e -> confirmDeleteFavorite(f));
-            ctx.getItems().addAll(rename, delete);
-            // Show context menu directly below the clicked favorite chip
-            ctx.show(anchor, javafx.geometry.Side.BOTTOM, 0, 0);
-        } catch (Exception ignored) {
-        }
-    }
-
-    /**
-     * Prompts the user with a dialog to rename a specified favorite item.
-     * The dialog allows the user to input a new label for the favorite. If a new label is provided,
-     * the favorite is renamed, and the favorites UI is updated to reflect the changes.
-     *
-     * @param f the favorite item to be renamed. This item represents a user's saved favorite
-     *          configuration or selection that can be managed within the application.
-     */
-    private void promptRenameFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
-        TextInputDialog dialog = new TextInputDialog(f.label != null ? f.label : buildFavoriteLabel(f));
-        dialog.setTitle(I18nUtils.getString("favorites.rename.title"));
-        dialog.setHeaderText(null);
-        dialog.setContentText(I18nUtils.getString("favorites.rename.prompt"));
-        dialog.showAndWait().ifPresent(newLabel -> {
-            favoritesHandler.renameFavorite(f.id, newLabel != null ? newLabel.trim() : "");
-            refreshFavoritesUI();
-        });
-    }
-
-    /**
-     * Prompts the user with a confirmation dialog to delete the specified favorite.
-     * If the user confirms the action, the favorite is removed, and the favorites UI is refreshed.
-     *
-     * @param f the favorite item to be deleted. This item represents a user's saved favorite
-     *          configuration or selection that is being managed in the application.
-     */
-    private void confirmDeleteFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, I18nUtils.getString("favorites.delete.confirm"), ButtonType.OK, ButtonType.CANCEL);
-        alert.setHeaderText(I18nUtils.getString("favorites.delete.header"));
-        alert.showAndWait().ifPresent(bt -> {
-            if (bt == ButtonType.OK) {
+  /**
+   * Prompts the user with a confirmation dialog to delete the specified favorite. If the user
+   * confirms the action, the favorite is removed, and the favorites UI is refreshed.
+   *
+   * @param f the favorite item to be deleted. This item represents a user's saved favorite
+   *     configuration or selection that is being managed in the application.
+   */
+  private void confirmDeleteFavorite(de.schliweb.bluesharpbendingapp.favorites.Favorite f) {
+    Alert alert =
+        new Alert(
+            Alert.AlertType.CONFIRMATION,
+            I18nUtils.getString("favorites.delete.confirm"),
+            ButtonType.OK,
+            ButtonType.CANCEL);
+    alert.setHeaderText(I18nUtils.getString("favorites.delete.header"));
+    alert
+        .showAndWait()
+        .ifPresent(
+            bt -> {
+              if (bt == ButtonType.OK) {
                 favoritesHandler.removeFavorite(f.id);
                 refreshFavoritesUI();
-            }
-        });
-    }
-
+              }
+            });
+  }
 }

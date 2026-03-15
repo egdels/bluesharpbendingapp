@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -26,35 +27,34 @@ package de.schliweb.bluesharpbendingapp.di;
 import dagger.Module;
 import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
-
 import javax.inject.Singleton;
 
 /**
- * Dagger module that provides microphone-related dependencies for the application.
- * This module is responsible for providing the Microphone instance.
+ * Dagger module that provides microphone-related dependencies for the application. This module is
+ * responsible for providing the Microphone instance.
  */
 @Module
 public class MicrophoneModule {
 
-    private final Microphone microphone;
+  private final Microphone microphone;
 
-    /**
-     * Constructs a new MicrophoneModule with the specified Microphone.
-     *
-     * @param microphone the Microphone instance to provide
-     */
-    public MicrophoneModule(Microphone microphone) {
-        this.microphone = microphone;
-    }
+  /**
+   * Constructs a new MicrophoneModule with the specified Microphone.
+   *
+   * @param microphone the Microphone instance to provide
+   */
+  public MicrophoneModule(Microphone microphone) {
+    this.microphone = microphone;
+  }
 
-    /**
-     * Provides a singleton instance of Microphone.
-     *
-     * @return a singleton Microphone instance
-     */
-    @Provides
-    @Singleton
-    public Microphone provideMicrophone() {
-        return microphone;
-    }
+  /**
+   * Provides a singleton instance of Microphone.
+   *
+   * @return a singleton Microphone instance
+   */
+  @Provides
+  @Singleton
+  public Microphone provideMicrophone() {
+    return microphone;
+  }
 }

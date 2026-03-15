@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,101 +24,96 @@ package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
  *
  */
 
-import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
-import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
-import org.junit.jupiter.api.Test;
-
-import javax.sound.sampled.TargetDataLine;
-import java.util.Collections;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
+import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
+import java.util.Collections;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import javax.sound.sampled.TargetDataLine;
+import org.junit.jupiter.api.Test;
+
 class MicrophoneDesktopTest {
 
-    /**
-     * Test open method: Ensure that it correctly initializes the executor services and audio queue.
-     */
-    @Test
-    void testOpenInitializesExecutorServicesAndQueue() {
-        MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
-        microphoneDesktop.setName(0);
-        microphoneDesktop.open();
+  /**
+   * Test open method: Ensure that it correctly initializes the executor services and audio queue.
+   */
+  @Test
+  void testOpenInitializesExecutorServicesAndQueue() {
+    MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
+    microphoneDesktop.setName(0);
+    microphoneDesktop.open();
 
-        assertNotNull(microphoneDesktop.audioDataQueue);
-        assertNotNull(microphoneDesktop.executorService);
-        assertNotNull(microphoneDesktop.processingExecutor);
+    assertNotNull(microphoneDesktop.audioDataQueue);
+    assertNotNull(microphoneDesktop.executorService);
+    assertNotNull(microphoneDesktop.processingExecutor);
 
-        microphoneDesktop.close();
-    }
+    microphoneDesktop.close();
+  }
 
-    /**
-     * Test open method: Check that audio data is added to the queue when read.
-     */
-    @Test
-    void testOpenAudioDataAddedToQueue() throws InterruptedException {
-        MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
-        microphoneDesktop.setName(0);
+  /** Test open method: Check that audio data is added to the queue when read. */
+  @Test
+  void testOpenAudioDataAddedToQueue() throws InterruptedException {
+    MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
+    microphoneDesktop.setName(0);
 
-        TargetDataLine mockLine = mock(TargetDataLine.class);
-        when(mockLine.read(any(), eq(0), eq(MicrophoneDesktop.BUFFER_SIZE))).thenAnswer(invocation -> {
-            byte[] buffer = invocation.getArgument(0);
-            for (int i = 0; i < MicrophoneDesktop.BUFFER_SIZE; i++) {
+    TargetDataLine mockLine = mock(TargetDataLine.class);
+    when(mockLine.read(any(), eq(0), eq(MicrophoneDesktop.BUFFER_SIZE)))
+        .thenAnswer(
+            invocation -> {
+              byte[] buffer = invocation.getArgument(0);
+              for (int i = 0; i < MicrophoneDesktop.BUFFER_SIZE; i++) {
                 buffer[i] = (byte) i;
-            }
-            return MicrophoneDesktop.BUFFER_SIZE;
-        });
+              }
+              return MicrophoneDesktop.BUFFER_SIZE;
+            });
 
+    microphoneDesktop.open();
 
-        microphoneDesktop.open();
+    BlockingQueue<byte[]> queue = microphoneDesktop.audioDataQueue;
 
-        BlockingQueue<byte[]> queue = microphoneDesktop.audioDataQueue;
+    byte[] data = queue.poll(2, TimeUnit.SECONDS);
 
-        byte[] data = queue.poll(2, TimeUnit.SECONDS);
+    assertNotNull(data);
+    assertEquals(MicrophoneDesktop.BUFFER_SIZE, data.length);
 
-        assertNotNull(data);
-        assertEquals(MicrophoneDesktop.BUFFER_SIZE, data.length);
+    microphoneDesktop.close();
+  }
 
-        microphoneDesktop.close();
+  /** Test open method: Verify audio processing thread handles interruptions. */
+  @Test
+  void testOpenProcessingThreadHandlesInterruptions() {
+    MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
+    microphoneDesktop.setName(0);
+    microphoneDesktop.open();
+
+    microphoneDesktop.executorService.shutdownNow();
+    microphoneDesktop.processingExecutor.shutdownNow();
+
+    assertTrue(microphoneDesktop.executorService.isShutdown());
+    assertTrue(microphoneDesktop.processingExecutor.isShutdown());
+  }
+
+  /** Test open method: Verify processAudioData processes incoming audio correctly. */
+  @Test
+  void testOpenProcessesAudioDataCorrectly() {
+    MicrophoneDesktop microphoneDesktop = spy(new MicrophoneDesktop());
+    MicrophoneHandler mockHandler = mock(MicrophoneHandler.class);
+    microphoneDesktop.setMicrophoneHandler(mockHandler);
+    microphoneDesktop.setName(0);
+
+    byte[] testAudioData = new byte[MicrophoneDesktop.BUFFER_SIZE];
+    for (int i = 0; i < testAudioData.length; i++) {
+      testAudioData[i] = (byte) i;
     }
 
-    /**
-     * Test open method: Verify audio processing thread handles interruptions.
-     */
-    @Test
-    void testOpenProcessingThreadHandlesInterruptions() {
-        MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
-        microphoneDesktop.setName(0);
-        microphoneDesktop.open();
+    ChordDetectionResult chordResult = new ChordDetectionResult(Collections.emptyList(), 0.0);
+    doNothing().when(mockHandler).handle(anyDouble(), anyDouble(), any(ChordDetectionResult.class));
+    microphoneDesktop.processAudioData(testAudioData, testAudioData.length);
 
-        microphoneDesktop.executorService.shutdownNow();
-        microphoneDesktop.processingExecutor.shutdownNow();
-
-        assertTrue(microphoneDesktop.executorService.isShutdown());
-        assertTrue(microphoneDesktop.processingExecutor.isShutdown());
-    }
-
-    /**
-     * Test open method: Verify processAudioData processes incoming audio correctly.
-     */
-    @Test
-    void testOpenProcessesAudioDataCorrectly() {
-        MicrophoneDesktop microphoneDesktop = spy(new MicrophoneDesktop());
-        MicrophoneHandler mockHandler = mock(MicrophoneHandler.class);
-        microphoneDesktop.setMicrophoneHandler(mockHandler);
-        microphoneDesktop.setName(0);
-
-        byte[] testAudioData = new byte[MicrophoneDesktop.BUFFER_SIZE];
-        for (int i = 0; i < testAudioData.length; i++) {
-            testAudioData[i] = (byte) i;
-        }
-
-        ChordDetectionResult chordResult = new ChordDetectionResult(Collections.emptyList(), 0.0);
-        doNothing().when(mockHandler).handle(anyDouble(), anyDouble(), any(ChordDetectionResult.class));
-        microphoneDesktop.processAudioData(testAudioData, testAudioData.length);
-
-        verify(mockHandler, atLeastOnce()).handle(anyDouble(), anyDouble(), any(ChordDetectionResult.class));
-    }
+    verify(mockHandler, atLeastOnce())
+        .handle(anyDouble(), anyDouble(), any(ChordDetectionResult.class));
+  }
 }

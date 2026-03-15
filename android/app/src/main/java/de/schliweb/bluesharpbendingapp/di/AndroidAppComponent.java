@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -25,69 +26,72 @@ package de.schliweb.bluesharpbendingapp.di;
 
 import dagger.Component;
 import de.schliweb.bluesharpbendingapp.app.MainActivity;
-
 import javax.inject.Singleton;
 
 /**
- * Dagger component for the Android application.
- * This component extends the base AppComponent and adds Android-specific modules.
+ * Dagger component for the Android application. This component extends the base AppComponent and
+ * adds Android-specific modules.
  */
 @Singleton
-@Component(modules = {BaseModule.class, ControllerModule.class, ViewModule.class, MicrophoneModule.class, FavoritesModule.class})
+@Component(
+    modules = {
+      BaseModule.class,
+      ControllerModule.class,
+      ViewModule.class,
+      MicrophoneModule.class,
+      FavoritesModule.class
+    })
 public interface AndroidAppComponent extends AppComponent {
 
-    de.schliweb.bluesharpbendingapp.favorites.FavoriteManager provideFavoriteManager();
+  de.schliweb.bluesharpbendingapp.favorites.FavoriteManager provideFavoriteManager();
 
+  /**
+   * Injects dependencies into the specified MainActivity instance.
+   *
+   * @param activity the MainActivity instance to inject dependencies into
+   */
+  void inject(MainActivity activity);
+
+  /** Builder for creating instances of AndroidAppComponent. */
+  @Component.Builder
+  interface Builder {
     /**
-     * Injects dependencies into the specified MainActivity instance.
+     * Sets the BaseModule for this component.
      *
-     * @param activity the MainActivity instance to inject dependencies into
+     * @param baseModule the BaseModule instance
+     * @return this builder
      */
-    void inject(MainActivity activity);
+    Builder baseModule(BaseModule baseModule);
 
     /**
-     * Builder for creating instances of AndroidAppComponent.
+     * Sets the ViewModule for this component.
+     *
+     * @param viewModule the ViewModule instance
+     * @return this builder
      */
-    @Component.Builder
-    interface Builder {
-        /**
-         * Sets the BaseModule for this component.
-         *
-         * @param baseModule the BaseModule instance
-         * @return this builder
-         */
-        Builder baseModule(BaseModule baseModule);
+    Builder viewModule(ViewModule viewModule);
 
-        /**
-         * Sets the ViewModule for this component.
-         *
-         * @param viewModule the ViewModule instance
-         * @return this builder
-         */
-        Builder viewModule(ViewModule viewModule);
+    /**
+     * Sets the MicrophoneModule for this component.
+     *
+     * @param microphoneModule the MicrophoneModule instance
+     * @return this builder
+     */
+    Builder microphoneModule(MicrophoneModule microphoneModule);
 
-        /**
-         * Sets the MicrophoneModule for this component.
-         *
-         * @param microphoneModule the MicrophoneModule instance
-         * @return this builder
-         */
-        Builder microphoneModule(MicrophoneModule microphoneModule);
+    /**
+     * Sets the FavoritesModule for this component.
+     *
+     * @param favoritesModule the FavoritesModule instance
+     * @return this builder
+     */
+    Builder favoritesModule(FavoritesModule favoritesModule);
 
-        /**
-         * Sets the FavoritesModule for this component.
-         *
-         * @param favoritesModule the FavoritesModule instance
-         * @return this builder
-         */
-        Builder favoritesModule(FavoritesModule favoritesModule);
-
-
-        /**
-         * Builds the AndroidAppComponent.
-         *
-         * @return the built AndroidAppComponent
-         */
-        AndroidAppComponent build();
-    }
+    /**
+     * Builds the AndroidAppComponent.
+     *
+     * @return the built AndroidAppComponent
+     */
+    AndroidAppComponent build();
+  }
 }

@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * MIT License
  *
@@ -27,30 +28,28 @@ import dagger.Module;
 import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.favorites.FavoriteManager;
 import de.schliweb.bluesharpbendingapp.favorites.FileFavoritesStorage;
-
-import javax.inject.Singleton;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
+import javax.inject.Singleton;
 
 /**
- * Desktop-specific Dagger module that provides FavoriteManager storing favorites JSON
- * in the same directory used for the model and logs (tempDirectory).
+ * Desktop-specific Dagger module that provides FavoriteManager storing favorites JSON in the same
+ * directory used for the model and logs (tempDirectory).
  */
 @Module
 public class DesktopFavoritesModule {
 
-    private final String tempDirectory;
+  private final String tempDirectory;
 
-    public DesktopFavoritesModule(String tempDirectory) {
-        this.tempDirectory = tempDirectory;
-    }
+  public DesktopFavoritesModule(String tempDirectory) {
+    this.tempDirectory = tempDirectory;
+  }
 
-    @Provides
-    @Singleton
-    public FavoriteManager provideFavoriteManager(ExecutorService executorService) {
-        Path path = Paths.get(tempDirectory, "favorites_v1.json");
-        return new FavoriteManager(new FileFavoritesStorage(path), executorService);
-
-    }
+  @Provides
+  @Singleton
+  public FavoriteManager provideFavoriteManager(ExecutorService executorService) {
+    Path path = Paths.get(tempDirectory, "favorites_v1.json");
+    return new FavoriteManager(new FileFavoritesStorage(path), executorService);
+  }
 }

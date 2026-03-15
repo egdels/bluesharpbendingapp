@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view.android;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -37,282 +38,302 @@ import androidx.core.content.ContextCompat;
 import de.schliweb.bluesharpbendingapp.R;
 
 /**
- * Utility class for manipulating and updating properties of TextView objects,
- * specifically for managing appearance and behavior in tuning-related applications.
+ * Utility class for manipulating and updating properties of TextView objects, specifically for
+ * managing appearance and behavior in tuning-related applications.
  */
 public class TextViewUtils {
 
+  public static int saveBackgroundColor(TextView textView) {
+    // Get the background drawable
+    android.graphics.drawable.Drawable background = textView.getBackground();
 
-    public static int saveBackgroundColor(TextView textView) {
-        // Get the background drawable
-        android.graphics.drawable.Drawable background = textView.getBackground();
-
-        // Check if the background is a LayerDrawable before attempting to cast
-        if (!(background instanceof LayerDrawable layout)) {
-            return 0 ; // Exit if not a LayerDrawable
-        }
-
-        // Check if the LayerDrawable has enough layers
-        if (layout.getNumberOfLayers() <= 0) {
-            return 0; // Exit if not enough layers
-        }
-
-        // Get the first layer (background)
-        android.graphics.drawable.Drawable firstLayer = layout.getDrawable(0);
-
-        // Handle different drawable types
-        if (firstLayer instanceof android.graphics.drawable.RippleDrawable ripple) {
-            // Get the content drawable (usually at index 0)
-            android.graphics.drawable.Drawable content = ripple.getDrawable(0);
-            return ((GradientDrawable) content).getColor().getDefaultColor();
-
-            // If it's not a GradientDrawable, we can't modify it directly
-        }
-        // For other drawable types, we can't modify them directly
-
-        return 0;
+    // Check if the background is a LayerDrawable before attempting to cast
+    if (!(background instanceof LayerDrawable layout)) {
+      return 0; // Exit if not a LayerDrawable
     }
 
-
-    public static void restoreBackgroundColor(TextView textView, int color) {
-        setBackgroundColor(textView, color);
+    // Check if the LayerDrawable has enough layers
+    if (layout.getNumberOfLayers() <= 0) {
+      return 0; // Exit if not enough layers
     }
 
-    private TextViewUtils() {
+    // Get the first layer (background)
+    android.graphics.drawable.Drawable firstLayer = layout.getDrawable(0);
+
+    // Handle different drawable types
+    if (firstLayer instanceof android.graphics.drawable.RippleDrawable ripple) {
+      // Get the content drawable (usually at index 0)
+      android.graphics.drawable.Drawable content = ripple.getDrawable(0);
+      return ((GradientDrawable) content).getColor().getDefaultColor();
+
+      // If it's not a GradientDrawable, we can't modify it directly
+    }
+    // For other drawable types, we can't modify them directly
+
+    return 0;
+  }
+
+  public static void restoreBackgroundColor(TextView textView, int color) {
+    setBackgroundColor(textView, color);
+  }
+
+  private TextViewUtils() {}
+
+  /**
+   * Clamps a value between a minimum and maximum value. This is a replacement for Math.clamp which
+   * is only available in Java 21+.
+   *
+   * @param value the value to clamp
+   * @param min the minimum value
+   * @param max the maximum value
+   * @return the clamped value
+   */
+  private static double clamp(double value, double min, double max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  /**
+   * Updates the appearance and position of a line in the given `TextView` background layer based on
+   * the passed cent value, dynamically modifying its size, color, and vertical position.
+   *
+   * @param noteTextView The `TextView` whose background layer includes the line to be updated.
+   * @param cents A double representing the cent value, which determines the position, color
+   *     intensity, and other visual attributes of the line.
+   */
+  public static void updateEnlargedTextViewLine(TextView noteTextView, double cents) {
+    // Check if the background is a LayerDrawable before attempting to cast
+    if (!(noteTextView.getBackground() instanceof LayerDrawable layout)) {
+      return; // Exit if not a LayerDrawable
     }
 
-    /**
-     * Clamps a value between a minimum and maximum value.
-     * This is a replacement for Math.clamp which is only available in Java 21+.
-     *
-     * @param value the value to clamp
-     * @param min the minimum value
-     * @param max the maximum value
-     * @return the clamped value
-     */
-    private static double clamp(double value, double min, double max) {
-        return Math.min(Math.max(value, min), max);
+    // Check if the LayerDrawable has enough layers
+    if (layout.getNumberOfLayers() <= 1) {
+      return; // Exit if not enough layers
     }
 
-    /**
-     * Updates the appearance and position of a line in the given `TextView` background layer
-     * based on the passed cent value, dynamically modifying its size, color, and vertical position.
-     *
-     * @param noteTextView The `TextView` whose background layer includes the line to be updated.
-     * @param cents        A double representing the cent value, which determines the position,
-     *                     color intensity, and other visual attributes of the line.
-     */
-    public static void updateEnlargedTextViewLine(TextView noteTextView, double cents) {
-        // Check if the background is a LayerDrawable before attempting to cast
-        if (!(noteTextView.getBackground() instanceof LayerDrawable layout)) {
-            return; // Exit if not a LayerDrawable
-        }
+    GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
+    line.setAlpha(255); // Make line fully visible
 
-        // Check if the LayerDrawable has enough layers
-        if (layout.getNumberOfLayers() <= 1) {
-            return; // Exit if not enough layers
-        }
+    double height = noteTextView.getHeight();
+    double width = noteTextView.getWidth();
 
-        GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-        line.setAlpha(255); // Make line fully visible
+    // Calculate line height (thickness)
+    int lineHeight = Math.max((int) (noteTextView.getHeight() / 10.0), 4);
 
-        double height = noteTextView.getHeight();
-        double width = noteTextView.getWidth();
+    // Set stroke color based on cents value
+    int lineColor =
+        Color.rgb(
+            (int) (250.0 * Math.abs(cents / 50.0)),
+            (int) (250.0 * (1.0 - Math.abs(cents / 50.0))),
+            0);
 
-        // Calculate line height (thickness)
-        int lineHeight = Math.max((int) (noteTextView.getHeight() / 10.0), 4);
+    double limitedCents = clamp(cents, -50, 50);
 
-        // Set stroke color based on cents value
-        int lineColor = Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0);
+    // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
+    // For positive cents, move up from the middle; for negative cents, move down from the middle
+    double middleY = height / 2.0;
+    double offsetY = (limitedCents / 50.0) * (height / 2.0); // Scale to half the height
+    double lineY = middleY - offsetY; // Subtract offset to move up for positive cents
 
-        double limitedCents = clamp(cents, -50, 50);
+    int lineWidth = (int) (width);
+    // Calculate left position to center the line
+    int leftPosition = (int) ((width - lineWidth) / 2.0);
 
-        // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
-        // For positive cents, move up from the middle; for negative cents, move down from the middle
-        double middleY = height / 2.0;
-        double offsetY = (limitedCents / 50.0) * (height / 2.0); // Scale to half the height
-        double lineY = middleY - offsetY; // Subtract offset to move up for positive cents
-
-        int lineWidth = (int) (width);
-        // Calculate left position to center the line
-        int leftPosition = (int) ((width - lineWidth) / 2.0);
-
-        // Set bounds for a horizontal line at the calculated position
-        line.setBounds(leftPosition,                       // Left position (centered)
-                (int) (lineY - lineHeight / 2.0),   // Top position (centered around lineY)
-                leftPosition + lineWidth,           // Right position (left + width)
-                (int) (lineY + lineHeight / 2.0)    // Bottom position (centered around lineY)
+    // Set bounds for a horizontal line at the calculated position
+    line.setBounds(
+        leftPosition, // Left position (centered)
+        (int) (lineY - lineHeight / 2.0), // Top position (centered around lineY)
+        leftPosition + lineWidth, // Right position (left + width)
+        (int) (lineY + lineHeight / 2.0) // Bottom position (centered around lineY)
         );
 
-        // Set the stroke to make the line visible
-        line.setStroke(0, Color.TRANSPARENT); // Clear any existing stroke
-        line.setColor(lineColor); // Set the fill color instead
+    // Set the stroke to make the line visible
+    line.setStroke(0, Color.TRANSPARENT); // Clear any existing stroke
+    line.setColor(lineColor); // Set the fill color instead
+  }
+
+  /**
+   * Updates the position and appearance of a line within the background of the specified `TextView`
+   * based on the provided cent value. The line's position, color, and size are dynamically updated
+   * to reflect the cent-based input.
+   *
+   * @param noteTextView The `TextView` whose background contains the line to be updated.
+   * @param cents A double indicating the cent value that influences the line's position, color
+   *     intensity, and attributes. Values are constrained within the range -44 to 44.
+   */
+  public static void updateTextViewLine(TextView noteTextView, double cents) {
+    // Get the background drawable
+    android.graphics.drawable.Drawable background = noteTextView.getBackground();
+
+    // Check if the background is a LayerDrawable before attempting to cast
+    if (!(background instanceof LayerDrawable layout)) {
+      return; // Exit if not a LayerDrawable
     }
 
-    /**
-     * Updates the position and appearance of a line within the background of the specified `TextView`
-     * based on the provided cent value. The line's position, color, and size are dynamically updated
-     * to reflect the cent-based input.
-     *
-     * @param noteTextView The `TextView` whose background contains the line to be updated.
-     * @param cents        A double indicating the cent value that influences the line's position, color
-     *                     intensity, and attributes. Values are constrained within the range -44 to 44.
-     */
-    public static void updateTextViewLine(TextView noteTextView, double cents) {
-        // Get the background drawable
-        android.graphics.drawable.Drawable background = noteTextView.getBackground();
+    // Check if the LayerDrawable has enough layers
+    if (layout.getNumberOfLayers() <= 1) {
+      return; // Exit if not enough layers
+    }
 
-        // Check if the background is a LayerDrawable before attempting to cast
-        if (!(background instanceof LayerDrawable layout)) {
-            return; // Exit if not a LayerDrawable
-        }
+    GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
+    line.setAlpha(255); // Make line fully visible
 
-        // Check if the LayerDrawable has enough layers
-        if (layout.getNumberOfLayers() <= 1) {
-            return; // Exit if not enough layers
-        }
+    double height = noteTextView.getHeight();
+    double width = noteTextView.getWidth();
 
-        GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-        line.setAlpha(255); // Make line fully visible
+    // Calculate line height (thickness)
+    int lineHeight = Math.max((int) (noteTextView.getHeight() / 10.0), 3);
 
-        double height = noteTextView.getHeight();
-        double width = noteTextView.getWidth();
+    // Set stroke color based on cents value
+    int lineColor =
+        Color.rgb(
+            (int) (250.0 * Math.abs(cents / 50.0)),
+            (int) (250.0 * (1.0 - Math.abs(cents / 50.0))),
+            0);
 
-        // Calculate line height (thickness)
-        int lineHeight = Math.max((int) (noteTextView.getHeight() / 10.0), 3);
+    double limitedCents = clamp(cents, -50, 50);
 
-        // Set stroke color based on cents value
-        int lineColor = Color.rgb((int) (250.0 * Math.abs(cents / 50.0)), (int) (250.0 * (1.0 - Math.abs(cents / 50.0))), 0);
+    // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
+    // For positive cents, move up from the middle; for negative cents, move down from the middle
+    double middleY = height / 2.0;
+    double offsetY = (limitedCents / 50.0) * (height / 2.0); // Scale to half the height
+    double lineY = middleY - offsetY; // Subtract offset to move up for positive cents
 
-        double limitedCents = clamp(cents, -50, 50);
+    // Get the corner radius from resources
+    float cornerRadius =
+        noteTextView.getContext().getResources().getDimension(R.dimen.note_corner_radius);
 
-        // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
-        // For positive cents, move up from the middle; for negative cents, move down from the middle
-        double middleY = height / 2.0;
-        double offsetY = (limitedCents / 50.0) * (height / 2.0); // Scale to half the height
-        double lineY = middleY - offsetY; // Subtract offset to move up for positive cents
+    int lineWidth = (int) (width - cornerRadius / 2);
 
-        // Get the corner radius from resources
-        float cornerRadius = noteTextView.getContext().getResources().getDimension(R.dimen.note_corner_radius);
+    // Calculate left position to center the line
+    int leftPosition = (int) ((width - lineWidth) / 2.0);
 
-        int lineWidth = (int) (width - cornerRadius / 2);
-
-        // Calculate left position to center the line
-        int leftPosition = (int) ((width - lineWidth) / 2.0);
-
-        // Set bounds for a horizontal line at the calculated position
-        line.setBounds(leftPosition,                       // Left position (centered)
-                (int) (lineY - lineHeight / 2.0),   // Top position (centered around lineY)
-                leftPosition + lineWidth,           // Right position (left + width)
-                (int) (lineY + lineHeight / 2.0)    // Bottom position (centered around lineY)
+    // Set bounds for a horizontal line at the calculated position
+    line.setBounds(
+        leftPosition, // Left position (centered)
+        (int) (lineY - lineHeight / 2.0), // Top position (centered around lineY)
+        leftPosition + lineWidth, // Right position (left + width)
+        (int) (lineY + lineHeight / 2.0) // Bottom position (centered around lineY)
         );
 
-        // Set the stroke to make the line visible
-        line.setStroke(0, Color.TRANSPARENT); // Clear any existing stroke
-        line.setColor(lineColor); // Set the fill color instead
+    // Set the stroke to make the line visible
+    line.setStroke(0, Color.TRANSPARENT); // Clear any existing stroke
+    line.setColor(lineColor); // Set the fill color instead
+  }
+
+  /**
+   * Clears the visible line in the background of the given TextView by setting its transparency to
+   * fully clear.
+   *
+   * @param noteTextView The TextView whose background line layer will be modified to become
+   *     transparent.
+   */
+  public static void clearTextViewLine(TextView noteTextView) {
+    // Get the background drawable
+    android.graphics.drawable.Drawable background = noteTextView.getBackground();
+
+    // Check the type of background drawable before attempting to cast
+    if (background instanceof LayerDrawable layout) {
+      // Get the LayerDrawable and extract the line layer (index 1)
+      if (layout.getNumberOfLayers() > 1) {
+        GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
+        // Make the line completely transparent
+        line.setAlpha(0);
+
+        // Reset both stroke and fill color to transparent to ensure it's not visible
+        line.setStroke(0, Color.TRANSPARENT);
+        line.setColor(Color.TRANSPARENT);
+      }
+    }
+    // If the background is not a LayerDrawable or doesn't have enough layers,
+    // we don't need to do anything as there's no line to clear
+  }
+
+  /**
+   * Updates the content and style of a `TextView` to display a note text and a cent value with
+   * specific formatting. This includes styling text appearance, setting fonts, and adjusting text
+   * sizes. Uses modern text styling approaches with SpannableStringBuilder.
+   *
+   * @param noteTextView The `TextView` that will display the formatted note text and cent value.
+   * @param noteText The note text to be displayed, which will appear in bold and enlarged.
+   * @param cents A double value representing the cent information, formatted and styled to appear
+   *     as part of the displayed text.
+   */
+  public static void updateTextViewCent(TextView noteTextView, String noteText, double cents) {
+    // Format cents with leading spaces and sign (+/-), suppress lint warning
+    @SuppressLint("DefaultLocale")
+    String centsString = String.format("%+3d", (int) cents);
+    centsString = "ct:" + centsString;
+
+    // Use SpannableStringBuilder for more efficient span operations
+    Spannable spannableString = new SpannableString(noteText + "\n" + centsString);
+
+    // Make the note text bold (first part only)
+    spannableString.setSpan(
+        new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    // Increase size of note text by factor 1.0
+    spannableString.setSpan(
+        new RelativeSizeSpan(1.0f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    // Apply monospace font to the cents part
+    spannableString.setSpan(
+        new TypefaceSpan("monospace"),
+        noteText.length(),
+        spannableString.length(),
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    // Make cents part 0.5 times smaller than normal text
+    spannableString.setSpan(
+        new RelativeSizeSpan(0.5f),
+        noteText.length() + 1,
+        spannableString.length(),
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    // Set the final formatted text to the TextView
+    noteTextView.setText(spannableString);
+
+    // Apply modern elevation for a subtle shadow effect
+    noteTextView.setElevation(4f);
+  }
+
+  /**
+   * Highlights a TextView to visually represent a chord. This method modifies the background of the
+   * TextView to indicate a chord highlight state. It uses the warning color (yellow/amber) from the
+   * color resources.
+   *
+   * @param noteTextView The TextView to be highlighted as a chord.
+   */
+  public static void highlightAsChord(TextView noteTextView) {
+    setBackgroundColor(
+        noteTextView, ContextCompat.getColor(noteTextView.getContext(), R.color.warning));
+  }
+
+  private static void setBackgroundColor(TextView noteTextView, int color) {
+    // Get the background drawable
+    android.graphics.drawable.Drawable background = noteTextView.getBackground();
+
+    // Check if the background is a LayerDrawable before attempting to cast
+    if (!(background instanceof LayerDrawable layout)) {
+      return; // Exit if not a LayerDrawable
     }
 
-
-    /**
-     * Clears the visible line in the background of the given TextView by setting its transparency to fully clear.
-     *
-     * @param noteTextView The TextView whose background line layer will be modified to become transparent.
-     */
-    public static void clearTextViewLine(TextView noteTextView) {
-        // Get the background drawable
-        android.graphics.drawable.Drawable background = noteTextView.getBackground();
-
-        // Check the type of background drawable before attempting to cast
-        if (background instanceof LayerDrawable layout) {
-            // Get the LayerDrawable and extract the line layer (index 1)
-            if (layout.getNumberOfLayers() > 1) {
-                GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
-                // Make the line completely transparent
-                line.setAlpha(0);
-
-                // Reset both stroke and fill color to transparent to ensure it's not visible
-                line.setStroke(0, Color.TRANSPARENT);
-                line.setColor(Color.TRANSPARENT);
-            }
-        }
-        // If the background is not a LayerDrawable or doesn't have enough layers,
-        // we don't need to do anything as there's no line to clear
+    // Check if the LayerDrawable has enough layers
+    if (layout.getNumberOfLayers() <= 0) {
+      return; // Exit if not enough layers
     }
 
-    /**
-     * Updates the content and style of a `TextView` to display a note text and a cent value with specific formatting.
-     * This includes styling text appearance, setting fonts, and adjusting text sizes.
-     * Uses modern text styling approaches with SpannableStringBuilder.
-     *
-     * @param noteTextView The `TextView` that will display the formatted note text and cent value.
-     * @param noteText     The note text to be displayed, which will appear in bold and enlarged.
-     * @param cents        A double value representing the cent information, formatted and styled to appear
-     *                     as part of the displayed text.
-     */
-    public static void updateTextViewCent(TextView noteTextView, String noteText, double cents) {
-        // Format cents with leading spaces and sign (+/-), suppress lint warning
-        @SuppressLint("DefaultLocale") String centsString = String.format("%+3d", (int) cents);
-        centsString = "ct:" + centsString;
+    // Get the first layer (background)
+    android.graphics.drawable.Drawable firstLayer = layout.getDrawable(0);
 
-        // Use SpannableStringBuilder for more efficient span operations
-        Spannable spannableString = new SpannableString(noteText + "\n" + centsString);
+    // Handle different drawable types
+    if (firstLayer instanceof android.graphics.drawable.RippleDrawable ripple) {
+      // Get the content drawable (usually at index 0)
+      android.graphics.drawable.Drawable content = ripple.getDrawable(0);
+      ((GradientDrawable) content).setColor(color);
 
-        // Make the note text bold (first part only)
-        spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Increase size of note text by factor 1.0
-        spannableString.setSpan(new RelativeSizeSpan(1.0f), 0, noteText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Apply monospace font to the cents part
-        spannableString.setSpan(new TypefaceSpan("monospace"), noteText.length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Make cents part 0.5 times smaller than normal text
-        spannableString.setSpan(new RelativeSizeSpan(0.5f), noteText.length() + 1, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Set the final formatted text to the TextView
-        noteTextView.setText(spannableString);
-
-        // Apply modern elevation for a subtle shadow effect
-        noteTextView.setElevation(4f);
+      // If it's not a GradientDrawable, we can't modify it directly
     }
-
-    /**
-     * Highlights a TextView to visually represent a chord.
-     * This method modifies the background of the TextView to indicate a chord highlight state.
-     * It uses the warning color (yellow/amber) from the color resources.
-     *
-     * @param noteTextView The TextView to be highlighted as a chord.
-     */
-    public static void highlightAsChord(TextView noteTextView) {
-        setBackgroundColor(noteTextView, ContextCompat.getColor(noteTextView.getContext(), R.color.warning));
-    }
-
-
-    private static void setBackgroundColor(TextView noteTextView, int color) {
-            // Get the background drawable
-            android.graphics.drawable.Drawable background = noteTextView.getBackground();
-
-            // Check if the background is a LayerDrawable before attempting to cast
-            if (!(background instanceof LayerDrawable layout)) {
-                return; // Exit if not a LayerDrawable
-            }
-
-            // Check if the LayerDrawable has enough layers
-            if (layout.getNumberOfLayers() <= 0) {
-                return; // Exit if not enough layers
-            }
-
-            // Get the first layer (background)
-            android.graphics.drawable.Drawable firstLayer = layout.getDrawable(0);
-
-            // Handle different drawable types
-            if (firstLayer instanceof android.graphics.drawable.RippleDrawable ripple) {
-                // Get the content drawable (usually at index 0)
-                android.graphics.drawable.Drawable content = ripple.getDrawable(0);
-                ((GradientDrawable) content).setColor(color);
-
-                // If it's not a GradientDrawable, we can't modify it directly
-            }
-            // For other drawable types, we can't modify them directly
-    }
+    // For other drawable types, we can't modify them directly
+  }
 }

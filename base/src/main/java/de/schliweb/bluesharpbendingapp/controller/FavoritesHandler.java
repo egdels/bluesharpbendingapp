@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * MIT License
  *
@@ -24,64 +25,56 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 import de.schliweb.bluesharpbendingapp.favorites.Favorite;
-
 import java.util.List;
 
 /**
  * Handler interface for managing Favorites across platforms.
- * <p>
- * Implementations are responsible for coordinating between the UI layer and the
- * underlying favorites manager/persistence. This interface is platform-neutral
- * and belongs to the base module so it can be implemented by both Desktop and Android.
- * <p>
- * Responsibilities:
- * - Load persisted favorites and expose them to the UI
- * - Toggle the current combination as favorite (create/remove)
- * - Rename, remove, and reorder favorites
- * - Query if the current combination is a favorite
- * <p>
- * Note: Applying a favorite (setting tuning/key/holes on the active model) is
- * intentionally left to platform-specific controllers to avoid tight coupling.
+ *
+ * <p>Implementations are responsible for coordinating between the UI layer and the underlying
+ * favorites manager/persistence. This interface is platform-neutral and belongs to the base module
+ * so it can be implemented by both Desktop and Android.
+ *
+ * <p>Responsibilities: - Load persisted favorites and expose them to the UI - Toggle the current
+ * combination as favorite (create/remove) - Rename, remove, and reorder favorites - Query if the
+ * current combination is a favorite
+ *
+ * <p>Note: Applying a favorite (setting tuning/key/holes on the active model) is intentionally left
+ * to platform-specific controllers to avoid tight coupling.
  */
 public interface FavoritesHandler {
-    /**
-     * Loads the current list of favorites ordered by their sort order.
-     *
-     * @return ordered list of favorites; never null
-     */
-    List<Favorite> loadFavorites();
+  /**
+   * Loads the current list of favorites ordered by their sort order.
+   *
+   * @return ordered list of favorites; never null
+   */
+  List<Favorite> loadFavorites();
 
-    /**
-     * Toggles the favorite for the given combination. If the combination already exists,
-     * it is removed and {@code null} is returned. Otherwise, a new favorite is created and returned.
-     *
-     * @param tuningId   tuning identifier (e.g., "RICHTER", "CUSTOM:xyz")
-     * @param tuningHash optional stable signature/hash for custom tunings; may be null
-     * @param key        musical key (e.g., "C", "G")
-     * @param holes      optional hole count (e.g., 10, 12); may be null
-     * @param label      optional display label; may be null
-     * @return the created favorite if newly added; {@code null} if removed
-     */
-    Favorite toggleFavorite(String tuningId, String tuningHash, String key, Integer holes, String label);
+  /**
+   * Toggles the favorite for the given combination. If the combination already exists, it is
+   * removed and {@code null} is returned. Otherwise, a new favorite is created and returned.
+   *
+   * @param tuningId tuning identifier (e.g., "RICHTER", "CUSTOM:xyz")
+   * @param tuningHash optional stable signature/hash for custom tunings; may be null
+   * @param key musical key (e.g., "C", "G")
+   * @param holes optional hole count (e.g., 10, 12); may be null
+   * @param label optional display label; may be null
+   * @return the created favorite if newly added; {@code null} if removed
+   */
+  Favorite toggleFavorite(
+      String tuningId, String tuningHash, String key, Integer holes, String label);
 
-    /**
-     * Checks whether the given combination is currently stored as a favorite.
-     */
-    boolean isCurrentFavorite(String tuningId, String tuningHash, String key, Integer holes);
+  /** Checks whether the given combination is currently stored as a favorite. */
+  boolean isCurrentFavorite(String tuningId, String tuningHash, String key, Integer holes);
 
-    /**
-     * Renames the favorite with the specified id. No-op if the id is unknown.
-     */
-    void renameFavorite(String id, String newLabel);
+  /** Renames the favorite with the specified id. No-op if the id is unknown. */
+  void renameFavorite(String id, String newLabel);
 
-    /**
-     * Removes the favorite with the specified id. No-op if the id is unknown.
-     */
-    void removeFavorite(String id);
+  /** Removes the favorite with the specified id. No-op if the id is unknown. */
+  void removeFavorite(String id);
 
-    /**
-     * Reorders the favorites according to the provided list. Items not present in the list
-     * are appended at the end preserving their relative ordering.
-     */
-    void reorderFavorites(List<Favorite> inNewOrder);
+  /**
+   * Reorders the favorites according to the provided list. Items not present in the list are
+   * appended at the end preserving their relative ordering.
+   */
+  void reorderFavorites(List<Favorite> inNewOrder);
 }

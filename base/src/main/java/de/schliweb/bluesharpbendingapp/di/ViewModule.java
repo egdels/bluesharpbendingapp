@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -26,35 +27,34 @@ package de.schliweb.bluesharpbendingapp.di;
 import dagger.Module;
 import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
-
 import javax.inject.Singleton;
 
 /**
- * Dagger module that provides view-related dependencies for the application.
- * This module is responsible for providing the MainWindow instance.
+ * Dagger module that provides view-related dependencies for the application. This module is
+ * responsible for providing the MainWindow instance.
  */
 @Module
 public class ViewModule {
 
-    private final MainWindow mainWindow;
+  private final MainWindow mainWindow;
 
-    /**
-     * Constructs a new ViewModule with the specified MainWindow.
-     *
-     * @param mainWindow the MainWindow instance to provide
-     */
-    public ViewModule(MainWindow mainWindow) {
-        this.mainWindow = mainWindow;
-    }
+  /**
+   * Constructs a new ViewModule with the specified MainWindow.
+   *
+   * @param mainWindow the MainWindow instance to provide
+   */
+  public ViewModule(MainWindow mainWindow) {
+    this.mainWindow = mainWindow;
+  }
 
-    /**
-     * Provides a singleton instance of MainWindow.
-     *
-     * @return a singleton MainWindow instance
-     */
-    @Provides
-    @Singleton
-    public MainWindow provideMainWindow() {
-        return mainWindow;
-    }
+  /**
+   * Provides a singleton instance of MainWindow.
+   *
+   * @return a singleton MainWindow instance
+   */
+  @Provides
+  @Singleton
+  public MainWindow provideMainWindow() {
+    return mainWindow;
+  }
 }

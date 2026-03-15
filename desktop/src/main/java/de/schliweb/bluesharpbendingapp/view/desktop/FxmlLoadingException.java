@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view.desktop;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,38 +24,33 @@ package de.schliweb.bluesharpbendingapp.view.desktop;
  *
  */
 
-
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 
-
 /**
- * This exception is thrown when an FXML file fails to load. It extends the
- * {@link RuntimeException} class, making it an unchecked exception. This allows
- * applications to handle FXML-related errors more flexibly.
- * <p>
- * FxmlLoadingException is typically used in scenarios where FXML markup
- * parsing or runtime loading encounters an issue, such as malformed XML,
- * missing resources, or I/O errors during the loading of the FXML file.
- * <p>
- * The constructor for this exception allows for the inclusion of an error
- * message and a cause, which enables better debugging and troubleshooting
- * when an exception occurs.
+ * This exception is thrown when an FXML file fails to load. It extends the {@link RuntimeException}
+ * class, making it an unchecked exception. This allows applications to handle FXML-related errors
+ * more flexibly.
+ *
+ * <p>FxmlLoadingException is typically used in scenarios where FXML markup parsing or runtime
+ * loading encounters an issue, such as malformed XML, missing resources, or I/O errors during the
+ * loading of the FXML file.
+ *
+ * <p>The constructor for this exception allows for the inclusion of an error message and a cause,
+ * which enables better debugging and troubleshooting when an exception occurs.
  */
 public class FxmlLoadingException extends RuntimeException {
 
-    /**
-     * Constructs a new FxmlLoadingException with the specified detail message and cause.
-     * This constructor allows for an exception to be created with both an explanatory
-     * error message and a wrapped cause, which may aid in debugging issues related to
-     * FXML file loading.
-     *
-     * @param message the detail message explaining the reason for the exception.
-     * @param cause   the underlying cause of the exception (e.g., an IOException or
-     *                parsing error). This can be null if no cause is available or applicable.
-     */
-    public FxmlLoadingException(String message, Throwable cause) {
-        super(message, cause);
-        LoggingUtils.logError("Error while loading the FXML", cause);
-    }
+  /**
+   * Constructs a new FxmlLoadingException with the specified detail message and cause. This
+   * constructor allows for an exception to be created with both an explanatory error message and a
+   * wrapped cause, which may aid in debugging issues related to FXML file loading.
+   *
+   * @param message the detail message explaining the reason for the exception.
+   * @param cause the underlying cause of the exception (e.g., an IOException or parsing error).
+   *     This can be null if no cause is available or applicable.
+   */
+  public FxmlLoadingException(String message, Throwable cause) {
+    super(message, cause);
+    LoggingUtils.logError("Error while loading the FXML", cause);
+  }
 }
-

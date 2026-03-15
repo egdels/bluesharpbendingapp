@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -26,62 +27,60 @@ package de.schliweb.bluesharpbendingapp.view;
 import de.schliweb.bluesharpbendingapp.controller.TrainingContainer;
 
 /**
- * Represents the view interface for the training component in the application.
- * This interface defines methods for managing the display, interaction, and
- * updates between the training sessions and the user interface.
+ * Represents the view interface for the training component in the application. This interface
+ * defines methods for managing the display, interaction, and updates between the training sessions
+ * and the user interface.
  */
 public interface TrainingView {
 
-    /**
-     * Updates the list of available training sessions to be displayed or managed by the view.
-     *
-     * @param trainings an array of training session names or identifiers
-     */
-    void setTrainings(String[] trainings);
+  /**
+   * Updates the list of available training sessions to be displayed or managed by the view.
+   *
+   * @param trainings an array of training session names or identifiers
+   */
+  void setTrainings(String[] trainings);
 
-    /**
-     * Updates the list of available precisions to be displayed or managed by the view.
-     *
-     * @param precisions an array of precision names or identifiers
-     */
-    void setPrecisions(String[] precisions);
+  /**
+   * Updates the list of available precisions to be displayed or managed by the view.
+   *
+   * @param precisions an array of precision names or identifiers
+   */
+  void setPrecisions(String[] precisions);
 
-    /**
-     * Updates the selected training session by specifying its index in the list
-     * of available training sessions.
-     *
-     * @param selectedTrainingIndex the index of the selected training session
-     */
-    void setSelectedTraining(int selectedTrainingIndex);
+  /**
+   * Updates the selected training session by specifying its index in the list of available training
+   * sessions.
+   *
+   * @param selectedTrainingIndex the index of the selected training session
+   */
+  void setSelectedTraining(int selectedTrainingIndex);
 
-    /**
-     * Updates the selected precision by specifying its index in the list
-     * of available precisions.
-     *
-     * @param selectedPrecisionIndex the index of the selected precision
-     */
-    void setSelectedPrecision(int selectedPrecisionIndex);
+  /**
+   * Updates the selected precision by specifying its index in the list of available precisions.
+   *
+   * @param selectedPrecisionIndex the index of the selected precision
+   */
+  void setSelectedPrecision(int selectedPrecisionIndex);
 
-    /**
-     * Retrieves the current harp view note element that is active or being interacted with.
-     *
-     * @return the active HarpViewNoteElement instance currently in use
-     */
-    HarpViewNoteElement getActualHarpViewElement();
+  /**
+   * Retrieves the current harp view note element that is active or being interacted with.
+   *
+   * @return the active HarpViewNoteElement instance currently in use
+   */
+  HarpViewNoteElement getActualHarpViewElement();
 
-    /**
-     * Initializes the training container in the view. This method is responsible
-     * for setting up or resetting the training-related components and ensuring
-     * synchronization between the view and the training container.
-     *
-     * @param trainingContainer the TrainingContainer instance to be initialized within the view
-     */
-    void initTrainingContainer(TrainingContainer trainingContainer);
+  /**
+   * Initializes the training container in the view. This method is responsible for setting up or
+   * resetting the training-related components and ensuring synchronization between the view and the
+   * training container.
+   *
+   * @param trainingContainer the TrainingContainer instance to be initialized within the view
+   */
+  void initTrainingContainer(TrainingContainer trainingContainer);
 
-    /**
-     * Toggles the state of a button in the view. This method is responsible for
-     * switching the button between its active and inactive states, enabling or
-     * disabling user interaction accordingly.
-     */
-    void toggleButton();
+  /**
+   * Toggles the state of a button in the view. This method is responsible for switching the button
+   * between its active and inactive states, enabling or disabling user interaction accordingly.
+   */
+  void toggleButton();
 }

@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.model.microphone;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -25,18 +26,15 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
 
 import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 
-/**
- * The interface Microphone handler.
- */
+/** The interface Microphone handler. */
 public interface MicrophoneHandler {
 
-    /**
-     * Handle all.
-     *
-     * @param frequency   the frequency
-     * @param volume      the volume
-     * @param chordResult the chord result
-     */
-    void handle(double frequency, double volume, ChordDetectionResult chordResult);
-
+  /**
+   * Handle all.
+   *
+   * @param frequency the frequency
+   * @param volume the volume
+   * @param chordResult the chord result
+   */
+  void handle(double frequency, double volume, ChordDetectionResult chordResult);
 }

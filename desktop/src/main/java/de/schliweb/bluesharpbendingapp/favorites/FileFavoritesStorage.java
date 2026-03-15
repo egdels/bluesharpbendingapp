@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.favorites;
+
 /*
  * MIT License
  *
@@ -29,46 +30,44 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-/**
- * File-based implementation storing a single JSON string at a given path.
- */
+/** File-based implementation storing a single JSON string at a given path. */
 public final class FileFavoritesStorage implements FavoritesStorage {
-    private final Path file;
+  private final Path file;
 
-    public FileFavoritesStorage(Path file) {
-        this.file = file;
-    }
+  public FileFavoritesStorage(Path file) {
+    this.file = file;
+  }
 
-    public static FileFavoritesStorage inUserHomeDefault() {
-        String home = System.getProperty("user.home");
-        Path dir = java.nio.file.Paths.get(home, ".bluesharpbendingapp");
-        Path file = dir.resolve("favorites_v1.json");
-        try {
-            if (!Files.exists(dir)) Files.createDirectories(dir);
-            if (!Files.exists(file)) Files.createFile(file);
-        } catch (IOException ignored) {
-        }
-        return new FileFavoritesStorage(file);
+  public static FileFavoritesStorage inUserHomeDefault() {
+    String home = System.getProperty("user.home");
+    Path dir = java.nio.file.Paths.get(home, ".bluesharpbendingapp");
+    Path file = dir.resolve("favorites_v1.json");
+    try {
+      if (!Files.exists(dir)) Files.createDirectories(dir);
+      if (!Files.exists(file)) Files.createFile(file);
+    } catch (IOException ignored) {
     }
+    return new FileFavoritesStorage(file);
+  }
 
-    @Override
-    public String read() {
-        try {
-            if (!Files.exists(file)) return "";
-            return Files.readString(file, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            return "";
-        }
+  @Override
+  public String read() {
+    try {
+      if (!Files.exists(file)) return "";
+      return Files.readString(file, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      return "";
     }
+  }
 
-    @Override
-    public void write(String json) {
-        try {
-            Path tmp = Files.createTempFile(file.getParent(), "favorites", ".tmp");
-            Files.writeString(tmp, json != null ? json : "", StandardCharsets.UTF_8);
-            Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-        } catch (IOException e) {
-            // Best-effort; ignore to keep app resilient
-        }
+  @Override
+  public void write(String json) {
+    try {
+      Path tmp = Files.createTempFile(file.getParent(), "favorites", ".tmp");
+      Files.writeString(tmp, json != null ? json : "", StandardCharsets.UTF_8);
+      Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+    } catch (IOException e) {
+      // Best-effort; ignore to keep app resilient
     }
+  }
 }

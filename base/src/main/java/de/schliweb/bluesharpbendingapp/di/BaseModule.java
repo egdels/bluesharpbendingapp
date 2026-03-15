@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -25,71 +26,68 @@ package de.schliweb.bluesharpbendingapp.di;
 
 import dagger.Module;
 import dagger.Provides;
-
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
-
-import javax.inject.Singleton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.inject.Singleton;
 
 /**
- * Dagger module that provides base dependencies for the application.
- * This module is responsible for configuring how instances of various classes
- * are created and managed throughout the application.
+ * Dagger module that provides base dependencies for the application. This module is responsible for
+ * configuring how instances of various classes are created and managed throughout the application.
  */
 @Module
 public class BaseModule {
 
-    private final String tempDirectory;
-    private final String tempFile;
+  private final String tempDirectory;
+  private final String tempFile;
 
-    /**
-     * Constructs a new BaseModule with the specified temporary directory and file.
-     *
-     * @param tempDirectory the directory path where temporary files will be stored
-     * @param tempFile      the name of the temporary file
-     */
-    public BaseModule(String tempDirectory, String tempFile) {
-        this.tempDirectory = tempDirectory;
-        this.tempFile = tempFile;
-    }
+  /**
+   * Constructs a new BaseModule with the specified temporary directory and file.
+   *
+   * @param tempDirectory the directory path where temporary files will be stored
+   * @param tempFile the name of the temporary file
+   */
+  public BaseModule(String tempDirectory, String tempFile) {
+    this.tempDirectory = tempDirectory;
+    this.tempFile = tempFile;
+  }
 
-    // In Dagger, bindings are done through @Binds methods or directly in the @Module annotation
-    // No configure() method is needed
+  // In Dagger, bindings are done through @Binds methods or directly in the @Module annotation
+  // No configure() method is needed
 
-    /**
-     * Provides a singleton instance of ModelStorageService.
-     *
-     * @return a singleton ModelStorageService instance
-     */
-    @Provides
-    @Singleton
-    public ModelStorageService provideModelStorageService() {
-        return new ModelStorageService(tempDirectory, tempFile);
-    }
+  /**
+   * Provides a singleton instance of ModelStorageService.
+   *
+   * @return a singleton ModelStorageService instance
+   */
+  @Provides
+  @Singleton
+  public ModelStorageService provideModelStorageService() {
+    return new ModelStorageService(tempDirectory, tempFile);
+  }
 
-    /**
-     * Provides a singleton instance of the MainModel by reading it using the
-     * provided ModelStorageService.
-     *
-     * @param modelStorageService the service used to read and provide the MainModel instance
-     * @return a singleton instance of MainModel
-     */
-    @Provides
-    @Singleton
-    public MainModel provideMainModel(ModelStorageService modelStorageService) {
-        return modelStorageService.readModel();
-    }
+  /**
+   * Provides a singleton instance of the MainModel by reading it using the provided
+   * ModelStorageService.
+   *
+   * @param modelStorageService the service used to read and provide the MainModel instance
+   * @return a singleton instance of MainModel
+   */
+  @Provides
+  @Singleton
+  public MainModel provideMainModel(ModelStorageService modelStorageService) {
+    return modelStorageService.readModel();
+  }
 
-    /**
-     * Provides a singleton ExecutorService for asynchronous operations.
-     *
-     * @return a singleton ExecutorService instance
-     */
-    @Provides
-    @Singleton
-    public ExecutorService provideExecutorService() {
-        return Executors.newCachedThreadPool();
-    }
+  /**
+   * Provides a singleton ExecutorService for asynchronous operations.
+   *
+   * @return a singleton ExecutorService instance
+   */
+  @Provides
+  @Singleton
+  public ExecutorService provideExecutorService() {
+    return Executors.newCachedThreadPool();
+  }
 }

@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.view.android;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,18 +24,16 @@ package de.schliweb.bluesharpbendingapp.view.android;
  *
  */
 
-
 /**
- * Interface representing a generic fragment view in an application.
- * This can be implemented to provide custom behavior or characteristics
- * specific to a fragment's view.
+ * Interface representing a generic fragment view in an application. This can be implemented to
+ * provide custom behavior or characteristics specific to a fragment's view.
  */
 public interface FragmentView {
 
-    /**
-     * Retrieves an instance associated with the fragment view.
-     *
-     * @return an Object representing the instance for the fragment view.
-     */
-    Object getInstance();
+  /**
+   * Retrieves an instance associated with the fragment view.
+   *
+   * @return an Object representing the instance for the fragment view.
+   */
+  Object getInstance();
 }

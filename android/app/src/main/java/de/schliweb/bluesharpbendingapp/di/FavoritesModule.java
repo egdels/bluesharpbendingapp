@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.di;
+
 /*
  * MIT License
  *
@@ -24,32 +25,28 @@ package de.schliweb.bluesharpbendingapp.di;
  */
 
 import android.content.Context;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
-import de.schliweb.bluesharpbendingapp.favorites.FavoriteManager;
 import de.schliweb.bluesharpbendingapp.favorites.AndroidSharedPreferencesFavoritesStorage;
-
+import de.schliweb.bluesharpbendingapp.favorites.FavoriteManager;
 import java.util.concurrent.ExecutorService;
+import javax.inject.Singleton;
 
-/**
- * Android-specific Dagger module that provides the FavoriteManager using SharedPreferences.
- */
+/** Android-specific Dagger module that provides the FavoriteManager using SharedPreferences. */
 @Module
 public class FavoritesModule {
 
-    private final Context appContext;
+  private final Context appContext;
 
-    public FavoritesModule(Context appContext) {
-        this.appContext = appContext.getApplicationContext();
-    }
+  public FavoritesModule(Context appContext) {
+    this.appContext = appContext.getApplicationContext();
+  }
 
-    @Provides
-    @Singleton
-    public FavoriteManager provideFavoriteManager(ExecutorService executorService) {
-        AndroidSharedPreferencesFavoritesStorage storage = new AndroidSharedPreferencesFavoritesStorage(appContext);
-        return new FavoriteManager(storage, executorService);
-    }
+  @Provides
+  @Singleton
+  public FavoriteManager provideFavoriteManager(ExecutorService executorService) {
+    AndroidSharedPreferencesFavoritesStorage storage =
+        new AndroidSharedPreferencesFavoritesStorage(appContext);
+    return new FavoriteManager(storage, executorService);
+  }
 }

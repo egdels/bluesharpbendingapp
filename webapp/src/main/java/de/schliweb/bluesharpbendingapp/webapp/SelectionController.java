@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.webapp;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,57 +24,54 @@ package de.schliweb.bluesharpbendingapp.webapp;
  *
  */
 import jakarta.servlet.http.HttpSession;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 /**
- * Controller responsible for handling selection-related operations and providing
- * functionalities for sending and retrieving harmonica preferences.
- * It exposes endpoints for processing user selections and managing session data.
+ * Controller responsible for handling selection-related operations and providing functionalities
+ * for sending and retrieving harmonica preferences. It exposes endpoints for processing user
+ * selections and managing session data.
  */
 @RestController
 @RequestMapping("/selection")
 public class SelectionController {
 
+  /**
+   * Processes the user's selection for a harmonica by extracting key and tune information and
+   * creating a Harmonica object. The created object is stored in the user's session and returned as
+   * the response.
+   *
+   * @param selection a map containing the user's selected key and tune, with keys "supportedKey"
+   *     and "supportedTune" respectively.
+   * @param session the HTTP session to store the created Harmonica object.
+   * @return a ResponseEntity containing the created Harmonica object.
+   */
+  @PostMapping("/send")
+  public ResponseEntity<HarmonicaWeb> ajaxProcessSelection(
+      @RequestBody Map<String, String> selection, HttpSession session) {
+    // Retrieve the selected key and tune from the request body
+    String selectedKey = selection.get("selectedKey");
+    String selectedTune = selection.get("selectedTune");
+    // Create a new Harmonica instance based on the selected key and tune
+    HarmonicaWeb harmonicaWeb = new HarmonicaWeb(selectedKey, selectedTune);
 
-    /**
-     * Processes the user's selection for a harmonica by extracting key and tune
-     * information and creating a Harmonica object. The created object is stored in
-     * the user's session and returned as the response.
-     *
-     * @param selection a map containing the user's selected key and tune, with keys
-     *                  "supportedKey" and "supportedTune" respectively.
-     * @param session the HTTP session to store the created Harmonica object.
-     * @return a ResponseEntity containing the created Harmonica object.
-     */
-    @PostMapping("/send")
-    public ResponseEntity<HarmonicaWeb> ajaxProcessSelection (@RequestBody Map<String, String> selection, HttpSession session) {
-        // Retrieve the selected key and tune from the request body
-        String selectedKey = selection.get("selectedKey");
-        String selectedTune = selection.get("selectedTune");
-        // Create a new Harmonica instance based on the selected key and tune
-        HarmonicaWeb harmonicaWeb = new HarmonicaWeb(selectedKey, selectedTune);
+    // Save the Harmonica object in the user's session
+    session.setAttribute("harmonica", harmonicaWeb);
 
-        // Save the Harmonica object in the user's session
-        session.setAttribute("harmonica", harmonicaWeb);
+    String selectedConcertPitch = selection.get("selectedConcertPitch");
+    session.setAttribute("selectedConcertPitch", selectedConcertPitch);
 
+    String selectedConfidence = selection.get("selectedConfidence");
+    session.setAttribute("selectedConfidence", selectedConfidence);
 
-        String selectedConcertPitch = selection.get("selectedConcertPitch");
-        session.setAttribute("selectedConcertPitch", selectedConcertPitch);
+    String selectedAlgorithm = selection.get("selectedAlgorithm");
+    session.setAttribute("selectedAlgorithm", selectedAlgorithm);
 
-        String selectedConfidence = selection.get("selectedConfidence");
-        session.setAttribute("selectedConfidence", selectedConfidence);
+    String expertMode = selection.get("expertMode");
+    session.setAttribute("expertMode", expertMode);
 
-        String selectedAlgorithm = selection.get("selectedAlgorithm");
-        session.setAttribute("selectedAlgorithm", selectedAlgorithm);
-
-        String expertMode = selection.get("expertMode");
-        session.setAttribute("expertMode", expertMode);
-
-        // Return the Harmonica object as a success response
-        return ResponseEntity.ok(harmonicaWeb);
-    }
+    // Return the Harmonica object as a success response
+    return ResponseEntity.ok(harmonicaWeb);
+  }
 }
-

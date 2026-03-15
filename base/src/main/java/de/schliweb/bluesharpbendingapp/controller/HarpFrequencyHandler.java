@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -25,16 +26,14 @@ package de.schliweb.bluesharpbendingapp.controller;
 
 import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 
-/**
- * Interface for handling frequency updates in the harp view.
- */
+/** Interface for handling frequency updates in the harp view. */
 public interface HarpFrequencyHandler {
-    /**
-     * Updates the harp view with the given frequency and chord detection results.
-     *
-     * @param frequency    the detected frequency in Hz to be used for updating the view
-     * @param chordResult  the result of the chord detection containing detected pitches
-     *                     and a confidence score
-     */
-    void updateHarpView(double frequency, ChordDetectionResult chordResult);
+  /**
+   * Updates the harp view with the given frequency and chord detection results.
+   *
+   * @param frequency the detected frequency in Hz to be used for updating the view
+   * @param chordResult the result of the chord detection containing detected pitches and a
+   *     confidence score
+   */
+  void updateHarpView(double frequency, ChordDetectionResult chordResult);
 }

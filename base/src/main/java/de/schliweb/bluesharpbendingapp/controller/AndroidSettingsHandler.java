@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,24 +24,20 @@ package de.schliweb.bluesharpbendingapp.controller;
  *
  */
 
-
 /**
- * This interface defines handlers for managing Android-specific settings, specifically
- * for handling and initializing lock screen configurations. It extends platform-agnostic
- * settings handling with Android-specific functionality.
+ * This interface defines handlers for managing Android-specific settings, specifically for handling
+ * and initializing lock screen configurations. It extends platform-agnostic settings handling with
+ * Android-specific functionality.
  */
 public interface AndroidSettingsHandler {
 
-    /**
-     * Handles the selection of a lock screen based on the specified index.
-     *
-     * @param lookScreenIndex the index of the lock screen to be selected
-     */
-    void handleLockScreenSelection(int lookScreenIndex);
+  /**
+   * Handles the selection of a lock screen based on the specified index.
+   *
+   * @param lookScreenIndex the index of the lock screen to be selected
+   */
+  void handleLockScreenSelection(int lookScreenIndex);
 
-    /**
-     * Initializes the lock screen settings.
-     */
-    void initLockScreen();
-
+  /** Initializes the lock screen settings. */
+  void initLockScreen();
 }

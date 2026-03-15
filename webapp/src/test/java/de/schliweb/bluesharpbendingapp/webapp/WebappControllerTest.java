@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.webapp;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +24,11 @@ package de.schliweb.bluesharpbendingapp.webapp;
  *
  */
 
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -30,40 +36,33 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 /**
- * Test class for {@link WebappController}.
- * This class tests the functionality of the WebappController, focusing on
- * the endpoints it provides and their expected responses.
+ * Test class for {@link WebappController}. This class tests the functionality of the
+ * WebappController, focusing on the endpoints it provides and their expected responses.
  */
 @WebMvcTest(WebappController.class)
 public class WebappControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @MockitoBean
-    private Environment environment;
+  @MockitoBean private Environment environment;
 
-    /**
-     * Tests that the /download/version.txt endpoint returns the correct version
-     * from the application properties.
-     *
-     * @throws Exception if an error occurs during the test
-     */
-    @Test
-    public void testGetVersion() throws Exception {
-        // Arrange
-        String expectedVersion = "1.0.0";
-        when(environment.getProperty("spring.application.version")).thenReturn(expectedVersion);
+  /**
+   * Tests that the /download/version.txt endpoint returns the correct version from the application
+   * properties.
+   *
+   * @throws Exception if an error occurs during the test
+   */
+  @Test
+  public void testGetVersion() throws Exception {
+    // Arrange
+    String expectedVersion = "1.0.0";
+    when(environment.getProperty("spring.application.version")).thenReturn(expectedVersion);
 
-        // Act & Assert
-        mockMvc.perform(get("/download/version.txt"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(expectedVersion));
-    }
+    // Act & Assert
+    mockMvc
+        .perform(get("/download/version.txt"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(expectedVersion));
+  }
 }

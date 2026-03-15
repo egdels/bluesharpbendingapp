@@ -1,4 +1,5 @@
 package de.schliweb.bluesharpbendingapp.controller;
+
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,156 +24,149 @@ package de.schliweb.bluesharpbendingapp.controller;
  *
  */
 
+import static org.mockito.Mockito.*;
+
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
 import de.schliweb.bluesharpbendingapp.view.AndroidSettingsView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
+import java.util.concurrent.ExecutorService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.ExecutorService;
-
-import static org.mockito.Mockito.*;
-
-
 /**
  * Test class for the {@link MainController} class.
- * <p>
- * This test class contains unit tests for the behavior of the MainController,
- * validating its interaction with dependent components and its overall functionality.
- * It uses mock objects to simulate dependencies during tests.
+ *
+ * <p>This test class contains unit tests for the behavior of the MainController, validating its
+ * interaction with dependent components and its overall functionality. It uses mock objects to
+ * simulate dependencies during tests.
  */
 class MainControllerTest {
 
-    private MainController mainController;
-    private MainModel model;
-    private Microphone microphone;
-    private ModelStorageService modelStorageService;
-    private MainWindow mainWindow;
-    private MicrophoneController microphoneController;
-    private HarpController harpController;
-    private TrainingController trainingController;
-    private ExecutorService executorService;
-    private AndroidSettingsView androidSettingsView;
-    private de.schliweb.bluesharpbendingapp.favorites.FavoriteManager favoriteManager;
+  private MainController mainController;
+  private MainModel model;
+  private Microphone microphone;
+  private ModelStorageService modelStorageService;
+  private MainWindow mainWindow;
+  private MicrophoneController microphoneController;
+  private HarpController harpController;
+  private TrainingController trainingController;
+  private ExecutorService executorService;
+  private AndroidSettingsView androidSettingsView;
+  private de.schliweb.bluesharpbendingapp.favorites.FavoriteManager favoriteManager;
 
-    @BeforeEach
-    void setup() {
-        model = mock(MainModel.class);
-        microphone = mock(Microphone.class);
-        modelStorageService = mock(ModelStorageService.class);
-        mainWindow = mock(MainWindow.class);
-        harpController = mock(HarpController.class);
-        trainingController = mock(TrainingController.class);
-        microphoneController = mock(MicrophoneController.class);
-        executorService = mock(ExecutorService.class);
-        androidSettingsView = mock(AndroidSettingsView.class);
-        favoriteManager = mock(de.schliweb.bluesharpbendingapp.favorites.FavoriteManager.class);
+  @BeforeEach
+  void setup() {
+    model = mock(MainModel.class);
+    microphone = mock(Microphone.class);
+    modelStorageService = mock(ModelStorageService.class);
+    mainWindow = mock(MainWindow.class);
+    harpController = mock(HarpController.class);
+    trainingController = mock(TrainingController.class);
+    microphoneController = mock(MicrophoneController.class);
+    executorService = mock(ExecutorService.class);
+    androidSettingsView = mock(AndroidSettingsView.class);
+    favoriteManager = mock(de.schliweb.bluesharpbendingapp.favorites.FavoriteManager.class);
 
-        when(modelStorageService.readModel()).thenReturn(model);
-        when(mainWindow.isAndroidSettingsViewActive()).thenReturn(true);
-        when(mainWindow.getAndroidSettingsView()).thenReturn(androidSettingsView);
+    when(modelStorageService.readModel()).thenReturn(model);
+    when(mainWindow.isAndroidSettingsViewActive()).thenReturn(true);
+    when(mainWindow.getAndroidSettingsView()).thenReturn(androidSettingsView);
 
-        mainController = new MainController(
-                model,
-                mainWindow,
-                modelStorageService,
-                microphoneController,
-                favoriteManager
-        );
-    }
+    mainController =
+        new MainController(
+            model, mainWindow, modelStorageService, microphoneController, favoriteManager);
+  }
 
-    @AfterEach
-    void tearDown() {
-        // Clean up resources if needed
-    }
+  @AfterEach
+  void tearDown() {
+    // Clean up resources if needed
+  }
 
-    @Test
-    void testStartOpensMicrophone() {
-        // Act
-        mainController.start();
+  @Test
+  void testStartOpensMicrophone() {
+    // Act
+    mainController.start();
 
-        // Assert
-        verify(microphoneController).open();
-    }
+    // Assert
+    verify(microphoneController).open();
+  }
 
-    @Test
-    void testStartOpensMainWindow() {
-        // Act
-        mainController.start();
+  @Test
+  void testStartOpensMainWindow() {
+    // Act
+    mainController.start();
 
-        // Assert
-        verify(mainWindow).open();
-    }
+    // Assert
+    verify(mainWindow).open();
+  }
 
-    @Test
-    void testStopClosesMicrophone() {
-        // Act
-        mainController.stop();
+  @Test
+  void testStopClosesMicrophone() {
+    // Act
+    mainController.stop();
 
-        // Assert
-        verify(microphoneController).close();
-    }
+    // Assert
+    verify(microphoneController).close();
+  }
 
-    @Test
-    void testStopStoresModel() {
-        // Act
-        mainController.stop();
+  @Test
+  void testStopStoresModel() {
+    // Act
+    mainController.stop();
 
-        // Assert
-        verify(modelStorageService).storeModel(model);
-    }
+    // Assert
+    verify(modelStorageService).storeModel(model);
+  }
 
-    @Test
-    void testHandleLockScreenSelectionUpdatesModel() {
-        // Arrange
-        int lockScreenIndex = 2;
+  @Test
+  void testHandleLockScreenSelectionUpdatesModel() {
+    // Arrange
+    int lockScreenIndex = 2;
 
-        // Act
-        mainController.handleLockScreenSelection(lockScreenIndex);
+    // Act
+    mainController.handleLockScreenSelection(lockScreenIndex);
 
-        // Assert
-        verify(model).setSelectedLockScreenIndex(lockScreenIndex);
-        verify(model).setStoredLockScreenIndex(lockScreenIndex);
-    }
+    // Assert
+    verify(model).setSelectedLockScreenIndex(lockScreenIndex);
+    verify(model).setStoredLockScreenIndex(lockScreenIndex);
+  }
 
-    @Test
-    void testHandleLockScreenSelectionStoresModel() {
-        // Arrange
-        int lockScreenIndex = 2;
+  @Test
+  void testHandleLockScreenSelectionStoresModel() {
+    // Arrange
+    int lockScreenIndex = 2;
 
-        // Act
-        mainController.handleLockScreenSelection(lockScreenIndex);
+    // Act
+    mainController.handleLockScreenSelection(lockScreenIndex);
 
-        // Assert
-        verify(modelStorageService).storeModel(model);
-    }
+    // Assert
+    verify(modelStorageService).storeModel(model);
+  }
 
-    @Test
-    void testInitLockScreenSetsSelectedLockScreen() {
-        // Arrange
-        int lockScreenIndex = 3;
-        when(model.getSelectedLockScreenIndex()).thenReturn(lockScreenIndex);
+  @Test
+  void testInitLockScreenSetsSelectedLockScreen() {
+    // Arrange
+    int lockScreenIndex = 3;
+    when(model.getSelectedLockScreenIndex()).thenReturn(lockScreenIndex);
 
-        // Act
-        mainController.initLockScreen();
+    // Act
+    mainController.initLockScreen();
 
-        // Assert
-        verify(androidSettingsView).setSelectedLockScreen(lockScreenIndex);
-    }
+    // Assert
+    verify(androidSettingsView).setSelectedLockScreen(lockScreenIndex);
+  }
 
-    @Test
-    void testInitLockScreenDoesNothingWhenViewInactive() {
-        // Arrange
-        when(mainWindow.isAndroidSettingsViewActive()).thenReturn(false);
+  @Test
+  void testInitLockScreenDoesNothingWhenViewInactive() {
+    // Arrange
+    when(mainWindow.isAndroidSettingsViewActive()).thenReturn(false);
 
-        // Act
-        mainController.initLockScreen();
+    // Act
+    mainController.initLockScreen();
 
-        // Assert - verify that the view was not accessed
-        verify(mainWindow, never()).getAndroidSettingsView();
-    }
-
+    // Assert - verify that the view was not accessed
+    verify(mainWindow, never()).getAndroidSettingsView();
+  }
 }
