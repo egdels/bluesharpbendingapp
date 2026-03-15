@@ -29,6 +29,8 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Process;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
@@ -258,6 +260,7 @@ public class MicrophoneAndroid extends AbstractMicrophone {
    *     implementation
    */
   @Override
+  @NonNull
   public String[] getSupportedMicrophones() {
     return new String[0];
   }
@@ -276,7 +279,7 @@ public class MicrophoneAndroid extends AbstractMicrophone {
    *     remove the current handler
    */
   @Override
-  public void setMicrophoneHandler(MicrophoneHandler microphoneHandler) {
+  public void setMicrophoneHandler(@Nullable MicrophoneHandler microphoneHandler) {
     this.microphoneHandler = microphoneHandler;
   }
 
@@ -293,6 +296,7 @@ public class MicrophoneAndroid extends AbstractMicrophone {
    * @return an empty string, as microphone naming is not supported in the Android implementation
    */
   @Override
+  @NonNull
   public String getName() {
     return "";
   }
