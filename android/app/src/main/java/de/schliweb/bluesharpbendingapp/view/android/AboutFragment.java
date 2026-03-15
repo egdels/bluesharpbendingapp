@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.schliweb.bluesharpbendingapp.R;
@@ -77,8 +78,11 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
    * @return The root View of the fragment's layout.
    */
   @Override
+  @Nullable
   public View onCreateView(
-      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      @NonNull LayoutInflater inflater,
+      @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
 
     binding = FragmentAboutBinding.inflate(inflater, container, false);
     return binding.getRoot();
@@ -94,7 +98,7 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
    *     saved state as given here.
    */
   @Override
-  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
     try {
@@ -145,6 +149,7 @@ public class AboutFragment extends Fragment implements AboutView, FragmentView {
    * @return this fragment instance as an Object
    */
   @Override
+  @NonNull
   public Object getInstance() {
     return this;
   }
