@@ -126,6 +126,7 @@ public class HarpController
    * @param frequency the frequency to update in the harp view in Hz
    * @param chordResult the result of chord detection containing detected pitches
    */
+  @Override
   public void updateHarpView(double frequency, ChordDetectionResult chordResult) {
     LoggingContext.setComponent("HarpController");
     LoggingUtils.logAudioProcessing("Updating harp view", "frequency=" + frequency);
@@ -411,7 +412,7 @@ public class HarpController
 
   /** Processes the musical notes associated with a specific harmonica channel. */
   private void processChannelNotes(
-      int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+      int channel, Harmonica harmonica, HarpView harpView, List<NoteContainer> notesList) {
     LoggingContext.setComponent("HarpController");
     LoggingUtils.logDebug("Processing channel " + channel);
 
@@ -424,7 +425,7 @@ public class HarpController
 
   /** Adds a blowing note for the specified channel of the harmonica to the notes list. */
   private void addBlowingNotes(
-      int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+      int channel, Harmonica harmonica, HarpView harpView, List<NoteContainer> notesList) {
     LoggingContext.setComponent("HarpController");
 
     double frequency = harmonica.getNoteFrequency(channel, 0);
@@ -453,7 +454,7 @@ public class HarpController
    * frequency.
    */
   private void addDrawingNotes(
-      int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+      int channel, Harmonica harmonica, HarpView harpView, List<NoteContainer> notesList) {
     LoggingContext.setComponent("HarpController");
 
     double frequency = harmonica.getNoteFrequency(channel, 1);
@@ -477,7 +478,7 @@ public class HarpController
 
   /** Adds bending notes for a specific channel to the list of note containers. */
   private void addBendingNotes(
-      int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+      int channel, Harmonica harmonica, HarpView harpView, List<NoteContainer> notesList) {
     LoggingContext.setComponent("HarpController");
 
     int blowBendingCount = harmonica.getBlowBendingTonesCount(channel);
@@ -503,7 +504,7 @@ public class HarpController
    * cents for the specified channel.
    */
   private void addOverblowNotes(
-      int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+      int channel, Harmonica harmonica, HarpView harpView, List<NoteContainer> notesList) {
     LoggingContext.setComponent("HarpController");
 
     if (!harmonica.hasInverseCentsHandling(channel)) {
@@ -513,7 +514,7 @@ public class HarpController
 
   /** Adds overdraw notes to the provided notes list for the specified channel. */
   private void addOverdrawNotes(
-      int channel, Harmonica harmonica, HarpView harpView, ArrayList<NoteContainer> notesList) {
+      int channel, Harmonica harmonica, HarpView harpView, List<NoteContainer> notesList) {
     LoggingContext.setComponent("HarpController");
 
     if (harmonica.hasInverseCentsHandling(channel)) {
@@ -527,7 +528,7 @@ public class HarpController
       int noteIndex,
       Harmonica harmonica,
       HarpView harpView,
-      ArrayList<NoteContainer> notesList,
+      List<NoteContainer> notesList,
       String logMessage) {
     LoggingContext.setComponent("HarpController");
 

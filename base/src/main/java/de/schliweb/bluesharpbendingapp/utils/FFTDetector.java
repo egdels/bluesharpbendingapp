@@ -99,7 +99,6 @@ public class FFTDetector extends PitchDetector {
 
     // Use a lower threshold multiplier for higher frequencies to improve detection
     double thresholdMultiplier = 1.5;
-    double minFreq = getMinFrequency();
     double maxFreq = getMaxFrequency();
 
     // If the frequency range includes higher frequencies, use a lower threshold
@@ -125,7 +124,7 @@ public class FFTDetector extends PitchDetector {
       return new PitchDetectionResult(NO_DETECTED_PITCH, 0.0);
     }
 
-    double confidence = calculateConfidence(magnitudeSpectrum, peakBin, frequencyResolution);
+    double confidence = calculateConfidence(magnitudeSpectrum, peakBin);
 
     // Calculate the fundamental frequency
     double fundamentalFreq = peakBin * frequencyResolution;
@@ -227,10 +226,9 @@ public class FFTDetector extends PitchDetector {
    *
    * @param spectrum the magnitude spectrum of the audio signal
    * @param peakBin the bin index of the detected peak in the spectrum
-   * @param frequencyResolution the frequency resolution of the spectrum in Hz per bin
    * @return a confidence value between 0.0 and 1.0
    */
-  private double calculateConfidence(double[] spectrum, int peakBin, double frequencyResolution) {
+  private double calculateConfidence(double[] spectrum, int peakBin) {
     double peakValue = spectrum[peakBin];
 
     // Calculate the average magnitude of the spectrum

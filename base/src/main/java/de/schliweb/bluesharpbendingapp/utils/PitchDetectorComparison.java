@@ -885,27 +885,27 @@ public class PitchDetectorComparison {
     double[] audioData =
         generateSineWaveWithHarmonics(fundamentalFreq, SAMPLE_RATE, DURATION, fluteProfile);
     System.out.println("Strong fundamental, weak harmonics (flute-like):");
-    compareAllDetectors(audioData, fundamentalFreq, "Flute-like");
+    compareAllDetectors(audioData, fundamentalFreq);
 
     // Moderate fundamental, strong even harmonics (clarinet-like)
     double[] clarinetProfile = {1.0, 0.1, 0.7, 0.05, 0.3};
     audioData =
         generateSineWaveWithHarmonics(fundamentalFreq, SAMPLE_RATE, DURATION, clarinetProfile);
     System.out.println("\nModerate fundamental, strong even harmonics (clarinet-like):");
-    compareAllDetectors(audioData, fundamentalFreq, "Clarinet-like");
+    compareAllDetectors(audioData, fundamentalFreq);
 
     // Moderate fundamental, strong odd harmonics (saxophone-like)
     double[] saxProfile = {1.0, 0.6, 0.2, 0.5, 0.1};
     audioData = generateSineWaveWithHarmonics(fundamentalFreq, SAMPLE_RATE, DURATION, saxProfile);
     System.out.println("\nModerate fundamental, strong odd harmonics (saxophone-like):");
-    compareAllDetectors(audioData, fundamentalFreq, "Saxophone-like");
+    compareAllDetectors(audioData, fundamentalFreq);
 
     // Weak fundamental, strong harmonics (harmonica-like)
     double[] harmonicaProfile = {0.5, 0.8, 0.7, 0.6, 0.4};
     audioData =
         generateSineWaveWithHarmonics(fundamentalFreq, SAMPLE_RATE, DURATION, harmonicaProfile);
     System.out.println("\nWeak fundamental, strong harmonics (harmonica-like):");
-    compareAllDetectors(audioData, fundamentalFreq, "Harmonica-like");
+    compareAllDetectors(audioData, fundamentalFreq);
   }
 
   /**
@@ -922,7 +922,7 @@ public class PitchDetectorComparison {
       double[] audioData = generateSineWaveWithNoise(frequency, SAMPLE_RATE, DURATION, noiseLevel);
       System.out.println(
           "Noise Level: " + noiseLevel + " (10% = moderate noise, 30% = heavy noise)");
-      compareAllDetectors(audioData, frequency, "Noise Level " + noiseLevel);
+      compareAllDetectors(audioData, frequency);
       System.out.println();
     }
   }
@@ -932,10 +932,9 @@ public class PitchDetectorComparison {
    *
    * @param audioData the audio data to analyze
    * @param expectedFrequency the expected frequency in Hz
-   * @param description a description of the test
    */
   private static void compareAllDetectors(
-      double[] audioData, double expectedFrequency, String description) {
+      double[] audioData, double expectedFrequency) {
     // Measure YIN performance, accuracy, and confidence
     long yinTime = measureYINPerformance(audioData);
     double yinAccuracy = measureYINAccuracy(audioData, expectedFrequency);

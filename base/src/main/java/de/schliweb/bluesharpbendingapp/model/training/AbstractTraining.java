@@ -88,6 +88,7 @@ public abstract class AbstractTraining implements Training {
    * @param trainingIndex the index of the training type, used to determine which training to create
    * @return a Training instance corresponding to the specified key and training type
    */
+  @SuppressWarnings("EnumOrdinal")
   public static Training create(int keyIndex, int trainingIndex) {
     return create(
         AbstractHarmonica.KEY.values()[keyIndex],
@@ -189,7 +190,7 @@ public abstract class AbstractTraining implements Training {
 
   @Override
   public int getProgress() {
-    return (100 * (successIndex)) / getNotes().length;
+    return (100 * successIndex) / getNotes().length;
   }
 
   @Override

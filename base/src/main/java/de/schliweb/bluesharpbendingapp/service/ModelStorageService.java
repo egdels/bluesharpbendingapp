@@ -30,6 +30,7 @@ import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 
 /**
@@ -102,7 +103,7 @@ public class ModelStorageService {
 
     File file = new File(tempDirectory + FileSystems.getDefault().getSeparator() + tempFile);
     try (FileOutputStream fos = new FileOutputStream(file);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
       boolean isCreated = file.createNewFile();
       if (isCreated) {
         LoggingUtils.logDebug("File created", file.getAbsolutePath());
@@ -149,7 +150,7 @@ public class ModelStorageService {
     if (file.exists()) {
       LoggingUtils.logDebug("Model file found", file.getAbsolutePath());
       try (FileInputStream fos = new FileInputStream(file);
-          BufferedReader bw = new BufferedReader(new InputStreamReader(fos))) {
+          BufferedReader bw = new BufferedReader(new InputStreamReader(fos, StandardCharsets.UTF_8))) {
         String line = bw.readLine();
         if (line != null) {
           LoggingUtils.logDebug("Model data read from file");
@@ -187,7 +188,7 @@ public class ModelStorageService {
 
     long startTime = System.currentTimeMillis();
 
-    String[] strings = string.replace("[", "").replace("]", "").split(", ");
+    String[] strings = string.replace("[", "").replace("]", "").split(", ", -1);
     MainModel model = new MainModel();
     Method[] methods = model.getClass().getMethods();
     int propertiesSet = 0;
@@ -195,8 +196,8 @@ public class ModelStorageService {
     for (String entry : strings) {
       entry = entry.replaceFirst("get", "set");
       if (entry.contains(":")) {
-        String m = entry.split(":")[0];
-        String p = entry.split(":")[1];
+        String m = entry.split(":", -1)[0];
+        String p = entry.split(":", -1)[1];
         for (Method method : methods) {
           if (method.getName().equals(m)) {
             try {

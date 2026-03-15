@@ -32,6 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 /**
@@ -100,7 +101,7 @@ public class VersionService {
 
       if (HttpURLConnection.HTTP_OK == responseCode) {
         LoggingUtils.logDebug("ok");
-        try (Scanner scanner = new Scanner((InputStream) huc.getContent())) {
+        try (Scanner scanner = new Scanner((InputStream) huc.getContent(), StandardCharsets.UTF_8.name())) {
           versionFromHost = scanner.nextLine();
         }
 

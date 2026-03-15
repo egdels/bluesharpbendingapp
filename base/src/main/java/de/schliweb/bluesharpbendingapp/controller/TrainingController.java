@@ -81,6 +81,7 @@ public class TrainingController implements TrainingViewHandler, TrainingFrequenc
    *
    * @param frequency the frequency value to update the training view with
    */
+  @Override
   public void updateTrainingView(double frequency) {
     LoggingContext.setComponent("TrainingController");
     LoggingUtils.logAudioProcessing("Updating training view", "frequency=" + frequency);

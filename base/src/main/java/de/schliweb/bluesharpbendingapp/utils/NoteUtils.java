@@ -54,7 +54,7 @@ public class NoteUtils {
    * @return the interval between the two frequencies, in cents
    */
   public static double getCents(double f1, double f2) {
-    return (1200) * (Math.log((f1 / f2)) / Math.log(2));
+    return 1200 * (Math.log((f1 / f2)) / Math.log(2));
   }
 
   /**
