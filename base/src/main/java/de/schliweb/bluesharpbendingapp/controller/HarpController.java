@@ -129,11 +129,8 @@ public class HarpController
   @Override
   public void updateHarpView(double frequency, ChordDetectionResult chordResult) {
     LoggingContext.setComponent("HarpController");
-    LoggingUtils.logAudioProcessing("Updating harp view", "frequency=" + frequency);
 
     if (!executorService.isShutdown() && isHarpViewActiveAndInitialized()) {
-      LoggingUtils.logDebug(
-          "Executor service is active, and harp view is initialized. Proceeding to update note containers");
 
       boolean chordDetected = false;
 
@@ -152,13 +149,7 @@ public class HarpController
 
       for (NoteContainer noteContainer : noteContainers) {
         executorService.submit(noteContainer);
-        LoggingUtils.logDebug("Submitting note container to executor service: " + noteContainer);
       }
-
-      LoggingUtils.logDebug("Harp view update completed successfully");
-    } else {
-      LoggingUtils.logDebug(
-          "Harp view update skipped. Either executor service is shut down or harp view is not active/initialized");
     }
   }
 
@@ -195,7 +186,7 @@ public class HarpController
   /**
    * Updates the note containers with the specified chord and frequency. If a note container is part
    * of the provided chord, its state is updated to mark it as part of the chord, and its frequency
-   * is set to the provided value. A debug log is generated for each updated note container.
+   * is set to the provided value.
    *
    * @param chord the chord used to determine which note containers are part of it
    * @param frequency the frequency to assign to the note containers that are part of the chord, in
@@ -206,23 +197,19 @@ public class HarpController
       if (isPartOfChord(noteContainer, chord)) {
         noteContainer.setPartOfChord(true);
         noteContainer.setFrequencyToHandle(frequency);
-        LoggingUtils.logDebug(
-            "Setting frequency " + frequency + " for chord note container: " + noteContainer);
       }
     }
   }
 
   /**
    * Updates all note containers with the specified frequency. Each note container's frequency is
-   * set to the provided value, and a debug log is generated for each updated note container.
+   * set to the provided value.
    *
    * @param frequency the frequency value to assign to each note container, in Hz
    */
   private void updateNoteContainersForNote(double frequency) {
     for (NoteContainer noteContainer : noteContainers) {
       noteContainer.setFrequencyToHandle(frequency);
-      LoggingUtils.logDebug(
-          "Setting frequency " + frequency + " for note container: " + noteContainer);
     }
   }
 
@@ -609,25 +596,6 @@ public class HarpController
 
   /** Checks if the harp view is active and initialized. */
   private boolean isHarpViewActiveAndInitialized() {
-    LoggingContext.setComponent("HarpController");
-
-    boolean isActive = window.isHarpViewActive();
-    boolean isInitialized = (this.noteContainers != null);
-
-    LoggingUtils.logDebug("Checking if harp view is active and initialized");
-    LoggingUtils.logDebug("Harp view active: " + isActive);
-    LoggingUtils.logDebug("Note containers initialized: " + isInitialized);
-
-    if (isActive && isInitialized) {
-      LoggingUtils.logDebug("Harp view is active and initialized");
-      return true;
-    } else {
-      LoggingUtils.logDebug(
-          "Harp view is not active or not initialized. Active: "
-              + isActive
-              + ", Initialized: "
-              + isInitialized);
-      return false;
-    }
+    return window.isHarpViewActive() && this.noteContainers != null;
   }
 }
