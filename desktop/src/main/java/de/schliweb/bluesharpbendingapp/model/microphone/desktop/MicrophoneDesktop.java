@@ -90,6 +90,13 @@ public class MicrophoneDesktop extends AbstractMicrophone {
   private final double[] reusableAudioData = new double[BUFFER_SIZE / BYTES_PER_SAMPLE];
 
   /**
+   * Audio signal filter providing high-pass filtering, noise gate, and noise reduction for the
+   * desktop microphone. This compensates for the lack of automatic audio preprocessing (AGC, noise
+   * suppression) that Android provides via its AudioSource.MIC API.
+   */
+  private final AudioSignalFilter audioSignalFilter = new AudioSignalFilter();
+
+  /**
    * Represents a thread-safe queue for storing audio data captured from the microphone. This queue
    * is used to manage audio data buffers in a producer-consumer pattern, where audio data is
    * produced (captured) by the microphone and consumed (processed) by a separate thread.
@@ -305,6 +312,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
    */
   @Override
   public void open() {
+    audioSignalFilter.reset();
     initializeExecutors();
 
     startAudioProcessingThread();
@@ -390,17 +398,29 @@ public class MicrophoneDesktop extends AbstractMicrophone {
               line.start();
 
               byte[] buffer = new byte[BUFFER_SIZE];
+              byte[] overlapBuffer = new byte[BUFFER_SIZE];
+              int overlapSize = BUFFER_SIZE / 2;
+              boolean hasOverlap = false;
+
               while (!Thread.currentThread().isInterrupted()) {
                 int bytesRead = line.read(buffer, 0, BUFFER_SIZE);
                 if (bytesRead > 0) {
-                  // Insert audio data into the queue
+                  // Submit the full frame
                   byte[] dataCopy = new byte[bytesRead];
                   System.arraycopy(buffer, 0, dataCopy, 0, bytesRead);
+                  audioDataQueue.offer(dataCopy);
 
-                  // Offer the data to the BlockingQueue
-                  boolean offer = audioDataQueue.offer(dataCopy);
-                  LoggingContext.setComponent("MicrophoneDesktop");
-                  LoggingUtils.logDebug("Audio data queue offer status", String.valueOf(offer));
+                  // Create 50% overlap frame for improved temporal resolution
+                  if (hasOverlap && bytesRead >= overlapSize) {
+                    byte[] overlapFrame = new byte[BUFFER_SIZE];
+                    System.arraycopy(overlapBuffer, overlapSize, overlapFrame, 0, overlapSize);
+                    System.arraycopy(
+                        buffer, 0, overlapFrame, overlapSize, Math.min(overlapSize, bytesRead));
+                    audioDataQueue.offer(overlapFrame);
+                  }
+
+                  System.arraycopy(buffer, 0, overlapBuffer, 0, bytesRead);
+                  hasOverlap = true;
                 }
               }
               line.close();
@@ -442,6 +462,24 @@ public class MicrophoneDesktop extends AbstractMicrophone {
    */
   protected void processAudioData(byte[] buffer, int bytesRead) {
     double[] audioData = convertToDouble(buffer, bytesRead);
+
+    // Apply high-pass filter to remove low-frequency noise (mains hum, fan noise)
+    audioSignalFilter.applyHighPassFilter(audioData);
+
+    // Apply noise reduction (spectral subtraction)
+    audioSignalFilter.applyNoiseReduction(audioData);
+
+    // Calculate RMS after filtering
+    double rms = PitchDetector.calcRMS(audioData);
+
+    // Apply noise gate: skip pitch detection for frames below threshold
+    if (audioSignalFilter.isBelowNoiseGate(rms)) {
+      if (microphoneHandler.get() != null) {
+        microphoneHandler.get().handle(-1, rms, new ChordDetectionResult(List.of(), 0.0));
+      }
+      return;
+    }
+
     double pitch = -1;
     double conf = 0;
     PitchDetector.PitchDetectionResult result;
@@ -476,9 +514,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
       chordResult = new ChordDetectionResult(List.of(), 0.0);
 
     if (microphoneHandler.get() != null) {
-      microphoneHandler
-          .get()
-          .handle(pitch, PitchDetector.calcRMS(audioData), chordResult); // frequency, RMS
+      microphoneHandler.get().handle(pitch, rms, chordResult);
     }
   }
 }
