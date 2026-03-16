@@ -47,6 +47,7 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
   private final Microphone microphone;
   private final HarpFrequencyHandler harpFrequencyHandler;
   private final TrainingFrequencyHandler trainingFrequencyHandler;
+  private final FrequencySmoother frequencySmoother = new FrequencySmoother();
 
   /**
    * Constructs a new MicrophoneController with the specified dependencies.
@@ -169,15 +170,19 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
   @Override
   public void handle(double frequency, double volume, ChordDetectionResult chordResult) {
     LoggingContext.setComponent("MicrophoneController");
-    LoggingUtils.logAudioProcessing(
-        "Microphone input", "frequency=" + frequency + ", volume=" + volume);
 
-    updateMicrophoneSettingsViewVolume(volume);
-    updateMicrophoneSettingsViewFrequency(frequency);
+    // Apply frequency smoothing to reduce display flickering
+    double smoothedFrequency = frequencySmoother.smooth(frequency);
 
-    // Forward the frequency to other controllers
-    harpFrequencyHandler.updateHarpView(frequency, chordResult);
-    trainingFrequencyHandler.updateTrainingView(frequency);
+    // Only update views when there is a valid signal to reduce noise during silence
+    if (smoothedFrequency > 0) {
+      updateMicrophoneSettingsViewVolume(volume);
+      updateMicrophoneSettingsViewFrequency(smoothedFrequency);
+      harpFrequencyHandler.updateHarpView(smoothedFrequency, chordResult);
+      trainingFrequencyHandler.updateTrainingView(smoothedFrequency);
+    } else {
+      updateMicrophoneSettingsViewVolume(volume);
+    }
   }
 
   @Override
@@ -323,9 +328,6 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
    * @param frequency the frequency value to update in the microphone settings view
    */
   private void updateMicrophoneSettingsViewFrequency(double frequency) {
-    LoggingContext.setComponent("MicrophoneController");
-    LoggingUtils.logAudioProcessing("Updating view frequency", "frequency=" + frequency);
-
     if (window.isMicrophoneSettingsViewActive()) {
       MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
       microphoneSettingsView.setFrequency(frequency);
@@ -338,9 +340,6 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
    * @param volume the volume level to update in the microphone settings view
    */
   private void updateMicrophoneSettingsViewVolume(double volume) {
-    LoggingContext.setComponent("MicrophoneController");
-    LoggingUtils.logAudioProcessing("Updating view volume", "volume=" + volume);
-
     if (window.isMicrophoneSettingsViewActive()) {
       MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
       microphoneSettingsView.setVolume(volume);
