@@ -84,22 +84,11 @@ public class TrainingController implements TrainingViewHandler, TrainingFrequenc
   @Override
   public void updateTrainingView(double frequency) {
     LoggingContext.setComponent("TrainingController");
-    LoggingUtils.logAudioProcessing("Updating training view", "frequency=" + frequency);
 
     if (!executorService.isShutdown() && isTrainingViewActiveAndInitialized()) {
-      LoggingUtils.logDebug(
-          "Training view is active and initialized. Updating frequency and submitting to executor.");
-
       trainingContainer.setFrequencyToHandle(frequency);
-
-      LoggingUtils.logDebug("Submitting trainingContainer to executorService");
       executorService.submit(trainingContainer);
-    } else {
-      LoggingUtils.logDebug(
-          "Training view update skipped. Either executorService is shut down or the training view is not active/initialized.");
     }
-
-    LoggingUtils.logDebug("Training view update process completed");
   }
 
   /**
@@ -109,28 +98,7 @@ public class TrainingController implements TrainingViewHandler, TrainingFrequenc
    *     otherwise
    */
   private boolean isTrainingViewActiveAndInitialized() {
-    LoggingContext.setComponent("TrainingController");
-    LoggingUtils.logDebug("Checking if training view is active and initialized");
-
-    boolean isActive = window.isTrainingViewActive();
-    boolean isInitialized = this.trainingContainer != null;
-
-    LoggingUtils.logDebug("Training view active: " + isActive);
-    LoggingUtils.logDebug("Training container initialized: " + isInitialized);
-
-    boolean result = isActive && isInitialized;
-
-    if (result) {
-      LoggingUtils.logDebug("Training view is active and initialized");
-    } else {
-      LoggingUtils.logDebug(
-          "Training view is not active or not initialized. Active: "
-              + isActive
-              + ", Initialized: "
-              + isInitialized);
-    }
-
-    return result;
+    return window.isTrainingViewActive() && this.trainingContainer != null;
   }
 
   @Override
