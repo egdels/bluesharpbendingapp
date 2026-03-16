@@ -1,0 +1,6 @@
+What's new in 3.7.0
+• Frequency smoothing: reduces display flickering by smoothing rapid pitch fluctuations
+• Idle-based clearing: note and chord displays now persist briefly after the last update instead of clearing instantly, preventing the rapid clear/redraw cycle
+• Cents threshold: small micro-fluctuations in pitch detection are filtered out for a more stable visual display
+• Reduced verbose debug logging for cleaner runtime output
+• Desktop: fixed donate link handling for better cross-platform support

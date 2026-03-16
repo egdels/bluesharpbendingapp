@@ -1,0 +1,6 @@
+Neuigkeiten in 3.7.0
+• Frequenzglättung: reduziert Display-Flackern durch Glättung schneller Tonhöhenschwankungen
+• Verzögertes Löschen: Noten- und Akkordanzeige bleiben nach dem letzten Update kurz bestehen, anstatt sofort zu verschwinden – verhindert den schnellen Lösch-/Neuzeichnungszyklus
+• Cents-Schwellwert: kleine Mikroschwankungen in der Tonhöhenerkennung werden herausgefiltert für eine stabilere Anzeige
+• Reduziertes Debug-Logging für sauberere Laufzeitausgabe
+• Desktop: Donate-Link-Behandlung für bessere plattformübergreifende Unterstützung korrigiert
