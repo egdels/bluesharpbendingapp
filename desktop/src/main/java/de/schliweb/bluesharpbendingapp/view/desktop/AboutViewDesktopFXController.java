@@ -223,7 +223,12 @@ public class AboutViewDesktopFXController implements AboutView {
     LoggingContext.setComponent("AboutViewDesktopFXController");
     LoggingUtils.logDebug("Opening link", uri);
     try {
-      Desktop.getDesktop().browse(new URI(uri));
+      String os = System.getProperty("os.name").toLowerCase();
+      if (os.contains("linux")) {
+        new ProcessBuilder("xdg-open", uri).start();
+      } else {
+        Desktop.getDesktop().browse(new URI(uri));
+      }
       LoggingUtils.logOperationCompleted("Link opened successfully");
     } catch (Exception ex) {
       LoggingUtils.logError("Error while opening the link", ex);
