@@ -60,6 +60,21 @@ public class NoteContainer implements Runnable {
   @Getter private final String noteName;
 
   /**
+   * The delay in milliseconds before clearing the note display after the last update. A higher
+   * value allows the display to persist longer between updates, reducing visual flickering.
+   */
+  private static final int CLEAR_DELAY_MS = 300;
+
+  /** The delay in milliseconds before clearing the chord highlight after the last update. */
+  private static final int CHORD_CLEAR_DELAY_MS = 400;
+
+  /**
+   * The minimum change in cents required to trigger a visual update. A higher threshold filters out
+   * micro-fluctuations from the pitch detection algorithm, resulting in a more stable display.
+   */
+  private static final int CENTS_UPDATE_THRESHOLD = 5;
+
+  /**
    * A scheduled thread pool executor responsible for running periodic or delayed tasks within the
    * context of the NoteContainer class.
    *
@@ -76,6 +91,13 @@ public class NoteContainer implements Runnable {
    * in a thread-safe manner using an AtomicBoolean.
    */
   private final AtomicBoolean toBeCleared = new AtomicBoolean(false);
+
+  /**
+   * Tracks the timestamp of the last frequency update to implement idle-based clearing. The display
+   * is only cleared when no new update has arrived within the clear delay period, preventing the
+   * rapid clear/redraw cycle that causes flickering.
+   */
+  private volatile long lastUpdateTimestamp = 0;
 
   /**
    * A thread-safe flag indicating whether the chord state associated with this note should be
@@ -222,23 +244,32 @@ public class NoteContainer implements Runnable {
     if (isPartOfChord) {
       handleChordFrequencyChange();
     }
-    // execute once
+    // Idle-based clearing: only clear if no new update arrives within the delay period.
+    // This prevents the rapid clear/redraw cycle that causes visual flickering.
     if (toBeCleared.compareAndSet(true, false)) {
+      long scheduledTimestamp = lastUpdateTimestamp;
       exec.schedule(
           () -> {
-            harpViewElement.clear();
-            centsCache.remove(cacheKey);
+            // Only clear if no newer update has occurred since this clear was scheduled
+            if (lastUpdateTimestamp == scheduledTimestamp) {
+              harpViewElement.clear();
+              centsCache.remove(cacheKey);
+            }
           },
-          100,
+          CLEAR_DELAY_MS,
           TimeUnit.MILLISECONDS);
     }
     if (toBeClearedChord.compareAndSet(true, false)) {
+      long scheduledTimestamp = lastUpdateTimestamp;
       exec.schedule(
           () -> {
-            isPartOfChord = false;
-            harpViewElement.clear();
+            // Only clear if no newer update has occurred since this clear was scheduled
+            if (lastUpdateTimestamp == scheduledTimestamp) {
+              isPartOfChord = false;
+              harpViewElement.clear();
+            }
           },
-          200,
+          CHORD_CLEAR_DELAY_MS,
           TimeUnit.MILLISECONDS);
     }
   }
@@ -248,10 +279,11 @@ public class NoteContainer implements Runnable {
    * accordingly.
    *
    * <p>This method calculates the deviation in cents for the given note using a reference frequency
-   * and checks if the deviation has changed significantly (by at least 2 cents) compared to the
-   * previously cached value. If a significant change is detected, the cached value is updated, and
-   * the harp view element is updated to visually reflect the new frequency's deviation. The method
-   * also sets an internal flag to indicate that further processing or cleanup may be required.
+   * and checks if the deviation has changed significantly (by at least {@link
+   * #CENTS_UPDATE_THRESHOLD} cents) compared to the previously cached value. If a significant
+   * change is detected, the cached value is updated, and the harp view element is updated to
+   * visually reflect the new frequency's deviation. The method also sets an internal flag to
+   * indicate that further processing or cleanup may be required.
    *
    * <p>The deviation can be inverted based on the configuration of the {@code
    * hasInverseCentsHandling} flag.
@@ -259,9 +291,10 @@ public class NoteContainer implements Runnable {
   private void handleFrequencyChange() {
     double cents = harmonica.getCentsNote(channel, note, frequencyToHandle);
     double lastCents = centsCache.getOrDefault(cacheKey, Double.MAX_VALUE);
-    if (Math.abs(cents - lastCents) >= 2) {
+    if (Math.abs(cents - lastCents) >= CENTS_UPDATE_THRESHOLD) {
       centsCache.put(cacheKey, cents);
       harpViewElement.update(hasInverseCentsHandling ? -cents : cents);
+      lastUpdateTimestamp = System.currentTimeMillis();
       toBeCleared.set(true);
     }
   }
