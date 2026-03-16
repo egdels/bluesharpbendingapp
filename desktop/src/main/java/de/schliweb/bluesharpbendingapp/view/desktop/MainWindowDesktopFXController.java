@@ -58,13 +58,20 @@ public class MainWindowDesktopFXController implements MainWindow {
   private void openSupportLink() {
     LoggingContext.setComponent("MainWindowDesktopFXController");
     try {
-      java.awt.Desktop desktop =
-          java.awt.Desktop.isDesktopSupported() ? java.awt.Desktop.getDesktop() : null;
-      if (desktop != null && desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
-        desktop.browse(de.schliweb.bluesharpbendingapp.support.SupportLinks.DONATE_URI);
+      String os = System.getProperty("os.name").toLowerCase();
+      if (os.contains("linux")) {
+        new ProcessBuilder(
+                "xdg-open",
+                de.schliweb.bluesharpbendingapp.support.SupportLinks.DONATE_URI.toString())
+            .start();
       } else {
-        // Fallback: try JavaFX HostServices through an about view link if available in future
-        LoggingUtils.logWarning("Desktop browse not supported on this platform.");
+        java.awt.Desktop desktop =
+            java.awt.Desktop.isDesktopSupported() ? java.awt.Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(java.awt.Desktop.Action.BROWSE)) {
+          desktop.browse(de.schliweb.bluesharpbendingapp.support.SupportLinks.DONATE_URI);
+        } else {
+          LoggingUtils.logWarning("Desktop browse not supported on this platform.");
+        }
       }
     } catch (Exception e) {
       LoggingUtils.logError("Failed to open support link", e);
