@@ -124,12 +124,14 @@ jobs:
       env:
         GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
 
+    - name: List AppImage output (Linux only)
+      if: runner.os == 'Linux'
+      run: ls -la desktop/build/appimage-output/
+
     - name: Upload AppImage and zsync (Linux only)
       if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
         name: LetsBend-AppImage-${{ matrix.os }}
-        path: |
-          desktop/build/appimage-output/*.AppImage
-          desktop/build/appimage-output/*.zsync
+        path: desktop/build/appimage-output/
         retention-days: 30
