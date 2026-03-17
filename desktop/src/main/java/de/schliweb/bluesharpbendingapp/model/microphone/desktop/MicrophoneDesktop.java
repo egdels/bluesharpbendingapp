@@ -328,7 +328,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
    *
    * <p>The single-threaded executor creates threads with the following custom settings: - The
    * thread is named "AudioProcessingThread". - The thread is set as a daemon to prevent it from
-   * blocking the JVM shutdown. - The thread is assigned the maximum priority level.
+   * blocking the JVM shutdown.
    */
   private void initializeExecutors() {
     audioDataQueue = new LinkedBlockingQueue<>();
@@ -339,9 +339,6 @@ public class MicrophoneDesktop extends AbstractMicrophone {
             r -> {
               Thread thread = new Thread(r, "AudioProcessingThread");
               thread.setDaemon(true); // Prevents the thread from blocking JVM shutdown
-              @SuppressWarnings("ThreadPriorityCheck")
-              int priority = Thread.MAX_PRIORITY; // Highest priority for audio processing
-              thread.setPriority(priority);
               return thread;
             });
   }
