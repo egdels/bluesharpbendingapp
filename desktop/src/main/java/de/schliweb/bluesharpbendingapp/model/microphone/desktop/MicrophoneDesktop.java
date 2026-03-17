@@ -77,7 +77,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
    */
   protected static final int BUFFER_SIZE =
       Math.max(
-          (int) (SAMPLE_RATE * 0.1) * BYTES_PER_SAMPLE, // For 0.1 seconds
+          ((int) (SAMPLE_RATE * 0.1)) * BYTES_PER_SAMPLE, // For 0.1 seconds
           8192 // Fallback value
           );
 
@@ -339,7 +339,9 @@ public class MicrophoneDesktop extends AbstractMicrophone {
             r -> {
               Thread thread = new Thread(r, "AudioProcessingThread");
               thread.setDaemon(true); // Prevents the thread from blocking JVM shutdown
-              thread.setPriority(Thread.MAX_PRIORITY); // Highest priority for audio processing
+              @SuppressWarnings("ThreadPriorityCheck")
+              int priority = Thread.MAX_PRIORITY; // Highest priority for audio processing
+              thread.setPriority(priority);
               return thread;
             });
   }

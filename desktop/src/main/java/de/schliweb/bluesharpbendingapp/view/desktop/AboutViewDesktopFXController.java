@@ -38,6 +38,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import java.util.Locale;
 
 /**
  * The AboutViewDesktopFXController class serves as the controller for the "About" view in the
@@ -153,6 +154,7 @@ public class AboutViewDesktopFXController implements AboutView {
    * FXML file.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void handleDownloadClick() {
     LoggingContext.setComponent("AboutViewDesktopFXController");
     LoggingUtils.logUserAction("Download Click", "Opening download link");
@@ -172,6 +174,7 @@ public class AboutViewDesktopFXController implements AboutView {
    * <p>This method is bound to the respective UI element via the FXML file.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void handlePaypalClick() {
     LoggingContext.setComponent("AboutViewDesktopFXController");
     LoggingUtils.logUserAction("PayPal Click", "Opening PayPal donation link");
@@ -190,6 +193,7 @@ public class AboutViewDesktopFXController implements AboutView {
    * problems with the desktop environment, it is logged by the application's logging mechanism.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void handleMailClick() {
     LoggingContext.setComponent("AboutViewDesktopFXController");
     LoggingUtils.logUserAction("Mail Click", "Opening mail client");
@@ -204,6 +208,7 @@ public class AboutViewDesktopFXController implements AboutView {
    * updateResultLabel.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void handleCheckUpdateClick() {
     LoggingContext.setComponent("AboutViewDesktopFXController");
     LoggingUtils.logUserAction("Check Update Click", "Checking for updates");
@@ -255,6 +260,7 @@ public class AboutViewDesktopFXController implements AboutView {
    * {@code openLink} method with the predefined User-Guide URL.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void handleUserGuideClick() {
     LoggingContext.setComponent("AboutViewDesktopFXController");
     LoggingUtils.logUserAction("User-Guide Click", "Opening User-Guide");
@@ -271,7 +277,7 @@ public class AboutViewDesktopFXController implements AboutView {
     LoggingContext.setComponent("AboutViewDesktopFXController");
     LoggingUtils.logDebug("Opening link", uri);
     try {
-      String os = System.getProperty("os.name").toLowerCase();
+      String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
       if (os.contains("linux")) {
         new ProcessBuilder("xdg-open", uri).start();
       } else {

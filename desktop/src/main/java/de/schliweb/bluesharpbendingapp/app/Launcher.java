@@ -29,6 +29,7 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import java.io.File;
+import java.util.Locale;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -53,7 +54,7 @@ public class Launcher {
 
     for (String arg : args) {
       if (arg.startsWith("--logging.profile=")) {
-        loggingProfile = arg.substring("--logging.profile=".length()).toUpperCase();
+        loggingProfile = arg.substring("--logging.profile=".length()).toUpperCase(Locale.ROOT);
         break;
       }
     }
@@ -82,7 +83,7 @@ public class Launcher {
       context.reset();
 
       // Construct the logback configuration file path based on the given profile
-      String configFile = "config/logback-" + profile.toLowerCase() + ".xml";
+      String configFile = "config/logback-" + profile.toLowerCase(Locale.ROOT) + ".xml";
 
       // Load the configuration file from the classpath
       ClassLoader classLoader = Launcher.class.getClassLoader();

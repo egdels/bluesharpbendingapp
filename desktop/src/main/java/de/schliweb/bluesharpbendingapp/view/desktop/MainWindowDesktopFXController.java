@@ -37,6 +37,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import java.util.Locale;
 import javax.inject.Inject;
 
 /**
@@ -55,10 +56,11 @@ public class MainWindowDesktopFXController implements MainWindow {
    * Support/Donate toolbar button via FXML.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void openSupportLink() {
     LoggingContext.setComponent("MainWindowDesktopFXController");
     try {
-      String os = System.getProperty("os.name").toLowerCase();
+      String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
       if (os.contains("linux")) {
         new ProcessBuilder(
                 "xdg-open",
@@ -416,6 +418,7 @@ public class MainWindowDesktopFXController implements MainWindow {
    * Initializing the precision list via {@code trainingViewHandler.initPrecisionList()}.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void showTrainingView() {
     LoggingContext.setComponent("MainWindowDesktopFXController");
     LoggingUtils.logUserAction("Show Training View", "Switching to training view");

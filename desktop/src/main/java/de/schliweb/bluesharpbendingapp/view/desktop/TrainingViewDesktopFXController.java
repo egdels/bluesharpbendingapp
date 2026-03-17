@@ -197,6 +197,7 @@ public class TrainingViewDesktopFXController implements TrainingView {
    * disabled to prevent redundant actions.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void handleStartButton() {
     LoggingContext.setComponent("TrainingViewDesktopFXController");
     LoggingUtils.logUserAction("Start Training", "User clicked start button");
@@ -225,6 +226,7 @@ public class TrainingViewDesktopFXController implements TrainingView {
    * start button is enabled.
    */
   @FXML
+  @SuppressWarnings("UnusedMethod")
   private void handleStopButton() {
     LoggingContext.setComponent("TrainingViewDesktopFXController");
     LoggingUtils.logUserAction("Stop Training", "User clicked stop button");
