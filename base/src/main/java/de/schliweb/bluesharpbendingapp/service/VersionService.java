@@ -107,7 +107,7 @@ public class VersionService {
         LoggingUtils.logDebug("ok");
         StringBuilder response = new StringBuilder();
         try (InputStream is = (InputStream) huc.getContent();
-            Scanner scanner = new Scanner(is, StandardCharsets.UTF_8.name())) {
+            Scanner scanner = new Scanner(is, StandardCharsets.UTF_8)) {
           while (scanner.hasNextLine()) {
             response.append(scanner.nextLine());
           }
