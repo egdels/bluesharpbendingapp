@@ -32,7 +32,9 @@ import de.schliweb.bluesharpbendingapp.view.AboutView;
 import java.awt.*;
 import java.net.URI;
 import java.util.Objects;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -101,6 +103,18 @@ public class AboutViewDesktopFXController implements AboutView {
   @FXML private Label versionLabel;
 
   /**
+   * A JavaFX Button component used to trigger a manual version check. This button is part of the
+   * "About" view and allows users to check for updates on demand.
+   */
+  @FXML private Button checkUpdateButton;
+
+  /**
+   * A JavaFX Label component used to display the result of the version check or a hint that an
+   * internet connection is required.
+   */
+  @FXML private Label updateResultLabel;
+
+  /**
    * Initializes the "About" view in the application.
    *
    * <p>This method performs the following tasks: 1. Sets the "About" image by loading the
@@ -120,24 +134,10 @@ public class AboutViewDesktopFXController implements AboutView {
     LoggingUtils.logDebug("About image loaded");
 
     // Set the application version in the label
-    // The version is retrieved from the package implementation details and compared with the latest
-    // version from the host
-    String latestVersion = VersionService.getVersionFromHost();
-    if (latestVersion != null) {
-      String versionText =
-          String.format(
-              "%s (Latest: %s)",
-              I18nUtils.getString(
-                  "about.version", getClass().getPackage().getImplementationVersion()),
-              latestVersion);
-      versionLabel.setText(versionText);
-      LoggingUtils.logDebug("Version label set", versionText);
-    } else {
-      String versionText =
-          I18nUtils.getString("about.version", getClass().getPackage().getImplementationVersion());
-      versionLabel.setText(versionText);
-      LoggingUtils.logDebug("Version label set", versionText);
-    }
+    String versionText =
+        I18nUtils.getString("about.version", getClass().getPackage().getImplementationVersion());
+    versionLabel.setText(versionText);
+    LoggingUtils.logDebug("Version label set", versionText);
 
     LoggingUtils.logInitialized("About View Controller");
   }
@@ -197,14 +197,62 @@ public class AboutViewDesktopFXController implements AboutView {
   }
 
   /**
+   * Handles the click event for the "Check for updates" button. This method fetches the latest
+   * version from the remote server in a background thread and updates the UI with the result.
+   *
+   * <p>An internet connection is required for this operation. The result is displayed in the
+   * updateResultLabel.
+   */
+  @FXML
+  private void handleCheckUpdateClick() {
+    LoggingContext.setComponent("AboutViewDesktopFXController");
+    LoggingUtils.logUserAction("Check Update Click", "Checking for updates");
+
+    if (checkUpdateButton != null) {
+      checkUpdateButton.setDisable(true);
+    }
+    if (updateResultLabel != null) {
+      updateResultLabel.setText(I18nUtils.getString("about.update.checking"));
+    }
+
+    Thread updateThread =
+        new Thread(
+            () -> {
+              String latestVersion = VersionService.getVersionFromHost();
+              Platform.runLater(
+                  () -> {
+                    if (updateResultLabel != null) {
+                      if (latestVersion != null) {
+                        String currentVersion =
+                            getClass().getPackage().getImplementationVersion();
+                        if (latestVersion.equals(currentVersion)) {
+                          updateResultLabel.setText(
+                              I18nUtils.getString("about.update.uptodate", latestVersion));
+                        } else {
+                          updateResultLabel.setText(
+                              I18nUtils.getString("about.update.available", latestVersion));
+                        }
+                      } else {
+                        updateResultLabel.setText(
+                            I18nUtils.getString("about.update.failed"));
+                      }
+                    }
+                    if (checkUpdateButton != null) {
+                      checkUpdateButton.setDisable(false);
+                    }
+                    LoggingUtils.logOperationCompleted("Version check");
+                  });
+            });
+    updateThread.setDaemon(true);
+    updateThread.start();
+  }
+
+  /**
    * Handles the click event for the User-Guide link in the "About" view.
    *
    * <p>This method is triggered when a user clicks on the User-Guide link in the UI. It opens the
    * application's User-Guide in the system's default web browser by delegating the task to the
    * {@code openLink} method with the predefined User-Guide URL.
-   *
-   * <p>If any issue occurs while trying to open the web browser, such as an invalid URI or problems
-   * with the desktop environment, it is logged by the application's logging mechanism.
    */
   @FXML
   private void handleUserGuideClick() {
