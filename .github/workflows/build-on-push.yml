@@ -137,7 +137,7 @@ jobs:
         head -10 "$ZSYNC_FILE"
         echo ""
         echo "=== Size check ==="
-        ZSYNC_LENGTH=$(grep '^Length:' "$ZSYNC_FILE" | awk '{print $2}')
+        ZSYNC_LENGTH=$(grep -a '^Length:' "$ZSYNC_FILE" | awk '{print $2}')
         ACTUAL_SIZE=$(stat --format=%s "$APPIMAGE_FILE")
         echo "zsync Length: $ZSYNC_LENGTH"
         echo "AppImage size: $ACTUAL_SIZE"
@@ -149,7 +149,7 @@ jobs:
         fi
         echo ""
         echo "=== SHA-1 check ==="
-        ZSYNC_SHA1=$(grep '^SHA-1:' "$ZSYNC_FILE" | awk '{print $2}')
+        ZSYNC_SHA1=$(grep -a '^SHA-1:' "$ZSYNC_FILE" | awk '{print $2}')
         ACTUAL_SHA1=$(sha1sum "$APPIMAGE_FILE" | awk '{print $1}')
         echo "zsync SHA-1:  $ZSYNC_SHA1"
         echo "actual SHA-1: $ACTUAL_SHA1"
