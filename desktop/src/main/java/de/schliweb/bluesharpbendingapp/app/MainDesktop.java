@@ -25,7 +25,6 @@ package de.schliweb.bluesharpbendingapp.app;
  */
 
 import de.schliweb.bluesharpbendingapp.controller.MainController;
-import de.schliweb.bluesharpbendingapp.service.VersionService;
 import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
@@ -97,7 +96,6 @@ public class MainDesktop extends Application {
   public static void main(String[] args) {
     LoggingContext.setComponent("MainDesktop");
     LoggingUtils.logAppStartup("Desktop Application");
-    VersionService.getVersionFromHost();
     launch(args);
   }
 

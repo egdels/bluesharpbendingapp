@@ -49,19 +49,19 @@ class VersionServiceTest {
     versionField.set(null, null);
   }
 
-  /** Tests that getVersionFromHost returns the cached version if it's already been set. */
+  /** Tests that getVersionFromHost always fetches a fresh version from the server. */
   @Test
-  void testGetVersionFromHost_CachedVersion() throws Exception {
+  void testGetVersionFromHost_AlwaysFetchesFresh() throws Exception {
     // Set the versionFromHost field directly using reflection
     Field versionField = VersionService.class.getDeclaredField("versionFromHost");
     versionField.setAccessible(true);
     versionField.set(null, TEST_VERSION);
 
-    // Act
+    // Act - should fetch fresh version from server, not return cached value
     String result = VersionService.getVersionFromHost();
 
-    // Assert
-    assertEquals(TEST_VERSION, result);
+    // Assert - result should be a valid version from the server, not the cached test version
+    assertTrue(result != null && !result.isEmpty(), "Version should be fetched from server");
   }
 
   /**

@@ -124,7 +124,6 @@ public class VersionService {
    * @return the version information from the host as a String
    */
   public static String getVersionFromHost() {
-    if (versionFromHost != null) return versionFromHost;
     checkVersionFromHost();
     return versionFromHost;
   }
