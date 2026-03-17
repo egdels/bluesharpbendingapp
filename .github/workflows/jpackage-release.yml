@@ -58,11 +58,13 @@ jobs:
         env:
           GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
 
-      - name: Upload AppImage to GitHub Release (Linux only)
+      - name: Upload AppImage and zsync to GitHub Release (Linux only)
         if: runner.os == 'Linux'
         uses: softprops/action-gh-release@v1
         with:
-          files: desktop/build/appimage-output/*.AppImage
+          files: |
+            desktop/build/appimage-output/*.AppImage
+            desktop/build/appimage-output/*.zsync
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -77,4 +79,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: native-appimage-${{ matrix.os }}
-          path: desktop/build/appimage-output/*.AppImage
+          path: |
+            desktop/build/appimage-output/*.AppImage
+            desktop/build/appimage-output/*.zsync

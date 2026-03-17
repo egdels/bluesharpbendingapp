@@ -10,6 +10,10 @@
 # Usage: ./build-appimage.sh [version]
 #   version: optional, defaults to "1.0.0"
 #
+# The AppImage is built with embedded update information for GitHub Releases,
+# enabling delta updates via AppImageUpdate and compatible tools.
+# A .zsync file is generated alongside the AppImage for this purpose.
+#
 
 set -euo pipefail
 
@@ -21,6 +25,8 @@ APP_IMAGE_SOURCE="${BUILD_DIR}/appimage/BluesHarpBendingApp"
 APPDIR="${BUILD_DIR}/BluesHarpBendingApp.AppDir"
 OUTPUT_DIR="${BUILD_DIR}/appimage-output"
 VERSION="${1:-1.0.0}"
+GITHUB_OWNER="egdels"
+GITHUB_REPO="bluesharpbendingapp"
 
 echo "=== Building AppImage for BluesHarpBendingApp v${VERSION} ==="
 
@@ -74,9 +80,16 @@ fi
 export ARCH="$(uname -m)"
 export VERSION="${VERSION}"
 
-echo "Creating AppImage..."
-"${APPIMAGETOOL}" --no-appstream "${APPDIR}" \
+# Build update information string for GitHub Releases (zsync transport)
+UPDATE_INFO="gh-releases-zsync|${GITHUB_OWNER}|${GITHUB_REPO}|latest|BluesHarpBendingApp-*-${ARCH}.AppImage.zsync"
+
+echo "Creating AppImage with update information..."
+echo "Update info: ${UPDATE_INFO}"
+"${APPIMAGETOOL}" --no-appstream \
+    --updateinformation "${UPDATE_INFO}" \
+    "${APPDIR}" \
     "${OUTPUT_DIR}/BluesHarpBendingApp-${VERSION}-${ARCH}.AppImage"
 
 echo "=== AppImage created successfully ==="
 echo "Output: ${OUTPUT_DIR}/BluesHarpBendingApp-${VERSION}-${ARCH}.AppImage"
+echo "Zsync: ${OUTPUT_DIR}/BluesHarpBendingApp-${VERSION}-${ARCH}.AppImage.zsync"
