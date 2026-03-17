@@ -34,6 +34,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * VersionService is a utility class responsible for managing and fetching the version information
@@ -47,13 +49,14 @@ public class VersionService {
 
   /**
    * A constant that defines the URL used to retrieve the version information of the application
-   * from a remote server. The URL points to a plain text file containing the version details.
+   * from the GitHub API. The URL points to the latest release endpoint of the GitHub repository.
    *
    * <p>This variable is used internally by the class methods to establish a connection to the
-   * remote server and fetch the version data. It is immutable and statically defined to ensure
+   * GitHub API and fetch the version data. It is immutable and statically defined to ensure
    * uniformity in all network requests related to version retrieval.
    */
-  private static final String VERSION_URL = "https://letsbend.de/download/version.txt";
+  private static final String VERSION_URL =
+      "https://api.github.com/repos/egdels/bluesharpbendingapp/releases/latest";
 
   /**
    * Represents the version information retrieved from a predefined remote server URL. This variable
@@ -97,17 +100,24 @@ public class VersionService {
       // Use the constant for the URL
       url = new URI(VERSION_URL).toURL();
       huc = (HttpURLConnection) url.openConnection();
+      huc.setRequestProperty("Accept", "application/vnd.github+json");
       int responseCode = huc.getResponseCode();
 
       if (HttpURLConnection.HTTP_OK == responseCode) {
         LoggingUtils.logDebug("ok");
-        try (Scanner scanner =
-            new Scanner((InputStream) huc.getContent(), StandardCharsets.UTF_8)) {
-          versionFromHost = scanner.nextLine();
+        StringBuilder response = new StringBuilder();
+        try (InputStream is = (InputStream) huc.getContent();
+            Scanner scanner = new Scanner(is, StandardCharsets.UTF_8.name())) {
+          while (scanner.hasNextLine()) {
+            response.append(scanner.nextLine());
+          }
         }
 
-        if (versionFromHost != null) {
-          versionFromHost = versionFromHost.trim();
+        String json = response.toString();
+        Pattern pattern = Pattern.compile("\"tag_name\"\\s*:\\s*\"([^\"]+)\"");
+        Matcher matcher = pattern.matcher(json);
+        if (matcher.find()) {
+          versionFromHost = matcher.group(1).trim();
         }
         LoggingUtils.logDebug("Version from host: " + versionFromHost);
       }
