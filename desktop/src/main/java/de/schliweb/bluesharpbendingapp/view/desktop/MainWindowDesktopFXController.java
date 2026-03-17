@@ -29,6 +29,7 @@ import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.*;
+import java.util.Locale;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -37,7 +38,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import java.util.Locale;
 import javax.inject.Inject;
 
 /**

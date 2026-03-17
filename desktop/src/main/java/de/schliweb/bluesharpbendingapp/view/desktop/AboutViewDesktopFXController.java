@@ -31,6 +31,7 @@ import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.AboutView;
 import java.awt.*;
 import java.net.URI;
+import java.util.Locale;
 import java.util.Objects;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -38,7 +39,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.util.Locale;
 
 /**
  * The AboutViewDesktopFXController class serves as the controller for the "About" view in the
@@ -228,8 +228,7 @@ public class AboutViewDesktopFXController implements AboutView {
                   () -> {
                     if (updateResultLabel != null) {
                       if (latestVersion != null) {
-                        String currentVersion =
-                            getClass().getPackage().getImplementationVersion();
+                        String currentVersion = getClass().getPackage().getImplementationVersion();
                         if (latestVersion.equals(currentVersion)) {
                           updateResultLabel.setText(
                               I18nUtils.getString("about.update.uptodate", latestVersion));
@@ -238,8 +237,7 @@ public class AboutViewDesktopFXController implements AboutView {
                               I18nUtils.getString("about.update.available", latestVersion));
                         }
                       } else {
-                        updateResultLabel.setText(
-                            I18nUtils.getString("about.update.failed"));
+                        updateResultLabel.setText(I18nUtils.getString("about.update.failed"));
                       }
                     }
                     if (checkUpdateButton != null) {
