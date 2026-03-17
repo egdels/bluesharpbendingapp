@@ -85,10 +85,12 @@ UPDATE_INFO="gh-releases-zsync|${GITHUB_OWNER}|${GITHUB_REPO}|latest|BluesHarpBe
 
 echo "Creating AppImage with update information..."
 echo "Update info: ${UPDATE_INFO}"
+pushd "${OUTPUT_DIR}" > /dev/null
 "${APPIMAGETOOL}" --no-appstream \
     --updateinformation "${UPDATE_INFO}" \
     "${APPDIR}" \
     "${OUTPUT_DIR}/BluesHarpBendingApp-${VERSION}-${ARCH}.AppImage"
+popd > /dev/null
 
 echo "=== AppImage created successfully ==="
 echo "Output: ${OUTPUT_DIR}/BluesHarpBendingApp-${VERSION}-${ARCH}.AppImage"
