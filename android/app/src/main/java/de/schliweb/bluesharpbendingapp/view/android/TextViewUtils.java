@@ -121,14 +121,11 @@ public class TextViewUtils {
     // Calculate line height (thickness)
     int lineHeight = Math.max((int) (noteTextView.getHeight() / 10.0), 4);
 
-    // Set stroke color based on cents value
-    int lineColor =
-        Color.rgb(
-            (int) (250.0 * Math.abs(cents / 50.0)),
-            (int) (250.0 * (1.0 - Math.abs(cents / 50.0))),
-            0);
-
     double limitedCents = clamp(cents, -50, 50);
+
+    // Set stroke color based on clamped cents value
+    double absValue = Math.min(Math.abs(limitedCents / 50.0), 1.0);
+    int lineColor = Color.rgb((int) (250.0 * absValue), (int) (250.0 * (1.0 - absValue)), 0);
 
     // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
     // For positive cents, move up from the middle; for negative cents, move down from the middle
@@ -185,14 +182,11 @@ public class TextViewUtils {
     // Calculate line height (thickness)
     int lineHeight = Math.max((int) (noteTextView.getHeight() / 10.0), 3);
 
-    // Set stroke color based on cents value
-    int lineColor =
-        Color.rgb(
-            (int) (250.0 * Math.abs(cents / 50.0)),
-            (int) (250.0 * (1.0 - Math.abs(cents / 50.0))),
-            0);
-
     double limitedCents = clamp(cents, -50, 50);
+
+    // Set stroke color based on clamped cents value
+    double absValue = Math.min(Math.abs(limitedCents / 50.0), 1.0);
+    int lineColor = Color.rgb((int) (250.0 * absValue), (int) (250.0 * (1.0 - absValue)), 0);
 
     // Calculate vertical position: middle of the view for 0 cents, moving up or down based on cents
     // For positive cents, move up from the middle; for negative cents, move down from the middle
