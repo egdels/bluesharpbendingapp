@@ -33,9 +33,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 
 /**
  * VersionService is a utility class responsible for managing and fetching the version information
@@ -98,9 +102,18 @@ public class VersionService {
     HttpURLConnection huc;
     try {
       // Use the constant for the URL
+      SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
+      sslContext.init(null, null, null);
+
       url = new URI(VERSION_URL).toURL();
       huc = (HttpURLConnection) url.openConnection();
+      if (huc instanceof HttpsURLConnection) {
+        ((HttpsURLConnection) huc).setSSLSocketFactory(sslContext.getSocketFactory());
+      }
       huc.setRequestProperty("Accept", "application/vnd.github+json");
+      huc.setRequestProperty("User-Agent", "bluesharpbendingapp");
+      huc.setConnectTimeout(10000);
+      huc.setReadTimeout(10000);
       int responseCode = huc.getResponseCode();
 
       if (HttpURLConnection.HTTP_OK == responseCode) {
@@ -121,7 +134,10 @@ public class VersionService {
         }
         LoggingUtils.logDebug("Version from host: " + versionFromHost);
       }
-    } catch (IOException | URISyntaxException e) {
+    } catch (IOException
+        | URISyntaxException
+        | NoSuchAlgorithmException
+        | KeyManagementException e) {
       LoggingUtils.logError("Failed to check version from host", e);
     }
   }
