@@ -77,7 +77,7 @@ jar {
 import org.gradle.internal.os.OperatingSystem
 
 // Declares Java modules required for the application
-def jvmModules = ['java.base','java.naming', 'java.desktop', 'java.scripting', 'jdk.unsupported']
+def jvmModules = ['java.base','java.naming', 'java.desktop', 'java.scripting', 'jdk.unsupported', 'jdk.crypto.ec']
 def jdkPath = System.properties['java.home'] // Gets the JDK base path
 def jdkModulesPath = "${jdkPath}/jmods" // Defines the path to JDK modules
 
