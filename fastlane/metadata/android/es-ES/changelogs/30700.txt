@@ -1,6 +1,6 @@
 Novedades en 3.7.0
-• Suavizado de frecuencia: reduce el parpadeo de la pantalla al suavizar las fluctuaciones rápidas de tono
-• Borrado basado en inactividad: las notas y acordes ahora persisten brevemente tras la última actualización en lugar de desaparecer al instante, evitando el ciclo rápido de borrado y redibujo
-• Umbral de cents: se filtran las micro-fluctuaciones en la detección de tono para una visualización más estable
-• Reducción del registro de depuración detallado para una salida más limpia en tiempo de ejecución
-• Escritorio: corregido el manejo del enlace de donación para mejor compatibilidad multiplataforma
+• Pantalla más estable: menos parpadeo en notas, acordes y detección de tono
+• Entrenamiento: las notas deben mantenerse de forma estable – se acabaron los aciertos accidentales
+• Entrenamiento: la siguiente nota avanza de inmediato, incluso tras silencio
+• Entrenamiento: corregido un fallo durante las sesiones
+• Salida de ejecución más limpia

@@ -1,6 +1,6 @@
 Nouveautés de la version 3.7.0
-• Lissage de fréquence : réduit le scintillement de l'affichage en lissant les fluctuations rapides de hauteur tonale
-• Effacement basé sur l'inactivité : les notes et accords persistent brièvement après la dernière mise à jour au lieu de disparaître instantanément, évitant le cycle rapide d'effacement et de redessin
-• Seuil en cents : les micro-fluctuations de la détection de hauteur sont filtrées pour un affichage plus stable
-• Réduction de la journalisation de débogage détaillée pour une sortie plus propre à l'exécution
-• Bureau : correction de la gestion du lien de don pour une meilleure compatibilité multiplateforme
+• Affichage plus stable : moins de scintillement pour les notes, accords et détection de hauteur
+• Entraînement : les notes doivent être tenues de manière stable – fini les réussites accidentelles
+• Entraînement : la note suivante avance immédiatement, même après un silence
+• Entraînement : correction d'un crash pendant les sessions
+• Sortie d'exécution plus propre
