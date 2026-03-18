@@ -128,4 +128,19 @@ public interface Training {
    * internal states, logging success events, or notifying listeners, if applicable.
    */
   void success();
+
+  /**
+   * Retrieves the precision level for the training. Precision determines how accurately the player
+   * must hit a note for it to be considered successful.
+   *
+   * @return the precision value in cents
+   */
+  int getPrecision();
+
+  /**
+   * Sets the precision level for the training.
+   *
+   * @param precision the precision value in cents to be set
+   */
+  void setPrecision(int precision);
 }

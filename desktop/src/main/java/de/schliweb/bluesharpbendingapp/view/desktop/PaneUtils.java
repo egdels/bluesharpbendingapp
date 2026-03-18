@@ -142,7 +142,7 @@ public class PaneUtils {
         (effectiveHeight * ((-clampedCents + 50) / 100.0)) + ((double) lineHeight / 2);
 
     // Calculate the color of the line
-    double absValue = Math.abs(cents / 50.0);
+    double absValue = Math.min(Math.abs(clampedCents / 50.0), 1.0);
     Color lineColor =
         Color.rgb(
             (int) (250.0 * absValue), // Red component increases with abs value of cents
@@ -196,8 +196,9 @@ public class PaneUtils {
     // Add a new line to separate the note name from the cents display
     Text newLine = new Text("\n");
 
-    // Format the cents value as a string in the format "Cents:+/-xxx"
-    String centsString = String.format("Cents:%+3d", (int) cents);
+    // Format the cents value as a string in the format "Cents:+/-xxx" with direction arrow
+    String direction = cents > 0 ? " ↓" : cents < 0 ? " ↑" : " ✓";
+    String centsString = String.format("Cents:%+3d%s", (int) cents, direction);
     Text centsTextNode = new Text(centsString);
     centsTextNode.setFont(Font.font("Monospace", 18)); // Use monospaced font for clarity.
 
