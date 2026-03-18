@@ -134,6 +134,40 @@ class TrainingContainerTest {
             });
   }
 
+  /**
+   * Tests that a single brief frequency hit within precision does not immediately advance to the
+   * next note due to the note hold duration requirement.
+   */
+  @Test
+  void testRunDoesNotAdvanceWithoutHoldDuration() {
+    Training trainingMock = mock(Training.class);
+    TrainingView viewMock = mock(TrainingView.class);
+    when(trainingMock.isRunning()).thenReturn(true);
+    when(trainingMock.isNoteActive(anyDouble())).thenReturn(true);
+
+    HarpViewNoteElement harpElementMock = mock(HarpViewNoteElement.class);
+    when(viewMock.getActualHarpViewElement()).thenReturn(harpElementMock);
+    when(trainingMock.getActualNote()).thenReturn("A");
+
+    mockStatic(NoteLookup.class);
+    mockStatic(NoteUtils.class);
+    when(NoteLookup.getNoteFrequency(anyString())).thenReturn(440.0);
+    // Return cents within precision range
+    when(NoteUtils.getCents(anyDouble(), anyDouble())).thenReturn(3.0);
+
+    when(trainingMock.getPrecision()).thenReturn(10);
+
+    TrainingContainer trainingContainer = new TrainingContainer(trainingMock, viewMock);
+    trainingContainer.setFrequencyToHandle(440.0);
+
+    // Single run should NOT advance to next note (hold duration not met)
+    trainingContainer.run();
+
+    // toNextNote should not be set after a single call
+    verify(trainingMock, never()).success();
+    verify(trainingMock, never()).nextNote();
+  }
+
   /** Tests that `run` does not proceed when training is not running. */
   @Test
   void testRunDoesNothingWhenTrainingNotRunning() {

@@ -30,6 +30,7 @@ import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The AbstractTraining class provides a base implementation of the {@link Training} interface. It
@@ -40,7 +41,7 @@ import lombok.Getter;
  */
 public abstract class AbstractTraining implements Training {
 
-  @Getter private static int precision;
+  @Getter @Setter private int precision;
 
   /**
    * Represents the central frequency value associated with a key in the context of training. This
@@ -103,23 +104,14 @@ public abstract class AbstractTraining implements Training {
    * @return a Training instance corresponding to the specified key and training type
    */
   public static Training create(AbstractHarmonica.KEY k, TRAINING t) {
-    Training training = new MajorPentatonicScaleTraining(k);
-    if (TRAINING.BLUES_SCALE.equals(t)) {
-      training = new BluesScaleTraining(k);
-    }
-    if (TRAINING.OCTAVE_LEAPS.equals(t)) {
-      training = new OctaveLeapsTraining(k);
-    }
-    if (TRAINING.MAJOR_CHORD_ARPEGGIO.equals(t)) {
-      training = new MajorChordArpeggioTraining(k);
-    }
-    if (TRAINING.MAJOR_SCALE.equals(t)) {
-      training = new MajorScaleTraining(k);
-    }
-    if (TRAINING.DUMMY.equals(t)) {
-      training = new DummyTraining(k);
-    }
-    return training;
+    return switch (t) {
+      case BLUES_SCALE -> new BluesScaleTraining(k);
+      case MAJOR_CHORD_ARPEGGIO -> new MajorChordArpeggioTraining(k);
+      case MAJOR_SCALE -> new MajorScaleTraining(k);
+      case OCTAVE_LEAPS -> new OctaveLeapsTraining(k);
+      case DUMMY -> new DummyTraining(k);
+      case MAJOR_PENTATONIC_SCALE -> new MajorPentatonicScaleTraining(k);
+    };
   }
 
   /**
@@ -146,16 +138,6 @@ public abstract class AbstractTraining implements Training {
    */
   public static String[] getSupportedPrecisions() {
     return new String[] {"5", "10", "15", "20", "25", "30", "35", "40", "45"};
-  }
-
-  /**
-   * Sets the precision level for the training.
-   *
-   * @param precision the precision value to be set. It determines the level of accuracy or
-   *     granularity for training operations.
-   */
-  public static void setPrecision(int precision) {
-    AbstractTraining.precision = precision;
   }
 
   /**

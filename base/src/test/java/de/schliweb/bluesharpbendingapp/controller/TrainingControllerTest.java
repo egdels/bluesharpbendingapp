@@ -163,8 +163,7 @@ class TrainingControllerTest {
     trainingController.handlePrecisionSelection(precisionIndex);
 
     // Assert
-    verify(AbstractTraining.class);
-    AbstractTraining.setPrecision(20); // 20 is the value at index 1
+    verify(training).setPrecision(20); // 20 is the value at index 1
   }
 
   @Test

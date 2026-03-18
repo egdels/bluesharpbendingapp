@@ -272,10 +272,11 @@ public class TrainingViewDesktopFXController implements TrainingView {
         () -> {
           TrainingViewNoteElementDesktopFX actualNoteElementDesktop =
               TrainingViewNoteElementDesktopFX.getInstance(trainingNote);
-          actualNoteElementDesktop.setNoteName(
+          String noteName =
               trainingContainer.getActualNoteName() != null
                   ? trainingContainer.getActualNoteName()
-                  : "");
+                  : "";
+          actualNoteElementDesktop.setNoteName(noteName);
           int progress = trainingContainer.getProgress();
           double normalizedProgress = progress / 100.0;
           progressBar.setProgress(normalizedProgress);

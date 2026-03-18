@@ -181,11 +181,9 @@ public class TrainingFragment extends Fragment implements TrainingView, Fragment
     GradientDrawable line = (GradientDrawable) layout.getDrawable(1);
     line.setAlpha(0); // hide line
     binding.progressBar.setProgress(trainingContainer.getProgress());
-    TrainingViewNoteElementAndroid.getInstance(textView)
-        .setNoteName(
-            trainingContainer.getActualNoteName() != null
-                ? trainingContainer.getActualNoteName()
-                : "");
+    String noteName =
+        trainingContainer.getActualNoteName() != null ? trainingContainer.getActualNoteName() : "";
+    TrainingViewNoteElementAndroid.getInstance(textView).setNoteName(noteName);
     TrainingViewNoteElementAndroid.getInstance(textView).clear();
   }
 

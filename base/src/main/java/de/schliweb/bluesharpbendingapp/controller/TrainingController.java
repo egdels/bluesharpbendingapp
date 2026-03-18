@@ -253,7 +253,7 @@ public class TrainingController implements TrainingViewHandler, TrainingFrequenc
       int precision = Integer.parseInt(supportedPrecisions[selectedIndex]);
       LoggingUtils.logDebug("Setting precision to: " + precision);
 
-      AbstractTraining.setPrecision(precision);
+      training.setPrecision(precision);
       LoggingUtils.logOperationCompleted("Precision selection. Precision set to: " + precision);
 
     } catch (ArrayIndexOutOfBoundsException e) {

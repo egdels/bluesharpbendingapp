@@ -25,8 +25,8 @@ package de.schliweb.bluesharpbendingapp.controller;
  */
 
 import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
-import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
 import de.schliweb.bluesharpbendingapp.model.training.Training;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpViewNoteElement;
 import de.schliweb.bluesharpbendingapp.view.TrainingView;
@@ -99,11 +99,18 @@ public class TrainingContainer implements Runnable {
   protected final AtomicBoolean toBeCleared = new AtomicBoolean(false);
 
   /**
-   * A unique identifier used to store and retrieve cached data efficiently within the context of
-   * the TrainingContainer class. This key is designed to associate specific cache entries relevant
-   * to the internal operations of the training and view logic.
+   * Represents the minimum duration in milliseconds that a note must be held within the precision
+   * threshold before it is considered successfully played. This prevents accidental brief hits from
+   * being counted as successful note matches.
    */
-  private final String cacheKey;
+  private static final long NOTE_HOLD_DURATION_MS = 300;
+
+  /**
+   * Tracks the timestamp (in milliseconds) when the current note first entered the precision
+   * threshold. Used together with {@link #NOTE_HOLD_DURATION_MS} to ensure the player holds the
+   * note for a minimum duration before advancing to the next note.
+   */
+  private long noteHitStartTime = 0;
 
   /**
    * Represents the frequency value that the system or training module needs to handle or process.
@@ -131,7 +138,6 @@ public class TrainingContainer implements Runnable {
     this.training = training;
     this.view = trainingView;
     this.element = view.getActualHarpViewElement();
-    this.cacheKey = this.training.getActualNote();
   }
 
   /**
@@ -158,56 +164,132 @@ public class TrainingContainer implements Runnable {
     if (isLockAllThreads()) return; // Thread-safe access
 
     if (training.isRunning() && training.isNoteActive(frequencyToHandle)) {
+      LoggingUtils.logDebug(
+          "TrainingContainer: note active for frequency="
+              + frequencyToHandle
+              + ", actualNote="
+              + training.getActualNote());
       handleFrequencyChange();
     } else {
       // if next note is set execute once!
       if (toNextNote.compareAndSet(true, false)) {
-        setLockAllThreads(true);
-
-        // mark actual note as success
-        training.success();
-        // to next Note
-        training.nextNote();
-        // no need to be cleared
-        toBeCleared.set(false);
-        // wait 100 ms and execute
-        exec.schedule(
-            () -> {
-              if (training.isCompleted()) {
-                training.stop();
-                view.toggleButton();
-              }
-              view.initTrainingContainer(this);
-              setLockAllThreads(false);
-            },
-            500,
-            TimeUnit.MILLISECONDS);
+        advanceToNextNote();
       } else {
         // execute once
         if (toBeCleared.compareAndSet(true, false)) {
-          centsCache.remove(cacheKey);
+          centsCache.clear();
           exec.schedule(element::clear, 100, TimeUnit.MILLISECONDS);
         }
       }
     }
   }
 
-  private void handleFrequencyChange() {
+  /**
+   * Advances the training to the next note. This method handles locking, updating the training
+   * state, and scheduling the view update. It is called either from run() when toNextNote is set,
+   * or directly from handleFrequencyChange() when the hold duration is met, ensuring the note
+   * advances even if no further frequency measurements arrive (silence after hitting the note).
+   */
+  private void advanceToNextNote() {
+    setLockAllThreads(true);
+
+    LoggingUtils.logDebug(
+        "TrainingContainer: advancing to next note. Current note="
+            + training.getActualNote()
+            + ", progress="
+            + training.getProgress()
+            + "%");
+
+    // mark actual note as success
+    training.success();
+    // to next Note
+    training.nextNote();
+    // no need to be cleared
+    toBeCleared.set(false);
+    // reset hold timer for next note
+    noteHitStartTime = 0;
+
+    LoggingUtils.logDebug(
+        "TrainingContainer: next note="
+            + training.getActualNote()
+            + ", completed="
+            + training.isCompleted());
+
+    // wait 500 ms and execute
+    exec.schedule(
+        () -> {
+          if (training.isCompleted()) {
+            LoggingUtils.logOperationCompleted("Training completed successfully");
+            training.stop();
+            view.toggleButton();
+          }
+          view.initTrainingContainer(this);
+          setLockAllThreads(false);
+        },
+        500,
+        TimeUnit.MILLISECONDS);
+  }
+
+  private synchronized void handleFrequencyChange() {
     // Calculate the current cents
-    double actualNoteFrequency = NoteLookup.getNoteFrequency(training.getActualNote());
+    String currentNote = training.getActualNote();
+    double actualNoteFrequency = NoteLookup.getNoteFrequency(currentNote);
     double cents = NoteUtils.getCents(actualNoteFrequency, frequencyToHandle);
     // Retrieve the last cached value (use default value - Double.MAX_VALUE if not present)
-    double lastCents = centsCache.getOrDefault(cacheKey, Double.MAX_VALUE);
-    // Check if there is a significant change (≥ 5 cents deviation)
+    double lastCents = centsCache.getOrDefault(currentNote, Double.MAX_VALUE);
+
+    LoggingUtils.logDebug(
+        "TrainingContainer: handleFrequencyChange note="
+            + currentNote
+            + ", noteFreq="
+            + actualNoteFrequency
+            + ", playedFreq="
+            + frequencyToHandle
+            + ", cents="
+            + String.format("%.1f", cents)
+            + ", precision="
+            + training.getPrecision());
+
+    // Check if there is a significant change (≥ 2 cents deviation)
     if (Math.abs(cents - lastCents) >= 2) {
       // Update the cache
-      centsCache.put(cacheKey, cents);
+      centsCache.put(currentNote, cents);
       // Pass the value to HarpViewElement and optionally invert it
       element.update(cents);
       toBeCleared.set(true);
     }
-    if (Math.abs(cents) < AbstractTraining.getPrecision()) {
-      toNextNote.set(true);
+    if (Math.abs(cents) < training.getPrecision()) {
+      long now = System.currentTimeMillis();
+      if (noteHitStartTime == 0) {
+        LoggingUtils.logDebug(
+            "TrainingContainer: note hit started for "
+                + currentNote
+                + ", cents="
+                + String.format("%.1f", cents));
+        noteHitStartTime = now;
+      } else if (now - noteHitStartTime >= NOTE_HOLD_DURATION_MS) {
+        LoggingUtils.logDebug(
+            "TrainingContainer: note held long enough, advancing. note="
+                + currentNote
+                + ", holdTime="
+                + (now - noteHitStartTime)
+                + "ms");
+        noteHitStartTime = 0;
+        // Directly advance instead of setting toNextNote flag.
+        // This ensures the note advances immediately, even if silence follows
+        // and no further frequency measurements trigger run().
+        advanceToNextNote();
+      }
+    } else {
+      if (noteHitStartTime != 0) {
+        LoggingUtils.logDebug(
+            "TrainingContainer: hold timer reset, left precision range. note="
+                + currentNote
+                + ", cents="
+                + String.format("%.1f", cents));
+      }
+      // Reset hold timer when player leaves precision range
+      noteHitStartTime = 0;
     }
   }
 
@@ -218,6 +300,24 @@ public class TrainingContainer implements Runnable {
    */
   public String getActualNoteName() {
     return training.getActualNote();
+  }
+
+  /**
+   * Retrieves the name of the next note in the training sequence.
+   *
+   * @return the name of the next note as a String, or null if there is no next note
+   */
+  public String getNextNoteName() {
+    return training.getNextNote();
+  }
+
+  /**
+   * Retrieves the name of the previous note in the training sequence.
+   *
+   * @return the name of the previous note as a String, or null if there is no previous note
+   */
+  public String getPreviousNoteName() {
+    return training.getPreviousNote();
   }
 
   /**
