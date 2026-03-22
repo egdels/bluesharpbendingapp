@@ -1,0 +1,108 @@
+excludes:
+  paths:
+    # ── Build artifacts ──
+    - pattern: "build/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "Generated build output."
+
+    - pattern: ".gradle/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "Gradle working directory."
+
+    - pattern: "**/build/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "Module build output."
+
+    - pattern: "**/target/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "Module target output (base, desktop)."
+
+    - pattern: "ort-out/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "ORT output directory."
+
+    # ── Test code ──
+    - pattern: "**/src/test/**"
+      reason: "TEST_OF"
+      comment: "Unit tests are not shipped."
+
+    - pattern: "**/src/androidTest/**"
+      reason: "TEST_OF"
+      comment: "Instrumentation tests are not shipped."
+
+    # ── Python venv ──
+    - pattern: "venv/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "Python virtual environment for local tooling."
+
+    # ── Scripts ──
+    - pattern: "scripts/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "Build and compliance helper scripts."
+
+    # ── Documentation ──
+    - pattern: "docs/**"
+      reason: "DOCUMENTATION_OF"
+      comment: "Documentation is not part of the shipped app."
+
+    - pattern: "fastlane/**"
+      reason: "DOCUMENTATION_OF"
+      comment: "Fastlane metadata and screenshots."
+
+    # ── ORT config ──
+    - pattern: "ort/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "ORT configuration files."
+
+    # ── ScanCode output ──
+    - pattern: "scancode_result.json"
+      reason: "BUILD_TOOL_OF"
+      comment: "ScanCode scan output."
+
+    - pattern: "scancode_run.log"
+      reason: "BUILD_TOOL_OF"
+      comment: "ScanCode run log."
+
+    # ── Node modules ──
+    - pattern: "node_modules/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "npm dependencies installed locally."
+
+    # ── npm examples ──
+    - pattern: "npm/examples/**"
+      reason: "DOCUMENTATION_OF"
+      comment: "npm usage examples, not shipped in app."
+
+    # ── Desktop packaging ──
+    - pattern: "desktop/packaging/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "Desktop packaging configuration files."
+
+    - pattern: "desktop/docs/**"
+      reason: "DOCUMENTATION_OF"
+      comment: "Desktop-specific documentation."
+
+    # ── Webapp bin (compiled output) ──
+    - pattern: "webapp/bin/**"
+      reason: "BUILD_TOOL_OF"
+      comment: "Compiled webapp output."
+
+    # ── Pitch detection library (shared algorithms) ──
+    # lib/pitch_detection is shipped — keep in scan
+
+    # ── Image files ──
+    - pattern: "**/*.png"
+      reason: "DATA_FILE_OF"
+      comment: "Image assets, not license-relevant."
+
+    - pattern: "**/*.jpg"
+      reason: "DATA_FILE_OF"
+      comment: "Image files."
+
+    - pattern: "**/*.jpeg"
+      reason: "DATA_FILE_OF"
+      comment: "Image files."
+
+    - pattern: "**/*.webp"
+      reason: "DATA_FILE_OF"
+      comment: "Image files."
