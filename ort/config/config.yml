@@ -1,6 +1,7 @@
 ort:
   analyzer:
     skipExcluded: true
+    allowDynamicVersions: true
     disabledPackageManagers:
       - SBT
       - CocoaPods
