@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.model.microphone;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.model.microphone;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.model.microphone;
 
 import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 

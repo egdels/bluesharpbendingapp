@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.di;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.di;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.di;
 
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;

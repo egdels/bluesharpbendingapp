@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.view;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.view;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.view;
 
 /**
  * MainWindow serves as an interface for managing and interacting with different views and
