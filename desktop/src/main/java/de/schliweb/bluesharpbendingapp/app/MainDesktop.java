@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.app;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.app;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.app;
 
 import de.schliweb.bluesharpbendingapp.controller.MainController;
 import de.schliweb.bluesharpbendingapp.utils.I18nUtils;

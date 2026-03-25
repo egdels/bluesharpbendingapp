@@ -21,7 +21,6 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-
 package de.schliweb.bluesharpbendingapp.utils;
 
 import java.util.Locale;
