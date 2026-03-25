@@ -101,6 +101,7 @@ subprojects {
         spotless {
             java {
                 target("src/*/java/**/*.java")
+                licenseHeaderFile(rootProject.file("HEADER"))
                 googleJavaFormat("1.35.0")
                 removeUnusedImports()
                 trimTrailingWhitespace()

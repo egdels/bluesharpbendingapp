@@ -4,3 +4,10 @@ local.properties
 .kotlin
 build
 node_modules/
+.DS_Store
+
+# Compliance scan outputs
+scancode_result.json
+scancode_run.log
+scancode.json
+ort-out/
