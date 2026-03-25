@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.webapp;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.webapp;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.webapp;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
