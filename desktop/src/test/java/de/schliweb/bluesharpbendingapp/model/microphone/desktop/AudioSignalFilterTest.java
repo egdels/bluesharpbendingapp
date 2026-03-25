@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
 
 import static org.junit.jupiter.api.Assertions.*;
 
