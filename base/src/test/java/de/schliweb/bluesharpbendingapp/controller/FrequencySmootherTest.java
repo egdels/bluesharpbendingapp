@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.controller;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.controller;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.model;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.model;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.model;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

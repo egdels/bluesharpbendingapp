@@ -1,5 +1,3 @@
-package de.schliweb.bluesharpbendingapp.model.harmonica;
-
 /*
  * Copyright (c) 2023 Christian Kierdorf
  *
@@ -23,6 +21,7 @@ package de.schliweb.bluesharpbendingapp.model.harmonica;
  * OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+package de.schliweb.bluesharpbendingapp.model.harmonica;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
