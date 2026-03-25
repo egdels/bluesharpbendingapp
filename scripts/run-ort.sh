@@ -18,7 +18,8 @@ echo "==> Running ORT report"
 ort --config "${ROOT_DIR}/ort/config/config.yml" \
   report \
   -i "${OUT_DIR}/analyzer/analyzer-result.yml" \
-  -o "${OUT_DIR}/reports"
+  -o "${OUT_DIR}/reports" \
+  --report-formats WebApp,StaticHtml,CycloneDx,SpdxDocument
 
 echo "==> ORT completed"
 echo "Analyzer: ${OUT_DIR}/analyzer"
