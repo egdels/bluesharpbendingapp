@@ -32,6 +32,7 @@
     <string name="settings_key_label">キー</string>
     <string name="settings_tune_label">チューニング</string>
     <string name="settings_pitches_label">コンサートピッチ</string>
+    <string name="settings_notation_label">変化記号</string>
     <string name="settings_reset_label">設定をリセット</string>
     <string name="settings_reset_button">リセット</string>
     <string name="settings_screenlock_label">画面をオンのままにする</string>

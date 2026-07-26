@@ -32,6 +32,7 @@
     <string name="settings_key_label">Key</string>
     <string name="settings_tune_label">Tuning</string>
     <string name="settings_pitches_label">Concert Pitch</string>
+    <string name="settings_notation_label">Accidentals</string>
     <string name="settings_reset_label">Reset Settings</string>
     <string name="settings_reset_button">Reset</string>
     <string name="settings_screenlock_label">Keep screen on</string>

@@ -32,6 +32,7 @@
     <string name="settings_key_label">Tonalidad</string>
     <string name="settings_tune_label">Afinación</string>
     <string name="settings_pitches_label">Tono de concierto</string>
+    <string name="settings_notation_label">Alteraciones</string>
     <string name="settings_reset_label">Restablecer configuración</string>
     <string name="settings_reset_button">Restablecer</string>
     <string name="settings_screenlock_label">Mantener pantalla encendida</string>

@@ -32,6 +32,7 @@
     <string name="settings_key_label">Tonart</string>
     <string name="settings_tune_label">Stimmung</string>
     <string name="settings_pitches_label">Konzerttonhöhe</string>
+    <string name="settings_notation_label">Vorzeichen</string>
     <string name="settings_reset_label">Einstellungen zurücksetzen</string>
     <string name="settings_reset_button">Zurücksetzen</string>
     <string name="settings_screenlock_label">Bildschirm eingeschaltet lassen</string>

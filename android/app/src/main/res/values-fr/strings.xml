@@ -32,6 +32,7 @@
     <string name="settings_key_label">Tonalité</string>
     <string name="settings_tune_label">Accordage</string>
     <string name="settings_pitches_label">Diapason</string>
+    <string name="settings_notation_label">Altérations</string>
     <string name="settings_reset_label">Réinitialiser les paramètres</string>
     <string name="settings_reset_button">Réinitialiser</string>
     <string name="settings_screenlock_label">Garder l\'écran allumé</string>

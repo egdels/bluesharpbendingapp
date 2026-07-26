@@ -32,6 +32,7 @@
     <string name="settings_key_label">调</string>
     <string name="settings_tune_label">调音</string>
     <string name="settings_pitches_label">音高</string>
+    <string name="settings_notation_label">变音记号</string>
     <string name="settings_reset_label">重置设置</string>
     <string name="settings_reset_button">重置</string>
     <string name="settings_screenlock_label">保持屏幕常亮</string>
