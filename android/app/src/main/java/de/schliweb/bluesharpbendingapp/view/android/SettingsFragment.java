@@ -151,6 +151,7 @@ public class SettingsFragment extends Fragment
         v -> {
           MainModel model = new MainModel();
           setSelectedConcertPitch(model.getStoredConcertPitchIndex());
+          setSelectedNotation(model.getStoredNotationIndex());
           setSelectedKey(model.getStoredKeyIndex());
           setSelectedTune(model.getStoredTuneIndex());
           setSelectedAlgorithm(model.getStoredAlgorithmIndex());
@@ -386,6 +387,37 @@ public class SettingsFragment extends Fragment
   @Override
   public void setSelectedConcertPitch(int i) {
     Spinner spinner = binding.settingsPitchesList;
+    spinner.setSelection(i);
+  }
+
+  @Override
+  public void setNotations(@Nullable String[] notations) {
+    // Safeguard in case notations is null
+    if (notations == null) {
+      notations = new String[0]; // Use an empty array
+    }
+    Spinner spinner = binding.settingsNotationList;
+    ArrayAdapter<String> adapter =
+        new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, notations);
+    adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+    spinner.setAdapter(adapter);
+    spinner.setOnItemSelectedListener(
+        new AdapterView.OnItemSelectedListener() {
+          @Override
+          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            noteSettingsViewHandler.handleNotationSelection(((int) id));
+          }
+
+          @Override
+          public void onNothingSelected(AdapterView<?> parent) {
+            // no need
+          }
+        });
+  }
+
+  @Override
+  public void setSelectedNotation(int i) {
+    Spinner spinner = binding.settingsNotationList;
     spinner.setSelection(i);
   }
 
