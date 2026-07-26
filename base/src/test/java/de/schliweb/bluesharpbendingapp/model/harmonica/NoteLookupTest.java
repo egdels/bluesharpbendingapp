@@ -131,6 +131,7 @@ class NoteLookupTest {
 
   @Test
   void testGetNoteFrequencyWithWhitespaceAndLowercase() {
+    NoteLookup.setConcertPitch(440);
     assertEquals(440.0, NoteLookup.getNoteFrequency(" a4 "), 0.01);
     assertEquals(261.63, NoteLookup.getNoteFrequency("c4"), 0.01);
   }
@@ -139,6 +140,40 @@ class NoteLookupTest {
   void testGetNoteFrequencyWithExtremeOctaves() {
     assertThrows(IllegalArgumentException.class, () -> NoteLookup.getNoteFrequency("C-1"));
     assertThrows(IllegalArgumentException.class, () -> NoteLookup.getNoteFrequency("C10"));
+  }
+
+  @Test
+  void testGetNoteNameWithSharpNotation() {
+    NoteLookup.setConcertPitch(440);
+    NoteLookup.setNotationByIndex(0);
+    assertEquals("C#4", NoteLookup.getNoteName(277.18));
+    assertEquals("A#4", NoteLookup.getNoteName(466.16));
+  }
+
+  @Test
+  void testGetNoteNameWithFlatNotation() {
+    NoteLookup.setConcertPitch(440);
+    NoteLookup.setNotationByIndex(1);
+    assertEquals("Db4", NoteLookup.getNoteName(277.18));
+    assertEquals("Bb4", NoteLookup.getNoteName(466.16));
+    NoteLookup.setNotationByIndex(0); // Reset
+  }
+
+  @Test
+  void testGetNoteFrequencyAcceptsBothNotationsRegardlessOfSetting() {
+    NoteLookup.setConcertPitch(440);
+    NoteLookup.setNotationByIndex(1);
+    assertEquals(277.18, NoteLookup.getNoteFrequency("C#4"), 0.01);
+    assertEquals(277.18, NoteLookup.getNoteFrequency("Db4"), 0.01);
+    NoteLookup.setNotationByIndex(0); // Reset
+    assertEquals(277.18, NoteLookup.getNoteFrequency("C#4"), 0.01);
+    assertEquals(277.18, NoteLookup.getNoteFrequency("Db4"), 0.01);
+  }
+
+  @Test
+  void testGetSupportedNotations() {
+    String[] notations = NoteLookup.getSupportedNotations();
+    assertEquals(2, notations.length);
   }
 
   @Test

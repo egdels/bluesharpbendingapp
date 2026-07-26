@@ -24,6 +24,7 @@
 package de.schliweb.bluesharpbendingapp.model.harmonica;
 
 import de.schliweb.bluesharpbendingapp.utils.NoteUtils;
+import java.util.Locale;
 import lombok.Getter;
 
 /**
@@ -34,14 +35,31 @@ import lombok.Getter;
 public class NoteLookup {
 
   /**
-   * An array of strings representing the names of musical notes in one chromatic octave. This array
-   * includes both natural notes (e.g., "C", "D", "E") and sharps (e.g., "C#", "D#"), covering a
-   * total of 12 semitones in western music notation. It is primarily used for musical note
-   * calculations and lookup operations related to note names.
+   * An array of strings representing the names of musical notes in one chromatic octave using
+   * sharps for accidentals (e.g., "C#", "D#"), covering a total of 12 semitones in western music
+   * notation. It is primarily used for musical note calculations and lookup operations related to
+   * note names.
    */
-  private static final String[] NOTE_NAMES = {
+  private static final String[] NOTE_NAMES_SHARP = {
     "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
   };
+
+  /**
+   * An array of strings representing the names of musical notes in one chromatic octave using
+   * flats for accidentals (e.g., "Db", "Eb"), covering a total of 12 semitones in western music
+   * notation. It is primarily used for musical note calculations and lookup operations related to
+   * note names.
+   */
+  private static final String[] NOTE_NAMES_FLAT = {
+    "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"
+  };
+
+  /**
+   * Represents the index of the currently selected accidental notation. A value of 0 selects sharp
+   * notation (e.g., "C#"), a value of 1 selects flat notation (e.g., "Db"). The default is sharp
+   * notation.
+   */
+  @Getter private static int notationIndex = 0;
 
   /**
    * Represents the default frequency of the concert pitch (A4) in hertz. This value is widely
@@ -72,7 +90,7 @@ public class NoteLookup {
     if (midiNumber < 0 || midiNumber > 127) return null; // MIDI-Begrenzung
 
     int octave = (midiNumber / 12) - 1;
-    String noteName = NOTE_NAMES[midiNumber % 12];
+    String noteName = getNoteNames()[midiNumber % 12];
 
     return noteName + octave;
   }
@@ -90,14 +108,27 @@ public class NoteLookup {
    *     unsupported note or octave.
    */
   public static double getNoteFrequency(String noteName) {
-    if (noteName == null || noteName.length() < 2 || noteName.length() > 3) {
+    if (noteName == null) {
+      throw new IllegalArgumentException("Invalid note name: " + noteName);
+    }
+
+    // Normalize the note name to tolerate whitespace and lowercase input (e.g., " a4 ", "c#4")
+    String normalized = noteName.trim();
+    if (normalized.length() >= 2) {
+      normalized =
+          Character.toUpperCase(normalized.charAt(0))
+              + normalized.substring(1, normalized.length() - 1).toLowerCase(Locale.ROOT)
+              + normalized.substring(normalized.length() - 1);
+    }
+
+    if (normalized.length() < 2 || normalized.length() > 3) {
       throw new IllegalArgumentException("Invalid note name: " + noteName);
     }
 
     // Extract the note name and the octave number
     String note =
-        noteName.substring(0, noteName.length() - 1); // The part before the octave (e.g., "C")
-    int midiNumber = getMidiNumber(noteName, note);
+        normalized.substring(0, normalized.length() - 1); // The part before the octave (e.g., "C")
+    int midiNumber = getMidiNumber(normalized, note);
 
     // Calculate the frequency based on the MIDI number
     return NoteUtils.round(concertPitch * Math.pow(2, (midiNumber - 69) / 12.0));
@@ -115,13 +146,20 @@ public class NoteLookup {
    * @throws IllegalArgumentException if the given note name or note is invalid or not recognized.
    */
   private static int getMidiNumber(String noteName, String note) {
-    int octave =
-        Integer.parseInt(noteName.substring(noteName.length() - 1)); // The octave value (e.g., "4")
+    int octave;
+    try {
+      octave =
+          Integer.parseInt(
+              noteName.substring(noteName.length() - 1)); // The octave value (e.g., "4")
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("Invalid note name: " + noteName);
+    }
 
-    // Determine the index of the note in the note names list
+    // Determine the index of the note in the note names lists. Both sharp and flat names are
+    // accepted regardless of the currently selected notation.
     int noteIndex = -1;
-    for (int i = 0; i < NOTE_NAMES.length; i++) {
-      if (NOTE_NAMES[i].equals(note)) {
+    for (int i = 0; i < NOTE_NAMES_SHARP.length; i++) {
+      if (NOTE_NAMES_SHARP[i].equals(note) || NOTE_NAMES_FLAT[i].equals(note)) {
         noteIndex = i;
         break;
       }
@@ -133,6 +171,35 @@ public class NoteLookup {
 
     // Calculate the MIDI number of the note
     return noteIndex + (octave + 1) * 12;
+  }
+
+  /**
+   * Retrieves the array of note names corresponding to the currently selected accidental notation.
+   *
+   * @return an array of note names using either sharp or flat accidentals
+   */
+  private static String[] getNoteNames() {
+    return notationIndex == 1 ? NOTE_NAMES_FLAT : NOTE_NAMES_SHARP;
+  }
+
+  /**
+   * Retrieves the list of supported accidental notations. The first entry represents sharp
+   * notation (e.g., "C#"), the second entry represents flat notation (e.g., "Db").
+   *
+   * @return an array of strings representing the supported accidental notations
+   */
+  public static String[] getSupportedNotations() {
+    return new String[] {"# (C#, D#, ...)", "b (Db, Eb, ...)"};
+  }
+
+  /**
+   * Sets the accidental notation used for note names by selecting it from the list of supported
+   * notations using an index value.
+   *
+   * @param notationIndex the index of the desired notation (0 for sharps, 1 for flats)
+   */
+  public static void setNotationByIndex(int notationIndex) {
+    NoteLookup.notationIndex = notationIndex == 1 ? 1 : 0;
   }
 
   /**
