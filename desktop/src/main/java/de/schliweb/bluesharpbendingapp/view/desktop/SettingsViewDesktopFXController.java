@@ -64,6 +64,17 @@ public class SettingsViewDesktopFXController
   @FXML public ComboBox<String> comboConcertPitches;
 
   /**
+   * A ComboBox element in the user interface for selecting the accidental notation. It allows
+   * users to choose whether accidentals are displayed as sharps (e.g., "C#") or flats (e.g.,
+   * "Db").
+   *
+   * <p>This ComboBox is part of the SettingsViewDesktopFXController class and is initialized and
+   * managed through its associated methods. The options and selected notation index can be
+   * customized programmatically using the relevant controller methods.
+   */
+  @FXML public ComboBox<String> comboNotations;
+
+  /**
    * Represents a ComboBox UI element used to display and select confidence levels in the
    * application's settings. The options and functionality of this ComboBox are managed by methods
    * within the `SettingsViewDesktopFXController` class.
@@ -223,7 +234,8 @@ public class SettingsViewDesktopFXController
             comboMicrophones,
             comboConfidences,
             comboChordConfidences,
-            comboConcertPitches)) {
+            comboConcertPitches,
+            comboNotations)) {
       addChangeListenerToComboBox(stringComboBox);
     }
 
@@ -374,6 +386,9 @@ public class SettingsViewDesktopFXController
                 } else if (combo == comboConcertPitches) {
                   handleSelectionChange(
                       comboConcertPitches, noteSettingsViewHandler::handleConcertPitchSelection);
+                } else if (combo == comboNotations) {
+                  handleSelectionChange(
+                      comboNotations, noteSettingsViewHandler::handleNotationSelection);
                 }
               }
             });
@@ -444,6 +459,29 @@ public class SettingsViewDesktopFXController
   @Override
   public void setSelectedConcertPitch(int selectedConcertPitchIndex) {
     setSelected(selectedConcertPitchIndex, comboConcertPitches);
+  }
+
+  /**
+   * Sets the available accidental notations in the notations ComboBox. This method populates the
+   * ComboBox with the provided array of notation values, allowing users to select whether
+   * accidentals are displayed as sharps or flats.
+   *
+   * @param notations an array of strings representing the supported notations
+   */
+  @Override
+  public void setNotations(String[] notations) {
+    initComboBox(comboNotations, notations);
+  }
+
+  /**
+   * Sets the selected accidental notation in the notations ComboBox based on the provided index.
+   * This method updates the UI to reflect the currently selected notation.
+   *
+   * @param selectedNotationIndex the index of the notation to be selected in the ComboBox
+   */
+  @Override
+  public void setSelectedNotation(int selectedNotationIndex) {
+    setSelected(selectedNotationIndex, comboNotations);
   }
 
   /**
@@ -589,6 +627,7 @@ public class SettingsViewDesktopFXController
 
     MainModel model = new MainModel();
     setSelectedConcertPitch(model.getStoredConcertPitchIndex());
+    setSelectedNotation(model.getStoredNotationIndex());
     setSelectedKey(model.getStoredKeyIndex());
     setSelectedAlgorithm(model.getStoredAlgorithmIndex());
     setSelectedMicrophone(model.getStoredMicrophoneIndex());

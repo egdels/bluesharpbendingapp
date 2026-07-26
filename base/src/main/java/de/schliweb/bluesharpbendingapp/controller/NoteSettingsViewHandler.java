@@ -45,4 +45,20 @@ public interface NoteSettingsViewHandler {
    * is typically invoked during the preparation or setup phase of the note settings view.
    */
   void initConcertPitchList();
+
+  /**
+   * Handles the selection of an accidental notation based on the provided index. This method is
+   * typically invoked to update the application state or UI when a user selects whether accidentals
+   * are displayed as sharps or flats.
+   *
+   * @param notationIndex the index of the selected notation in the list of supported notations
+   */
+  void handleNotationSelection(int notationIndex);
+
+  /**
+   * Initializes the list of supported accidental notations. This method is responsible for setting
+   * up the options that users can select from in relation to sharp or flat note names. It is
+   * typically invoked during the preparation or setup phase of the note settings view.
+   */
+  void initNotationList();
 }

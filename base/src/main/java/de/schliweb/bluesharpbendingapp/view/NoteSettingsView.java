@@ -43,4 +43,19 @@ public interface NoteSettingsView {
    * @param selectedConcertPitchIndex the index of the concert pitch to be selected
    */
   void setSelectedConcertPitch(int selectedConcertPitchIndex);
+
+  /**
+   * Sets the array of supported accidental notations. The provided array contains string
+   * representations of the available notations (e.g., sharps and flats).
+   *
+   * @param notations an array of strings representing the supported notations
+   */
+  void setNotations(String[] notations);
+
+  /**
+   * Sets the selected accidental notation by its index in the list of supported notations.
+   *
+   * @param selectedNotationIndex the index of the notation to be selected
+   */
+  void setSelectedNotation(int selectedNotationIndex);
 }

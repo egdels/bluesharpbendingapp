@@ -398,6 +398,7 @@ public class MainWindowDesktopFXController implements MainWindow {
 
     LoggingUtils.logDebug("Initializing note settings");
     noteSettingsViewHandler.initConcertPitchList();
+    noteSettingsViewHandler.initNotationList();
 
     LoggingUtils.logOperationCompleted("Settings view displayed and initialized");
     refreshFavoritesUI();

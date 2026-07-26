@@ -82,8 +82,12 @@
             <ComboBox fx:id="comboConcertPitches" GridPane.rowIndex="9" GridPane.columnIndex="1"
                       maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
 
-            <Label text="%settings.harp.showchord" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-            <CheckBox fx:id="checkShowChord" styleClass="custom-checkbox" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+            <Label text="%settings.note.notation" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboNotations" GridPane.rowIndex="10" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="%settings.harp.showchord" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+            <CheckBox fx:id="checkShowChord" styleClass="custom-checkbox" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
         </GridPane>
     </center>
 
