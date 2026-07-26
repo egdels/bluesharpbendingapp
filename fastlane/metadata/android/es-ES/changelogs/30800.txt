@@ -1,0 +1,4 @@
+Novedades en 3.8.0
+• Nuevo ajuste: elige entre sostenidos (♯) y bemoles (♭) para las alteraciones – p. ej., C# ahora puede mostrarse como Db
+• La notación elegida se aplica en toda la app y se guarda automáticamente
+• Las frecuencias de las notas no cambian – solo cambian los nombres mostrados

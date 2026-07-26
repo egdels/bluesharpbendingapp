@@ -1,0 +1,4 @@
+What's new in 3.8.0
+• New setting: choose between sharps (♯) and flats (♭) for accidentals – e.g. C# can now be shown as Db
+• The chosen notation is applied everywhere in the app and saved automatically
+• Note frequencies remain unchanged – only the displayed note names change

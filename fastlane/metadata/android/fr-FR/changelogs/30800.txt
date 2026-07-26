@@ -1,0 +1,4 @@
+Nouveautés de la version 3.8.0
+• Nouveau réglage : choisissez entre dièses (♯) et bémols (♭) pour les altérations – p. ex. C# peut désormais s'afficher comme Db
+• La notation choisie s'applique partout dans l'application et est enregistrée automatiquement
+• Les fréquences des notes restent inchangées – seuls les noms affichés changent

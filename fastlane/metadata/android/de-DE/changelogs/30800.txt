@@ -1,0 +1,4 @@
+Neuigkeiten in 3.8.0
+• Neue Einstellung: Wahl zwischen Kreuz- (♯) und B-Notation (♭) für Vorzeichen – z. B. kann C# jetzt als Db angezeigt werden
+• Die gewählte Notation gilt überall in der App und wird automatisch gespeichert
+• Die Tonfrequenzen bleiben unverändert – nur die angezeigten Notennamen ändern sich
