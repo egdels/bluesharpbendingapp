@@ -64,9 +64,8 @@ public class SettingsViewDesktopFXController
   @FXML public ComboBox<String> comboConcertPitches;
 
   /**
-   * A ComboBox element in the user interface for selecting the accidental notation. It allows
-   * users to choose whether accidentals are displayed as sharps (e.g., "C#") or flats (e.g.,
-   * "Db").
+   * A ComboBox element in the user interface for selecting the accidental notation. It allows users
+   * to choose whether accidentals are displayed as sharps (e.g., "C#") or flats (e.g., "Db").
    *
    * <p>This ComboBox is part of the SettingsViewDesktopFXController class and is initialized and
    * managed through its associated methods. The options and selected notation index can be

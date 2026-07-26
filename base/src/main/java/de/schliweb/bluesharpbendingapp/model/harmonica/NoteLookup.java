@@ -45,10 +45,9 @@ public class NoteLookup {
   };
 
   /**
-   * An array of strings representing the names of musical notes in one chromatic octave using
-   * flats for accidentals (e.g., "Db", "Eb"), covering a total of 12 semitones in western music
-   * notation. It is primarily used for musical note calculations and lookup operations related to
-   * note names.
+   * An array of strings representing the names of musical notes in one chromatic octave using flats
+   * for accidentals (e.g., "Db", "Eb"), covering a total of 12 semitones in western music notation.
+   * It is primarily used for musical note calculations and lookup operations related to note names.
    */
   private static final String[] NOTE_NAMES_FLAT = {
     "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"
@@ -183,8 +182,8 @@ public class NoteLookup {
   }
 
   /**
-   * Retrieves the list of supported accidental notations. The first entry represents sharp
-   * notation (e.g., "C#"), the second entry represents flat notation (e.g., "Db").
+   * Retrieves the list of supported accidental notations. The first entry represents sharp notation
+   * (e.g., "C#"), the second entry represents flat notation (e.g., "Db").
    *
    * @return an array of strings representing the supported accidental notations
    */
