@@ -593,6 +593,51 @@ public class HarpController
     }
   }
 
+  @Override
+  public void handleNotationSelection(int notationIndex) {
+    LoggingContext.setComponent("HarpController");
+    LoggingUtils.logUserAction("Notation selection", "notationIndex=" + notationIndex);
+
+    LoggingUtils.logDebug("Updating stored notation index in the model to: " + notationIndex);
+    this.model.setStoredNotationIndex(notationIndex);
+    this.model.setSelectedNotationIndex(notationIndex);
+
+    LoggingUtils.logDebug("Setting notation in NoteLookup using notation index: " + notationIndex);
+    NoteLookup.setNotationByIndex(notationIndex);
+
+    long startTime = System.currentTimeMillis();
+    modelStorageService.storeModel(model);
+    long duration = System.currentTimeMillis() - startTime;
+    LoggingUtils.logPerformance("Model storage", duration);
+
+    LoggingUtils.logOperationCompleted("Notation selection");
+  }
+
+  @Override
+  public void initNotationList() {
+    LoggingContext.setComponent("HarpController");
+    LoggingUtils.logOperationStarted("Notation list initialization");
+
+    if (window.isNoteSettingsViewActive()) {
+      LoggingUtils.logDebug("Note settings view is active. Proceeding with initialization");
+
+      NoteSettingsView noteSettingsView = window.getNoteSettingsView();
+
+      LoggingUtils.logDebug("Setting notations in NoteSettingsView");
+      noteSettingsView.setNotations(NoteLookup.getSupportedNotations());
+
+      LoggingUtils.logDebug(
+          "Setting selected notation in NoteSettingsView. Selected notation index: "
+              + model.getSelectedNotationIndex());
+      noteSettingsView.setSelectedNotation(model.getSelectedNotationIndex());
+
+      LoggingUtils.logOperationCompleted("Notation list initialization");
+    } else {
+      LoggingUtils.logWarning(
+          "Notation list initialization skipped", "Note settings view is not active");
+    }
+  }
+
   /** Checks if the harp view is active and initialized. */
   private boolean isHarpViewActiveAndInitialized() {
     return window.isHarpViewActive() && this.noteContainers != null;
