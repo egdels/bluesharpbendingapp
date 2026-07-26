@@ -154,6 +154,13 @@ public class MainModel implements Serializable {
   private int storedShowChordIndex = 0;
 
   /**
+   * Represents the index of the stored accidental notation setting. A value of 0 selects sharp
+   * notation (e.g., "C#"), a value of 1 selects flat notation (e.g., "Db"). The default value is 0,
+   * displaying accidentals as sharps.
+   */
+  private int storedNotationIndex = 0;
+
+  /**
    * Represents the index of the currently selected lock screen option. This variable holds an
    * integer value corresponding to the selected lock screen configuration in the application. It is
    * used to track and manage the user's lock screen choice within the application's state.
@@ -385,6 +392,13 @@ public class MainModel implements Serializable {
   }
 
   /**
+   * Represents the index of the currently selected accidental notation. A value of 0 selects sharp
+   * notation (e.g., "C#"), a value of 1 selects flat notation (e.g., "Db"). It is used to track the
+   * user's notation choice within the application's state.
+   */
+  private int selectedNotationIndex;
+
+  /**
    * Retrieves the selected precision index if it has been explicitly set (a non-zero value). If
    * not, defaults to the stored precision index.
    *
@@ -392,6 +406,16 @@ public class MainModel implements Serializable {
    */
   public int getSelectedPrecisionIndex() {
     return selectedPrecisionIndex != 0 ? selectedPrecisionIndex : storedPrecisionIndex;
+  }
+
+  /**
+   * Retrieves the selected notation index if it has been explicitly set (a non-zero value). If not,
+   * defaults to the stored notation index.
+   *
+   * @return The selected notation index if it is non-zero; otherwise, the stored notation index.
+   */
+  public int getSelectedNotationIndex() {
+    return selectedNotationIndex != 0 ? selectedNotationIndex : storedNotationIndex;
   }
 
   /**

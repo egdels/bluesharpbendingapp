@@ -79,6 +79,9 @@ public class MainController implements AndroidSettingsHandler, FavoritesHandler 
         "Setting stored reference pitch based on the model's stored concert pitch index");
     NoteLookup.setConcertPitchByIndex(model.getStoredConcertPitchIndex());
 
+    LoggingUtils.logDebug("Setting stored notation based on the model's stored notation index");
+    NoteLookup.setNotationByIndex(model.getStoredNotationIndex());
+
     LoggingUtils.logInitialized("MainController");
   }
 
