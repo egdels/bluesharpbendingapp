@@ -36,8 +36,14 @@ jobs:
     - name: Compile all modules with Error Prone
       run: ./gradlew :base:compileJava :desktop:compileJava :webapp:compileJava :android:compileDebugJavaWithJavac
 
+    # The desktop UI tests (TestFX) need a display; run them on a virtual X server.
+    - name: Install Xvfb
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq xvfb libgtk-3-0t64
+
     - name: Run Base and Desktop tests
-      run: ./gradlew :base:test :desktop:test
+      run: xvfb-run -a ./gradlew :base:test :desktop:test
 
     - name: Run Android unit tests
       run: ./gradlew :android:testDebugUnitTest

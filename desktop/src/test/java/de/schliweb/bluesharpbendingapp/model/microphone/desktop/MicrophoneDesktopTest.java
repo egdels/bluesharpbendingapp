@@ -24,6 +24,7 @@
 package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.*;
 
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
@@ -41,6 +42,7 @@ class MicrophoneDesktopTest {
    */
   @Test
   void testOpenInitializesExecutorServicesAndQueue() {
+    assumeMicrophoneAvailable();
     MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
     microphoneDesktop.setName(0);
     microphoneDesktop.open();
@@ -55,6 +57,7 @@ class MicrophoneDesktopTest {
   /** Test open method: Check that audio data is added to the queue when read. */
   @Test
   void testOpenAudioDataAddedToQueue() throws InterruptedException {
+    assumeMicrophoneAvailable();
     MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
     microphoneDesktop.setName(0);
 
@@ -114,5 +117,14 @@ class MicrophoneDesktopTest {
 
     verify(mockHandler, atLeastOnce())
         .handle(anyDouble(), anyDouble(), any(ChordDetectionResult.class));
+  }
+
+  /**
+   * These tests open a real audio input line. Skip them on machines without a microphone (e.g.
+   * headless CI runners) instead of failing.
+   */
+  private static void assumeMicrophoneAvailable() {
+    assumeTrue(
+        new MicrophoneDesktop().getSupportedMicrophones().length > 0, "No microphone available");
   }
 }
