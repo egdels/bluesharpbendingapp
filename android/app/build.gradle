@@ -64,6 +64,13 @@ android {
         }
     }
 
+    packaging {
+        resources {
+            // The Basic Pitch model from :base is not used on Android yet; keep it out of the APK.
+            excludes += 'basic_pitch/**'
+        }
+    }
+
     buildTypes {
         debug {
             enableUnitTestCoverage = true

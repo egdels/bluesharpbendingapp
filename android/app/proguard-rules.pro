@@ -54,3 +54,8 @@
 # Ensure org.json (platform or bundled) is never obfuscated or shrunk in a way that changes method names
 -keep class org.json.** { *; }
 -dontwarn org.json.**
+
+# The optional Basic Pitch detector in :base references ONNX Runtime, which the Android app does not
+# ship yet (a source-built runtime follows). The Android app never uses these classes, so R8 drops
+# them; only suppress the missing-class errors.
+-dontwarn ai.onnxruntime.**

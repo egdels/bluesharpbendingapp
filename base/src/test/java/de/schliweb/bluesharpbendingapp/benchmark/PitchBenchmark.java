@@ -31,6 +31,10 @@ import de.schliweb.bluesharpbendingapp.benchmark.SyntheticHarmonicaSignals.Traje
 import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.utils.PitchDetector;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.BasicPitchProvider;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.HarpTone;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.MultiPitchEngine;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.OnnxBasicPitchModelRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -95,7 +99,26 @@ public final class PitchBenchmark {
      * @return the detected pitches in Hz (possibly empty)
      */
     List<Double> detect(double[] window, int sampleRate);
+
+    /**
+     * Called before the windows of a chord scenario are fed, with the harmonica of that scenario.
+     * Harp-aware detectors (the Basic Pitch engine) update their mapping here.
+     *
+     * @param harmonica the harmonica of the scenario
+     */
+    default void prepare(Harmonica harmonica) {
+      // stateless by default
+    }
   }
+
+  /**
+   * A polyphonic detector together with the window and hop it is used with in the app.
+   *
+   * @param detector the detector
+   * @param windowSize the window size in samples
+   * @param hop the hop size in samples
+   */
+  public record PolyRun(PolyDetector detector, int windowSize, int hop) {}
 
   /** The default monophonic detectors of the app. */
   public static List<MonoDetector> defaultMonoDetectors() {
@@ -105,9 +128,87 @@ public final class PitchBenchmark {
         mono("Hybrid", (f, sr) -> PitchDetector.detectPitchHybrid(f, sr).pitch()));
   }
 
-  /** The default polyphonic detectors of the app. */
-  public static List<PolyDetector> defaultPolyDetectors() {
-    return List.of(poly("ChordDetector", (w, sr) -> PitchDetector.detectChord(w, sr).pitches()));
+  /** Desktop microphone buffer: 0.1 s (see MicrophoneDesktop). */
+  static final int DESKTOP_FRAME = 4410;
+
+  /** Basic Pitch sliding window and hop as used by the private prototype (1 s / 0.4 s). */
+  static final int MULTI_PITCH_WINDOW = SAMPLE_RATE;
+
+  static final int MULTI_PITCH_HOP = SAMPLE_RATE * 2 / 5;
+
+  /**
+   * The polyphonic detectors: the app's ChordDetector on microphone buffers, and the multi-pitch
+   * engine (with harp mapping) backed by the ChordDetector and by Basic Pitch on 1 s windows, plus
+   * Basic Pitch's raw note events. The Basic Pitch runs are only included if ONNX Runtime and the
+   * model are available.
+   *
+   * @return the detector runs
+   */
+  public static List<PolyRun> defaultPolyRuns() {
+    List<PolyRun> runs = new ArrayList<>();
+    runs.add(
+        new PolyRun(
+            poly("ChordDetector", (w, sr) -> PitchDetector.detectChord(w, sr).pitches()),
+            DESKTOP_FRAME,
+            DESKTOP_FRAME / 2));
+    runs.add(
+        new PolyRun(
+            engineDetector("Engine: ChordDetector", MultiPitchEngine.createDefault()),
+            MULTI_PITCH_WINDOW,
+            MULTI_PITCH_HOP));
+    MultiPitchEngine basicPitch =
+        MultiPitchEngine.createBasicPitch(
+            AbstractHarmonica.create(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER));
+    if (basicPitch.selectedEngine() == MultiPitchEngine.Engine.BASIC_PITCH) {
+      runs.add(
+          new PolyRun(
+              engineDetector("Engine: Basic Pitch", basicPitch),
+              MULTI_PITCH_WINDOW,
+              MULTI_PITCH_HOP));
+      try {
+        BasicPitchProvider raw =
+            new BasicPitchProvider(OnnxBasicPitchModelRunner.fromBundledModel());
+        runs.add(
+            new PolyRun(
+                poly(
+                    "Basic Pitch raw",
+                    (w, sr) ->
+                        raw.detect(w, sr).stream()
+                            .map(e -> HarpTone.midiToFreq(e.midi()))
+                            .toList()),
+                MULTI_PITCH_WINDOW,
+                MULTI_PITCH_HOP));
+      } catch (Exception | LinkageError e) {
+        // Basic Pitch raw is optional in the report
+      }
+    }
+    return runs;
+  }
+
+  /**
+   * Wraps a multi-pitch engine: the detected pitches are the frequencies of the active harp
+   * channels after post-processing and mapping.
+   */
+  private static PolyDetector engineDetector(String name, MultiPitchEngine engine) {
+    return new PolyDetector() {
+      @Override
+      public String name() {
+        return name;
+      }
+
+      @Override
+      public List<Double> detect(double[] window, int sampleRate) {
+        return engine.process(window, sampleRate, 0).mapping().active().stream()
+            .map(a -> a.tone().freq())
+            .distinct()
+            .toList();
+      }
+
+      @Override
+      public void prepare(Harmonica harmonica) {
+        engine.setHarmonica(harmonica);
+      }
+    };
   }
 
   /**
@@ -186,6 +287,7 @@ public final class PitchBenchmark {
 
   private static final double TONE_SECONDS = 0.6;
   private static final double BEND_SECONDS = 1.2;
+  private static final double CHORD_SECONDS = 2.0;
   private static final double SKIP_ATTACK_SECONDS = 0.03;
 
   /** One test signal with its ground truth. */
@@ -306,7 +408,7 @@ public final class PitchBenchmark {
           SyntheticHarmonicaSignals.tone(
               SyntheticHarmonicaSignals.steady(freqs[i]),
               ToneModel.HARMONICA,
-              TONE_SECONDS,
+              CHORD_SECONDS,
               seed + i);
     }
     String kind = channels.length == 2 && channels[1] - channels[0] == 3 ? "octave split" : "chord";
@@ -436,13 +538,10 @@ public final class PitchBenchmark {
   /**
    * Runs the polyphonic benchmark.
    *
-   * @param detectors the detectors to compare
-   * @param windowSize the window size in samples
-   * @param hop the hop size in samples
+   * @param runs the detectors to compare, each with its window and hop
    * @return per category the stats of each detector
    */
-  static Map<String, Map<String, PolyStats>> runPoly(
-      List<PolyDetector> detectors, int windowSize, int hop) {
+  static Map<String, Map<String, PolyStats>> runPoly(List<PolyRun> runs) {
     Map<String, Map<String, PolyStats>> result = new LinkedHashMap<>();
     try {
       for (ChordScenario scenario : chordScenarios()) {
@@ -451,7 +550,11 @@ public final class PitchBenchmark {
         PitchDetector.setMaxFrequency(harp.getHarmonicaMaxFrequency());
         Map<String, PolyStats> byDetector =
             result.computeIfAbsent(scenario.category(), c -> new LinkedHashMap<>());
-        for (PolyDetector detector : detectors) {
+        for (PolyRun run : runs) {
+          PolyDetector detector = run.detector();
+          int windowSize = run.windowSize();
+          int hop = run.hop();
+          detector.prepare(harp);
           PolyStats stats = byDetector.computeIfAbsent(detector.name(), d -> new PolyStats());
           double[] signal = scenario.signal();
           int skip = (int) (SKIP_ATTACK_SECONDS * SAMPLE_RATE);
@@ -565,20 +668,22 @@ public final class PitchBenchmark {
   static String polyMarkdown(String title, Map<String, Map<String, PolyStats>> results) {
     StringBuilder sb = new StringBuilder();
     sb.append("## ").append(title).append("\n\n");
-    sb.append("| Category | Detector | Precision | Recall | Exact windows | ms/window |\n");
-    sb.append("|---|---|---:|---:|---:|---:|\n");
+    sb.append(
+        "| Category | Detector | Precision | Recall | Exact windows | Windows | ms/window |\n");
+    sb.append("|---|---|---:|---:|---:|---:|---:|\n");
     for (Map.Entry<String, Map<String, PolyStats>> category : results.entrySet()) {
       for (Map.Entry<String, PolyStats> d : category.getValue().entrySet()) {
         PolyStats s = d.getValue();
         sb.append(
             String.format(
                 Locale.ROOT,
-                "| %s | %s | %.2f | %.2f | %.1f %% | %.2f |%n",
+                "| %s | %s | %.2f | %.2f | %.1f %% | %d | %.2f |%n",
                 category.getKey(),
                 d.getKey(),
                 s.precision(),
                 s.recall(),
                 s.windows == 0 ? 0 : 100.0 * s.exact / s.windows,
+                s.windows,
                 s.windows == 0 ? 0 : s.nanos / 1e6 / s.windows));
       }
     }

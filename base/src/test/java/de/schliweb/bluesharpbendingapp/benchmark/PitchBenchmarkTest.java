@@ -69,9 +69,8 @@ class PitchBenchmarkTest {
                 PitchBenchmark.defaultMonoDetectors(), ANDROID_FRAME, ANDROID_FRAME)));
     report.append(
         PitchBenchmark.polyMarkdown(
-            "Polyphonic, desktop frames (" + DESKTOP_FRAME + " samples, 50 % hop)",
-            PitchBenchmark.runPoly(
-                PitchBenchmark.defaultPolyDetectors(), DESKTOP_FRAME, DESKTOP_FRAME / 2)));
+            "Polyphonic (ChordDetector: 4410-sample buffers; engines: 1 s window, 0.4 s hop)",
+            PitchBenchmark.runPoly(PitchBenchmark.defaultPolyRuns())));
 
     Path dir =
         Path.of(System.getProperty("pitchBenchmark.reportDir", "build/reports/pitch-benchmark"));

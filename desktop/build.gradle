@@ -44,6 +44,9 @@ dependencies {
     // Provide org.json at runtime for desktop, since base uses compileOnly
     runtimeOnly 'org.json:json:20250517'
 
+    // ONNX Runtime for the optional Basic Pitch multi-pitch detector (base uses compileOnly).
+    implementation 'com.microsoft.onnxruntime:onnxruntime:1.22.0'
+
     // TestFX dependencies for UI testing
     testImplementation 'org.testfx:testfx-core:4.0.18'
     testImplementation 'org.testfx:testfx-junit5:4.0.18'
