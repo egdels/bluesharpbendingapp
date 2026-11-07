@@ -51,8 +51,8 @@ public final class MultiPitchChordTracker implements AutoCloseable {
 
   private static final ChordDetectionResult EMPTY = new ChordDetectionResult(List.of(), 0.0);
 
-  /** A result together with the number of samples written when its window ended. */
-  private record Snapshot(ChordDetectionResult result, long windowEndSample) {}
+  /** A result together with the number of samples written when it became available. */
+  private record Snapshot(ChordDetectionResult result, long storedAtSample) {}
 
   private final MultiPitchEngine engine;
   private final int sampleRate;
@@ -76,7 +76,7 @@ public final class MultiPitchChordTracker implements AutoCloseable {
    * @param sampleRate the sample rate of the fed audio in Hz
    * @param windowSeconds the length of the analysed window
    * @param hopSeconds the time between two analyses
-   * @param maxAgeSeconds how long a result stays valid after its window ended
+   * @param maxAgeSeconds how long a result stays valid after it became available
    */
   public MultiPitchChordTracker(
       MultiPitchEngine engine,
@@ -105,7 +105,7 @@ public final class MultiPitchChordTracker implements AutoCloseable {
    * @param sampleRate the sample rate of the fed audio in Hz
    * @param windowSeconds the length of the analysed window
    * @param hopSeconds the time between two analyses
-   * @param maxAgeSeconds how long a result stays valid after its window ended
+   * @param maxAgeSeconds how long a result stays valid after it became available
    * @param worker a single-threaded executor; shut down by {@link #close()}
    */
   MultiPitchChordTracker(
@@ -172,7 +172,7 @@ public final class MultiPitchChordTracker implements AutoCloseable {
           new Snapshot(
               new ChordDetectionResult(
                   pitches, pitches.isEmpty() ? 0.0 : result.mapping().confidence()),
-              windowEnd));
+              totalWritten));
     } catch (RuntimeException e) {
       LoggingContext.setComponent("MultiPitchChordTracker");
       LoggingUtils.logError("Multi-pitch analysis failed", e);
@@ -182,14 +182,17 @@ public final class MultiPitchChordTracker implements AutoCloseable {
   }
 
   /**
-   * Returns the newest result, or an empty result if there is none or it is older than the maximum
-   * age (measured in fed samples since the end of its window). May be called from any thread.
+   * Returns the newest result, or an empty result if there is none or it became available more than
+   * the maximum age ago (measured in fed samples). Counting from its arrival rather than from the
+   * end of its window keeps results valid on slow devices: on a Pixel 7a an analysis takes about
+   * 0.3 s, so a result measured from its window end was already half expired on arrival. May be
+   * called from any thread.
    *
    * @return the latest chord result
    */
   public ChordDetectionResult latest() {
     Snapshot snapshot = latest.get();
-    if (snapshot == null || totalWritten - snapshot.windowEndSample() > maxAgeSamples) {
+    if (snapshot == null || totalWritten - snapshot.storedAtSample() > maxAgeSamples) {
       return EMPTY;
     }
     return snapshot.result();

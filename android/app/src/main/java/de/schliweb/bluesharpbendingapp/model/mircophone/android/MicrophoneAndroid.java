@@ -255,11 +255,14 @@ public class MicrophoneAndroid extends AbstractMicrophone {
    */
   @Override
   public void close() {
+    // shutdownNow() interrupts the recording and processing loops. shutdown() alone let them run
+    // on: every close()/open() (e.g. on each algorithm or confidence selection) left another
+    // AudioRecord recording, and all of them kept feeding the handler and the chord tracker.
     if (executor != null) {
-      executor.shutdown();
+      executor.shutdownNow();
     }
     if (processingExecutor != null) {
-      processingExecutor.shutdown();
+      processingExecutor.shutdownNow();
     }
   }
 

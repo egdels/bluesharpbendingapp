@@ -119,6 +119,21 @@ class MicrophoneDesktopTest {
         .handle(anyDouble(), anyDouble(), any(ChordDetectionResult.class));
   }
 
+  /** close() must stop the recording and processing threads, not leave them running. */
+  @Test
+  void testCloseStopsRecordingAndProcessingThreads() throws InterruptedException {
+    assumeMicrophoneAvailable();
+    MicrophoneDesktop microphoneDesktop = new MicrophoneDesktop();
+    microphoneDesktop.setName(0);
+    microphoneDesktop.open();
+    Thread.sleep(300);
+
+    microphoneDesktop.close();
+
+    assertTrue(microphoneDesktop.executorService.awaitTermination(2, TimeUnit.SECONDS));
+    assertTrue(microphoneDesktop.processingExecutor.awaitTermination(2, TimeUnit.SECONDS));
+  }
+
   /**
    * These tests open a real audio input line. Skip them on machines without a microphone (e.g.
    * headless CI runners) instead of failing.

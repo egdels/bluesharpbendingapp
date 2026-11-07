@@ -221,4 +221,18 @@ class MultiPitchChordTrackerTest {
     assertEquals(1, runner.closed.get());
     assertTrue(executor.isShutdown());
   }
+
+  @Test
+  void slowAnalysisResultIsStillValidAfterArrival() {
+    // On a phone an analysis takes ~0.3 s: the result arrives well after its window ended.
+    ManualExecutor executor = new ManualExecutor();
+    MultiPitchChordTracker tracker = chordDetectorTracker(executor);
+    feed(tracker, cMajorChord(1.0)); // window full: analysis submitted, not yet run
+    feed(tracker, cMajorChord(0.5)); // audio keeps coming while the analysis runs
+    executor.runAll(); // the result arrives now, 0.5 s after its window ended
+
+    feed(tracker, cMajorChord(0.4));
+
+    assertTrue(tracker.latest().hasPitches(), "a result must stay valid for 0.6 s after arrival");
+  }
 }

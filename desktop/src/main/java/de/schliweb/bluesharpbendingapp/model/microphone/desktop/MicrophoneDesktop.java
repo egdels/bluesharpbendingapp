@@ -153,6 +153,9 @@ public class MicrophoneDesktop extends AbstractMicrophone {
    */
   private final AtomicReference<MicrophoneHandler> microphoneHandler = new AtomicReference<>();
 
+  /** The line currently recording, closed by {@link #close()} to end a blocked read. */
+  private volatile TargetDataLine activeLine;
+
   /** Basic Pitch analysis window, hop and result lifetime (see {@link MultiPitchChordTracker}). */
   private static final double MULTI_PITCH_WINDOW_SECONDS = 1.0;
 
@@ -250,11 +253,22 @@ public class MicrophoneDesktop extends AbstractMicrophone {
    */
   @Override
   public void close() {
+    // shutdownNow() interrupts the recording and processing loops. shutdown() alone let them run
+    // on: every close()/open() (e.g. on each algorithm or confidence selection) left another line
+    // recording, and all of them kept feeding the handler and the chord tracker.
     if (executorService != null) {
-      executorService.shutdown();
+      executorService.shutdownNow();
+    }
+    // An interrupt does not wake a blocked TargetDataLine.read(); stopping and closing the line
+    // does, so the recording thread really ends.
+    TargetDataLine line = activeLine;
+    activeLine = null;
+    if (line != null) {
+      line.stop();
+      line.close();
     }
     if (processingExecutor != null) {
-      processingExecutor.shutdown();
+      processingExecutor.shutdownNow();
     }
   }
 
@@ -475,13 +489,16 @@ public class MicrophoneDesktop extends AbstractMicrophone {
             if (line != null) {
               line.open(getAudioFormat());
               line.start();
+              activeLine = line;
 
               byte[] buffer = new byte[BUFFER_SIZE];
               byte[] overlapBuffer = new byte[BUFFER_SIZE];
               int overlapSize = BUFFER_SIZE / 2;
               boolean hasOverlap = false;
 
-              while (!Thread.currentThread().isInterrupted()) {
+              // Also stop when the line was closed by close(): a blocked read() swallows the
+              // interrupt (Java Sound catches the InterruptedException and clears the flag).
+              while (!Thread.currentThread().isInterrupted() && line.isOpen()) {
                 int bytesRead = line.read(buffer, 0, BUFFER_SIZE);
                 if (bytesRead > 0) {
                   // Submit the full frame
