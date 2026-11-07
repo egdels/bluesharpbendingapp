@@ -30,8 +30,8 @@ dependencies {
     testImplementation 'org.json:json:20250517'
     // ONNX Runtime for the optional Basic Pitch multi-pitch detector. compileOnly so it is not
     // packaged into Android (which gets its own, source-built runtime); desktop adds it at runtime.
-    compileOnly 'com.microsoft.onnxruntime:onnxruntime:1.22.0'
-    testImplementation 'com.microsoft.onnxruntime:onnxruntime:1.22.0'
+    compileOnly 'com.microsoft.onnxruntime:onnxruntime:1.31.1'
+    testImplementation 'com.microsoft.onnxruntime:onnxruntime:1.31.1'
 }
 
 test {
