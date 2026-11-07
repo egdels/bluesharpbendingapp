@@ -35,7 +35,23 @@ test {
     // Long-running benchmark/optimization tests are tagged "slow" and excluded here;
     // run them explicitly with: ./gradlew :base:slowTest
     useJUnitPlatform {
-        excludeTags 'slow'
+        excludeTags 'slow', 'benchmark'
+    }
+}
+
+tasks.register('pitchBenchmark', Test) {
+    description = 'Runs the pitch detection benchmark on synthetic signals and writes build/reports/pitch-benchmark/report.md.'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'benchmark'
+    }
+    systemProperty 'pitchBenchmark.reportDir', layout.buildDirectory.dir('reports/pitch-benchmark').get().asFile.absolutePath
+    // A benchmark is never up to date: always re-run and show the report on the console.
+    outputs.upToDateWhen { false }
+    testLogging {
+        showStandardStreams = true
     }
 }
 
