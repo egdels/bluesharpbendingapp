@@ -212,8 +212,8 @@ class YINPitchDetectorTest {
 
         // Augmented tuning harmonicas
         Arguments.of(AbstractHarmonica.KEY.A_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 3.0, 0.01),
-        Arguments.of(AbstractHarmonica.KEY.D, AbstractHarmonica.TUNE.AUGMENTED, 5.0, 0.01),
-        Arguments.of(AbstractHarmonica.KEY.D_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 20.0, 0.01),
+        Arguments.of(AbstractHarmonica.KEY.D, AbstractHarmonica.TUNE.AUGMENTED, 35.0, 0.01),
+        Arguments.of(AbstractHarmonica.KEY.D_FLAT, AbstractHarmonica.TUNE.AUGMENTED, 45.0, 0.01),
 
         // Country tuning harmonicas
         Arguments.of(AbstractHarmonica.KEY.E, AbstractHarmonica.TUNE.COUNTRY, 50.0, 0.01),

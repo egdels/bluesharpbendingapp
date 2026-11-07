@@ -136,4 +136,28 @@ class AbstractHarmonicaTest {
     assertInstanceOf(AugmentedHarmonica.class, harmonica);
     assertEquals(key.getFrequency(), harmonica.getNoteFrequency(1, 0));
   }
+
+  /**
+   * Regression test: the detection range (min/max frequency) must cover every blow and draw note of
+   * every supported tuning and key. In some tunings (e.g. diminished, circular, augmented) the draw
+   * note of channel 10 is higher than its blow note, which was previously cut off.
+   */
+  @Test
+  void testMinMaxFrequencyCoverAllBlowAndDrawNotes() {
+    for (AbstractHarmonica.TUNE tune : AbstractHarmonica.TUNE.values()) {
+      for (AbstractHarmonica.KEY key : AbstractHarmonica.KEY.values()) {
+        Harmonica harmonica = AbstractHarmonica.create(key, tune);
+        double min = harmonica.getHarmonicaMinFrequency();
+        double max = harmonica.getHarmonicaMaxFrequency();
+        for (int channel = 1; channel <= 10; channel++) {
+          for (int note = 0; note <= 1; note++) {
+            double frequency = harmonica.getNoteFrequency(channel, note);
+            String context = tune + " " + key + " channel " + channel + " note " + note;
+            assertTrue(frequency <= max, context + " is above the maximum frequency " + max);
+            assertTrue(frequency >= min, context + " is below the minimum frequency " + min);
+          }
+        }
+      }
+    }
+  }
 }

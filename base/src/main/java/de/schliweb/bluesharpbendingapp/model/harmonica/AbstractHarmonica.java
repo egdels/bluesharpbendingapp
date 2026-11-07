@@ -531,24 +531,35 @@ public abstract class AbstractHarmonica implements Harmonica {
 
   /**
    * Retrieves the minimum frequency that the harmonica can produce. This is calculated by reducing
-   * the frequency of the first channel's output by 50 cents.
+   * the lowest blow or draw frequency across all channels by 50 cents.
    *
    * @return the minimum frequency of the harmonica in Hertz
    */
   @Override
   public double getHarmonicaMinFrequency() {
-    return NoteUtils.addCentsToFrequency(-50.0, getChannelOutFrequency(1));
+    double min = Double.MAX_VALUE;
+    for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX; channel++) {
+      min =
+          Math.min(min, Math.min(getChannelOutFrequency(channel), getChannelInFrequency(channel)));
+    }
+    return NoteUtils.addCentsToFrequency(-50.0, min);
   }
 
   /**
    * Retrieves the maximum frequency produced by the harmonica. This is calculated by increasing the
-   * base frequency of the 10th channel's output by 50 cents.
+   * highest blow or draw frequency across all channels by 50 cents. Note that in some tunings (e.g.
+   * diminished, circular, augmented) the draw note of channel 10 is higher than its blow note.
    *
    * @return the maximum frequency of the harmonica in Hertz
    */
   @Override
   public double getHarmonicaMaxFrequency() {
-    return NoteUtils.addCentsToFrequency(50.0, getChannelOutFrequency(10));
+    double max = 0.0;
+    for (int channel = CHANNEL_MIN; channel <= CHANNEL_MAX; channel++) {
+      max =
+          Math.max(max, Math.max(getChannelOutFrequency(channel), getChannelInFrequency(channel)));
+    }
+    return NoteUtils.addCentsToFrequency(50.0, max);
   }
 
   /**
