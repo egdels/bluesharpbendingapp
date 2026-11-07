@@ -60,8 +60,8 @@ class AbstractMicrophoneTest {
 
   @Test
   void testGetAlgorithm() {
-    // Default algorithm should be "YIN"
-    assertEquals("YIN", microphone.getAlgorithm());
+    // Default algorithm should be "MPM"
+    assertEquals("MPM", microphone.getAlgorithm());
   }
 
   @Test

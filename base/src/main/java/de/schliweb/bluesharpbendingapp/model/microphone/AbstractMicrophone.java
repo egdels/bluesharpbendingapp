@@ -83,7 +83,7 @@ public abstract class AbstractMicrophone implements Microphone {
    * <p>This variable is private to ensure encapsulation, and modifications should be made using the
    * setter methods provided by the AbstractMicrophone or its subclasses.
    */
-  private String algorithm = "YIN"; // Default algorithm
+  private String algorithm = "MPM"; // Default algorithm, see MainModel.storedAlgorithmIndex
 
   /**
    * Retrieves a list of supported algorithms for audio processing.

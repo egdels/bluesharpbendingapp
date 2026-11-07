@@ -54,10 +54,10 @@ public class MainModel implements Serializable {
    * track and reference the specific algorithm configuration or implementation within the
    * application's context.
    *
-   * <p>The default value is set to 0, indicating the initial or default algorithm selection before
-   * any user modifications or settings are applied.
+   * <p>The default is 1 (MPM): in the pitch benchmark (:base:pitchBenchmark) MPM is more precise
+   * than YIN in every category and about four times faster. Users who stored a selection keep it.
    */
-  private int storedAlgorithmIndex = 0;
+  private int storedAlgorithmIndex = 1;
 
   /**
    * Represents an integer index used to store or retrieve a specific key in the context of a
