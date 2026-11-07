@@ -24,6 +24,7 @@
 package de.schliweb.bluesharpbendingapp.view.desktop;
 
 import de.schliweb.bluesharpbendingapp.controller.NoteContainer;
+import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
@@ -182,6 +183,12 @@ public class HarpViewDesktopFXController implements HarpView {
    * and positioned at the top of the harp grid.
    */
   private Label tuningKeyInfoLabel;
+
+  /** The key/tuning part of the info line, e.g. "C | Richter". */
+  private String keyInfoText = "";
+
+  /** The localized playing technique of the highlighted chord, empty if none. */
+  private String techniqueText = "";
 
   /**
    * Initializes the layout and event handlers for the harp view controller.
@@ -685,13 +692,66 @@ public class HarpViewDesktopFXController implements HarpView {
     LoggingUtils.logOperationStarted("Update tuning and key information");
 
     if (tuningKeyInfoLabel != null) {
-      String infoText = String.format("%s | %s", keyName, tuningName);
-      tuningKeyInfoLabel.setText(infoText);
-      LoggingUtils.logDebug("Updated tuning and key information: " + infoText);
+      keyInfoText = String.format("%s | %s", keyName, tuningName);
+      refreshInfoLine();
+      LoggingUtils.logDebug("Updated tuning and key information: " + keyInfoText);
     } else {
       LoggingUtils.logWarning("Could not update tuning and key information", "Label is null");
     }
 
     LoggingUtils.logOperationCompleted("Tuning and key information updated");
+  }
+
+  /**
+   * Shows the playing technique of the highlighted chord next to key and tuning, e.g. "C | Richter
+   * · Octave 1B 4B (tongue block)". Single notes and silence clear it.
+   *
+   * @param classification the technique of the highlighted chord
+   */
+  @Override
+  public void updatePlayingTechnique(
+      de.schliweb.bluesharpbendingapp.utils.basicpitch.PlayingTechniqueClassifier.Classification
+          classification) {
+    String text = describeTechnique(classification);
+    javafx.application.Platform.runLater(
+        () -> {
+          techniqueText = text;
+          refreshInfoLine();
+        });
+  }
+
+  /**
+   * Returns the localized description of a playing technique, or an empty string for single notes
+   * and silence.
+   */
+  static String describeTechnique(
+      de.schliweb.bluesharpbendingapp.utils.basicpitch.PlayingTechniqueClassifier.Classification
+          classification) {
+    String key =
+        switch (classification.technique()) {
+          case INTERVAL -> "harp.technique.interval";
+          case OCTAVE -> "harp.technique.octave";
+          case SPLIT -> "harp.technique.split";
+          case CHORD -> "harp.technique.chord";
+          default -> null;
+        };
+    if (key == null) {
+      return "";
+    }
+    StringBuilder sb = new StringBuilder(I18nUtils.getString(key));
+    if (!classification.labels().isEmpty()) {
+      sb.append(' ').append(String.join(" ", classification.labels()));
+    }
+    if (classification.tongueBlocked()) {
+      sb.append(" (").append(I18nUtils.getString("harp.technique.tongueblock")).append(')');
+    }
+    return sb.toString();
+  }
+
+  private void refreshInfoLine() {
+    if (tuningKeyInfoLabel != null) {
+      tuningKeyInfoLabel.setText(
+          techniqueText.isEmpty() ? keyInfoText : keyInfoText + " · " + techniqueText);
+    }
   }
 }

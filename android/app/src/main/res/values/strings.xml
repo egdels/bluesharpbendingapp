@@ -75,4 +75,9 @@
     <string name="favs_add">Save as favorite</string>
     <string name="favs_toggle_show">Show favorites</string>
     <string name="favs_toggle_hide">Hide favorites</string>
+    <string name="harp_technique_interval">Double stop</string>
+    <string name="harp_technique_octave">Octave</string>
+    <string name="harp_technique_split">Split</string>
+    <string name="harp_technique_chord">Chord</string>
+    <string name="harp_technique_tongueblock">tongue block</string>
 </resources>

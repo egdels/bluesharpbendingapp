@@ -788,14 +788,84 @@ public class HarpFragment extends Fragment implements HarpView, FragmentView {
     return HarpViewNoteElementAndroid.getInstance(getNote(channel, note));
   }
 
+  /** The key/tuning part of the info line. */
+  private String keyInfoText = "";
+
+  /** The localized playing technique of the highlighted chord, empty if none. */
+  private String techniqueText = "";
+
   @Override
   public void updateTuningKeyInfo(@NonNull String keyName, @NonNull String tuningName) {
     if (binding != null) {
-      TextView tuningKeyInfoView = binding.getRoot().findViewById(R.id.tuning_key_info);
-      if (tuningKeyInfoView != null) {
-        String infoText = getString(R.string.tuning_key_info_format, keyName, tuningName);
-        tuningKeyInfoView.setText(infoText);
-      }
+      keyInfoText = getString(R.string.tuning_key_info_format, keyName, tuningName);
+      refreshInfoLine();
+    }
+  }
+
+  /**
+   * Shows the playing technique of the highlighted chord next to key and tuning. Called from the
+   * audio processing thread; the view is updated on the UI thread.
+   */
+  @Override
+  public void updatePlayingTechnique(
+      @NonNull
+          de.schliweb.bluesharpbendingapp.utils.basicpitch.PlayingTechniqueClassifier.Classification
+              classification) {
+    FragmentHarpBinding current = binding;
+    if (current == null || !isAdded()) {
+      return;
+    }
+    String text = describeTechnique(classification);
+    current
+        .getRoot()
+        .post(
+            () -> {
+              techniqueText = text;
+              refreshInfoLine();
+            });
+  }
+
+  private String describeTechnique(
+      de.schliweb.bluesharpbendingapp.utils.basicpitch.PlayingTechniqueClassifier.Classification
+          classification) {
+    int name;
+    switch (classification.technique()) {
+      case INTERVAL:
+        name = R.string.harp_technique_interval;
+        break;
+      case OCTAVE:
+        name = R.string.harp_technique_octave;
+        break;
+      case SPLIT:
+        name = R.string.harp_technique_split;
+        break;
+      case CHORD:
+        name = R.string.harp_technique_chord;
+        break;
+      default:
+        return "";
+    }
+    if (!isAdded()) {
+      return "";
+    }
+    StringBuilder sb = new StringBuilder(getString(name));
+    if (!classification.labels().isEmpty()) {
+      sb.append(' ').append(String.join(" ", classification.labels()));
+    }
+    if (classification.tongueBlocked()) {
+      sb.append(" (").append(getString(R.string.harp_technique_tongueblock)).append(')');
+    }
+    return sb.toString();
+  }
+
+  private void refreshInfoLine() {
+    if (binding == null) {
+      return;
+    }
+    TextView tuningKeyInfoView = binding.getRoot().findViewById(R.id.tuning_key_info);
+    if (tuningKeyInfoView != null) {
+      tuningKeyInfoView.setText(
+          techniqueText.isEmpty() ? keyInfoText : keyInfoText + " · " + techniqueText);
     }
   }
 }

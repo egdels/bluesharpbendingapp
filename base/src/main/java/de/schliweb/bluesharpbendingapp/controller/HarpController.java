@@ -30,6 +30,9 @@ import de.schliweb.bluesharpbendingapp.utils.ChordDetectionResult;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.utils.PitchDetector;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.ActiveChannel;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.HarpTone;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.PlayingTechniqueClassifier;
 import de.schliweb.bluesharpbendingapp.view.HarpSettingsView;
 import de.schliweb.bluesharpbendingapp.view.HarpView;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
@@ -143,6 +146,7 @@ public class HarpController
 
       if (!chordDetected) {
         // Individual note mode: Only process individual notes, no chords
+        showPlayingTechnique(SILENCE);
         updateNoteContainersForNote(frequency);
       }
 
@@ -172,14 +176,55 @@ public class HarpController
     }
     List<ChordHarmonica> chords = possibleChords;
 
+    ChordHarmonica largest = null;
     for (ChordHarmonica chord : chords) {
       if (chordComparator.compare(chord, chordResult) == 0) {
         chordDetected = true;
         updateNoteContainersForChord(chord, frequency);
+        if (largest == null || chord.getChannels().size() > largest.getChannels().size()) {
+          largest = chord;
+        }
       }
     }
+    showPlayingTechnique(largest == null ? SILENCE : classify(largest));
 
     return chordDetected;
+  }
+
+  /** Classification shown when no chord is highlighted. */
+  private static final PlayingTechniqueClassifier.Classification SILENCE =
+      new PlayingTechniqueClassifier.Classification(
+          PlayingTechniqueClassifier.Technique.SILENCE, false, List.of());
+
+  /** The technique last passed to the harp view, to update it only on changes. */
+  private PlayingTechniqueClassifier.Classification shownTechnique = SILENCE;
+
+  /**
+   * Classifies a matched chord (double stop, octave, split, chord) from its channels, direction and
+   * tones, using the same classifier as the Basic Pitch engine.
+   *
+   * @param chord the matched chord
+   * @return the classification
+   */
+  static PlayingTechniqueClassifier.Classification classify(ChordHarmonica chord) {
+    HarpTone.Direction direction =
+        chord.getNoteIndex() == 0 ? HarpTone.Direction.BLOW : HarpTone.Direction.DRAW;
+    List<ActiveChannel> active = new ArrayList<>();
+    for (int i = 0; i < chord.getChannels().size(); i++) {
+      int midi = (int) Math.round(HarpTone.freqToMidi(chord.getTones().get(i)));
+      active.add(
+          new ActiveChannel(
+              new HarpTone(chord.getChannels().get(i), direction, 0, midi), 1.0, 0.0));
+    }
+    return PlayingTechniqueClassifier.classify(active);
+  }
+
+  /** Passes the technique to the harp view if it differs from the one shown. */
+  private void showPlayingTechnique(PlayingTechniqueClassifier.Classification classification) {
+    if (!classification.equals(shownTechnique)) {
+      shownTechnique = classification;
+      window.getHarpView().updatePlayingTechnique(classification);
+    }
   }
 
   /**

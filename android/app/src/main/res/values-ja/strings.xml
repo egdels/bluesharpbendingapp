@@ -74,4 +74,9 @@
     <string name="favs_add">お気に入りに追加</string>
     <string name="favs_toggle_show">お気に入りを表示</string>
     <string name="favs_toggle_hide">お気に入りを非表示</string>
+    <string name="harp_technique_interval">重音</string>
+    <string name="harp_technique_octave">オクターブ</string>
+    <string name="harp_technique_split">スプリット</string>
+    <string name="harp_technique_chord">コード</string>
+    <string name="harp_technique_tongueblock">タングブロック</string>
 </resources>

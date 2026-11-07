@@ -55,4 +55,18 @@ public interface HarpView {
    * @param tuningName the name of the currently selected tuning
    */
   void updateTuningKeyInfo(String keyName, String tuningName);
+
+  /**
+   * Shows the playing technique of the chord currently highlighted (double stop, octave, split,
+   * chord), or clears it. Called only when the technique changes, possibly from a non-UI thread.
+   * The default implementation ignores the call.
+   *
+   * @param classification the technique of the highlighted chord; {@code SILENCE} or {@code
+   *     SINGLE_NOTE} clears the display
+   */
+  default void updatePlayingTechnique(
+      de.schliweb.bluesharpbendingapp.utils.basicpitch.PlayingTechniqueClassifier.Classification
+          classification) {
+    // not shown by default
+  }
 }

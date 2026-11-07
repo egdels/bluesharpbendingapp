@@ -74,4 +74,9 @@
     <string name="favs_add">保存到收藏夹</string>
     <string name="favs_toggle_show">显示收藏夹</string>
     <string name="favs_toggle_hide">隐藏收藏夹</string>
+    <string name="harp_technique_interval">双音</string>
+    <string name="harp_technique_octave">八度</string>
+    <string name="harp_technique_split">分奏</string>
+    <string name="harp_technique_chord">和弦</string>
+    <string name="harp_technique_tongueblock">舌堵</string>
 </resources>
