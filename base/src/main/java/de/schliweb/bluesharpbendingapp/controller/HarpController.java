@@ -177,14 +177,18 @@ public class HarpController
     List<ChordHarmonica> chords = possibleChords;
 
     ChordHarmonica largest = null;
+    List<ChordHarmonica> matched = new ArrayList<>();
     for (ChordHarmonica chord : chords) {
       if (chordComparator.compare(chord, chordResult) == 0) {
         chordDetected = true;
-        updateNoteContainersForChord(chord, frequency);
+        matched.add(chord);
         if (largest == null || chord.getChannels().size() > largest.getChannels().size()) {
           largest = chord;
         }
       }
+    }
+    if (chordDetected) {
+      updateNoteContainersForChords(matched, frequency);
     }
     showPlayingTechnique(largest == null ? SILENCE : classify(largest));
 
@@ -228,19 +232,30 @@ public class HarpController
   }
 
   /**
-   * Updates the note containers with the specified chord and frequency. If a note container is part
-   * of the provided chord, its state is updated to mark it as part of the chord, and its frequency
-   * is set to the provided value.
+   * Marks exactly the note containers of the detected chords as part of a chord and releases all
+   * others.
    *
-   * @param chord the chord used to determine which note containers are part of it
-   * @param frequency the frequency to assign to the note containers that are part of the chord, in
-   *     Hz
+   * @param chords the chords detected in this frame
+   * @param frequency the frequency to assign to the note containers of the chords, in Hz
    */
-  private void updateNoteContainersForChord(ChordHarmonica chord, double frequency) {
+  private void updateNoteContainersForChords(List<ChordHarmonica> chords, double frequency) {
     for (NoteContainer noteContainer : noteContainers) {
-      if (isPartOfChord(noteContainer, chord)) {
+      boolean inChord = false;
+      for (ChordHarmonica chord : chords) {
+        if (isPartOfChord(noteContainer, chord)) {
+          inChord = true;
+          break;
+        }
+      }
+      if (inChord) {
         noteContainer.setPartOfChord(true);
         noteContainer.setFrequencyToHandle(frequency);
+      } else {
+        // Channels of a previous chord (e.g. blow 1-2-3 after switching to draw 1-2-3) must
+        // release their chord state, so their highlight times out instead of being kept alive;
+        // no frequency, so they don't show a stale single note either.
+        noteContainer.setPartOfChord(false);
+        noteContainer.setFrequencyToHandle(0);
       }
     }
   }

@@ -679,4 +679,24 @@ class HarpControllerChordTest {
       verify(noteContainer, never()).setPartOfChord(true);
     }
   }
+
+  /**
+   * Regression test: when the chord changes, channels of the previous chord must release their
+   * chord state (e.g. blow 1-2-3, then draw 1-2-3 kept the blow channels highlighted).
+   */
+  @Test
+  void channelsOfThePreviousChordAreReleasedWhenTheChordChanges() {
+    when(mockModel.getSelectedShowChordIndex()).thenReturn(1);
+    harpController.updateHarpView(0.0, createChordDetectionResult(FREQ_C4, FREQ_E4, FREQ_G4));
+    harpController.updateHarpView(0.0, createChordDetectionResult(FREQ_C4, FREQ_E4));
+
+    for (NoteContainer noteContainer : noteContainers) {
+      if (noteContainer.getChannel() == 3 && noteContainer.getNote() == 0) {
+        verify(noteContainer).setPartOfChord(false);
+      }
+      if (noteContainer.getChannel() == 1 && noteContainer.getNote() == 0) {
+        verify(noteContainer, never()).setPartOfChord(false);
+      }
+    }
+  }
 }
