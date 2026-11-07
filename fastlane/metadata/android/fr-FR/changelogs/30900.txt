@@ -1,0 +1,5 @@
+Nouveautés de la version 3.9.0
+• Nouveau (expérimental) : le moteur d'accords « Basic Pitch » détecte accords, doubles notes et octaves bien plus fiablement – voir « Moteur d'accords » dans les réglages
+• Le mode accords affiche la technique, p. ex. « Octave 1B 4B (blocage de langue) »
+• MPM devient l'algorithme par défaut des nouvelles installations – plus précis sur les bends
+• Corrigé : micro actif plusieurs fois après un réglage (batterie), accords clignotants, erreurs d'octave (Hybrid)
