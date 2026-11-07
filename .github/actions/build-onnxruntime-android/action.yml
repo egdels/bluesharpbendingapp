@@ -42,8 +42,16 @@ runs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install "cmake==3.31.6" flatbuffers
-        yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" "ndk;28.0.13004108" > /dev/null
-        echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/28.0.13004108" >> "$GITHUB_ENV"
+        NDK_DIR="$ANDROID_HOME/ndk/28.0.13004108"
+        if [ ! -d "$NDK_DIR" ]; then
+          # Composite steps run with "bash -eo pipefail": "yes" ends with SIGPIPE once sdkmanager
+          # exits, which pipefail would turn into a failure. Check the result explicitly instead.
+          set +o pipefail
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" "ndk;28.0.13004108" > /dev/null
+          set -o pipefail
+        fi
+        test -f "$NDK_DIR/source.properties" || { echo "NDK 28.0.13004108 not installed" >&2; exit 1; }
+        echo "ANDROID_NDK_HOME=$NDK_DIR" >> "$GITHUB_ENV"
         echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
         echo "ORT_CMAKE=$(command -v cmake)" >> "$GITHUB_ENV"
 
