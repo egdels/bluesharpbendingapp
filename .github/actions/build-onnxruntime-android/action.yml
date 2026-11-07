@@ -21,7 +21,9 @@ runs:
         path: |
           android/app/src/main/jniLibs
           android/app/libs/onnxruntime-*.jar
-        key: ort-android-${{ steps.key.outputs.ort_sha }}-${{ hashFiles('scripts/build_onnxruntime_android.sh', 'scripts/onnxruntime/nmp.required_operators.config', 'external/onnxruntime_pinned/**') }}
+        # The action itself is part of the key: a change of the build tools must rebuild, not reuse
+        # libraries built with other tools.
+        key: ort-android-${{ steps.key.outputs.ort_sha }}-${{ hashFiles('scripts/build_onnxruntime_android.sh', 'scripts/onnxruntime/nmp.required_operators.config', 'external/onnxruntime_pinned/**', '.github/actions/build-onnxruntime-android/action.yml') }}
 
     - name: Check out the ONNX Runtime submodule
       if: steps.cache.outputs.cache-hit != 'true'
@@ -36,10 +38,14 @@ runs:
       with:
         python-version: '3.11'
 
-    - name: Install build tools (CMake 3.31.6, flatbuffers, NDK)
+    - name: Install build tools (CMake 3.31.6, Ninja, zip, flatbuffers, NDK)
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
+        # Same tools as the F-Droid recipe (apt: ninja-build, zip, unzip), so the reproducible
+        # F-Droid build gets the same generator and jar processing as CI.
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq ninja-build zip unzip
         python3 -m pip install --upgrade pip
         python3 -m pip install "cmake==3.31.6" flatbuffers
         NDK_DIR="$ANDROID_HOME/ndk/28.0.13004108"

@@ -51,20 +51,27 @@ triggers a rebuild.
 
 ## F-Droid recipe (fdroiddata)
 
-The recipe in `fdroiddata/metadata/de.schliweb.bluesharpbendingapp.yml` has to change for
-the first version that contains the runtime. Proposal for a universal APK (all four ABIs in
-one build), modelled on makeacopy's recipe:
+The F-Droid recipe (`fdroiddata/metadata/de.schliweb.bluesharpbendingapp.yml`) is a
+**reproducible build**: it lists `Binaries:` (the APK of the GitHub release) and
+`AllowedAPKSigningKeys`. F-Droid builds the app itself, compares its APK byte for byte with
+`android-release.apk` from the GitHub release and only then publishes the developer-signed APK.
+With ONNX Runtime built from source, the native libraries and the ORT jar must therefore come out
+identical on the F-Droid build server and in CI. Falling back to F-Droid's own signing is not an
+option: existing F-Droid installations could not update.
+
+Build entry for the first version with ONNX Runtime (based on makeacopy's working recipe, same ORT
+version and NDK); keep the rest of the recipe as it is:
 
 ```yaml
   - versionName: 3.9.0
     versionCode: 30900
-    commit: v3.9.0
+    commit: <commit of tag v3.9.0>
+    timeout: 14400
     subdir: android/app
     submodules: true
-    timeout: 14400
     sudo:
       - apt-get update
-      - apt-get install -y make ninja-build cmake python3-flatbuffers
+      - apt-get install -y make ninja-build cmake python3-flatbuffers zip unzip
     gradle:
       - yes
     rm:
@@ -74,7 +81,6 @@ one build), modelled on makeacopy's recipe:
       - package.json
       - external/onnxruntime/onnxruntime/test
       - external/onnxruntime/samples
-    prebuild: sed -i -e '/^\t\tif (publishToAdo) {/,/^\t\t}/d' ../../external/onnxruntime/java/build.gradle
     scanignore:
       - external/onnxruntime/java/build-android.gradle
       - external/onnxruntime/java/build.gradle
@@ -89,12 +95,37 @@ one build), modelled on makeacopy's recipe:
     ndk: 28.0.13004108
 ```
 
-Notes:
+What changed compared to 3.8.0 and why:
 
-- Debian's `cmake` package must be >= 3.28 on the F-Droid build server (makeacopy builds there
-  with this recipe, so it is). The script picks the first CMake >= 3.28 (`ORT_CMAKE`, `PATH`,
-  Android SDK).
-- A universal APK compiles ONNX Runtime four times in one build. makeacopy instead builds one
-  APK per ABI (`enableAbiSplits`, one recipe entry per ABI, `VercodeOperation`), which keeps
-  each F-Droid build shorter and each APK smaller, but changes the versionCode scheme.
+- `submodules: true` fetches `external/onnxruntime`.
+- `sudo` installs the build tools. `zip`/`unzip` are required by the script (it strips the
+  native libraries from the ORT jar); it fails if they are missing instead of producing a
+  different jar.
+- `build` + `ndk` build ONNX Runtime for all four ABIs before Gradle; this takes much longer than
+  a plain build, hence `timeout: 14400`.
+- `rm`, `scanignore`, `scandelete` as in makeacopy, so the F-Droid scanner does not stop at test
+  binaries or Maven repositories inside the ONNX Runtime sources. (makeacopy's `prebuild` that
+  removes a `publishToAdo` block from `java/build.gradle` is not needed: ORT 1.31.1 has no such
+  block.)
+
+Keeping CI and F-Droid identical (reproducibility):
+
+| | CI (`.github/actions/build-onnxruntime-android`) | F-Droid recipe |
+|---|---|---|
+| NDK | 28.0.13004108 | `ndk: 28.0.13004108` |
+| CMake | 3.31.6 (pip) | Debian `cmake` (makeacopy pins 3.31.6 to match it) |
+| Generator | Ninja (apt `ninja-build`) | Ninja (`ninja-build`) |
+| zip/unzip | apt | apt |
+| Paths, timestamps | `/tmp/onnxruntime-src`, `SOURCE_DATE_EPOCH` set by the script | same script |
+
+Checked locally: two builds of the same ABI on the same machine give a byte-identical
+`libonnxruntime.so`. The ORT jar differs only in its zip entry timestamps (build time); that does
+not reach the APK, which contains the classes as dex code (the jar's only other entry,
+`META-INF/MANIFEST.MF`, is not packaged).
+
+Not verified so far: whether the F-Droid server's CMake and JDK (used for the ORT Java jar) produce
+byte-identical output. Before the release, check with a test build: a merge request against
+fdroiddata (F-Droid's CI builds it) or `fdroid build` with the fdroidserver Docker image, then
+compare the APK with the CI release APK (e.g. `diffoscope`).
+
 - `AutoUpdateMode` keeps working as long as the recipe of the new version is copied unchanged.

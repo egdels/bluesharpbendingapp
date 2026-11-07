@@ -64,6 +64,12 @@ else
   info "Minimal build: enabled ($(grep -vc '^#' "$ORT_OPS_CONFIG") operator lines)"
 fi
 
+# zip/unzip process the Java jar. They are required, not optional: a silently skipped step would
+# make the jar differ from CI and break the reproducible F-Droid build.
+for tool in zip unzip python3; do
+  command -v "$tool" >/dev/null 2>&1 || { echo "ERROR: '$tool' is required" >&2; exit 1; }
+done
+
 ABIS="${ABIS:-arm64-v8a armeabi-v7a x86 x86_64}"
 JOBS="${JOBS:-$(getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 2)}"
 export CMAKE_BUILD_PARALLEL_LEVEL="$JOBS"
@@ -231,7 +237,8 @@ for ABI in $ABIS; do
     # The jar also carries the native libraries of the ABI it was built with. On Android ORT loads
     # them from jniLibs via System.loadLibrary, so drop them: they would only bloat the APK and tie
     # the jar to one ABI.
-    zip -q -d "$ORT_JAR" 'ai/onnxruntime/native/*' || true
+    # exit code 12 = nothing matched (jar without natives); anything else is an error
+    zip -q -d "$ORT_JAR" 'ai/onnxruntime/native/*' || [ $? -eq 12 ]
   fi
   # Free disk space: the per-ABI build tree is several GB.
   [ "${KEEP_BUILD:-0}" = "1" ] || rm -rf "$ABI_BUILD_DIR"
