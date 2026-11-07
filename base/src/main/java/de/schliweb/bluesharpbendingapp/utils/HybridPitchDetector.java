@@ -109,6 +109,9 @@ public class HybridPitchDetector extends PitchDetector {
    * <p>The detection process leverages energy thresholds and frequency ranges to decide whether to
    * use the YIN algorithm or other detection methods, such as MPM or FFT-based techniques.
    */
+  /** Maximum deviation between FFT and YIN for an FFT result to be trusted, in cents. */
+  private static final double MAX_FFT_YIN_DEVIATION_CENTS = 50.0;
+
   private final YINPitchDetector yinDetector = new YINPitchDetector();
 
   /**
@@ -172,18 +175,25 @@ public class HybridPitchDetector extends PitchDetector {
       double highFrequencyEnergy =
           calculateEnergyUsingGoertzel(audioData, sampleRate, frequencyRangeHigh);
 
-      // Wenn Energie im Bereich hoher Frequenzen hoch ist, nutze FFT
-      if (highFrequencyEnergy > thresholdHighFrequencyEnergy) {
-        PitchDetectionResult fftResult = fftDetector.detectPitch(audioData, sampleRate);
-        if (fftResult.pitch() != NO_DETECTED_PITCH) {
-          return fftResult;
-        }
-      }
-
-      // Wenn Hochfrequenzenergie NICHT hoch genug ist, nutze MPM
+      // MPM first: it is the most precise detector here, and unlike the FFT peak picking it does
+      // not report the 2nd harmonic of a tone with a weak fundamental (octave error).
       PitchDetectionResult mpmResult = mpmDetector.detectPitch(audioData, sampleRate);
       if (mpmResult.pitch() != NO_DETECTED_PITCH) {
         return mpmResult;
+      }
+
+      // With high-frequency energy, fall back to the FFT only if YIN confirms its result: the FFT
+      // always finds some spectral peak, also in pure (breath) noise.
+      if (highFrequencyEnergy > thresholdHighFrequencyEnergy) {
+        PitchDetectionResult fftResult = fftDetector.detectPitch(audioData, sampleRate);
+        if (fftResult.pitch() != NO_DETECTED_PITCH) {
+          PitchDetectionResult yinResult = yinDetector.detectPitch(audioData, sampleRate);
+          if (yinResult.pitch() != NO_DETECTED_PITCH
+              && Math.abs(1200 * Math.log(fftResult.pitch() / yinResult.pitch()) / Math.log(2))
+                  <= MAX_FFT_YIN_DEVIATION_CENTS) {
+            return fftResult;
+          }
+        }
       }
     }
 
