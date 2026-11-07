@@ -169,6 +169,13 @@ class HarpControllerChordTest {
       java.lang.reflect.Field harmonicaField = HarpController.class.getDeclaredField("harmonica");
       harmonicaField.setAccessible(true);
       harmonicaField.set(harpController, mockHarmonica);
+
+      // HarpController caches the possible chords of the real harmonica in its constructor;
+      // replace the cache so the test chords above are actually used.
+      java.lang.reflect.Field possibleChordsField =
+          HarpController.class.getDeclaredField("possibleChords");
+      possibleChordsField.setAccessible(true);
+      possibleChordsField.set(harpController, possibleChords);
     } catch (Exception e) {
       throw new RuntimeException("Failed to set up test environment", e);
     }
