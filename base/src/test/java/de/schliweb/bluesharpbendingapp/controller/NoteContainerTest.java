@@ -478,4 +478,22 @@ class NoteContainerTest {
         returnedChannel,
         "The getChannel method should work correctly with the primary constructor.");
   }
+
+  /**
+   * Regression test: while a chord keeps being detected (one frame every 50 ms), its highlight must
+   * not be cleared in between; it is cleared about 400 ms after the last chord frame. Before, every
+   * clear scheduled by an earlier frame fired, so the chord flickered.
+   */
+  @Test
+  void chordHighlightStaysWhileChordContinuesAndClearsAfterItStops() throws InterruptedException {
+    for (int frame = 0; frame < 20; frame++) { // 1 s of chord frames
+      noteContainer.setPartOfChord(true);
+      noteContainer.run();
+      Thread.sleep(50);
+    }
+    verify(mockHarpViewElement, never()).clear();
+
+    Thread.sleep(700);
+    verify(mockHarpViewElement, times(1)).clear();
+  }
 }

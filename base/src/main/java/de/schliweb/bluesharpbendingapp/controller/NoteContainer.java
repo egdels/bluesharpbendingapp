@@ -311,6 +311,9 @@ public class NoteContainer implements Runnable {
    * change event occurs.
    */
   private void handleChordFrequencyChange() {
+    // Mark the update, so a clear scheduled by an earlier chord frame is skipped while the chord
+    // continues. Without this, every scheduled clear fired 400 ms later and the chord flickered.
+    lastUpdateTimestamp = System.currentTimeMillis();
     if (!toBeClearedChord.get()) {
       harpViewElement.highlightAsChord();
       toBeClearedChord.set(true);

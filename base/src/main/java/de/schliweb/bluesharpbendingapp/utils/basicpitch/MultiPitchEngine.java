@@ -206,6 +206,25 @@ public final class MultiPitchEngine implements AutoCloseable {
    * @return the engine result including debug information
    */
   public EngineResult process(double[] audioData, double sampleRate, double timeSeconds) {
+    return process(audioData, sampleRate, timeSeconds, 0.0);
+  }
+
+  /**
+   * Runs the full pipeline like {@link #process(double[], double, double)}, but keeps only notes
+   * that are still sounding at the end of the buffer: a note must end within the last {@code
+   * activeTailSeconds}. For live display on a sliding window this drops notes that already stopped
+   * but are still inside the window (otherwise a chord stays visible for up to a window length
+   * after playing stops), while the full window still gives the model its context.
+   *
+   * @param audioData the mono audio samples (normalised to {@code [-1, 1]})
+   * @param sampleRate the sample rate of {@code audioData} in Hz
+   * @param timeSeconds the time stamp for the produced {@link MappingResult}
+   * @param activeTailSeconds notes must end within this time before the buffer end; {@code <= 0}
+   *     keeps all notes
+   * @return the engine result including debug information
+   */
+  public EngineResult process(
+      double[] audioData, double sampleRate, double timeSeconds, double activeTailSeconds) {
     LoggingContext.setComponent("MultiPitchEngine");
     Engine used = selectedEngine;
     boolean fellBack = false;
@@ -227,6 +246,21 @@ public final class MultiPitchEngine implements AutoCloseable {
 
     MultiPitchPostprocessor.FilterResult filtered =
         MultiPitchPostprocessor.filterNoteEvents(rawEvents, postprocessConfig);
+    if (activeTailSeconds > 0 && sampleRate > 0) {
+      double activeFrom = audioData.length / sampleRate - activeTailSeconds;
+      List<NoteEvent> active = new java.util.ArrayList<>();
+      List<MultiPitchPostprocessor.RejectedEvent> rejected =
+          new java.util.ArrayList<>(filtered.rejected());
+      for (NoteEvent event : filtered.kept()) {
+        if (event.end() >= activeFrom) {
+          active.add(event);
+        } else {
+          rejected.add(
+              new MultiPitchPostprocessor.RejectedEvent(event, "ended before the buffer end"));
+        }
+      }
+      filtered = new MultiPitchPostprocessor.FilterResult(active, rejected);
+    }
     MappingResult mapping = mapper.mapNotes(filtered.kept(), timeSeconds);
     PlayingTechniqueClassifier.Classification technique =
         PlayingTechniqueClassifier.classify(mapping);

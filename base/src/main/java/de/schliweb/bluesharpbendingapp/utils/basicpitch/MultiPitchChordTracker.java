@@ -51,6 +51,13 @@ public final class MultiPitchChordTracker implements AutoCloseable {
 
   private static final ChordDetectionResult EMPTY = new ChordDetectionResult(List.of(), 0.0);
 
+  /**
+   * Only notes still sounding within this time before the window end are reported, so a chord
+   * disappears soon after playing stops although it is still inside the analysis window. Basic
+   * Pitch ends a note that lasts until the window end at about 2 ms before it.
+   */
+  static final double ACTIVE_TAIL_SECONDS = 0.15;
+
   /** A result together with the number of samples written when it became available. */
   private record Snapshot(ChordDetectionResult result, long storedAtSample) {}
 
@@ -165,7 +172,7 @@ public final class MultiPitchChordTracker implements AutoCloseable {
         return;
       }
       MultiPitchEngine.EngineResult result =
-          engine.process(window, sampleRate, (double) windowEnd / sampleRate);
+          engine.process(window, sampleRate, (double) windowEnd / sampleRate, ACTIVE_TAIL_SECONDS);
       List<Double> pitches =
           result.mapping().active().stream().map(a -> a.tone().freq()).distinct().toList();
       latest.set(
