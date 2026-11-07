@@ -49,6 +49,7 @@
     <string name="training_progress_label">Progreso</string>
     <string name="settings_conf_label">Confianza</string>
     <string name="settings_chord_conf_label">Confianza de acorde</string>
+    <string name="settings_chord_engine_label">Motor de acordes (experimental)</string>
 
     <!-- Settings screen section headers -->
     <string name="settings_harp_header">Configuración de armónica</string>

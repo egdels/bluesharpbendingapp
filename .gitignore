@@ -11,3 +11,6 @@ scancode_result.json
 scancode_run.log
 scancode.json
 ort-out/
+# ONNX Runtime for Android, built by scripts/build_onnxruntime_android.sh
+android/app/src/main/jniLibs/
+android/app/libs/onnxruntime-*.jar

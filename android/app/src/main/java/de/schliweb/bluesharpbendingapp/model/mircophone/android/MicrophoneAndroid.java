@@ -31,15 +31,19 @@ import android.media.MediaRecorder;
 import android.os.Process;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.utils.*;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.MultiPitchChordTracker;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.MultiPitchEngine;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Implementation of the {@link Microphone} interface specific to the Android platform. This class
@@ -64,6 +68,18 @@ public class MicrophoneAndroid extends AbstractMicrophone {
    * and RMS (Root Mean Square) calculations, to ensure consistent and accurate results.
    */
   private static final int SAMPLE_RATE = 44100;
+
+  /** Basic Pitch analysis window, hop and result lifetime (see {@link MultiPitchChordTracker}). */
+  private static final double MULTI_PITCH_WINDOW_SECONDS = 1.0;
+
+  private static final double MULTI_PITCH_HOP_SECONDS = 0.4;
+  private static final double MULTI_PITCH_MAX_AGE_SECONDS = 0.6;
+
+  /**
+   * The Basic Pitch chord tracker, or {@code null} when the per-buffer ChordDetector is used (the
+   * default). Survives closing and reopening the microphone.
+   */
+  private final AtomicReference<MultiPitchChordTracker> chordTracker = new AtomicReference<>();
 
   /**
    * The default audio buffer size used for capturing and processing audio data in the microphone
@@ -193,6 +209,7 @@ public class MicrophoneAndroid extends AbstractMicrophone {
                   System.arraycopy(buffer, 0, dataCopy, 0, bytesRead);
                   // add to queue
                   boolean offer = audioDataQueue.offer(dataCopy);
+                  feedChordTracker(dataCopy);
                   LoggingUtils.logDebug("Audio data added to queue", String.valueOf(offer));
                 } else if (bytesRead < 0) {
                   LoggingUtils.logError("AudioRecord read error", String.valueOf(bytesRead));
@@ -319,6 +336,61 @@ public class MicrophoneAndroid extends AbstractMicrophone {
     // Not needed on Android
   }
 
+  @Override
+  public void setChordEngine(int engineIndex, @NonNull Harmonica harmonica) {
+    LoggingContext.setComponent("MicrophoneAndroid");
+    if (engineIndex != 1) {
+      replaceChordTracker(null);
+      return;
+    }
+    MultiPitchChordTracker current = chordTracker.get();
+    if (current != null) {
+      // Same engine, new key/tuning: keep the loaded ONNX session.
+      current.setHarmonica(harmonica);
+      return;
+    }
+    MultiPitchEngine engine = MultiPitchEngine.createBasicPitch(harmonica);
+    if (engine.selectedEngine() != MultiPitchEngine.Engine.BASIC_PITCH) {
+      engine.close();
+      LoggingUtils.logWarning(
+          "Basic Pitch unavailable", "keeping the per-buffer ChordDetector for chord detection");
+      replaceChordTracker(null);
+      return;
+    }
+    replaceChordTracker(
+        new MultiPitchChordTracker(
+            engine,
+            SAMPLE_RATE,
+            MULTI_PITCH_WINDOW_SECONDS,
+            MULTI_PITCH_HOP_SECONDS,
+            MULTI_PITCH_MAX_AGE_SECONDS));
+    LoggingUtils.logDebug("Basic Pitch chord detection enabled");
+  }
+
+  private void replaceChordTracker(MultiPitchChordTracker tracker) {
+    MultiPitchChordTracker previous = chordTracker.getAndSet(tracker);
+    if (previous != null) {
+      previous.close();
+    }
+  }
+
+  /**
+   * Feeds a captured buffer to the Basic Pitch tracker, if active. Called from the recording
+   * thread, so the tracker sees the raw signal in order; silence is fed too, so a result ages out
+   * when playing stops.
+   */
+  private void feedChordTracker(float[] frame) {
+    MultiPitchChordTracker tracker = isChordDetectionEnabled() ? chordTracker.get() : null;
+    if (tracker == null) {
+      return;
+    }
+    double[] data = new double[frame.length];
+    for (int i = 0; i < frame.length; i++) {
+      data[i] = frame[i];
+    }
+    tracker.accept(data, data.length);
+  }
+
   /**
    * Processes the raw audio data from the microphone buffer to detect pitch and calculate RMS.
    *
@@ -350,7 +422,11 @@ public class MicrophoneAndroid extends AbstractMicrophone {
     ChordDetectionResult chordResult;
 
     // Only perform chord detection if it's enabled
-    if (isChordDetectionEnabled()) {
+    MultiPitchChordTracker tracker = isChordDetectionEnabled() ? chordTracker.get() : null;
+    if (tracker != null) {
+      // Latest Basic Pitch result (already thresholded by its post-processor).
+      chordResult = tracker.latest();
+    } else if (isChordDetectionEnabled()) {
       chordResult = PitchDetector.detectChord(audioData, SAMPLE_RATE);
     } else {
       // Create an empty chord detection result when chord detection is disabled
@@ -373,8 +449,8 @@ public class MicrophoneAndroid extends AbstractMicrophone {
 
     if (conf < confidence) pitch = -1;
 
-    // Apply the chord confidence threshold to chord detection
-    if (chordResult.confidence() < chordConfidence)
+    // Apply the chord confidence threshold to the ChordDetector's result
+    if (tracker == null && chordResult.confidence() < chordConfidence)
       chordResult = new ChordDetectionResult(List.of(), 0.0);
 
     if (microphoneHandler != null) {

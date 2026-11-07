@@ -1,0 +1,59 @@
+name: Build ONNX Runtime for Android
+description: >
+  Builds the reduced ONNX Runtime for the Basic Pitch chord engine from the external/onnxruntime
+  submodule (scripts/build_onnxruntime_android.sh) and caches the result. Produces
+  android/app/src/main/jniLibs/<abi>/*.so and android/app/libs/onnxruntime-*.jar.
+
+runs:
+  using: composite
+  steps:
+    - name: Compute cache key
+      id: key
+      shell: bash
+      run: |
+        ORT_SHA=$(git rev-parse HEAD:external/onnxruntime)
+        echo "ort_sha=$ORT_SHA" >> "$GITHUB_OUTPUT"
+
+    - name: Restore ONNX Runtime build
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          android/app/src/main/jniLibs
+          android/app/libs/onnxruntime-*.jar
+        key: ort-android-${{ steps.key.outputs.ort_sha }}-${{ hashFiles('scripts/build_onnxruntime_android.sh', 'scripts/onnxruntime/nmp.required_operators.config', 'external/onnxruntime_pinned/**') }}
+
+    - name: Check out the ONNX Runtime submodule
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        git submodule update --init --depth 1 external/onnxruntime
+        git -C external/onnxruntime submodule update --init --depth 1 cmake/external/onnx
+
+    - name: Set up Python
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install build tools (CMake 3.31.6, flatbuffers, NDK)
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install "cmake==3.31.6" flatbuffers
+        yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$ANDROID_HOME" "ndk;28.0.13004108" > /dev/null
+        echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/28.0.13004108" >> "$GITHUB_ENV"
+        echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
+        echo "ORT_CMAKE=$(command -v cmake)" >> "$GITHUB_ENV"
+
+    - name: Build ONNX Runtime
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: ./scripts/build_onnxruntime_android.sh
+
+    - name: Show ONNX Runtime libraries
+      shell: bash
+      run: |
+        ls -la android/app/libs/
+        find android/app/src/main/jniLibs -name '*.so' -exec ls -la {} \;

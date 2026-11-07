@@ -49,6 +49,7 @@
     <string name="training_progress_label">進捗</string>
     <string name="settings_conf_label">信頼度</string>
     <string name="settings_chord_conf_label">コード信頼度</string>
+    <string name="settings_chord_engine_label">コードエンジン（実験的）</string>
 
     <!-- Settings screen section headers -->
     <string name="settings_harp_header">ハープ設定</string>

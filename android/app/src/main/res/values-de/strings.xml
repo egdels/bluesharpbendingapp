@@ -49,6 +49,7 @@
     <string name="training_progress_label">Fortschritt</string>
     <string name="settings_conf_label">Konfidenz</string>
     <string name="settings_chord_conf_label">Akkord-Konfidenz</string>
+    <string name="settings_chord_engine_label">Akkord-Engine (experimentell)</string>
 
     <!-- Settings screen section headers -->
     <string name="settings_harp_header">Mundharmonika-Einstellungen</string>

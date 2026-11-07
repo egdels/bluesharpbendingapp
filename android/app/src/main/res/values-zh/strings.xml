@@ -49,6 +49,7 @@
     <string name="training_progress_label">进度</string>
     <string name="settings_conf_label">置信度</string>
     <string name="settings_chord_conf_label">和弦置信度</string>
+    <string name="settings_chord_engine_label">和弦引擎（实验性）</string>
 
     <!-- Settings screen section headers -->
     <string name="settings_harp_header">口琴设置</string>

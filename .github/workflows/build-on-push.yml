@@ -27,6 +27,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Build ONNX Runtime for Android (Basic Pitch)
+      uses: ./.github/actions/build-onnxruntime-android
+
     - name: Decode Keystore
       run: |
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/keystore.jks

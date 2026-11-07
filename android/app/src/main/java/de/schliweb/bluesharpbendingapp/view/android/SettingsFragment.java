@@ -157,6 +157,7 @@ public class SettingsFragment extends Fragment
           setSelectedAlgorithm(model.getStoredAlgorithmIndex());
           setSelectedConfidence(model.getStoredConfidenceIndex());
           setSelectedChordConfidence(model.getStoredChordConfidenceIndex());
+          setSelectedChordEngine(model.getStoredChordEngineIndex());
           setSelectedLockScreen(model.getStoredLockScreenIndex());
           setSelectedShowChord(model.getStoredShowChordIndex());
           androidSettingsViewHandler.handleLockScreenSelection(model.getStoredLockScreenIndex());
@@ -344,6 +345,35 @@ public class SettingsFragment extends Fragment
           @Override
           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             microphoneSettingsViewHandler.handleChordConfidenceSelection((int) id);
+          }
+
+          @Override
+          public void onNothingSelected(AdapterView<?> parent) {
+            // no need
+          }
+        });
+  }
+
+  @Override
+  public void setSelectedChordEngine(int i) {
+    binding.settingsChordEngineList.setSelection(i);
+  }
+
+  @Override
+  public void setChordEngines(@Nullable String[] chordEngines) {
+    if (chordEngines == null) {
+      chordEngines = new String[0];
+    }
+    Spinner spinner = binding.settingsChordEngineList;
+    ArrayAdapter<String> adapter =
+        new ArrayAdapter<>(this.requireContext(), R.layout.spinner_list, chordEngines);
+    adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+    spinner.setAdapter(adapter);
+    spinner.setOnItemSelectedListener(
+        new AdapterView.OnItemSelectedListener() {
+          @Override
+          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            microphoneSettingsViewHandler.handleChordEngineSelection((int) id);
           }
 
           @Override

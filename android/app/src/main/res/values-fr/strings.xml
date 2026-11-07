@@ -50,6 +50,7 @@
     <string name="training_progress_label">Progression</string>
     <string name="settings_conf_label">Confiance</string>
     <string name="settings_chord_conf_label">Confiance d\'accord</string>
+    <string name="settings_chord_engine_label">Moteur d\'accords (expérimental)</string>
 
     <!-- Settings screen section headers -->
     <string name="settings_harp_header">Paramètres de l\'harmonica</string>

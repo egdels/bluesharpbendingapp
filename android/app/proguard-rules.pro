@@ -55,7 +55,8 @@
 -keep class org.json.** { *; }
 -dontwarn org.json.**
 
-# The optional Basic Pitch detector in :base references ONNX Runtime, which the Android app does not
-# ship yet (a source-built runtime follows). The Android app never uses these classes, so R8 drops
-# them; only suppress the missing-class errors.
+# ONNX Runtime (optional Basic Pitch chord engine, built from source into libs/ and jniLibs/).
+# Its native code looks up Java classes, fields and methods by name, so keep them unobfuscated.
+# When the runtime has not been built, the references from :base are unresolved: don't warn.
+-keep class ai.onnxruntime.** { *; }
 -dontwarn ai.onnxruntime.**

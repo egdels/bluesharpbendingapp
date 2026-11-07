@@ -64,13 +64,6 @@ android {
         }
     }
 
-    packaging {
-        resources {
-            // The Basic Pitch model from :base is not used on Android yet; keep it out of the APK.
-            excludes += 'basic_pitch/**'
-        }
-    }
-
     buildTypes {
         debug {
             enableUnitTestCoverage = true
@@ -179,6 +172,10 @@ dependencies {
     implementation "com.google.dagger:dagger:${daggerVersion}"
     annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
     implementation(project(":base"))
+    // ONNX Runtime for the optional Basic Pitch chord engine, built from source by
+    // scripts/build_onnxruntime_android.sh (Java API jar here, native libraries in
+    // src/main/jniLibs). Without it the app builds and falls back to the ChordDetector.
+    implementation fileTree(dir: 'libs', include: ['onnxruntime-*.jar'])
     // SLF4J API and binding to java.util.logging so logs go to Logcat
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation "org.slf4j:slf4j-jdk14:${slf4jVersion}"

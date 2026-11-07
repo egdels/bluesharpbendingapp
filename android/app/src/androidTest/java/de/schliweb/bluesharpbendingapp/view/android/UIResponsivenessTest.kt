@@ -26,6 +26,7 @@ import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -109,9 +110,9 @@ class UIResponsivenessTest {
             onView(withContentDescription("More options")).perform(click())
             onView(withText(R.string.action_settings)).perform(click())
 
-            // Verify that the settings controls are displayed
-            onView(withId(R.id.settings_screenlock)).check(matches(isDisplayed()))
-            onView(withId(R.id.settings_reset_button)).check(matches(isDisplayed()))
+            // Verify that the settings controls are displayed (the settings scroll, so scroll first)
+            onView(withId(R.id.settings_reset_button)).perform(scrollTo()).check(matches(isDisplayed()))
+            onView(withId(R.id.settings_screenlock)).perform(scrollTo()).check(matches(isDisplayed()))
 
             // Toggle the screen lock switch multiple times in quick succession to test responsiveness
             onView(withId(R.id.settings_screenlock)).perform(click())
