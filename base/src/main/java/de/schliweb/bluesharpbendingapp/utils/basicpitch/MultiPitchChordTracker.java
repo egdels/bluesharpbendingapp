@@ -65,7 +65,8 @@ public final class MultiPitchChordTracker implements AutoCloseable {
   private final AtomicReference<Snapshot> latest = new AtomicReference<>();
 
   private int writePos;
-  private long totalWritten;
+  // Written by the feeding thread only, read by latest() from another thread.
+  private volatile long totalWritten;
   private long lastSubmitted;
 
   /**
@@ -123,11 +124,13 @@ public final class MultiPitchChordTracker implements AutoCloseable {
   }
 
   /**
-   * Feeds captured samples. Must be called from a single (audio) thread.
+   * Feeds captured samples. Must always be called from the same thread (the capture thread); {@link
+   * #latest()} may be called from another one.
    *
    * @param samples the normalised samples
    * @param count the number of valid samples in {@code samples}
    */
+  @SuppressWarnings("NonAtomicVolatileUpdate") // single writer thread, see above
   public void accept(double[] samples, int count) {
     if (closed.get()) {
       return;
@@ -180,7 +183,7 @@ public final class MultiPitchChordTracker implements AutoCloseable {
 
   /**
    * Returns the newest result, or an empty result if there is none or it is older than the maximum
-   * age (measured in fed samples since the end of its window). Call from the audio thread.
+   * age (measured in fed samples since the end of its window). May be called from any thread.
    *
    * @return the latest chord result
    */

@@ -136,6 +136,12 @@ public class MainModel implements Serializable {
   private int storedChordConfidenceIndex = 3;
 
   /**
+   * The stored index of the engine used for chord (multi-pitch) detection: {@code 0} is the
+   * established ChordDetector (default), {@code 1} the experimental Basic Pitch engine.
+   */
+  private int storedChordEngineIndex = 0;
+
+  /**
    * The `storedLockScreenIndex` variable represents the index of the currently stored lock screen
    * configuration. It is used to track or reference a specific lock screen setup, likely within a
    * model or configuration management system.
@@ -254,6 +260,9 @@ public class MainModel implements Serializable {
    * been made.
    */
   private int selectedChordConfidenceIndex;
+
+  /** The chord engine index selected in the current session (0 falls back to the stored one). */
+  private int selectedChordEngineIndex;
 
   /**
    * Represents the index of the selected precision level in a collection or array of precision
@@ -389,6 +398,16 @@ public class MainModel implements Serializable {
     return selectedChordConfidenceIndex != 0
         ? selectedChordConfidenceIndex
         : storedChordConfidenceIndex;
+  }
+
+  /**
+   * Retrieves the selected chord engine index if it has been explicitly set (a non-zero value),
+   * otherwise the stored chord engine index.
+   *
+   * @return the chord engine index ({@code 0} = ChordDetector, {@code 1} = Basic Pitch)
+   */
+  public int getSelectedChordEngineIndex() {
+    return selectedChordEngineIndex != 0 ? selectedChordEngineIndex : storedChordEngineIndex;
   }
 
   /**

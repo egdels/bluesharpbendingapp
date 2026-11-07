@@ -23,9 +23,12 @@
  */
 package de.schliweb.bluesharpbendingapp.model.microphone.desktop;
 
+import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
 import de.schliweb.bluesharpbendingapp.utils.*;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.MultiPitchChordTracker;
+import de.schliweb.bluesharpbendingapp.utils.basicpitch.MultiPitchEngine;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -141,6 +144,76 @@ public class MicrophoneDesktop extends AbstractMicrophone {
    * the handler implementation for further handling or display in the application.
    */
   private final AtomicReference<MicrophoneHandler> microphoneHandler = new AtomicReference<>();
+
+  /** Basic Pitch analysis window, hop and result lifetime (see {@link MultiPitchChordTracker}). */
+  private static final double MULTI_PITCH_WINDOW_SECONDS = 1.0;
+
+  private static final double MULTI_PITCH_HOP_SECONDS = 0.4;
+  private static final double MULTI_PITCH_MAX_AGE_SECONDS = 0.6;
+
+  /**
+   * The Basic Pitch chord tracker, or {@code null} when the established per-buffer ChordDetector is
+   * used (the default). Survives closing and reopening the microphone.
+   */
+  private final AtomicReference<MultiPitchChordTracker> chordTracker = new AtomicReference<>();
+
+  @Override
+  public void setChordEngine(int engineIndex, Harmonica harmonica) {
+    LoggingContext.setComponent("MicrophoneDesktop");
+    if (engineIndex != 1) {
+      replaceChordTracker(null);
+      return;
+    }
+    MultiPitchChordTracker current = chordTracker.get();
+    if (current != null) {
+      // Same engine, new key/tuning: keep the loaded ONNX session.
+      current.setHarmonica(harmonica);
+      return;
+    }
+    MultiPitchEngine engine = MultiPitchEngine.createBasicPitch(harmonica);
+    if (engine.selectedEngine() != MultiPitchEngine.Engine.BASIC_PITCH) {
+      engine.close();
+      LoggingUtils.logWarning(
+          "Basic Pitch unavailable", "keeping the per-buffer ChordDetector for chord detection");
+      replaceChordTracker(null);
+      return;
+    }
+    replaceChordTracker(
+        new MultiPitchChordTracker(
+            engine,
+            SAMPLE_RATE,
+            MULTI_PITCH_WINDOW_SECONDS,
+            MULTI_PITCH_HOP_SECONDS,
+            MULTI_PITCH_MAX_AGE_SECONDS));
+    LoggingUtils.logDebug("Basic Pitch chord detection enabled");
+  }
+
+  /**
+   * Feeds a captured frame to the Basic Pitch tracker, if active. Called from the capture thread
+   * with full frames only: the 50 % overlap frames of the pitch path would feed every sample twice
+   * and out of order. The tracker gets the raw signal (no high-pass or noise reduction), which is
+   * what Basic Pitch was trained on. Silence is fed as well, so a result ages out when playing
+   * stops.
+   */
+  private void feedChordTracker(byte[] frame, int bytesRead) {
+    MultiPitchChordTracker tracker = isChordDetectionEnabled() ? chordTracker.get() : null;
+    if (tracker == null) {
+      return;
+    }
+    int samples = bytesRead / BYTES_PER_SAMPLE;
+    double[] data = new double[samples];
+    for (int i = 0; i < samples; i++) {
+      data[i] = (frame[2 * i] << 8 | (frame[2 * i + 1] & 0xFF)) / 32768.0;
+    }
+    tracker.accept(data, samples);
+  }
+
+  private void replaceChordTracker(MultiPitchChordTracker tracker) {
+    MultiPitchChordTracker previous = chordTracker.getAndSet(tracker);
+    if (previous != null) {
+      previous.close();
+    }
+  }
 
   /**
    * The name of the microphone instance. This variable represents the user-friendly identifier for
@@ -407,6 +480,7 @@ public class MicrophoneDesktop extends AbstractMicrophone {
                   byte[] dataCopy = new byte[bytesRead];
                   System.arraycopy(buffer, 0, dataCopy, 0, bytesRead);
                   audioDataQueue.offer(dataCopy);
+                  feedChordTracker(dataCopy, bytesRead);
 
                   // Create 50% overlap frame for improved temporal resolution
                   if (hasOverlap && bytesRead >= overlapSize) {
@@ -467,6 +541,10 @@ public class MicrophoneDesktop extends AbstractMicrophone {
     // Apply noise reduction (spectral subtraction)
     audioSignalFilter.applyNoiseReduction(audioData);
 
+    // The optional Basic Pitch tracker is fed by the capture thread (see feedChordTracker); here
+    // only its latest result is used.
+    MultiPitchChordTracker tracker = isChordDetectionEnabled() ? chordTracker.get() : null;
+
     // Calculate RMS after filtering
     double rms = PitchDetector.calcRMS(audioData);
 
@@ -484,7 +562,10 @@ public class MicrophoneDesktop extends AbstractMicrophone {
     ChordDetectionResult chordResult;
 
     // Only perform chord detection if it's enabled
-    if (isChordDetectionEnabled()) {
+    if (tracker != null) {
+      // Latest Basic Pitch result (already thresholded by its post-processor).
+      chordResult = tracker.latest();
+    } else if (isChordDetectionEnabled()) {
       chordResult = PitchDetector.detectChord(audioData, SAMPLE_RATE);
     } else {
       // Create an empty chord detection result when chord detection is disabled
@@ -507,8 +588,8 @@ public class MicrophoneDesktop extends AbstractMicrophone {
     }
     if (conf < confidence) pitch = -1;
 
-    // Apply the chord confidence threshold to chord detection
-    if (chordResult.confidence() < chordConfidence)
+    // Apply the chord confidence threshold to the ChordDetector's result
+    if (tracker == null && chordResult.confidence() < chordConfidence)
       chordResult = new ChordDetectionResult(List.of(), 0.0);
 
     if (microphoneHandler.get() != null) {

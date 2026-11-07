@@ -24,6 +24,7 @@
 package de.schliweb.bluesharpbendingapp.controller;
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.model.microphone.MicrophoneHandler;
@@ -89,6 +90,8 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
             + (model.getSelectedShowChordIndex() == 1 ? "enabled" : "disabled")
             + " based on Show Chords setting: "
             + model.getSelectedShowChordIndex());
+
+    applyChordEngine();
 
     LoggingUtils.logDebug("Registering microphone handler");
     microphone.setMicrophoneHandler(this);
@@ -292,6 +295,50 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
     modelStorageService.storeModel(model);
     long duration = System.currentTimeMillis() - startTime;
     LoggingUtils.logPerformance("Model storage", duration);
+  }
+
+  @Override
+  public void initChordEngineList() {
+    LoggingContext.setComponent("MicrophoneController");
+    if (window.isMicrophoneSettingsViewActive()) {
+      MicrophoneSettingsView microphoneSettingsView = window.getMicrophoneSettingsView();
+      microphoneSettingsView.setChordEngines(AbstractMicrophone.getSupportedChordEngines());
+      microphoneSettingsView.setSelectedChordEngine(model.getSelectedChordEngineIndex());
+      LoggingUtils.logOperationCompleted("Chord engine list initialization");
+    } else {
+      LoggingUtils.logWarning(
+          "Chord engine list initialization skipped", "Microphone settings view is not active");
+    }
+  }
+
+  @Override
+  public void handleChordEngineSelection(int chordEngineIndex) {
+    LoggingContext.setComponent("MicrophoneController");
+    LoggingUtils.logUserAction("Chord engine selection", "chordEngineIndex=" + chordEngineIndex);
+    this.model.setStoredChordEngineIndex(chordEngineIndex);
+    this.model.setSelectedChordEngineIndex(chordEngineIndex);
+    applyChordEngine();
+    modelStorageService.storeModel(model);
+    LoggingUtils.logOperationCompleted("Chord engine selection handling");
+  }
+
+  /**
+   * Re-applies the chord engine for the currently selected harmonica. Must be called whenever the
+   * harp key, tuning or concert pitch changes, so Basic Pitch maps its notes to the right harp.
+   */
+  public void updateChordEngineHarmonica() {
+    applyChordEngine();
+  }
+
+  /** Passes the stored chord engine and the current harmonica to the microphone. */
+  private void applyChordEngine() {
+    try {
+      microphone.setChordEngine(
+          model.getStoredChordEngineIndex(),
+          AbstractHarmonica.create(model.getStoredKeyIndex(), model.getStoredTuneIndex()));
+    } catch (RuntimeException e) {
+      LoggingUtils.logError("Could not apply chord engine", e);
+    }
   }
 
   @Override

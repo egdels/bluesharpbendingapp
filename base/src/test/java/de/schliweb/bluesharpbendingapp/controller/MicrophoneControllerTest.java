@@ -26,6 +26,7 @@ package de.schliweb.bluesharpbendingapp.controller;
 import static org.mockito.Mockito.*;
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica;
 import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
@@ -338,5 +339,44 @@ class MicrophoneControllerTest {
 
     // Assert
     verify(modelStorageService).storeModel(model);
+  }
+
+  @Test
+  void constructorAppliesTheStoredChordEngine() {
+    // The model mock returns 0 (ChordDetector) as stored chord engine index.
+    verify(microphone).setChordEngine(eq(0), any(Harmonica.class));
+  }
+
+  @Test
+  void chordEngineSelectionIsStoredAndApplied() {
+    when(model.getStoredChordEngineIndex()).thenReturn(1);
+
+    microphoneController.handleChordEngineSelection(1);
+
+    verify(model).setStoredChordEngineIndex(1);
+    verify(model).setSelectedChordEngineIndex(1);
+    verify(microphone).setChordEngine(eq(1), any(Harmonica.class));
+    verify(modelStorageService).storeModel(model);
+  }
+
+  @Test
+  void harmonicaChangeReappliesTheChordEngine() {
+    when(model.getStoredChordEngineIndex()).thenReturn(1);
+
+    microphoneController.updateChordEngineHarmonica();
+
+    verify(microphone).setChordEngine(eq(1), any(Harmonica.class));
+  }
+
+  @Test
+  void chordEngineListIsShownWithTheSelectedEngine() {
+    String[] engines = {"ChordDetector", "Basic Pitch"};
+    when(AbstractMicrophone.getSupportedChordEngines()).thenReturn(engines);
+    when(model.getSelectedChordEngineIndex()).thenReturn(1);
+
+    microphoneController.initChordEngineList();
+
+    verify(microphoneSettingsView).setChordEngines(engines);
+    verify(microphoneSettingsView).setSelectedChordEngine(1);
   }
 }

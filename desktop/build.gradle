@@ -75,6 +75,30 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    // ONNX Runtime (Basic Pitch) ships native libraries and debug symbols for every platform
+    // (~640 MB unpacked). Keep only the libraries of the platform this installer is built on (CI
+    // builds each OS separately) and drop the debug symbols.
+    exclude 'ai/onnxruntime/native/**/*.pdb'
+    exclude 'ai/onnxruntime/native/**/*.dSYM/**'
+    def ortPlatforms = ['linux-x64', 'linux-aarch64', 'osx-x64', 'osx-aarch64', 'win-x64']
+    def ortCurrent = currentOnnxRuntimePlatform()
+    ortPlatforms.findAll { it != ortCurrent }.each { exclude "ai/onnxruntime/native/${it}/**" }
+}
+
+/**
+ * Returns the ONNX Runtime native folder name (ai/onnxruntime/native/<name>) of the build machine.
+ */
+static String currentOnnxRuntimePlatform() {
+    def os = System.getProperty('os.name').toLowerCase()
+    def arch = System.getProperty('os.arch').toLowerCase()
+    def cpu = (arch == 'aarch64' || arch == 'arm64') ? 'aarch64' : 'x64'
+    if (os.contains('win')) {
+        return 'win-x64'
+    }
+    if (os.contains('mac')) {
+        return "osx-${cpu}"
+    }
+    return "linux-${cpu}"
 }
 
 import org.gradle.internal.os.OperatingSystem

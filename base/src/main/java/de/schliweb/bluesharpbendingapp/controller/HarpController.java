@@ -240,6 +240,7 @@ public class HarpController
     possibleChords = harmonica.getPossibleChords();
     PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
     PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
+    notifyChordEngineHarmonica();
     long startTime = System.currentTimeMillis();
     modelStorageService.storeModel(model);
     long duration = System.currentTimeMillis() - startTime;
@@ -263,6 +264,7 @@ public class HarpController
     possibleChords = harmonica.getPossibleChords();
     PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
     PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
+    notifyChordEngineHarmonica();
     long startTime = System.currentTimeMillis();
     modelStorageService.storeModel(model);
     long duration = System.currentTimeMillis() - startTime;
@@ -314,6 +316,13 @@ public class HarpController
     } else {
       LoggingUtils.logWarning(
           "Tune list initialization skipped", "Harp settings view is not active");
+    }
+  }
+
+  /** Lets the chord engine (Basic Pitch) map its notes to the newly selected harmonica. */
+  private void notifyChordEngineHarmonica() {
+    if (microphoneController != null) {
+      microphoneController.updateChordEngineHarmonica();
     }
   }
 
@@ -560,6 +569,7 @@ public class HarpController
     possibleChords = harmonica.getPossibleChords();
     PitchDetector.setMinFrequency(harmonica.getHarmonicaMinFrequency());
     PitchDetector.setMaxFrequency(harmonica.getHarmonicaMaxFrequency());
+    notifyChordEngineHarmonica();
     long startTime = System.currentTimeMillis();
     modelStorageService.storeModel(model);
     long duration = System.currentTimeMillis() - startTime;

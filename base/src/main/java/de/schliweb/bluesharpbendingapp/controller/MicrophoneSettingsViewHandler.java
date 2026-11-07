@@ -84,4 +84,18 @@ public interface MicrophoneSettingsViewHandler {
    * @param chordConfidenceIndex the index of the chord confidence level to be selected
    */
   void handleChordConfidenceSelection(int chordConfidenceIndex);
+
+  /** Initializes the list of chord detection engines in the microphone settings view. */
+  default void initChordEngineList() {
+    // no-op by default
+  }
+
+  /**
+   * Handles the selection of a chord detection engine.
+   *
+   * @param chordEngineIndex the index of the selected engine
+   */
+  default void handleChordEngineSelection(int chordEngineIndex) {
+    // no-op by default
+  }
 }

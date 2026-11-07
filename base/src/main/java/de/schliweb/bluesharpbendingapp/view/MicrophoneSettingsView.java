@@ -105,4 +105,24 @@ public interface MicrophoneSettingsView {
    * @param chordConfidences an array of strings representing the chord confidence levels to be set
    */
   void setChordConfidences(String[] chordConfidences);
+
+  /**
+   * Sets the available chord detection engines. The default implementation ignores the call (views
+   * without this setting).
+   *
+   * @param chordEngines the engine names
+   */
+  default void setChordEngines(String[] chordEngines) {
+    // not shown by default
+  }
+
+  /**
+   * Selects the chord detection engine at the given index. The default implementation ignores the
+   * call (views without this setting).
+   *
+   * @param chordEngineIndex the engine index
+   */
+  default void setSelectedChordEngine(int chordEngineIndex) {
+    // not shown by default
+  }
 }

@@ -390,6 +390,7 @@ public class MainWindowDesktopFXController implements MainWindow {
     microphoneSettingsViewHandler.initAlgorithmList();
     microphoneSettingsViewHandler.initConfidenceList();
     microphoneSettingsViewHandler.initChordConfidenceList();
+    microphoneSettingsViewHandler.initChordEngineList();
 
     LoggingUtils.logDebug("Initializing harp settings");
     harpSettingsViewHandler.initKeyList();

@@ -88,6 +88,10 @@
 
             <Label text="%settings.harp.showchord" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
             <CheckBox fx:id="checkShowChord" styleClass="custom-checkbox" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+
+            <Label text="%settings.microphone.chordengine" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="comboChordEngines" GridPane.rowIndex="12" GridPane.columnIndex="1"
+                      maxWidth="Infinity" GridPane.hgrow="ALWAYS"/>
         </GridPane>
     </center>
 

@@ -121,6 +121,15 @@ public abstract class AbstractMicrophone implements Microphone {
    *
    * @return an array of strings, where each string represents a supported chord confidence level
    */
+  /**
+   * Returns the names of the supported chord detection engines, by index.
+   *
+   * @return the engine names ({@code 0} = ChordDetector, {@code 1} = Basic Pitch)
+   */
+  public static String[] getSupportedChordEngines() {
+    return new String[] {"ChordDetector", "Basic Pitch"};
+  }
+
   public static String[] getSupportedChordConfidences() {
     return new String[] {
       "0.8", "0.75", "0.7", "0.65", "0.6", "0.55", "0.5", "0.45", "0.4", "0.35", "0.3", "0.25",

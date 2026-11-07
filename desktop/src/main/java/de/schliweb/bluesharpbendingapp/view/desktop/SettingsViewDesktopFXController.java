@@ -97,6 +97,9 @@ public class SettingsViewDesktopFXController
    */
   @FXML public ComboBox<String> comboChordConfidences;
 
+  /** Selects the chord detection engine (ChordDetector or the experimental Basic Pitch). */
+  @FXML public ComboBox<String> comboChordEngines;
+
   /**
    * Represents the label displaying the current value of the musical note being processed or tuned
    * in the settings view. This label is dynamically updated to reflect the detected or selected
@@ -233,6 +236,7 @@ public class SettingsViewDesktopFXController
             comboMicrophones,
             comboConfidences,
             comboChordConfidences,
+            comboChordEngines,
             comboConcertPitches,
             comboNotations)) {
       addChangeListenerToComboBox(stringComboBox);
@@ -382,6 +386,9 @@ public class SettingsViewDesktopFXController
                   handleSelectionChange(
                       comboChordConfidences,
                       microphoneSettingsViewHandler::handleChordConfidenceSelection);
+                } else if (combo == comboChordEngines) {
+                  handleSelectionChange(
+                      comboChordEngines, microphoneSettingsViewHandler::handleChordEngineSelection);
                 } else if (combo == comboConcertPitches) {
                   handleSelectionChange(
                       comboConcertPitches, noteSettingsViewHandler::handleConcertPitchSelection);
@@ -564,6 +571,16 @@ public class SettingsViewDesktopFXController
     initComboBox(comboChordConfidences, chordConfidences);
   }
 
+  @Override
+  public void setChordEngines(String[] chordEngines) {
+    initComboBox(comboChordEngines, chordEngines);
+  }
+
+  @Override
+  public void setSelectedChordEngine(int chordEngineIndex) {
+    setSelected(chordEngineIndex, comboChordEngines);
+  }
+
   /**
    * Sets the available microphones in the microphones ComboBox. This method populates the ComboBox
    * with the provided array of microphone names, allowing users to select from the available audio
@@ -633,6 +650,7 @@ public class SettingsViewDesktopFXController
     setSelectedTune(model.getStoredTuneIndex());
     setSelectedConfidence(model.getStoredConfidenceIndex());
     setSelectedChordConfidence(model.getStoredChordConfidenceIndex());
+    setSelectedChordEngine(model.getStoredChordEngineIndex());
     setSelectedShowChord(model.getStoredShowChordIndex());
     LoggingUtils.logOperationCompleted("Settings reset to defaults");
   }

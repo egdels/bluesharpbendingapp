@@ -140,4 +140,19 @@ public interface Microphone {
    * @param enabled true to enable chord detection, false to disable it
    */
   void setChordDetectionEnabled(boolean enabled);
+
+  /**
+   * Selects the engine for chord (multi-pitch) detection and the harmonica its results are mapped
+   * to. Index {@code 0} keeps the per-buffer ChordDetector; index {@code 1} runs the experimental
+   * Basic Pitch engine on a sliding window where the platform supports it. Must also be called when
+   * the harp key, tuning or concert pitch changes. The default implementation ignores the call
+   * (platforms without Basic Pitch support).
+   *
+   * @param engineIndex the chord engine index
+   * @param harmonica the currently selected harmonica
+   */
+  default void setChordEngine(
+      int engineIndex, de.schliweb.bluesharpbendingapp.model.harmonica.Harmonica harmonica) {
+    // not supported by default
+  }
 }
