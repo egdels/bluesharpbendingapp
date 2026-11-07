@@ -129,6 +129,21 @@ for f in build-android.gradle settings-android.gradle; do
 done
 cp -f "$PINNED_DIR/gradle-wrapper.properties" "$ORT_DIR/java/gradle/wrapper/gradle-wrapper.properties"
 
+# F-Droid's scanner deletes every gradle-wrapper.jar, so ORT's java/gradlew (called by its CMake
+# build for the Java jar; the path is hard-coded) cannot run there. Then replace it with a starter
+# for the system "gradle" - on the F-Droid build server that is gradlew-fdroid, which picks the
+# Gradle version from gradle-wrapper.properties (pinned above), i.e. the same version as the
+# wrapper uses in CI. Where the wrapper jar exists (CI, local builds) nothing changes.
+if [ ! -f "$ORT_DIR/java/gradle/wrapper/gradle-wrapper.jar" ]; then
+  command -v gradle >/dev/null 2>&1 || {
+    echo "ERROR: ORT's gradle-wrapper.jar is missing and no 'gradle' is on PATH" >&2
+    exit 1
+  }
+  printf '#!/bin/sh\nexec gradle "$@"\n' > "$ORT_DIR/java/gradlew"
+  chmod +x "$ORT_DIR/java/gradlew"
+  info "ORT gradle-wrapper.jar missing: java/gradlew now starts $(command -v gradle)"
+fi
+
 rm -rf "$BUILD_ROOT"
 mkdir -p "$BUILD_ROOT" "$APP_LIBS"
 
