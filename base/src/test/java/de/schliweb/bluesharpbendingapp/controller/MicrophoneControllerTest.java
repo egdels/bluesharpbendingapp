@@ -379,4 +379,20 @@ class MicrophoneControllerTest {
     verify(microphoneSettingsView).setChordEngines(engines);
     verify(microphoneSettingsView).setSelectedChordEngine(1);
   }
+
+  @Test
+  void chordWithoutSingleNotePitchStillReachesTheHarpView() {
+    ChordDetectionResult chord = ChordDetectionResult.of(new double[] {261.63, 329.63}, 0.9);
+
+    microphoneController.handle(-1, 0.5, chord);
+
+    verify(harpFrequencyHandler).updateHarpView(anyDouble(), eq(chord));
+  }
+
+  @Test
+  void silenceWithoutChordDoesNotUpdateTheHarpView() {
+    microphoneController.handle(-1, 0.0, new ChordDetectionResult(java.util.List.of(), 0.0));
+
+    verify(harpFrequencyHandler, never()).updateHarpView(anyDouble(), any());
+  }
 }

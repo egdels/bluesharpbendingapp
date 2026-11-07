@@ -184,6 +184,12 @@ public class MicrophoneController implements MicrophoneHandler, MicrophoneSettin
       trainingFrequencyHandler.updateTrainingView(smoothedFrequency);
     } else {
       updateMicrophoneSettingsViewVolume(volume);
+      // A chord can be detected without a single-note pitch: for polyphonic sound the single-note
+      // detectors often report none (low confidence). Pass the chord on anyway, otherwise it is
+      // dropped - with the Basic Pitch engine, chords were hardly ever shown.
+      if (chordResult != null && chordResult.hasPitches()) {
+        harpFrequencyHandler.updateHarpView(smoothedFrequency, chordResult);
+      }
     }
   }
 
