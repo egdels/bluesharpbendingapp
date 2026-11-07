@@ -23,9 +23,11 @@
  */
 package de.schliweb.bluesharpbendingapp.utils;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /** Test class to run the PitchDetectorComparison and capture its output. */
+@Tag("slow")
 public class PitchDetectorComparisonTest {
 
   /** Runs the PitchDetectorComparison and prints the results. */

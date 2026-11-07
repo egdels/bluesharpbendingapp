@@ -32,6 +32,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.Test;
  * class evaluates different threshold values to find the optimal value that provides the best pitch
  * detection accuracy across a wide range of frequencies.
  */
+@Tag("slow")
 class ThresholdOptimizationTest {
 
   private static final int SAMPLE_RATE = 44100;

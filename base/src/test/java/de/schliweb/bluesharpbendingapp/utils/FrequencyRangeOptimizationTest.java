@@ -32,6 +32,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.Test;
  * evaluates different frequency range values to find the optimal value that provides the best
  * performance (execution time) while maintaining pitch detection accuracy.
  */
+@Tag("slow")
 class FrequencyRangeOptimizationTest {
 
   private static final int SAMPLE_RATE = 44100;

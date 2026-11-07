@@ -30,6 +30,7 @@ import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.Test;
  * HybridPitchDetector. This class evaluates different values to find the optimal combination that
  * provides the best performance (execution time) while maintaining pitch detection accuracy.
  */
+@Tag("slow")
 class HighFrequencyOptimizationTest {
 
   private static final int SAMPLE_RATE = 44100;

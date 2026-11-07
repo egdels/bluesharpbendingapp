@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -37,6 +38,7 @@ import org.junit.jupiter.params.provider.CsvSource;
  * compares the execution time of both detectors with various inputs, including single notes,
  * chords, and different signal conditions.
  */
+@Tag("slow")
 public class PitchDetectorPerformanceComparison {
 
   private static final int SAMPLE_RATE = 44100;

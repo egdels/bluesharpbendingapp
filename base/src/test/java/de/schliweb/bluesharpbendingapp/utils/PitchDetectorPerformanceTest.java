@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.utils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.Test;
  * This class runs a single test that compares the performance of both detectors and prints the
  * results.
  */
+@Tag("slow")
 public class PitchDetectorPerformanceTest {
 
   private static final int SAMPLE_RATE = 44100;

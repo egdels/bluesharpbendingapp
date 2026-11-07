@@ -26,7 +26,7 @@ jobs:
       uses: android-actions/setup-android@v3
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         gradle-version: wrapper
 
@@ -38,6 +38,9 @@ jobs:
 
     - name: Compile all modules with Error Prone
       run: ./gradlew :base:compileJava :desktop:compileJava :webapp:compileJava :android:compileDebugJavaWithJavac
+
+    - name: Run Base and Desktop tests
+      run: ./gradlew :base:test :desktop:test
 
     - name: Run Android unit tests
       run: ./gradlew :android:testDebugUnitTest
@@ -57,6 +60,22 @@ jobs:
       with:
         name: lint-report
         path: android/app/build/reports/lint-results-debug.html
+        retention-days: 14
+
+    - name: Upload Base test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: base-test-results
+        path: base/build/reports/tests/test/
+        retention-days: 14
+
+    - name: Upload Desktop test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: desktop-test-results
+        path: desktop/build/reports/tests/test/
         retention-days: 14
 
     - name: Upload Android test results

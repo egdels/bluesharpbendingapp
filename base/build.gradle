@@ -31,5 +31,20 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform() // Enables the use of JUnit 5 (JUnit Platform) for testing
+    // Enables the use of JUnit 5 (JUnit Platform) for testing.
+    // Long-running benchmark/optimization tests are tagged "slow" and excluded here;
+    // run them explicitly with: ./gradlew :base:slowTest
+    useJUnitPlatform {
+        excludeTags 'slow'
+    }
+}
+
+tasks.register('slowTest', Test) {
+    description = 'Runs long-running benchmark and optimization tests (tagged "slow").'
+    group = 'verification'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform {
+        includeTags 'slow'
+    }
 }

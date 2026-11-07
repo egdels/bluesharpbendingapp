@@ -29,11 +29,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+@Tag("slow")
 public class PitchDetectionPerformanceTest {
   private static final int DEFAULT_SAMPLE_RATE = 44100;
   private static final int WARMUP_ITERATIONS = 5;
