@@ -131,7 +131,7 @@ class BaselineComparisonTest {
   }
 
   /**
-   * Returns the bundled {@code nmp.onnx} model as a file (copied from the classpath to a temporary
+   * Returns the bundled {@code nmp.ort} model as a file (copied from the classpath to a temporary
    * file), or {@code null} if it is not on the classpath.
    */
   private static Path locateModel() {
@@ -141,7 +141,7 @@ class BaselineComparisonTest {
       if (in == null) {
         return null;
       }
-      Path file = Files.createTempFile("nmp", ".onnx");
+      Path file = Files.createTempFile("nmp", ".ort");
       file.toFile().deleteOnExit();
       Files.copy(in, file, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
       return file;

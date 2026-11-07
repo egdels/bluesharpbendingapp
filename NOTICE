@@ -4,11 +4,14 @@ Licensed under the MIT License, see LICENSE.
 
 This product includes third-party components:
 
-Basic Pitch model (base/src/main/resources/basic_pitch/nmp.onnx)
+Basic Pitch model (base/src/main/resources/basic_pitch/nmp.ort)
   Copyright 2022 Spotify AB
   Licensed under the Apache License, Version 2.0.
   Source: https://github.com/spotify/basic-pitch, version 0.4.0,
-  file basic_pitch/saved_models/icassp_2022/nmp.onnx (unmodified).
+  file basic_pitch/saved_models/icassp_2022/nmp.onnx.
+  Modified: converted to ONNX Runtime (ORT) format with basic graph
+  optimizations (scripts/onnxruntime/convert_basic_pitch_model.py); the
+  model's outputs are unchanged.
   License and NOTICE: third_party_licenses/basic-pitch/
 
 ONNX Runtime (desktop version, com.microsoft.onnxruntime:onnxruntime 1.22.0)

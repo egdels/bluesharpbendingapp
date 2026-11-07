@@ -129,7 +129,7 @@ public final class MultiPitchEngine implements AutoCloseable {
   }
 
   /**
-   * Creates a Basic-Pitch engine using the bundled {@code nmp.onnx} model, falling back to the
+   * Creates a Basic-Pitch engine using the bundled {@code nmp.ort} model, falling back to the
    * {@code ChordDetector} engine if the model (or the ONNX runtime native) is unavailable. The
    * model is loaded once and reused for the lifetime of the returned engine, so inference never
    * re-initialises the model per frame. Any error while loading Basic Pitch is logged and never
@@ -143,7 +143,7 @@ public final class MultiPitchEngine implements AutoCloseable {
     try {
       OnnxBasicPitchModelRunner runner = OnnxBasicPitchModelRunner.fromBundledModel();
       MultiPitchDetector provider = new BasicPitchProvider(runner);
-      LoggingUtils.logDebug("Basic Pitch engine initialised (bundled nmp.onnx)");
+      LoggingUtils.logDebug("Basic Pitch engine initialised (bundled nmp.ort)");
       return new MultiPitchEngine(Engine.BASIC_PITCH, provider, harmonica, false);
     } catch (Throwable t) {
       // Includes OrtException, IOException and (Native)LinkageError if the ONNX runtime is missing.

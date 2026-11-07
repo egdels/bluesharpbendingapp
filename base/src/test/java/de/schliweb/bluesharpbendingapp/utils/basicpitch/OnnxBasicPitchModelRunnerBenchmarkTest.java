@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
  * min / max over several iterations) using the {@code [DEBUG_LOG]} prefix so the numbers show up in
  * the test output.
  *
- * <p>The benchmark is skipped automatically when the bundled {@code nmp.onnx} model or the ONNX
+ * <p>The benchmark is skipped automatically when the bundled {@code nmp.ort} model or the ONNX
  * Runtime native library is not available on the current platform, so it never breaks a normal
  * build.
  *

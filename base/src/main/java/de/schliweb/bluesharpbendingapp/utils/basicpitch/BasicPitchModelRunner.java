@@ -33,7 +33,7 @@ package de.schliweb.bluesharpbendingapp.utils.basicpitch;
  * <p>Concrete implementations are platform specific (see the integration concept):
  *
  * <ul>
- *   <li>Desktop/JVM and Android: ONNX Runtime (Java / Mobile) with {@code nmp.onnx},
+ *   <li>Desktop/JVM and Android: ONNX Runtime (Java / Mobile) with {@code nmp.ort},
  *   <li>Web: TensorFlow.js / ONNX-Web (WASM).
  * </ul>
  *

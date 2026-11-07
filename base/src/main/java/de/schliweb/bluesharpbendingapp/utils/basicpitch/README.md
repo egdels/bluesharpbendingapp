@@ -20,7 +20,7 @@ die mundharmonikaspezifische Interpretation (Kanäle, Bends, Oktaven, Splits) bl
 | `HarpTone` / `HarpPitchMapper` / `MappingConfig` / `ActiveChannel` / `MappingResult` | Mapping Noten → Harp-Kanäle (key-aware), Plausibilität | `harp_mapping.py` |
 | `MultiPitchPostprocessor` / `MultiPitchPostprocessConfig` | Artefaktfilter + zeitliche Glättung | `postprocess.py` |
 | `AudioResampler` | Vorverarbeitung auf 22050 Hz Mono (lineare Interpolation, Stereo→Mono) für jeden `BasicPitchModelRunner` | Resampling in `evaluate_basic_pitch.py` |
-| `OnnxBasicPitchModelRunner` | Desktop/JVM-`BasicPitchModelRunner` via ONNX Runtime (`nmp.onnx`); reproduziert Fensterung/Unwrapping der Referenz-Inferenz | `basic_pitch.inference.run_inference` |
+| `OnnxBasicPitchModelRunner` | Desktop/JVM-`BasicPitchModelRunner` via ONNX Runtime (`nmp.ort`); reproduziert Fensterung/Unwrapping der Referenz-Inferenz | `basic_pitch.inference.run_inference` |
 | `ChordDetectorMultiPitchAdapter` | exponiert den bestehenden `ChordDetector` als `MultiPitchDetector` | – |
 | `BaselineComparison` | engine-neutraler A/B-Mess-/Scoring-Harness (Tonklassen & Harp-Kanäle: TP/FP/FN, Precision/Recall/F1, Inferenzzeit) | Precision/Recall der pytest-Suiten |
 
@@ -41,7 +41,7 @@ die mundharmonikaspezifische Interpretation (Kanäle, Bends, Oktaven, Splits) bl
   Outputs note=`StatefulPartitionedCall:1`, onset=`:2`, contour=`:0`; die Fensterung (Front-Pad
   3840, Fenster 43844 / Hop 36164) und das Unwrapping (15 Overlap-Frames/Seite verwerfen, Trim auf
   `floor(len*86/22050)`) bilden `basic_pitch.inference.run_inference` exakt nach.
-  `OnnxBasicPitchModelRunnerTest` prüft Fenster-Konstanten und (sofern `nmp.onnx` lokal vorhanden,
+  `OnnxBasicPitchModelRunnerTest` prüft Fenster-Konstanten und (sofern `nmp.ort` lokal vorhanden,
   z. B. im `venv`) einen echten C-Dur-Lauf End-to-End über `BasicPitchProvider`.
 - ✅ **Plattform-Hinweis (gelöst):** Bewusst auf `onnxruntime:1.22.0` festgelegt, weil dieses
   Artefakt Natives für **Linux, Windows und macOS** bündelt (`linux-aarch64`, `linux-x64`,
@@ -52,11 +52,11 @@ die mundharmonikaspezifische Interpretation (Kanäle, Bends, Oktaven, Splits) bl
 - ✅ **A/B-Lauf mit dem echten Modell:** `BaselineComparisonTest.abComparisonWithRealOnnxModel`
   treibt denselben `BaselineComparison`-Harness mit dem **realen** `OnnxBasicPitchModelRunner`
   (statt Test-Double) gegen den `ChordDetector` auf identischem C-Dur-Audio; das echte Modell
-  erkennt die Tonklassen `{C, E, G}` (F1 ≥ 0.9). Der Test läuft real, sofern `nmp.onnx` lokal
+  erkennt die Tonklassen `{C, E, G}` (F1 ≥ 0.9). Der Test läuft real, sofern `nmp.ort` lokal
   vorhanden ist (z. B. im `venv`), sonst wird er übersprungen (Modell nicht im Repo committet).
-- ✅ **Modell-Bundling:** Das Modell `nmp.onnx` (~225 KB) wird als Classpath-Ressource im
-  `base`-Modul unter `base/src/main/resources/basic_pitch/nmp.onnx` mitgeliefert (Konstante
-  `OnnxBasicPitchModelRunner.BUNDLED_MODEL_RESOURCE = "/basic_pitch/nmp.onnx"`). Geladen wird es
+- ✅ **Modell-Bundling:** Das Modell `nmp.ort` (~225 KB) wird als Classpath-Ressource im
+  `base`-Modul unter `base/src/main/resources/basic_pitch/nmp.ort` mitgeliefert (Konstante
+  `OnnxBasicPitchModelRunner.BUNDLED_MODEL_RESOURCE = "/basic_pitch/nmp.ort"`). Geladen wird es
   über `OnnxBasicPitchModelRunner.fromBundledModel()` (Verfügbarkeit via `isBundledModelAvailable()`);
   das Desktop-Modul erhält die Ressource transitiv über `base`. `OnnxBasicPitchModelRunnerTest`
   prüft Vorhandensein (`bundledModelResourceIsAvailable`) und einen echten C-Dur-Lauf aus der

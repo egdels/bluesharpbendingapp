@@ -41,7 +41,7 @@ import java.util.Set;
 
 /**
  * Desktop/JVM implementation of {@link BasicPitchModelRunner} backed by the ONNX Runtime for Java
- * ({@code com.microsoft.onnxruntime}). It runs the Basic Pitch ICASSP-2022 model ({@code nmp.onnx})
+ * ({@code com.microsoft.onnxruntime}). It runs the Basic Pitch ICASSP-2022 model ({@code nmp.ort})
  * and reproduces the windowing/unwrapping of the reference Python implementation ({@code
  * basic_pitch.inference.run_inference}) so that the resulting {@link BasicPitchOutput} frame
  * tensors match the prototype.
@@ -87,7 +87,7 @@ public final class OnnxBasicPitchModelRunner implements BasicPitchModelRunner, A
    * resource in the {@code base} module so the desktop application can run inference without an
    * external model file (see {@link #fromBundledModel()}).
    */
-  public static final String BUNDLED_MODEL_RESOURCE = "/basic_pitch/nmp.onnx";
+  public static final String BUNDLED_MODEL_RESOURCE = "/basic_pitch/nmp.ort";
 
   private static final String INPUT_NAME = "serving_default_input_2:0";
   private static final String OUTPUT_NOTE = "StatefulPartitionedCall:1";
@@ -104,7 +104,7 @@ public final class OnnxBasicPitchModelRunner implements BasicPitchModelRunner, A
   /**
    * Creates a runner for the ONNX model at the given path.
    *
-   * @param modelPath the path to {@code nmp.onnx}
+   * @param modelPath the path to {@code nmp.ort}
    * @throws OrtException if the model cannot be loaded
    * @throws IllegalArgumentException if {@code modelPath} is {@code null}
    */
@@ -117,7 +117,7 @@ public final class OnnxBasicPitchModelRunner implements BasicPitchModelRunner, A
    * overload exists mainly to benchmark different {@link OrtSession.SessionOptions} (graph
    * optimization level, thread counts, execution mode, ...).
    *
-   * @param modelPath the path to {@code nmp.onnx}
+   * @param modelPath the path to {@code nmp.ort}
    * @param options the session options to use
    * @throws OrtException if the model cannot be loaded
    * @throws IllegalArgumentException if {@code modelPath} or {@code options} is {@code null}
@@ -169,7 +169,7 @@ public final class OnnxBasicPitchModelRunner implements BasicPitchModelRunner, A
   /**
    * Loads the model from the given classpath resource.
    *
-   * @param resourcePath the absolute classpath resource path (e.g. {@code /basic_pitch/nmp.onnx})
+   * @param resourcePath the absolute classpath resource path (e.g. {@code /basic_pitch/nmp.ort})
    * @return a runner backed by the resource
    * @throws OrtException if the model cannot be loaded
    * @throws IOException if the resource cannot be read
@@ -183,7 +183,7 @@ public final class OnnxBasicPitchModelRunner implements BasicPitchModelRunner, A
   /**
    * Loads the model from the given classpath resource using the supplied session options.
    *
-   * @param resourcePath the absolute classpath resource path (e.g. {@code /basic_pitch/nmp.onnx})
+   * @param resourcePath the absolute classpath resource path (e.g. {@code /basic_pitch/nmp.ort})
    * @param options the session options to use
    * @return a runner backed by the resource
    * @throws OrtException if the model cannot be loaded

@@ -35,14 +35,14 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link OnnxBasicPitchModelRunner}. The constant/argument tests run everywhere; the
- * actual inference test only runs when the bundled {@code nmp.onnx} model is locally available
- * (e.g. the project's {@code venv}); otherwise it is skipped (the model is not committed to the
+ * actual inference test only runs when the bundled {@code nmp.ort} model is locally available (e.g.
+ * the project's {@code venv}); otherwise it is skipped (the model is not committed to the
  * repository and ONNX Runtime needs the native model file).
  */
 class OnnxBasicPitchModelRunnerTest {
 
   /**
-   * Returns the bundled {@code nmp.onnx} model as a file (copied from the classpath to a temporary
+   * Returns the bundled {@code nmp.ort} model as a file (copied from the classpath to a temporary
    * file), or {@code null} if it is not on the classpath.
    */
   private static Path locateModel() {
@@ -52,7 +52,7 @@ class OnnxBasicPitchModelRunnerTest {
       if (in == null) {
         return null;
       }
-      Path file = Files.createTempFile("nmp", ".onnx");
+      Path file = Files.createTempFile("nmp", ".ort");
       file.toFile().deleteOnExit();
       Files.copy(in, file, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
       return file;
