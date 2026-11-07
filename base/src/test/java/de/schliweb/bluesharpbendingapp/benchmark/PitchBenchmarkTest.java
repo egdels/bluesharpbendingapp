@@ -46,6 +46,9 @@ class PitchBenchmarkTest {
   /** Desktop: 0.1 s buffers with 50 % overlap (see MicrophoneDesktop). */
   private static final int DESKTOP_FRAME = 4410;
 
+  /** Desktop single-note detection window: the newest samples of each frame. */
+  private static final int DESKTOP_PITCH_WINDOW = 2048;
+
   /** Android: the minimum buffer of 4096 bytes of PCM float (see MicrophoneAndroid). */
   private static final int ANDROID_FRAME = 1024;
 
@@ -59,7 +62,18 @@ class PitchBenchmarkTest {
 
     report.append(
         PitchBenchmark.monoMarkdown(
-            "Monophonic, desktop frames (" + DESKTOP_FRAME + " samples, 50 % hop)",
+            "Monophonic, desktop (last "
+                + DESKTOP_PITCH_WINDOW
+                + " samples of each "
+                + DESKTOP_FRAME
+                + "-sample frame, 50 % hop)",
+            PitchBenchmark.runMono(
+                PitchBenchmark.defaultMonoDetectors(), DESKTOP_PITCH_WINDOW, DESKTOP_FRAME / 2)));
+    report.append(
+        PitchBenchmark.monoMarkdown(
+            "Monophonic, desktop before 3.9 (full "
+                + DESKTOP_FRAME
+                + "-sample frames), for comparison",
             PitchBenchmark.runMono(
                 PitchBenchmark.defaultMonoDetectors(), DESKTOP_FRAME, DESKTOP_FRAME / 2)));
     report.append(

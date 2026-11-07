@@ -92,6 +92,14 @@ public class MicrophoneDesktop extends AbstractMicrophone {
   private final double[] reusableAudioData = new double[BUFFER_SIZE / BYTES_PER_SAMPLE];
 
   /**
+   * Number of most recent samples of each frame used for single-note detection (about 46 ms). The
+   * pitch benchmark (:base:pitchBenchmark) shows this window measures vibrato about four times and
+   * YIN bends about three times more precisely than the full 0.1 s frame, while still holding two
+   * periods of the lowest harp note (LLE, 82 Hz). 1024 samples already miss the lowest notes.
+   */
+  static final int PITCH_WINDOW_SAMPLES = 2048;
+
+  /**
    * Audio signal filter providing high-pass filtering, noise gate, and noise reduction for the
    * desktop microphone. This compensates for the lack of automatic audio preprocessing (AGC, noise
    * suppression) that Android provides via its AudioSource.MIC API.
@@ -572,17 +580,24 @@ public class MicrophoneDesktop extends AbstractMicrophone {
       chordResult = new ChordDetectionResult(List.of(), 0.0);
     }
 
+    // Single-note detection uses only the most recent PITCH_WINDOW_SAMPLES of the frame: a shorter
+    // window averages less over pitch changes (vibrato, bends) and is closer to "now". The chord
+    // path keeps the full frame, since the ChordDetector needs its frequency resolution.
+    int sampleCount = Math.min(bytesRead / BYTES_PER_SAMPLE, audioData.length);
+    double[] pitchFrame =
+        Arrays.copyOfRange(audioData, Math.max(0, sampleCount - PITCH_WINDOW_SAMPLES), sampleCount);
+
     // Use the utility class for pitch detection, passing the SAMPLE_RATE as a parameter
     if ("YIN".equals(getAlgorithm())) {
-      result = PitchDetector.detectPitchYIN(audioData, SAMPLE_RATE);
+      result = PitchDetector.detectPitchYIN(pitchFrame, SAMPLE_RATE);
       pitch = result.pitch();
       conf = result.confidence();
     } else if ("MPM".equals(getAlgorithm())) {
-      result = PitchDetector.detectPitchMPM(audioData, SAMPLE_RATE);
+      result = PitchDetector.detectPitchMPM(pitchFrame, SAMPLE_RATE);
       pitch = result.pitch();
       conf = result.confidence();
     } else if ("HYBRID".equals(getAlgorithm())) {
-      result = PitchDetector.detectPitchHybrid(audioData, SAMPLE_RATE);
+      result = PitchDetector.detectPitchHybrid(pitchFrame, SAMPLE_RATE);
       pitch = result.pitch();
       conf = result.confidence();
     }

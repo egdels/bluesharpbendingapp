@@ -282,8 +282,11 @@ public final class PitchBenchmark {
   /** The harmonicas the scenarios are generated for: low, medium and high keys. */
   static final List<AbstractHarmonica.KEY> KEYS =
       List.of(
-          AbstractHarmonica.KEY.LF, AbstractHarmonica.KEY.G,
-          AbstractHarmonica.KEY.C, AbstractHarmonica.KEY.HG);
+          AbstractHarmonica.KEY.LLE,
+          AbstractHarmonica.KEY.LF,
+          AbstractHarmonica.KEY.G,
+          AbstractHarmonica.KEY.C,
+          AbstractHarmonica.KEY.HG);
 
   private static final double TONE_SECONDS = 0.6;
   private static final double BEND_SECONDS = 1.2;
