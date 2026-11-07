@@ -86,6 +86,53 @@ class HarpControllerTechniqueTest {
     assertFalse(c.tongueBlocked());
   }
 
+  private HarpView harpView;
+
+  private HarpController controllerWithHarpView() throws Exception {
+    MainModel model = mock(MainModel.class);
+    when(model.getSelectedShowChordIndex()).thenReturn(1);
+    when(model.getStoredKeyIndex()).thenReturn(AbstractHarmonica.KEY.C.ordinal());
+    when(model.getStoredTuneIndex()).thenReturn(AbstractHarmonica.TUNE.RICHTER.ordinal());
+    MainWindow window = mock(MainWindow.class);
+    harpView = mock(HarpView.class);
+    when(window.isHarpViewActive()).thenReturn(true);
+    when(window.getHarpView()).thenReturn(harpView);
+    HarpController controller =
+        new HarpController(
+            model, mock(ModelStorageService.class), window, mock(ExecutorService.class));
+    Field containers = HarpController.class.getDeclaredField("noteContainers");
+    containers.setAccessible(true);
+    containers.set(controller, new NoteContainer[0]);
+    return controller;
+  }
+
+  @Test
+  void techniqueDisappearsAfterTheLastChordFrameWithoutFurtherFrames() throws Exception {
+    HarpController controller = controllerWithHarpView();
+    ChordDetectionResult octave = ChordDetectionResult.of(new double[] {261.63, 523.25}, 0.9);
+
+    controller.updateHarpView(0, octave); // then silence: no more frames reach the controller
+    Thread.sleep(HarpController.TECHNIQUE_TIMEOUT_MS + 300);
+
+    ArgumentCaptor<Classification> shown = ArgumentCaptor.forClass(Classification.class);
+    verify(harpView, times(2)).updatePlayingTechnique(shown.capture());
+    assertEquals(Technique.OCTAVE, shown.getAllValues().get(0).technique());
+    assertEquals(Technique.SILENCE, shown.getAllValues().get(1).technique());
+  }
+
+  @Test
+  void techniqueStaysWhileChordFramesContinue() throws Exception {
+    HarpController controller = controllerWithHarpView();
+    ChordDetectionResult octave = ChordDetectionResult.of(new double[] {261.63, 523.25}, 0.9);
+
+    for (int frame = 0; frame < 20; frame++) { // 1 s of chord frames
+      controller.updateHarpView(0, octave);
+      Thread.sleep(50);
+    }
+
+    verify(harpView, times(1)).updatePlayingTechnique(any());
+  }
+
   @Test
   void techniqueIsShownOnlyWhenItChanges() throws Exception {
     MainModel model = mock(MainModel.class);

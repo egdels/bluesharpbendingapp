@@ -190,7 +190,12 @@ public class HarpController
     if (chordDetected) {
       updateNoteContainersForChords(matched, frequency);
     }
-    showPlayingTechnique(largest == null ? SILENCE : classify(largest));
+    if (largest == null) {
+      showPlayingTechnique(SILENCE);
+    } else {
+      showPlayingTechnique(classify(largest));
+      scheduleTechniqueTimeout();
+    }
 
     return chordDetected;
   }
@@ -224,11 +229,48 @@ public class HarpController
   }
 
   /** Passes the technique to the harp view if it differs from the one shown. */
-  private void showPlayingTechnique(PlayingTechniqueClassifier.Classification classification) {
+  private synchronized void showPlayingTechnique(
+      PlayingTechniqueClassifier.Classification classification) {
     if (!classification.equals(shownTechnique)) {
       shownTechnique = classification;
       window.getHarpView().updatePlayingTechnique(classification);
     }
+  }
+
+  /**
+   * How long the technique stays visible after the last chord frame, like the chord highlight of
+   * the note containers (NoteContainer.CHORD_CLEAR_DELAY_MS).
+   */
+  static final long TECHNIQUE_TIMEOUT_MS = 400;
+
+  /** Time of the last chord frame that showed a technique. */
+  private volatile long lastTechniqueFrameMillis;
+
+  /** Clears the technique once no chord frame arrived for {@link #TECHNIQUE_TIMEOUT_MS}. */
+  private final java.util.concurrent.ScheduledExecutorService techniqueTimer =
+      java.util.concurrent.Executors.newSingleThreadScheduledExecutor(
+          r -> {
+            Thread t = new Thread(r, "playing-technique-timeout");
+            t.setDaemon(true);
+            return t;
+          });
+
+  /**
+   * Arms the timeout that clears the technique. Needed because on silence no frame reaches the harp
+   * view at all (MicrophoneController only forwards frames with a pitch or a chord), so the
+   * technique would otherwise stay until the next note is played.
+   */
+  private void scheduleTechniqueTimeout() {
+    long frame = System.currentTimeMillis();
+    lastTechniqueFrameMillis = frame;
+    techniqueTimer.schedule(
+        () -> {
+          if (lastTechniqueFrameMillis == frame) {
+            showPlayingTechnique(SILENCE);
+          }
+        },
+        TECHNIQUE_TIMEOUT_MS,
+        java.util.concurrent.TimeUnit.MILLISECONDS);
   }
 
   /**
