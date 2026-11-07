@@ -1,0 +1,18 @@
+Let's Bend (Bluesharp Bending App)
+Copyright (c) 2023 Christian Kierdorf
+Licensed under the MIT License, see LICENSE.
+
+This product includes third-party components:
+
+Basic Pitch model (base/src/main/resources/basic_pitch/nmp.onnx)
+  Copyright 2022 Spotify AB
+  Licensed under the Apache License, Version 2.0.
+  Source: https://github.com/spotify/basic-pitch, version 0.4.0,
+  file basic_pitch/saved_models/icassp_2022/nmp.onnx (unmodified).
+  License and NOTICE: third_party_licenses/basic-pitch/
+
+ONNX Runtime (desktop version, com.microsoft.onnxruntime:onnxruntime 1.22.0)
+  Copyright (c) Microsoft Corporation
+  Licensed under the MIT License.
+  Source: https://github.com/microsoft/onnxruntime
+  License: third_party_licenses/onnxruntime/LICENSE
