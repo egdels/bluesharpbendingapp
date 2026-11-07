@@ -105,7 +105,7 @@ class MainActivityNavigationTest {
             onView(withContentDescription("More options")).perform(click())
 
             // Click on the Harp menu item
-            onView(withText(R.string.action_harp)).perform(click())
+            onView(withText(R.string.app_name)).perform(click())
 
             // Verify that we're on the Harp fragment by checking for a harp-specific view
             onView(withId(R.id.harp_container)).check(matches(isDisplayed()))

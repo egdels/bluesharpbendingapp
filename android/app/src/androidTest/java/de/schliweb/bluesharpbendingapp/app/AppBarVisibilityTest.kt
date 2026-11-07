@@ -58,7 +58,7 @@ class AppBarVisibilityTest {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             // Navigate to the Harp fragment
             onView(withContentDescription("More options")).perform(click())
-            onView(withText(R.string.action_harp)).perform(click())
+            onView(withText(R.string.app_name)).perform(click())
 
             // Verify that the app bar is initially visible
             onView(withId(R.id.toolbar)).check(matches(isDisplayed()))

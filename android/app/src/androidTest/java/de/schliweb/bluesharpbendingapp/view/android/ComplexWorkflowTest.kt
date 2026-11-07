@@ -59,7 +59,7 @@ class ComplexWorkflowTest {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             // Navigate to the Harp fragment if not already there
             onView(withContentDescription("More options")).perform(click())
-            onView(withText(R.string.action_harp)).perform(click())
+            onView(withText(R.string.app_name)).perform(click())
 
             // Verify that we're on the Harp fragment
             onView(withId(R.id.harp_table)).check(matches(isDisplayed()))
@@ -76,7 +76,7 @@ class ComplexWorkflowTest {
 
             // Navigate back to the Harp fragment
             onView(withContentDescription("More options")).perform(click())
-            onView(withText(R.string.action_harp)).perform(click())
+            onView(withText(R.string.app_name)).perform(click())
 
             // Verify that we're back on the Harp fragment
             onView(withId(R.id.harp_table)).check(matches(isDisplayed()))
@@ -126,7 +126,7 @@ class ComplexWorkflowTest {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             // Navigate to the Harp fragment
             onView(withContentDescription("More options")).perform(click())
-            onView(withText(R.string.action_harp)).perform(click())
+            onView(withText(R.string.app_name)).perform(click())
 
             // Verify that we're on the Harp fragment
             onView(withId(R.id.harp_table)).check(matches(isDisplayed()))

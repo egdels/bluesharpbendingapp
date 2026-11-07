@@ -65,7 +65,7 @@ class AboutFragmentTest {
         launchFragmentInContainer<AboutFragment>(themeResId = R.style.Theme_BluesHarpBendingApp)
 
         // Verify that the title has the correct text
-        onView(withId(R.id.about_title)).check(matches(withText(R.string.about_title)))
+        onView(withId(R.id.about_title)).check(matches(withText(R.string.app_name)))
 
         // Verify that the description has the correct text
         onView(withId(R.id.about_description)).check(matches(withText(R.string.about_description)))
