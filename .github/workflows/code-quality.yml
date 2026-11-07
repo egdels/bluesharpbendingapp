@@ -14,16 +14,16 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up JDK 21
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v6
       with:
         java-version: '21'
         distribution: 'temurin'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+      uses: gradle/actions/setup-gradle@v6
       with:
         gradle-version: wrapper
 
@@ -59,7 +59,7 @@ jobs:
 
     - name: Upload Lint report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: lint-report
         path: android/app/build/reports/lint-results-debug.html
@@ -67,7 +67,7 @@ jobs:
 
     - name: Upload Base test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: base-test-results
         path: base/build/reports/tests/test/
@@ -75,7 +75,7 @@ jobs:
 
     - name: Upload Desktop test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: desktop-test-results
         path: desktop/build/reports/tests/test/
@@ -83,7 +83,7 @@ jobs:
 
     - name: Upload Android test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: android-test-results
         path: android/app/build/reports/tests/testDebugUnitTest/
@@ -91,7 +91,7 @@ jobs:
 
     - name: Upload Webapp test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: webapp-test-results
         path: webapp/build/reports/tests/test/
@@ -99,7 +99,7 @@ jobs:
 
     - name: Upload JaCoCo coverage report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: coverage-report
         path: android/app/build/reports/jacoco/jacocoTestReport/

@@ -37,7 +37,7 @@ javafx {
 dependencies {
     // Adds dependency on the project named ':base'
     implementation project(':base')
-    implementation 'ch.qos.logback:logback-classic:1.5.32'
+    implementation 'ch.qos.logback:logback-classic:1.6.6'
     // Add structured logging support
     implementation 'net.logstash.logback:logstash-logback-encoder:9.0'
 

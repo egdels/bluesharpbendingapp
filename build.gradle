@@ -30,7 +30,7 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '2.1.0' apply false
     // Code quality plugins
     id 'com.diffplug.spotless' version '8.3.0' apply false
-    id 'net.ltgt.errorprone' version '5.1.0' apply false
+    id 'net.ltgt.errorprone' version '5.2.0' apply false
     // License compliance
     id 'com.github.jk1.dependency-license-report' version '2.9' apply false
 }
@@ -71,7 +71,7 @@ subprojects {
         dependencies {
 
             // Adds dependencies for Mockito, a library used for mocking in tests
-            testImplementation 'org.mockito:mockito-core:5.23.0'
+            testImplementation 'org.mockito:mockito-core:5.24.0'
             // Adds the JUnit BOM (Bill of Materials) platform for consistent JUnit versions
             testImplementation platform('org.junit:junit-bom:5.14.3')
             // Adds JUnit Jupiter for unit testing

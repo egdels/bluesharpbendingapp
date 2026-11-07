@@ -17,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           # ORT >= 89 is built with and requires Java 25. The Gradle Inspector
@@ -46,7 +46,7 @@ jobs:
           ./scripts/run-ort.sh
 
       - name: Upload ORT artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ort-reports
           path: ort-out/
@@ -57,7 +57,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install ScanCode
         run: |
@@ -71,7 +71,7 @@ jobs:
           ./scripts/run-scancode.sh
 
       - name: Upload ScanCode artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: scancode-reports
           path: ort-out/scancode/
