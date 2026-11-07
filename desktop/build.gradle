@@ -104,7 +104,9 @@ static String currentOnnxRuntimePlatform() {
 import org.gradle.internal.os.OperatingSystem
 
 // Declares Java modules required for the application
-def jvmModules = ['java.base','java.naming', 'java.desktop', 'java.scripting', 'jdk.unsupported', 'jdk.crypto.ec']
+// java.logging is needed by ONNX Runtime (Basic Pitch). It used to come in only transitively
+// (java.naming -> java.security.sasl -> java.logging), so list it explicitly.
+def jvmModules = ['java.base','java.naming', 'java.desktop', 'java.scripting', 'java.logging', 'jdk.unsupported', 'jdk.crypto.ec']
 def jdkPath = System.properties['java.home'] // Gets the JDK base path
 def jdkModulesPath = "${jdkPath}/jmods" // Defines the path to JDK modules
 
@@ -256,3 +258,27 @@ test {
     // Configures the test task to use JUnit 5 (JUnit Platform)
     useJUnitPlatform()
 }
+
+/**
+ * Runs BasicPitchSelfCheck with the jlink runtime and the jar that go into the installer, so CI fails
+ * on every platform when ONNX Runtime (native libraries, required JDK modules) or the Basic Pitch
+ * model is missing from the package. Run it in the same invocation after jpackage, e.g.
+ * ./gradlew :desktop:jpackage :desktop:verifyPackagedBasicPitch (createRuntime cleans the build).
+ */
+tasks.register('verifyPackagedBasicPitch', Exec) {
+    group = 'verification'
+    description = 'Checks that Basic Pitch runs with the packaged runtime and jar (run after jpackage).'
+    dependsOn 'jar'
+    mustRunAfter 'jpackage', 'jpackageAppImage', 'createRuntime'
+    def runtimeDir = layout.buildDirectory.dir("runtime").get().asFile
+    def jarFile = jar.archiveFile.get().asFile
+    def javaExe = new File(runtimeDir, OperatingSystem.current().isWindows() ? 'bin/java.exe' : 'bin/java')
+    doFirst {
+        if (!javaExe.exists()) {
+            throw new GradleException("No packaged runtime at ${runtimeDir}; run :desktop:jpackage first")
+        }
+    }
+    commandLine = [javaExe.absolutePath, '-cp', jarFile.absolutePath,
+                   'de.schliweb.bluesharpbendingapp.app.BasicPitchSelfCheck']
+}
+

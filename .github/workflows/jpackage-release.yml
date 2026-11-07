@@ -31,13 +31,13 @@ jobs:
 
       - name: Run jpackage in :desktop
         if: runner.os != 'Linux'
-        run: ./gradlew :desktop:jpackage
+        run: ./gradlew :desktop:jpackage :desktop:verifyPackagedBasicPitch
         env:
           GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
 
       - name: Run jpackage and build AppImage base (Linux)
         if: runner.os == 'Linux'
-        run: ./gradlew :desktop:jpackage :desktop:jpackageAppImage
+        run: ./gradlew :desktop:jpackage :desktop:jpackageAppImage :desktop:verifyPackagedBasicPitch
         env:
           GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
 
