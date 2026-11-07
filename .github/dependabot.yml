@@ -13,6 +13,11 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    ignore:
+      # Gradle 9 needs a newer major version of the Android Gradle Plugin (8.12 fails to load);
+      # take it on together with that migration.
+      - dependency-name: "gradle-wrapper"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/"
