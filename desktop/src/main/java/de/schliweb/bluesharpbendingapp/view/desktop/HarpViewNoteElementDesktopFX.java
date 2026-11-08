@@ -132,7 +132,8 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
     Platform.runLater(
         () -> {
           // The NoteContainer now manages the last valid cents value
-          pane.getStyleClass().remove("highlight-chord");
+          // removeAll: remove() drops only one occurrence of the style class
+          pane.getStyleClass().removeAll("highlight-chord");
           Line line = (Line) pane.getChildren().get(0);
           line.setVisible(false);
         });
@@ -202,7 +203,14 @@ public class HarpViewNoteElementDesktopFX implements HarpViewNoteElement {
    */
   @Override
   public void highlightAsChord() {
-    Platform.runLater(() -> notePane.getStyleClass().add("highlight-chord"));
+    // NoteContainer calls this on every chord frame. The style class list accepts duplicates and
+    // clear() used to remove only one of them, so the highlight stayed after the chord ended.
+    Platform.runLater(
+        () -> {
+          if (!notePane.getStyleClass().contains("highlight-chord")) {
+            notePane.getStyleClass().add("highlight-chord");
+          }
+        });
   }
 
   /**
