@@ -28,7 +28,6 @@ import de.schliweb.bluesharpbendingapp.utils.I18nUtils;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.desktop.MainWindowDesktopFXController;
-import java.nio.file.FileSystems;
 import java.util.Objects;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -56,25 +55,8 @@ import javafx.stage.Stage;
  */
 public class MainDesktop extends Application {
 
-  /**
-   * Specifies the path for the temporary directory used by the application. The directory is
-   * located in the user's home directory and named "BluesHarpBendingApp.tmp". The path includes the
-   * system-specific file separator.
-   *
-   * <p>This temporary directory is intended to store application-specific temporary files and is
-   * created if it does not already exist.
-   *
-   * <p>The value is dynamically constructed using the "user.home" system property and the default
-   * file system separator.
-   *
-   * <p>Example usage includes storing logs or temporary files for the application in a consistent
-   * and centralized location.
-   */
-  private static final String TEMP_DIR =
-      System.getProperty("user.home")
-          + FileSystems.getDefault().getSeparator()
-          + "BluesHarpBendingApp.tmp"
-          + FileSystems.getDefault().getSeparator();
+  /** The platform directories for data, logs and the legacy directory of versions up to 3.9. */
+  private static final AppDirectories DIRECTORIES = AppDirectories.forCurrentUser();
 
   /**
    * A private instance of `MainController` used as the primary controller within the application.
@@ -128,7 +110,7 @@ public class MainDesktop extends Application {
 
       // Initialize the application with dependency injection
       BlueSharpBendingDesktopApplication app = new BlueSharpBendingDesktopApplication();
-      app.initializeDependencyInjection(TEMP_DIR, mainWindowController);
+      app.initializeDependencyInjection(DIRECTORIES, mainWindowController);
 
       // Get the main controller from the Dagger component
       controller = app.getAppComponent().getMainController();

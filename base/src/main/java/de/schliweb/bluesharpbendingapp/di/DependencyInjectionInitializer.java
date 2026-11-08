@@ -24,9 +24,12 @@
 package de.schliweb.bluesharpbendingapp.di;
 
 import de.schliweb.bluesharpbendingapp.model.microphone.Microphone;
+import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
+import de.schliweb.bluesharpbendingapp.service.SettingsStore;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
+import java.nio.file.Paths;
 
 /**
  * Utility class for initializing dependency injection across different platforms. This class
@@ -34,20 +37,18 @@ import de.schliweb.bluesharpbendingapp.view.MainWindow;
  */
 public class DependencyInjectionInitializer {
 
-  /**
-   * Represents the filename used for storing and retrieving a temporary model file. This file is
-   * typically located in the application's cache directory.
-   */
-  public static final String TEMP_FILE = "Model.tmp";
+  /** Name of the settings file of versions up to 3.9 (see {@link ModelStorageService}). */
+  public static final String LEGACY_SETTINGS_FILE = "Model.tmp";
 
   /**
-   * Creates the base module with the provided dependencies.
+   * Creates the base module.
    *
-   * @param tempDirectory The directory path where temporary files will be stored
-   * @return The configured BaseModule instance
+   * @param settingsStore the platform store for the user settings
+   * @param legacyDirectory the directory of the settings file of versions up to 3.9
+   * @return the base module
    */
-  public static BaseModule createBaseModule(String tempDirectory) {
-    return new BaseModule(tempDirectory, TEMP_FILE);
+  public static BaseModule createBaseModule(SettingsStore settingsStore, String legacyDirectory) {
+    return new BaseModule(settingsStore, Paths.get(legacyDirectory, LEGACY_SETTINGS_FILE));
   }
 
   /**

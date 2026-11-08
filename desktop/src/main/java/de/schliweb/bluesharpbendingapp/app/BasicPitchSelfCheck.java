@@ -52,6 +52,12 @@ public final class BasicPitchSelfCheck {
             + System.getProperty("os.arch")
             + " java="
             + Runtime.version());
+    // The settings are kept in java.util.prefs (PreferencesSettingsStore); the jlink runtime must
+    // contain the module, or the application fails at startup.
+    if (ModuleLayer.boot().findModule("java.prefs").isEmpty()) {
+      System.out.println("FAILED: module java.prefs missing in the runtime");
+      System.exit(1);
+    }
     try (MultiPitchEngine engine =
         MultiPitchEngine.createBasicPitch(
             AbstractHarmonica.create(AbstractHarmonica.KEY.C, AbstractHarmonica.TUNE.RICHTER))) {

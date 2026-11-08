@@ -23,99 +23,129 @@
  */
 package de.schliweb.bluesharpbendingapp.model;
 
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import de.schliweb.bluesharpbendingapp.service.InMemorySettingsStore;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
-import java.io.File;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.io.TempDir;
 
 class ModelStorageServiceTest {
 
-  /**
-   * Tests the storeModel method of the ModelStorageService class. This method is responsible for
-   * storing the data of a MainModel instance into a file.
-   */
+  @TempDir Path dir;
+
   @Test
-  void shouldStoreModelSuccessfullyWhenDirectoryAndFileExist() throws IOException {
-    // Arrange
-    String tempDirectory = "testDirectory";
-    String tempFile = "testFile.txt";
-    ModelStorageService service = new ModelStorageService(tempDirectory, tempFile);
-
-    MainModel mockModel = Mockito.mock(MainModel.class);
-    when(mockModel.getString())
-        .thenReturn("getSelectedLockScreenIndex:1, getSelectedAlgorithmIndex:2");
-
-    new File(tempDirectory).mkdirs(); // Ensures the directory exists
-    new File(tempDirectory, tempFile).delete(); // Ensures file does not already exist
-
-    // Act
-    service.storeModel(mockModel);
-
-    // Assert
-    File file = new File(tempDirectory, tempFile);
-    assert file.exists(); // Verify file is created
-    String fileContent = new String(java.nio.file.Files.readAllBytes(file.toPath()));
-    assert fileContent.equals("getSelectedLockScreenIndex:1, getSelectedAlgorithmIndex:2");
-
-    // Cleanup
-    file.delete(); // Cleanup the created file
-    new File(tempDirectory).delete(); // Cleanup the directory
+  void emptyStoreWithoutLegacyFileGivesDefaults() {
+    MainModel model =
+        new ModelStorageService(new InMemorySettingsStore(), dir.resolve("Model.tmp")).readModel();
+    MainModel defaults = new MainModel();
+    assertEquals(defaults.getStoredAlgorithmIndex(), model.getStoredAlgorithmIndex());
+    assertEquals(defaults.getStoredKeyIndex(), model.getStoredKeyIndex());
+    assertEquals(defaults.getStoredConcertPitchIndex(), model.getStoredConcertPitchIndex());
   }
 
   @Test
-  void shouldCreateDirectoryWhenItDoesNotExist() {
-    // Arrange
-    String tempDirectory = "newTestDirectory";
-    String tempFile = "newTestFile.txt";
-    ModelStorageService service = new ModelStorageService(tempDirectory, tempFile);
+  void settingsAreStoredByMeaningAndReadBack() {
+    InMemorySettingsStore store = new InMemorySettingsStore();
+    MainModel model = new MainModel();
+    model.setStoredAlgorithmIndex(2); // HYBRID
+    model.setStoredKeyIndex(0); // first KEY constant
+    model.setStoredTuneIndex(6);
+    model.setStoredConcertPitchIndex(9); // 440
+    model.setStoredNotationIndex(1); // flat
+    model.setStoredChordEngineIndex(1); // Basic Pitch
+    model.setStoredMicrophoneIndex(3);
+    model.setStoredShowChordIndex(1);
+    new ModelStorageService(store, null).storeModel(model);
 
-    MainModel mockModel = Mockito.mock(MainModel.class);
-    when(mockModel.getString()).thenReturn("getSelectedKeyIndex:3, getSelectedMicrophoneIndex:4");
+    assertEquals("HYBRID", store.get("algorithm"));
+    assertEquals("440", store.get("concertPitch"));
+    assertEquals("FLAT", store.get("notation"));
+    assertEquals("BASIC_PITCH", store.get("chordEngine"));
+    assertEquals("3", store.get("microphoneIndex"));
 
-    new File(tempDirectory).delete(); // Ensures the directory does not exist
-    new File(tempDirectory, tempFile).delete(); // Ensures file does not already exist
-
-    // Act
-    service.storeModel(mockModel);
-
-    // Assert
-    File directory = new File(tempDirectory);
-    assert directory.exists(); // Verify directory is created
-    File file = new File(tempDirectory, tempFile);
-    assert file.exists(); // Verify file is created
-
-    // Cleanup
-    file.delete(); // Cleanup the created file
-    directory.delete(); // Cleanup the directory
+    MainModel read = new ModelStorageService(store, null).readModel();
+    assertEquals(2, read.getStoredAlgorithmIndex());
+    assertEquals(0, read.getStoredKeyIndex());
+    assertEquals(6, read.getStoredTuneIndex());
+    assertEquals(9, read.getStoredConcertPitchIndex());
+    assertEquals(1, read.getStoredNotationIndex());
+    assertEquals(1, read.getStoredChordEngineIndex());
+    assertEquals(3, read.getStoredMicrophoneIndex());
+    assertEquals(1, read.getStoredShowChordIndex());
   }
 
   @Test
-  void shouldNotThrowExceptionWhenIOExceptionOccurs() {
-    // Arrange
-    String tempDirectory = "nonWritableDirectory";
-    String tempFile = "testFile.txt";
-    ModelStorageService service = new ModelStorageService(tempDirectory, tempFile);
+  void unknownOrInvalidValuesKeepTheDefault() {
+    InMemorySettingsStore store = new InMemorySettingsStore();
+    new ModelStorageService(store, null).storeModel(new MainModel());
+    store.put("algorithm", "SOMETHING_NEW");
+    store.put("concertPitch", "999");
+    store.put("microphoneIndex", "-1");
+    store.put("showChordIndex", "abc");
 
-    MainModel mockModel = Mockito.mock(MainModel.class);
-    when(mockModel.getString())
-        .thenReturn("getSelectedTuneIndex:5, getSelectedConcertPitchIndex:6");
+    MainModel read = new ModelStorageService(store, null).readModel();
+    MainModel defaults = new MainModel();
+    assertEquals(defaults.getStoredAlgorithmIndex(), read.getStoredAlgorithmIndex());
+    assertEquals(defaults.getStoredConcertPitchIndex(), read.getStoredConcertPitchIndex());
+    assertEquals(defaults.getStoredMicrophoneIndex(), read.getStoredMicrophoneIndex());
+    assertEquals(defaults.getStoredShowChordIndex(), read.getStoredShowChordIndex());
+  }
 
-    File directory = new File(tempDirectory);
-    directory.mkdirs();
-    directory.setWritable(false); // Make the directory non-writable
+  @Test
+  void legacyFileIsMigratedOnceAndRenamed() throws Exception {
+    Path legacy = dir.resolve("Model.tmp");
+    // The line written by version 3.9 on the user's machine.
+    Files.writeString(
+        legacy,
+        "[getStoredTuneIndex:6, getStoredKeyIndex:4, getStoredAlgorithmIndex:0,"
+            + " getStoredMicrophoneIndex:1, getStoredConcertPitchIndex:11,"
+            + " getStoredPrecisionIndex:0, getStoredConfidenceIndex:0,"
+            + " getStoredChordConfidenceIndex:3, getStoredChordEngineIndex:1,"
+            + " getStoredLockScreenIndex:0, getStoredShowChordIndex:1, getStoredTrainingIndex:4,"
+            + " getStoredNotationIndex:0]",
+        StandardCharsets.UTF_8);
+    InMemorySettingsStore store = new InMemorySettingsStore();
 
-    // Act
-    try {
-      service.storeModel(mockModel);
-    } catch (Exception e) {
-      assert false; // No exception should be thrown
-    }
+    MainModel model = new ModelStorageService(store, legacy).readModel();
+    assertEquals(0, model.getStoredAlgorithmIndex());
+    assertEquals(4, model.getStoredKeyIndex());
+    assertEquals(1, model.getStoredMicrophoneIndex());
+    assertEquals(11, model.getStoredConcertPitchIndex());
+    assertEquals(1, model.getStoredChordEngineIndex());
+    assertEquals(1, model.getStoredShowChordIndex());
+    assertEquals(4, model.getStoredTrainingIndex());
 
-    // Cleanup
-    directory.setWritable(true);
-    directory.delete();
+    assertEquals("YIN", store.get("algorithm"));
+    assertEquals("442", store.get("concertPitch"));
+    assertFalse(Files.exists(legacy), "legacy file must be renamed");
+    assertTrue(Files.exists(dir.resolve("Model.tmp.migrated")));
+
+    // A later start reads the store, even if an old file shows up again.
+    Files.writeString(legacy, "[getStoredAlgorithmIndex:2]", StandardCharsets.UTF_8);
+    assertEquals(0, new ModelStorageService(store, legacy).readModel().getStoredAlgorithmIndex());
+  }
+
+  @Test
+  void emptyLegacyFileGivesDefaultsAndInitialisesTheStore() throws Exception {
+    Path legacy = dir.resolve("Model.tmp");
+    Files.writeString(legacy, "", StandardCharsets.UTF_8);
+    InMemorySettingsStore store = new InMemorySettingsStore();
+    MainModel model = new ModelStorageService(store, legacy).readModel();
+    assertEquals(new MainModel().getStoredAlgorithmIndex(), model.getStoredAlgorithmIndex());
+    assertEquals("MPM", store.get("algorithm"));
+  }
+
+  @Test
+  void storeIsEmptyBeforeTheFirstStore() {
+    InMemorySettingsStore store = new InMemorySettingsStore();
+    new ModelStorageService(store, null).readModel();
+    assertNull(store.get("algorithm"));
   }
 }

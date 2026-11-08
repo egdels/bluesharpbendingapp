@@ -51,28 +51,67 @@ import dagger.Module;
 import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.favorites.FavoriteManager;
 import de.schliweb.bluesharpbendingapp.favorites.FileFavoritesStorage;
+import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Singleton;
 
 /**
- * Desktop-specific Dagger module that provides FavoriteManager storing favorites JSON in the same
- * directory used for the model and logs (tempDirectory).
+ * Desktop-specific Dagger module that provides FavoriteManager storing favorites JSON in the data
+ * directory of the application. Favorites of versions up to 3.9, kept in the legacy directory, are
+ * copied there once.
  */
 @Module
 public class DesktopFavoritesModule {
 
-  private final String tempDirectory;
+  static final String FAVORITES_FILE = "favorites_v1.json";
 
-  public DesktopFavoritesModule(String tempDirectory) {
-    this.tempDirectory = tempDirectory;
+  private final Path dataDirectory;
+
+  private final Path legacyDirectory;
+
+  /**
+   * Creates the module.
+   *
+   * @param dataDirectory the directory for the favorites file
+   * @param legacyDirectory the directory of versions up to 3.9, or {@code null}
+   */
+  public DesktopFavoritesModule(Path dataDirectory, Path legacyDirectory) {
+    this.dataDirectory = dataDirectory;
+    this.legacyDirectory = legacyDirectory;
   }
 
   @Provides
   @Singleton
   public FavoriteManager provideFavoriteManager(ExecutorService executorService) {
-    Path path = Paths.get(tempDirectory, "favorites_v1.json");
+    Path path = dataDirectory.resolve(FAVORITES_FILE);
+    migrateLegacyFavorites(legacyDirectory, path);
     return new FavoriteManager(new FileFavoritesStorage(path), executorService);
+  }
+
+  /**
+   * Copies the favorites file of versions up to 3.9 to the new location, unless a file exists there
+   * already. The old file stays in place.
+   *
+   * @param legacyDirectory the directory of versions up to 3.9, or {@code null}
+   * @param target the new favorites file
+   */
+  static void migrateLegacyFavorites(Path legacyDirectory, Path target) {
+    if (legacyDirectory == null || Files.exists(target)) {
+      return;
+    }
+    Path legacy = legacyDirectory.resolve(FAVORITES_FILE);
+    if (!Files.isRegularFile(legacy)) {
+      return;
+    }
+    try {
+      Files.createDirectories(target.getParent());
+      Files.copy(legacy, target);
+      LoggingUtils.logDebug("Favorites migrated", legacy + " -> " + target);
+    } catch (IOException e) {
+      LoggingUtils.logError("Failed to migrate favorites", e);
+    }
   }
 }

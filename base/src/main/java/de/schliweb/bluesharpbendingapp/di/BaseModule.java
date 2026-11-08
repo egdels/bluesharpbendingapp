@@ -27,6 +27,8 @@ import dagger.Module;
 import dagger.Provides;
 import de.schliweb.bluesharpbendingapp.model.MainModel;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
+import de.schliweb.bluesharpbendingapp.service.SettingsStore;
+import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.inject.Singleton;
@@ -38,18 +40,19 @@ import javax.inject.Singleton;
 @Module
 public class BaseModule {
 
-  private final String tempDirectory;
-  private final String tempFile;
+  private final SettingsStore settingsStore;
+  private final Path legacySettingsFile;
 
   /**
-   * Constructs a new BaseModule with the specified temporary directory and file.
+   * Constructs a new BaseModule.
    *
-   * @param tempDirectory the directory path where temporary files will be stored
-   * @param tempFile the name of the temporary file
+   * @param settingsStore the platform store for the user settings
+   * @param legacySettingsFile the settings file of versions up to 3.9, migrated once into the
+   *     store; {@code null} if there is none
    */
-  public BaseModule(String tempDirectory, String tempFile) {
-    this.tempDirectory = tempDirectory;
-    this.tempFile = tempFile;
+  public BaseModule(SettingsStore settingsStore, Path legacySettingsFile) {
+    this.settingsStore = settingsStore;
+    this.legacySettingsFile = legacySettingsFile;
   }
 
   // In Dagger, bindings are done through @Binds methods or directly in the @Module annotation
@@ -63,7 +66,7 @@ public class BaseModule {
   @Provides
   @Singleton
   public ModelStorageService provideModelStorageService() {
-    return new ModelStorageService(tempDirectory, tempFile);
+    return new ModelStorageService(settingsStore, legacySettingsFile);
   }
 
   /**

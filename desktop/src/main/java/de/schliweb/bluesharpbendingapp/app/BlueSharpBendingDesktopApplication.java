@@ -25,6 +25,7 @@ package de.schliweb.bluesharpbendingapp.app;
 
 import de.schliweb.bluesharpbendingapp.di.*;
 import de.schliweb.bluesharpbendingapp.model.microphone.desktop.MicrophoneDesktop;
+import de.schliweb.bluesharpbendingapp.service.PreferencesSettingsStore;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import lombok.Getter;
 
@@ -42,16 +43,19 @@ public class BlueSharpBendingDesktopApplication {
    * called during application startup and can also be called with a specific MainWindow instance
    * when needed.
    *
-   * @param tempDirectory The directory path where temporary files will be stored
+   * @param directories the platform directories (data and the legacy directory of versions up to
+   *     3.9)
    * @param mainWindow The MainWindow instance to use, or null if not available yet.
    */
-  public void initializeDependencyInjection(String tempDirectory, MainWindow mainWindow) {
+  public void initializeDependencyInjection(AppDirectories directories, MainWindow mainWindow) {
     // Log application startup
     DependencyInjectionInitializer.logAppStartup(
         "BlueSharpBendingDesktopApplication", "BlueSharp Bending Desktop Application");
 
     // Create modules with the provided dependencies
-    BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
+    BaseModule baseModule =
+        DependencyInjectionInitializer.createBaseModule(
+            new PreferencesSettingsStore(), directories.legacyDir().toString());
     ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
     MicrophoneModule microphoneModule =
         DependencyInjectionInitializer.createMicrophoneModule(new MicrophoneDesktop());
@@ -63,7 +67,8 @@ public class BlueSharpBendingDesktopApplication {
             .viewModule(viewModule)
             .microphoneModule(microphoneModule)
             .desktopFavoritesModule(
-                new de.schliweb.bluesharpbendingapp.di.DesktopFavoritesModule(tempDirectory))
+                new de.schliweb.bluesharpbendingapp.di.DesktopFavoritesModule(
+                    directories.dataDir(), directories.legacyDir()))
             .build();
 
     // Log that dependency injection has been initialized

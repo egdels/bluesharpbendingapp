@@ -1,13 +1,14 @@
 <configuration>
-    <property name="USER_HOME" value="${user.home}" />
+    <!-- Platform log directory, set by Launcher (AppDirectories.logDir()) -->
+    <property name="LOG_DIR" value="${bluesharpbendingapp.log.dir}" />
 
     <!-- JSON file appender for structured logging in production -->
     <appender name="PROD_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${USER_HOME}/BluesHarpBendingApp.tmp/application.json</file>
+        <file>${LOG_DIR}/application.json</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <maxFileSize>5MB</maxFileSize>
             <maxHistory>7</maxHistory>
-            <fileNamePattern>${USER_HOME}/BluesHarpBendingApp.tmp/application.%d{yyyy-MM-dd}.%i.json.gz</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/application.%d{yyyy-MM-dd}.%i.json.gz</fileNamePattern>
         </rollingPolicy>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <!-- Custom fields that will be added to every log entry -->
@@ -21,11 +22,11 @@
 
     <!-- Traditional log file for backward compatibility -->
     <appender name="PROD_FILE_TRADITIONAL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${USER_HOME}/BluesHarpBendingApp.tmp/application.log</file>
+        <file>${LOG_DIR}/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <maxFileSize>5MB</maxFileSize>
             <maxHistory>7</maxHistory>
-            <fileNamePattern>${USER_HOME}/BluesHarpBendingApp.tmp/application.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/application.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>

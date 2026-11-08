@@ -106,7 +106,8 @@ import org.gradle.internal.os.OperatingSystem
 // Declares Java modules required for the application
 // java.logging is needed by ONNX Runtime (Basic Pitch). It used to come in only transitively
 // (java.naming -> java.security.sasl -> java.logging), so list it explicitly.
-def jvmModules = ['java.base','java.naming', 'java.desktop', 'java.scripting', 'java.logging', 'jdk.unsupported', 'jdk.crypto.ec']
+// java.prefs holds the user settings (PreferencesSettingsStore).
+def jvmModules = ['java.base','java.naming', 'java.desktop', 'java.scripting', 'java.logging', 'java.prefs', 'jdk.unsupported', 'jdk.crypto.ec']
 def jdkPath = System.properties['java.home'] // Gets the JDK base path
 def jdkModulesPath = "${jdkPath}/jmods" // Defines the path to JDK modules
 

@@ -24,200 +24,265 @@
 package de.schliweb.bluesharpbendingapp.service;
 
 import de.schliweb.bluesharpbendingapp.model.MainModel;
+import de.schliweb.bluesharpbendingapp.model.harmonica.AbstractHarmonica;
+import de.schliweb.bluesharpbendingapp.model.harmonica.NoteLookup;
+import de.schliweb.bluesharpbendingapp.model.microphone.AbstractMicrophone;
+import de.schliweb.bluesharpbendingapp.model.training.AbstractTraining;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.function.ObjIntConsumer;
+import java.util.function.ToIntFunction;
 
 /**
- * The ModelStorageService class offers functionalities for persisting and retrieving instances of
- * the MainModel class to and from a temporary file storage. This service simplifies the process of
- * saving application state or configurations while ensuring proper handling of file system
- * operations.
+ * Persists the user settings of {@link MainModel} in a platform {@link SettingsStore}.
  *
- * <p>The service performs serialization of MainModel to a temporary file and deserialization back
- * into an object. It also creates necessary directories if they do not exist, ensuring seamless
- * file storage.
+ * <p>Each setting has its own key. Choices from a fixed list are stored by their meaning (e.g.
+ * {@code algorithm=MPM}, {@code tune=RICHTER}, {@code concertPitch=442}), not by their position in
+ * the list, so reordering or extending a list does not change what a stored setting means. Unknown
+ * or invalid values are ignored and the default applies.
  *
- * <p>The temporary file is stored in the user's home directory with a predefined sub-path.
+ * <p>Up to version 3.9 the settings were written as one line of list indices to a file ({@code
+ * Model.tmp}). If the store is still empty, that file is read once, its settings are copied into
+ * the store and the file is renamed to {@code Model.tmp.migrated}.
  */
 public class ModelStorageService {
 
-  /**
-   * Represents the path to a temporary directory used for storing temporary files or data during
-   * the application's runtime. The value is intended to remain constant and should not be modified
-   * after initialization.
-   */
-  private final String tempDirectory;
+  /** Key of the format version; its presence marks an initialised store. */
+  static final String VERSION_KEY = "settings.version";
+
+  static final String VERSION = "1";
+
+  /** Suffix of the legacy settings file once its content was copied into the store. */
+  static final String MIGRATED_SUFFIX = ".migrated";
 
   /**
-   * Represents the name or path of a temporary file. This variable is immutable and cannot be
-   * modified after being initialized. It is used to store or reference the file location for
-   * temporary operations.
+   * One persisted setting: its key, how to read and write the index in the model, and the stable
+   * values of the list entries ({@code null}: the index itself is stored, e.g. for on/off switches
+   * and the microphone, whose list depends on the connected devices).
    */
-  private final String tempFile;
+  private record Setting(
+      String key,
+      ToIntFunction<MainModel> getter,
+      ObjIntConsumer<MainModel> setter,
+      List<String> values) {}
+
+  private static final List<Setting> SETTINGS =
+      List.of(
+          new Setting(
+              "key",
+              MainModel::getStoredKeyIndex,
+              MainModel::setStoredKeyIndex,
+              List.of(AbstractHarmonica.getSupporterKeys())),
+          new Setting(
+              "tune",
+              MainModel::getStoredTuneIndex,
+              MainModel::setStoredTuneIndex,
+              List.of(AbstractHarmonica.getSupportedTunes())),
+          new Setting(
+              "concertPitch",
+              MainModel::getStoredConcertPitchIndex,
+              MainModel::setStoredConcertPitchIndex,
+              List.of(NoteLookup.getSupportedConcertPitches())),
+          new Setting(
+              "notation",
+              MainModel::getStoredNotationIndex,
+              MainModel::setStoredNotationIndex,
+              List.of("SHARP", "FLAT")),
+          new Setting(
+              "algorithm",
+              MainModel::getStoredAlgorithmIndex,
+              MainModel::setStoredAlgorithmIndex,
+              List.of(AbstractMicrophone.getSupportedAlgorithms())),
+          new Setting(
+              "confidence",
+              MainModel::getStoredConfidenceIndex,
+              MainModel::setStoredConfidenceIndex,
+              List.of(AbstractMicrophone.getSupportedConfidences())),
+          new Setting(
+              "microphoneIndex",
+              MainModel::getStoredMicrophoneIndex,
+              MainModel::setStoredMicrophoneIndex,
+              null),
+          new Setting(
+              "chordEngine",
+              MainModel::getStoredChordEngineIndex,
+              MainModel::setStoredChordEngineIndex,
+              List.of("CHORD_DETECTOR", "BASIC_PITCH")),
+          new Setting(
+              "chordConfidence",
+              MainModel::getStoredChordConfidenceIndex,
+              MainModel::setStoredChordConfidenceIndex,
+              List.of(AbstractMicrophone.getSupportedChordConfidences())),
+          new Setting(
+              "showChordIndex",
+              MainModel::getStoredShowChordIndex,
+              MainModel::setStoredShowChordIndex,
+              null),
+          new Setting(
+              "lockScreenIndex",
+              MainModel::getStoredLockScreenIndex,
+              MainModel::setStoredLockScreenIndex,
+              null),
+          new Setting(
+              "training",
+              MainModel::getStoredTrainingIndex,
+              MainModel::setStoredTrainingIndex,
+              List.of(AbstractTraining.getSupportedTrainings())),
+          new Setting(
+              "precision",
+              MainModel::getStoredPrecisionIndex,
+              MainModel::setStoredPrecisionIndex,
+              List.of(AbstractTraining.getSupportedPrecisions())));
+
+  private final SettingsStore store;
+
+  private final Path legacyFile;
 
   /**
-   * Constructs a new ModelStorageService with the specified temporary directory and file.
+   * Creates the service.
    *
-   * @param tempDirectory the directory path where temporary files will be stored
-   * @param tempFile the name of the temporary file
+   * @param store the platform store for the settings
+   * @param legacyFile the settings file of versions up to 3.9, read once if the store is empty;
+   *     {@code null} if there is none
    */
-  public ModelStorageService(String tempDirectory, String tempFile) {
-    LoggingContext.setComponent("ModelStorageService");
-    LoggingUtils.logInitializing("ModelStorageService");
-
-    this.tempDirectory = tempDirectory;
-    this.tempFile = tempFile;
-
-    LoggingUtils.logDebug("Initialized with directory", tempDirectory);
-    LoggingUtils.logDebug("Initialized with file", tempFile);
-    LoggingUtils.logInitialized("ModelStorageService");
+  public ModelStorageService(SettingsStore store, Path legacyFile) {
+    this.store = store;
+    this.legacyFile = legacyFile;
   }
 
   /**
-   * Persists the given MainModel instance to a temporary file for storage. The method ensures that
-   * the required directory and file are created if they do not exist. The model's data is
-   * serialized into a string format and written to the file.
+   * Stores the settings of the model.
    *
-   * @param model The MainModel object containing the data to be stored.
+   * @param model the model
    */
-  public void storeModel(MainModel model) {
+  public synchronized void storeModel(MainModel model) {
     LoggingContext.setComponent("ModelStorageService");
-    LoggingContext.setOperation("storeModel");
     LoggingUtils.logOperationStarted("Model storage");
-
-    long startTime = System.currentTimeMillis();
-
-    File directory = new File(tempDirectory);
-    if (!directory.exists()) {
-      boolean isCreated = directory.mkdirs();
-      if (isCreated) {
-        LoggingUtils.logDebug("Directory created", tempDirectory);
+    for (Setting setting : SETTINGS) {
+      int index = setting.getter().applyAsInt(model);
+      if (setting.values() == null) {
+        store.put(setting.key(), Integer.toString(index));
+      } else if (index >= 0 && index < setting.values().size()) {
+        store.put(setting.key(), setting.values().get(index));
+      } else {
+        LoggingUtils.logWarning("Setting out of range, not stored", setting.key() + "=" + index);
       }
     }
-
-    File file = new File(tempDirectory + FileSystems.getDefault().getSeparator() + tempFile);
-    try (FileOutputStream fos = new FileOutputStream(file);
-        BufferedWriter bw =
-            new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
-      boolean isCreated = file.createNewFile();
-      if (isCreated) {
-        LoggingUtils.logDebug("File created", file.getAbsolutePath());
-      }
-
-      bw.write(model.getString());
-      LoggingUtils.logDebug("Model data written to file");
-
-    } catch (IOException e) {
-      LoggingUtils.logError("Failed to store model", e);
-    }
-
-    long duration = System.currentTimeMillis() - startTime;
-    LoggingUtils.logPerformance("Model storage", duration);
+    store.put(VERSION_KEY, VERSION);
+    store.flush();
     LoggingUtils.logOperationCompleted("Model storage");
   }
 
   /**
-   * Reads and returns a MainModel instance from a temporary file storage location. The method
-   * checks for the existence of a predefined directory and file for storing the model. If the file
-   * exists, it deserializes the model's configuration from the file's content. If the file or
-   * directory does not exist, a new instance of MainModel is returned.
+   * Reads the settings into a new model. Settings that are missing or invalid keep their default.
+   * On the first start after an update, the settings of the legacy file are migrated.
    *
-   * @return A MainModel object populated with data read from the file, or a new MainModel instance
-   *     if the file is not available or cannot be read.
+   * @return the model
    */
-  public MainModel readModel() {
+  public synchronized MainModel readModel() {
     LoggingContext.setComponent("ModelStorageService");
-    LoggingContext.setOperation("readModel");
     LoggingUtils.logOperationStarted("Model loading");
-
-    long startTime = System.currentTimeMillis();
-
     MainModel model = new MainModel();
-    File directory = new File(tempDirectory);
-    if (!directory.exists()) {
-      boolean isCreated = directory.mkdirs();
-      if (isCreated) {
-        LoggingUtils.logDebug("Directory created", tempDirectory);
-      }
-    }
-
-    File file = new File(tempDirectory + FileSystems.getDefault().getSeparator() + tempFile);
-    if (file.exists()) {
-      LoggingUtils.logDebug("Model file found", file.getAbsolutePath());
-      try (FileInputStream fos = new FileInputStream(file);
-          BufferedReader bw =
-              new BufferedReader(new InputStreamReader(fos, StandardCharsets.UTF_8))) {
-        String line = bw.readLine();
-        if (line != null) {
-          LoggingUtils.logDebug("Model data read from file");
-          model = createFromString(line);
-        } else {
-          LoggingUtils.logWarning("Empty model file", "Using default model");
-        }
-      } catch (IOException e) {
-        LoggingUtils.logError("Failed to read model", e);
+    if (store.get(VERSION_KEY) == null) {
+      if (legacyFile != null && Files.isRegularFile(legacyFile)) {
+        migrateLegacyFile(model);
+      } else {
+        LoggingUtils.logDebug("No stored settings", "Using defaults");
       }
     } else {
-      LoggingUtils.logDebug("Model file not found", "Using default model");
-    }
-
-    long duration = System.currentTimeMillis() - startTime;
-    LoggingUtils.logPerformance("Model loading", duration);
-    LoggingUtils.logOperationCompleted("Model loading");
-    return model;
-  }
-
-  /**
-   * Creates a MainModel instance from a given string representation. The input string is expected
-   * to be in a specific format, where key-value pairs are defined as "getMethodName:value" and
-   * separated by a delimiter. The method dynamically invokes corresponding setters in the MainModel
-   * class to populate its fields based on the provided input.
-   *
-   * @param string the string representation of the MainModel object, containing key-value pairs to
-   *     initialize the fields.
-   * @return a newly created MainModel instance populated with values based on the input string.
-   */
-  private MainModel createFromString(String string) {
-    LoggingContext.setComponent("ModelStorageService");
-    LoggingContext.setOperation("createFromString");
-    LoggingUtils.logDebug("Creating model from string representation");
-
-    long startTime = System.currentTimeMillis();
-
-    String[] strings = string.replace("[", "").replace("]", "").split(", ", -1);
-    MainModel model = new MainModel();
-    Method[] methods = model.getClass().getMethods();
-    int propertiesSet = 0;
-
-    for (String entry : strings) {
-      entry = entry.replaceFirst("get", "set");
-      if (entry.contains(":")) {
-        String m = entry.split(":", -1)[0];
-        String p = entry.split(":", -1)[1];
-        for (Method method : methods) {
-          if (method.getName().equals(m)) {
-            try {
-              method.invoke(model, Integer.parseInt(p));
-              propertiesSet++;
-              LoggingUtils.logDebug("Set model property", m + "=" + p);
-            } catch (IllegalAccessException
-                | IllegalArgumentException
-                | InvocationTargetException e) {
-              LoggingUtils.logError("Failed to set model property " + m, e);
-            }
+      for (Setting setting : SETTINGS) {
+        String value = store.get(setting.key());
+        if (value != null) {
+          int index = toIndex(setting, value);
+          if (index >= 0) {
+            setting.setter().accept(model, index);
+          } else {
+            LoggingUtils.logWarning(
+                "Unknown stored setting, using default", setting.key() + "=" + value);
           }
         }
       }
     }
-
-    long duration = System.currentTimeMillis() - startTime;
-    LoggingUtils.logPerformance("Model creation from string", duration);
-    LoggingUtils.logDebug("Model created with " + propertiesSet + " properties set");
+    LoggingUtils.logOperationCompleted("Model loading");
     return model;
+  }
+
+  private static int toIndex(Setting setting, String value) {
+    if (setting.values() == null) {
+      try {
+        int index = Integer.parseInt(value);
+        return index >= 0 ? index : -1;
+      } catch (NumberFormatException e) {
+        return -1;
+      }
+    }
+    return setting.values().indexOf(value);
+  }
+
+  /** Copies the settings of the legacy file into the model and the store, then renames it. */
+  private void migrateLegacyFile(MainModel model) {
+    String line;
+    try (BufferedReader reader = Files.newBufferedReader(legacyFile, StandardCharsets.UTF_8)) {
+      line = reader.readLine();
+    } catch (IOException e) {
+      LoggingUtils.logError("Failed to read legacy settings file", e);
+      return;
+    }
+    if (line != null) {
+      applyLegacyLine(model, line);
+    }
+    storeModel(model);
+    try {
+      Files.move(
+          legacyFile,
+          legacyFile.resolveSibling(legacyFile.getFileName() + MIGRATED_SUFFIX),
+          StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      // The store is initialised now, so the file is not read again anyway.
+      LoggingUtils.logWarning("Could not rename legacy settings file", e.getMessage());
+    }
+    LoggingUtils.logDebug("Settings migrated from legacy file", legacyFile.toString());
+  }
+
+  /**
+   * Applies a line of the legacy format, e.g. {@code [getStoredKeyIndex:4,
+   * getStoredAlgorithmIndex:0]}. Entries that are unknown or not a number are ignored.
+   *
+   * @param model the model to update
+   * @param line the line
+   */
+  static void applyLegacyLine(MainModel model, String line) {
+    for (String entry : line.replace("[", "").replace("]", "").split(", ", -1)) {
+      int colon = entry.indexOf(':');
+      if (colon < 0) {
+        continue;
+      }
+      String getter = entry.substring(0, colon).trim();
+      int index;
+      try {
+        index = Integer.parseInt(entry.substring(colon + 1).trim());
+      } catch (NumberFormatException e) {
+        continue;
+      }
+      for (Setting setting : SETTINGS) {
+        if (getter.equals(legacyGetterName(setting))) {
+          setting.setter().accept(model, index);
+        }
+      }
+    }
+  }
+
+  /** The getter name the legacy format used for a setting, e.g. {@code getStoredKeyIndex}. */
+  private static String legacyGetterName(Setting setting) {
+    String key = setting.key();
+    String base = key.endsWith("Index") ? key.substring(0, key.length() - 5) : key;
+    return "getStored" + Character.toUpperCase(base.charAt(0)) + base.substring(1) + "Index";
   }
 }

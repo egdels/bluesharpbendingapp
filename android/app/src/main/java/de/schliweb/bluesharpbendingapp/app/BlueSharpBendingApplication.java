@@ -28,6 +28,7 @@ import android.app.Application;
 import androidx.annotation.Nullable;
 import de.schliweb.bluesharpbendingapp.di.*;
 import de.schliweb.bluesharpbendingapp.model.mircophone.android.MicrophoneAndroid;
+import de.schliweb.bluesharpbendingapp.service.SharedPreferencesSettingsStore;
 import de.schliweb.bluesharpbendingapp.view.MainWindow;
 import lombok.Getter;
 
@@ -62,10 +63,14 @@ public class BlueSharpBendingApplication extends Application {
    * @param mainWindow The MainWindow instance to use, or null if not available yet.
    */
   public void initializeDependencyInjection(@Nullable MainWindow mainWindow) {
-    String tempDirectory = this.getApplicationContext().getFilesDir().getAbsolutePath();
+    // Settings live in SharedPreferences; versions up to 3.9 kept them in a file in getFilesDir(),
+    // which is migrated once.
+    String legacyDirectory = this.getApplicationContext().getFilesDir().getAbsolutePath();
 
     // Create modules with the provided dependencies
-    BaseModule baseModule = DependencyInjectionInitializer.createBaseModule(tempDirectory);
+    BaseModule baseModule =
+        DependencyInjectionInitializer.createBaseModule(
+            new SharedPreferencesSettingsStore(this), legacyDirectory);
     ViewModule viewModule = DependencyInjectionInitializer.createViewModule(mainWindow);
     MicrophoneModule microphoneModule =
         DependencyInjectionInitializer.createMicrophoneModule(new MicrophoneAndroid());

@@ -27,7 +27,10 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import de.schliweb.bluesharpbendingapp.utils.LoggingContext;
 import de.schliweb.bluesharpbendingapp.utils.LoggingUtils;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 import org.slf4j.LoggerFactory;
 
@@ -104,28 +107,27 @@ public class Launcher {
   }
 
   /**
-   * Ensures that the logs directory for the application exists.
-   *
-   * <p>The logs directory is created under the user's home directory with the name
-   * "BluesHarpBendingApp.tmp". If the directory does not exist, this method attempts to create it.
-   *
-   * <p>If the creation is successful, a message indicating the directory path is printed to the
-   * standard output. If the creation fails, an error message is printed to the standard error
-   * stream.
+   * System property with the log directory, read by {@code config/logback-prod.xml}. Set from
+   * {@link AppDirectories#logDir()} unless given on the command line.
+   */
+  static final String LOG_DIR_PROPERTY = "bluesharpbendingapp.log.dir";
+
+  /**
+   * Determines the platform log directory (see {@link AppDirectories}), publishes it as system
+   * property {@value #LOG_DIR_PROPERTY} for the logging configuration and creates it.
    */
   private static void ensureLogsDirectory() {
-    String userHome = System.getProperty("user.home");
-    File logsDir = new File(userHome, "BluesHarpBendingApp.tmp");
-
-    if (!logsDir.exists()) {
-      if (logsDir.mkdirs()) {
-        LoggingContext.setComponent("Launcher");
-        LoggingUtils.logOperationCompleted(
-            "Logs directory creation at: " + logsDir.getAbsolutePath());
-      } else {
-        LoggingContext.setComponent("Launcher");
-        LoggingUtils.logError("Failed to create logs directory", logsDir.getAbsolutePath());
-      }
+    String configured = System.getProperty(LOG_DIR_PROPERTY);
+    Path logsDir =
+        configured == null || configured.isBlank()
+            ? AppDirectories.forCurrentUser().logDir()
+            : Paths.get(configured);
+    System.setProperty(LOG_DIR_PROPERTY, logsDir.toString());
+    try {
+      Files.createDirectories(logsDir);
+    } catch (IOException e) {
+      // Logging is not configured yet; the file appender reports its own errors later.
+      System.err.println("Failed to create logs directory " + logsDir + ": " + e.getMessage());
     }
   }
 }

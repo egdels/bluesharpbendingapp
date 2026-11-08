@@ -25,8 +25,9 @@ package de.schliweb.bluesharpbendingapp.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import de.schliweb.bluesharpbendingapp.service.InMemorySettingsStore;
 import de.schliweb.bluesharpbendingapp.service.ModelStorageService;
-import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
@@ -38,11 +39,10 @@ import org.junit.jupiter.api.Test;
 class DefaultAlgorithmTest {
 
   private static MainModel load(String stored) throws Exception {
-    Path dir = Files.createTempDirectory("model");
-    ModelStorageService service = new ModelStorageService(dir.toString(), "model.dat");
-    Method m = ModelStorageService.class.getDeclaredMethod("createFromString", String.class);
-    m.setAccessible(true);
-    return (MainModel) m.invoke(service, stored);
+    // Settings stored by versions up to 3.9 (legacy file) are migrated with their values.
+    Path file = Files.createTempDirectory("model").resolve("Model.tmp");
+    Files.writeString(file, stored, StandardCharsets.UTF_8);
+    return new ModelStorageService(new InMemorySettingsStore(), file).readModel();
   }
 
   @Test
