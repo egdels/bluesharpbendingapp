@@ -36,17 +36,18 @@ die mundharmonikaspezifische Interpretation (Kanäle, Bends, Oktaven, Splits) bl
   `BasicPitchModelRunner` benötigte Eingabeformat) inkl. Stereo→Mono-Downmix, durch
   `AudioResamplerTest` abgesichert (Länge, Frequenzerhalt, Edge-Cases).
 - ✅ `OnnxBasicPitchModelRunner`: konkreter Desktop/JVM-Runner über **ONNX Runtime**
-  (`com.microsoft.onnxruntime:onnxruntime:1.22.0`; in `base` `compileOnly`+`testImplementation`,
+  (`com.microsoft.onnxruntime:onnxruntime:1.23.0`; in `base` `compileOnly`+`testImplementation`,
   im `desktop`-Modul `implementation`). Input `serving_default_input_2:0` (`[n,43844,1]` float),
   Outputs note=`StatefulPartitionedCall:1`, onset=`:2`, contour=`:0`; die Fensterung (Front-Pad
   3840, Fenster 43844 / Hop 36164) und das Unwrapping (15 Overlap-Frames/Seite verwerfen, Trim auf
   `floor(len*86/22050)`) bilden `basic_pitch.inference.run_inference` exakt nach.
   `OnnxBasicPitchModelRunnerTest` prüft Fenster-Konstanten und (sofern `nmp.ort` lokal vorhanden,
   z. B. im `venv`) einen echten C-Dur-Lauf End-to-End über `BasicPitchProvider`.
-- ✅ **Plattform-Hinweis (gelöst):** Bewusst auf `onnxruntime:1.22.0` festgelegt, weil dieses
-  Artefakt Natives für **Linux, Windows und macOS** bündelt (`linux-aarch64`, `linux-x64`,
-  `win-x64`, `osx-aarch64`, `osx-x64`). Die Version `1.24.1` enthielt nur Linux/Windows-Natives
-  und scheiterte auf macOS mit `UnsatisfiedLinkError`; mit `1.22.0` läuft der echte Inferenztest
+- ✅ **Plattform-Hinweis (gelöst):** Bewusst auf `onnxruntime:1.23.0` festgelegt, die neueste
+  Version, deren Artefakt Natives für **Linux, Windows und macOS** bündelt (`linux-aarch64`,
+  `linux-x64`, `win-x64`, `osx-aarch64`, `osx-x64`). `1.24.1` enthielt nur Linux/Windows-Natives
+  und scheiterte auf macOS mit `UnsatisfiedLinkError`; ab `1.25.0` fehlt `osx-x64` (Intel-Mac,
+  für den die CI einen eigenen Installer baut). Mit `1.23.0` läuft der echte Inferenztest
   auch auf Apple Silicon real durch. Der defensive Skip im Test bleibt nur als Fallback für
   nicht abgedeckte Plattformen/Architekturen erhalten.
 - ✅ **A/B-Lauf mit dem echten Modell:** `BaselineComparisonTest.abComparisonWithRealOnnxModel`

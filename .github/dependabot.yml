@@ -18,6 +18,10 @@ updates:
       # take it on together with that migration.
       - dependency-name: "gradle-wrapper"
         update-types: ["version-update:semver-major"]
+      # From 1.24 on, the Maven artifact no longer bundles natives for Intel Macs (osx-x64), for
+      # which CI builds a desktop installer; 1.23.x is the newest version covering all platforms.
+      - dependency-name: "com.microsoft.onnxruntime:onnxruntime"
+        versions: [">= 1.24"]
 
   - package-ecosystem: "npm"
     directory: "/"

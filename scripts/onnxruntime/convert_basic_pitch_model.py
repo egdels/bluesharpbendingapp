@@ -8,8 +8,9 @@ basic_pitch/saved_models/icassp_2022/nmp.onnx of Spotify basic-pitch 0.4.0
 ORT format is required by the reduced ("minimal") ONNX Runtime built for Android; the full
 desktop runtime loads it as well. BASIC graph optimizations only, so the model stays portable
 across CPU architectures and ONNX Runtime versions (no platform-specific fused operators).
-Converted with onnxruntime 1.22.0, the version of the desktop runtime: newer runtimes read
-ORT format files written by older ones, not the other way round.
+Converted with onnxruntime 1.22.0, older than both runtimes that load it (desktop 1.23.0,
+Android 1.31.1): newer runtimes read ORT format files written by older ones, not the other way
+round.
 
 The output is not byte-identical between runs (internal ordering differs), but numerically
 identical: the ORT model produces exactly the same outputs as the ONNX original.

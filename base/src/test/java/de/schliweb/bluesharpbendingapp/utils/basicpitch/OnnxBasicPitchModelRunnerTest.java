@@ -149,7 +149,7 @@ class OnnxBasicPitchModelRunnerTest {
     try {
       runner = new OnnxBasicPitchModelRunner(model);
     } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-      // The onnxruntime:1.22.0 artifact bundles native libraries for Linux, Windows and macOS
+      // The onnxruntime:1.23.0 artifact bundles native libraries for Linux, Windows and macOS
       // (osx-aarch64/osx-x64). This remains as a defensive fallback for any platform/arch that is
       // still not covered by the bundled natives, in which case inference cannot run.
       assumeTrue(false, "ONNX Runtime native library unavailable on this platform; skipping: " + e);

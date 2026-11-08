@@ -14,7 +14,7 @@ Basic Pitch model (base/src/main/resources/basic_pitch/nmp.ort)
   model's outputs are unchanged.
   License and NOTICE: third_party_licenses/basic-pitch/
 
-ONNX Runtime (desktop version, com.microsoft.onnxruntime:onnxruntime 1.22.0)
+ONNX Runtime (desktop version, com.microsoft.onnxruntime:onnxruntime 1.23.0)
   Copyright (c) Microsoft Corporation
   Licensed under the MIT License.
   Source: https://github.com/microsoft/onnxruntime
