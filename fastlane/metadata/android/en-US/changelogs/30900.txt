@@ -1,5 +1,6 @@
 What's new in 3.9.0
-• New (experimental): the "Basic Pitch" chord engine detects chords, double stops and octaves much more reliably – see "Chord Engine" in the settings
-• Chord mode now shows the playing technique, e.g. "Octave 1B 4B (tongue block)"
-• MPM is the new default algorithm for new installs – more precise on bends
-• Fixed: microphone kept running several times after settings changes (battery), flickering chord display, octave errors in the Hybrid algorithm
+• New (experimental): the "Basic Pitch" chord engine detects chords, double stops and octaves more reliably
+• Chord mode shows the playing technique, e.g. "Octave 1B 4B (tongue block)"
+• MPM is the default algorithm for new installs – more precise on bends
+• Settings are stored more robustly and carried over automatically
+• Fixed: microphone kept running several times after settings changes (battery), flickering chord display, octave errors (Hybrid)

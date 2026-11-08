@@ -1,5 +1,6 @@
 Novedades en 3.9.0
-• Nuevo (experimental): el motor de acordes «Basic Pitch» detecta acordes, dobles notas y octavas con mucha más fiabilidad – en Ajustes, «Motor de acordes»
-• El modo acordes muestra la técnica, p. ej. «Octava 1B 4B (bloqueo con la lengua)»
-• MPM es el nuevo algoritmo por defecto en instalaciones nuevas – más preciso en bendings
-• Corregido: el micrófono seguía activo varias veces tras cambiar ajustes (batería), parpadeo de acordes, errores de octava en Hybrid
+• Nuevo (experimental): el motor de acordes «Basic Pitch» detecta acordes, dobles notas y octavas con más fiabilidad
+• El modo acordes muestra la técnica, p. ej. «Octava 1B 4B (bloqueo de lengua)»
+• MPM es el algoritmo por defecto en instalaciones nuevas – más preciso en bendings
+• Ajustes guardados de forma más robusta (se conservan)
+• Corregido: micrófono activo varias veces tras cambiar ajustes (batería), parpadeo de acordes, errores de octava (Hybrid)

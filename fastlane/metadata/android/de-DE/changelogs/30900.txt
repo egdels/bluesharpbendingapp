@@ -1,5 +1,6 @@
 Neuigkeiten in 3.9.0
-• Neu (experimentell): Akkord-Engine „Basic Pitch“ erkennt Akkorde, Doppelgriffe und Oktaven deutlich zuverlässiger – in den Einstellungen unter „Akkord-Engine“
-• Im Akkordmodus wird die Spielweise angezeigt, z. B. „Oktave 1B 4B (Zungenblock)“
-• MPM ist neuer Standard-Algorithmus für Neuinstallationen – genauer bei Bendings
-• Behoben: Mikrofon lief nach Einstellungswechseln mehrfach (Akku), flackernde Akkordanzeige, Oktavfehler im Hybrid-Algorithmus
+• Neu (experimentell): Akkord-Engine „Basic Pitch“ erkennt Akkorde, Doppelgriffe und Oktaven zuverlässiger
+• Akkordmodus zeigt die Spielweise, z. B. „Oktave 1B 4B (Zungenblock)“
+• MPM ist Standard-Algorithmus für Neuinstallationen – genauer bei Bendings
+• Einstellungen werden robuster gespeichert und automatisch übernommen
+• Behoben: Mikrofon lief nach Einstellungswechseln mehrfach (Akku), flackernde Akkordanzeige, Oktavfehler (Hybrid)
