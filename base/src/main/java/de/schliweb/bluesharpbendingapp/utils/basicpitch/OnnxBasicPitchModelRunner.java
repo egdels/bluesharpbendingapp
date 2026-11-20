@@ -102,6 +102,24 @@ public final class OnnxBasicPitchModelRunner implements BasicPitchModelRunner, A
       new java.util.concurrent.atomic.AtomicBoolean();
 
   /**
+   * Returns the shared ONNX Runtime environment with telemetry switched off.
+   *
+   * <p>The ONNX Runtime packages Microsoft publishes for Windows report usage events through the
+   * telemetry system of the platform unless told otherwise. The app works offline and sends
+   * nothing, so the switch is set before the first session exists. A failure to set it must not
+   * cost the chord detection, hence it is ignored.
+   */
+  private static OrtEnvironment environmentWithoutTelemetry() {
+    OrtEnvironment env = OrtEnvironment.getEnvironment();
+    try {
+      env.setTelemetry(false);
+    } catch (OrtException ignored) {
+      // Nothing else to do: the runtime offers no second way from Java.
+    }
+    return env;
+  }
+
+  /**
    * Creates a runner for the ONNX model at the given path.
    *
    * @param modelPath the path to {@code nmp.ort}
@@ -130,7 +148,7 @@ public final class OnnxBasicPitchModelRunner implements BasicPitchModelRunner, A
     if (options == null) {
       throw new IllegalArgumentException("options must not be null");
     }
-    this.environment = OrtEnvironment.getEnvironment();
+    this.environment = environmentWithoutTelemetry();
     this.session = environment.createSession(modelPath.toString(), options);
   }
 
@@ -162,7 +180,7 @@ public final class OnnxBasicPitchModelRunner implements BasicPitchModelRunner, A
     if (options == null) {
       throw new IllegalArgumentException("options must not be null");
     }
-    this.environment = OrtEnvironment.getEnvironment();
+    this.environment = environmentWithoutTelemetry();
     this.session = environment.createSession(modelBytes, options);
   }
 
