@@ -42,7 +42,7 @@ jobs:
           GRADLE_OPTS: "-Dhttp.socketTimeout=30000 -Dhttp.connectionTimeout=30000"
 
       - name: Upload installer to GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: desktop/build/jpackage/**/*
         env:
@@ -60,7 +60,7 @@ jobs:
 
       - name: Upload AppImage and zsync to GitHub Release (Linux only)
         if: runner.os == 'Linux'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             desktop/build/appimage-output/*.AppImage
